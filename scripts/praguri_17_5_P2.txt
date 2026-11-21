@@ -1,0 +1,37 @@
+produs
+lot: 17.5-P2
+max hook 198
+max poarta_verificator 117
+max poarta_pytest 730
+max poarta_plasa 3467
+runde_verificator_max: 2
+sursa pragurilor 17.5-P2: generate de scripts/praguri_automate.py la 2026-11-21T14:05:24+02:00 din .lot_jurnal.log; loturi folosite: 17.5-M4, 17.5-N4, 17.5-P0 (3)
+  hook: maxim 165 s (lotul 17.5-P0, rularea 2738559-1795232839728) din 20 rulari complete, 0 rulari «intrerupt» ignorate, prag 198 s
+  poarta_verificator: maxim 97 s (lotul 17.5-N4, rularea 2105354-1795216164152) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 117 s
+  poarta_pytest: maxim 608 s (lotul 17.5-M4, rularea 3035521-1795139264128) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 730 s
+  poarta_plasa: maxim 2889 s (lotul 17.5-P0, rularea 2937969-1795237706098) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 3467 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_P2.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_bon_cui_17_5_P2.py)
+  core/bon_tva_deductibil.py (nou)
+  core/migrare_bon_cui_cumparator.py (nou)
+  core/test_bon_cui_cumparator_17_5_P2.py (nou)
+  core/test_e2a_univers.py (numai limitele MIGRARE_UNICA 163 -> 164 și D4b 19 -> 20, cu maxim 19 în afara modulului uc_tenants, și comentariile lor, M4)
+  core/test_p7_v2_scrieri.py (numai gardul apelurilor repository 460 -> 465 și comentariul lui, M5)
+  core/straturi.py (numai declarația nouă a lui core/bon_tva_deductibil.py, dacă o cere core/test_p7_straturi.py)
+  core/uc_portal.py (numai promptul din portal_bon, funcția _cui_cumparator_din_raspuns (nou) și apelul repo_casa.adauga_bon, AC153, AC154)
+  core/repo_casa.py (numai adauga_bon, bonuri_de_verificat și funcția nouă cui_cumparator_bon, AC153)
+  core/uc_tenants.py (numai bonuri_de_verificat și bon_aproba, AC153, AC154)
+  tenant_template.sql (numai blocul nou al migrării: bloc_template() din core/migrare_bon_cui_cumparator.py)
+  static/js/ecrane/firme.js (numai randeazaDetaliu al ferestrei bonului: blocul #d-fiscal, AC153, AC154, și mesajul de după aprobare)
+  frontend_test/e2e/e2e_bon_cui_17_5_P2.py (nou)
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  DEFICIENTE.md (AC153, AC154 și datoria 870, deschisă)
+  docs/dovezi/17_5_P2/ (nou)

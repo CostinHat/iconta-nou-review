@@ -1,0 +1,64 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text",
+   "ac": null,
+   "martor": "cabinetul administratorului dovada.71507",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/cabinet.js:44 (cardul «Control fiscal», neschimbat de lot); aceeași aserțiune ca f.1 din 17.5-H…O"
+  },
+  {
+   "id": "f.2",
+   "pas": "bon",
+   "operator": "text_contine",
+   "valoare": "Bon fiscal",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": null,
+   "martor": "F1 Comert Stoc (tenant_9049), bonul martor «Benzinarie Martor P SRL» (semănat de docs/dovezi/17_5_P2/semana_bon.py)",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js: randeazaDetaliu (titlul «Bon fiscal», h2.pf-titlu); neschimbat de lot"
+  },
+  {
+   "id": "f.3",
+   "pas": "bon",
+   "operator": "text_contine",
+   "valoare": "Comerciant",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": null,
+   "martor": "F1 Comert Stoc (tenant_9049), bonul martor «Benzinarie Martor P SRL» (semănat de docs/dovezi/17_5_P2/semana_bon.py)",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js: randeazaDetaliu (eticheta «Comerciant»); neschimbat de lot"
+  },
+  {
+   "id": "a.1",
+   "pas": "bon",
+   "operator": "text_contine",
+   "valoare": "CUI cumpărător pe bon",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC153",
+   "martor": "F1 Comert Stoc (tenant_9049), bonul martor «Benzinarie Martor P SRL» (semănat de docs/dovezi/17_5_P2/semana_bon.py)",
+   "de_ce": "static/js/ecrane/firme.js: randeazaDetaliu (rând nou, impus în comandă la «De ce» (3)); core/uc_tenants.py: bonuri_de_verificat (cheia cui_cumparator); AC153"
+  },
+  {
+   "id": "a.2",
+   "pas": "bon",
+   "operator": "text_contine",
+   "valoare": "TVA nedeductibil: pe bon nu este înscris codul fiscal al firmei cumpărătoare",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC153",
+   "martor": "F1 Comert Stoc (tenant_9049), bonul martor «Benzinarie Martor P SRL» (semănat de docs/dovezi/17_5_P2/semana_bon.py)",
+   "de_ce": "core/bon_tva_deductibil.py (nou): text(\"fara_cod\"); HG 1/2016 pct. 69 alin. (6) (anaf_surse/hg_1_2016_norme_cod_fiscal.txt:2131); Cod fiscal art. 319 alin. (12) și (21) (anaf_surse/cod_fiscal_227_2015_consolidat.txt:8057, :8061); AC153"
+  },
+  {
+   "id": "a.3",
+   "pas": "bon",
+   "operator": "text_contine",
+   "valoare": "art. 298 alin. (1)",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC154",
+   "martor": "F1 Comert Stoc (tenant_9049), bonul martor «Benzinarie Martor P SRL» (semănat de docs/dovezi/17_5_P2/semana_bon.py)",
+   "de_ce": "core/bon_tva_deductibil.py (nou): nota_cont(\"6022\"); Cod fiscal art. 25 alin. (3) lit. l) (cod_fiscal_227_2015_consolidat.txt:1367) și art. 298 alin. (1) (:7708); AC154"
+  }
+ ]
+}

@@ -1,0 +1,98 @@
+VERDICT e.1 pica
+VERDICT e.2 pica
+VERDICT e.3 pica
+VERDICT e.4 pica
+VERDICT e.5 trece
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______________________ test_bon_cui_cumparator_17_5_P2 ________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+capsys = <_pytest.capture.CaptureFixture object at 0x7a29a19202f0>
+
+    def test_bon_cui_cumparator_17_5_P2(browser, capsys):
+        from pathlib import Path
+        from urllib.parse import urlsplit
+        from conftest import _db, CAPTURI
+        from core import ceas_proba
+    
+        port = int(os.environ.get("E2E_PORT", "8019"))
+        if BAZA.rstrip("/") != "http://127.0.0.1:%d" % port:
+            raise RuntimeError("E2E P cere adresa locală a serverului oficial de test")
+        with _db().get_conn() as conn, conn.cursor() as cur:
+            cur.execute("SELECT current_database()")
+            if cur.fetchone() != ("***",):
+                raise RuntimeError("Fixture P: sesiunea nu este pe baza de test")
+    
+        parcurs = _incarca(os.path.join(RAD, "docs", "dovezi", "17_1", "parcurs_17_1.py"), "parcurs_17_1")
+        local = Path(RAD) / "docs" / "dovezi" / "17_5_P2" / "semana_bon.py"
+        sursa = local if local.is_file() else Path.home() / "ghid_incoming" / "semana_bon_17_5_P2.py"
+        if hashlib.sha256(sursa.read_bytes()).hexdigest() != "7bb87547681db17bba68e767a95769000811a2cd8e8ceab117d1955611e23b55":
+            raise RuntimeError("Fixture P: amprenta semănătorului diferă")
+        semana = _incarca(str(sursa), "semana_bon")
+        b = browser.new_context(viewport={"width":1366, "height":768})
+        posturi = []
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            def protejeaza(route):
+                if route.request.method == "POST" and urlsplit(route.request.url).path.endswith("/aproba"):
+                    posturi.append(urlsplit(route.request.url).path)
+                    route.abort()
+                else:
+                    route.continue_()
+            b.route("**/*", protejeaza)
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            status, corp = _api(pg, "/tenants")
+            if status != 200 or not isinstance(corp, dict):
+                raise RuntimeError("Fixture P: lista firmelor nu s-a încărcat")
+            potriviri = [t for t in corp["tenants"] if t["nume"] == semana.F1]
+            if len(potriviri) != 1 or potriviri[0]["id"] != F1_ID:
+                raise RuntimeError("Fixture P: F1 din lista sesiunii diferă de F1 din snapshot")
+            with semana.martor(potriviri[0]["id"]) as bon_id:
+                parcurs.firma(pg, semana.F1)
+                buton = pg.locator(TOP + "#fa-bonuri")
+                if not buton.is_visible():
+                    grup = buton.locator("xpath=ancestor::*[starts-with(@id,'fgc-')][1]")
+                    ident = grup.get_attribute("id", timeout=5000)
+                    pg.locator(TOP + '[aria-controls="' + ident + '"]').click(timeout=5000)
+                cale = "/tenants/%d/bonuri/de-verificat" % F1_ID
+                with pg.expect_response(lambda r: urlsplit(r.url).path == cale and r.request.method == "GET",
+                                        timeout=30000) as raspuns:
+                    buton.click(timeout=10000)
+                if raspuns.value.status != 200:
+                    raise RuntimeError("Fixture P: lista de bonuri nu s-a încărcat")
+                bonuri = [x for x in raspuns.value.json()["bonuri"] if x.get("id") == bon_id]
+                if len(bonuri) != 1 or bonuri[0].get("comerciant") != semana.COMERCIANT or bonuri[0].get("numar_document") != semana.DOCUMENT:
+                    raise RuntimeError("Fixture P: lista nu identifică bonul tocmai creat")
+                pg.locator(TOP + "[data-doc]", has_text=semana.COMERCIANT).click(timeout=15000)
+                pg.locator(TOP + "#d-certifica").wait_for(state="attached", timeout=15000)
+                fereastra = pg.locator(TOP + ".fereastra")
+                titlu = pg.locator(TOP + "h2.pf-titlu").inner_text()
+                if "Bon fiscal" not in titlu or semana.DOCUMENT not in titlu:
+                    raise RuntimeError("Fixture P: nu s-a deschis detaliul bonului martor")
+                text = " ".join(fereastra.inner_text().split())
+                bloc = fereastra.evaluate(JS_FISCAL)
+                captura = Path(CAPTURI)
+                captura.mkdir(exist_ok=True, parents=True)
+                pg.screenshot(path=str(captura / "17_5_P2_detaliu_P1.png"))
+                rezultate = verdicte(text, bloc, bonuri[0], posturi)
+        finally:
+            b.close()
+        # Numai după navigare, măsurare și curățare. O excepție tehnică nu produce martori.
+        with capsys.disabled():
+            for ident, ok in rezultate.items():
+                print("VERDICT %s %s" % (ident, "trece" if ok else "pica"), flush=True)
+>       assert all(rezultate.values()), {"rezultate": rezultate, "titlu": titlu, "bloc": bloc,
+                                        "campuri_martor": sorted(bonuri[0]), "posturi": posturi}
+E       AssertionError: {'rezultate': {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': False, ...}, 'titlu': 'Bon fiscal · nr. P-1', 'bloc': None, 'campuri_martor': ['articole', 'comerciant', 'cui', 'data', 'id', 'mentiuni', ...], ...}
+E       assert False
+E        +  where False = all(dict_values([False, False, False, False, True]))
+E        +    where dict_values([False, False, False, False, True]) = <built-in method values of dict object at 0x7a29a05655c0>()
+E        +      where <built-in method values of dict object at 0x7a29a05655c0> = {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': False, ...}.values
+
+frontend_test/e2e/e2e_bon_cui_17_5_P2.py:154: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_bon_cui_17_5_P2.py::test_bon_cui_cumparator_17_5_P2
+1 failed in 5.11s

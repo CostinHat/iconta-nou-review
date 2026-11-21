@@ -1,0 +1,71 @@
+# dovada pe baza — lot 17_5_P2 — test e2e_bon_cui_17_5_P2.py — 2026-11-21T14:01:56+02:00 — main 420b0f1357cb8647cf36d7e4c32b6ac6d9db1a0c
+sha_test=18997a54d893d542 e2e_bon_cui_17_5_P2.py
+id-uri rosii obligatorii: e.1,e.2,e.3,e.4
+contract ancorat: sha256 ec0dc232507ce90c293e693ee48306b132746a1aea6ed8869bdc169de58bcf55 (***/pornire_17_5_P2.txt)
+lacat: liber
+pornesc 8019 din main (scripts/porneste_8019.sh)
+[verificator design] serverul de lucru pe 8019, commit 420b0f13
+restaurez baza de test
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (***:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 80s
+restaurare: 80 s, rc=0
+rulez testul pe baza: e2e_bon_cui_17_5_P2.py
+                    pg.locator(TOP + '[aria-controls="' + ident + '"]').click(timeout=5000)
+                cale = "/tenants/%d/bonuri/de-verificat" % F1_ID
+                with pg.expect_response(lambda r: urlsplit(r.url).path == cale and r.request.method == "GET",
+                                        timeout=30000) as raspuns:
+                    buton.click(timeout=10000)
+                if raspuns.value.status != 200:
+                    raise RuntimeError("Fixture P: lista de bonuri nu s-a încărcat")
+                bonuri = [x for x in raspuns.value.json()["bonuri"] if x.get("id") == bon_id]
+                if len(bonuri) != 1 or bonuri[0].get("comerciant") != semana.COMERCIANT or bonuri[0].get("numar_document") != semana.DOCUMENT:
+                    raise RuntimeError("Fixture P: lista nu identifică bonul tocmai creat")
+                pg.locator(TOP + "[data-doc]", has_text=semana.COMERCIANT).click(timeout=15000)
+                pg.locator(TOP + "#d-certifica").wait_for(state="attached", timeout=15000)
+                fereastra = pg.locator(TOP + ".fereastra")
+                titlu = pg.locator(TOP + "h2.pf-titlu").inner_text()
+                if "Bon fiscal" not in titlu or semana.DOCUMENT not in titlu:
+                    raise RuntimeError("Fixture P: nu s-a deschis detaliul bonului martor")
+                text = " ".join(fereastra.inner_text().split())
+                bloc = fereastra.evaluate(JS_FISCAL)
+                captura = Path(CAPTURI)
+                captura.mkdir(exist_ok=True, parents=True)
+                pg.screenshot(path=str(captura / "17_5_P2_detaliu_P1.png"))
+                rezultate = verdicte(text, bloc, bonuri[0], posturi)
+        finally:
+            b.close()
+        # Numai după navigare, măsurare și curățare. O excepție tehnică nu produce martori.
+        with capsys.disabled():
+            for ident, ok in rezultate.items():
+                print("VERDICT %s %s" % (ident, "trece" if ok else "pica"), flush=True)
+>       assert all(rezultate.values()), {"rezultate": rezultate, "titlu": titlu, "bloc": bloc,
+                                        "campuri_martor": sorted(bonuri[0]), "posturi": posturi}
+E       AssertionError: {'rezultate': {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': False, ...}, 'titlu': 'Bon fiscal · nr. P-1', 'bloc': None, 'campuri_martor': ['articole', 'comerciant', 'cui', 'data', 'id', 'mentiuni', ...], ...}
+E       assert False
+E        +  where False = all(dict_values([False, False, False, False, True]))
+E        +    where dict_values([False, False, False, False, True]) = <built-in method values of dict object at 0x7a29a05655c0>()
+E        +      where <built-in method values of dict object at 0x7a29a05655c0> = {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': False, ...}.values
+
+frontend_test/e2e/e2e_bon_cui_17_5_P2.py:154: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_bon_cui_17_5_P2.py::test_bon_cui_cumparator_17_5_P2
+1 failed in 5.11s
+randuri VERDICT/MASURA in iesirea completa (***/dovada_baza_17_5_P2.pytest.txt, 98 randuri): 5
+  VERDICT e.1 pica
+  VERDICT e.2 pica
+  VERDICT e.3 pica
+  VERDICT e.4 pica
+  VERDICT e.5 trece
+pytest rc=1 durata=6 s
+rezumat pytest: 1 failed in 5.11s; randuri FAILED ale testului: 1
+id e.1: pica=1 trece=0
+id e.2: pica=1 trece=0
+id e.3: pica=1 trece=0
+id e.4: pica=1 trece=0
+oprire 8019 (verificator_design.py opreste, Z): rc=0; [verificator design] oprit; portul 8019 liber
+restaurez baza de test (dupa)
+[baza_test] restaurat în 79s
+arbore main: curat, HEAD = refs/heads/main = 420b0f1357cb8647cf36d7e4c32b6ac6d9db1a0c
+VERDICT: ROSU PE BAZA (rc=1) — dovada valabila
+# sfarsit 2026-11-21T14:05:01+02:00

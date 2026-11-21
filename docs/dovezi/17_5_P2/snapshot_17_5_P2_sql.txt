@@ -1,0 +1,4 @@
+BEGIN
+psql:/home/costin/ghid_incoming/snapshot_17_5_P2.sql:25: NOTICE:  scheme cu tabelul bonuri: 29, coloane lipsa sau incompatibile: 0
+DO
+ROLLBACK

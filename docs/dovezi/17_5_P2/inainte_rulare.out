@@ -1,0 +1,5 @@
+semanat: 1
+[lacat_test] lacăt preluat de la pid 166068 (mort sau refolosit)
+[parcurs] pasul implicit: trece [('f.1', 'trece', '')]
+[parcurs] pasul bon: pica [('f.2', 'trece', ''), ('f.3', 'trece', ''), ('a.1', 'pica', "'CUI cumpărător pe bon' nu apare în '← F1 Comert Stoc SRL · CUI 401002001›Bon fiscal · Benzinarie Martor P SRL ✕ Bon fiscal · nr. P-1 Fără poză (document mai vechi). Comerciant Data× Total TVA total Denumire · valoare · cont Certifică și'"), ('a.2', 'pica', "'TVA nedeductibil: pe bon nu este înscris codul fiscal al firmei cumpărătoare' nu apare în '← F1 Comert Stoc SRL · CUI 401002001›Bon fiscal · Benzinarie Martor P SRL ✕ Bon fiscal · nr. P-1 Fără poză (document mai vechi). Comerciant Data× Total TVA total Denumire · valoare · cont Certifică și'"), ('a.3', 'pica', "'art. 298 alin. (1)' nu apare în '← F1 Comert Stoc SRL · CUI 401002001›Bon fiscal · Benzinarie Martor P SRL ✕ Bon fiscal · nr. P-1 Fără poză (document mai vechi). Comerciant Data× Total TVA total Denumire · valoare · cont Certifică și'")]
+

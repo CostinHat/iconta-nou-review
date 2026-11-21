@@ -1,0 +1,428 @@
+core/test_bon_cui_cumparator_17_5_P2.py::test_curs_euro_real_converteste_data_si_ia_cursul_din_tuplul_lui_curs_pentru
+
+17 tests collected in 0.58s
+FFFFFFFFFEFFFFFFFF                                                       [100%]
+==================================== ERRORS ====================================
+_ ERROR at teardown of test_portal_bon_scrie_cui_cumparator_pe_coloana_lui_si_nu_muta_celelalte_coloane _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa89a1014c0>
+tmp_path = PosixPath('/tmp/pytest-of-costin/pytest-2912/test_portal_bon_scrie_cui_cump0')
+
+    @pytest.fixture
+    def env(monkeypatch, tmp_path):
+        from core import ai_client, tenant_provisioning as _tp
+        _db.init_pool()
+        p = _db.pool()
+        conn = p.getconn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("INSERT INTO public.accounting_firms (nume) VALUES ('ZTEST BON') RETURNING id")
+                firm = cur.fetchone()[0]
+                cur.execute("INSERT INTO public.users (email,password_hash,nume,prenume,rol,"
+                            "accounting_firm_id,activ) VALUES "
+                            "('ztest_bon_client@invalid','x','N','N','client',%s,true) RETURNING id",
+                            (firm,))
+                uid = cur.fetchone()[0]
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
+                cur.execute(_tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), SCH))
+                cur.execute("SET search_path TO public")
+                cur.execute("INSERT INTO public.tenants (schema_name,nume,cui,accounting_firm_id,activ) "
+                            "VALUES (%s,'TENANT BON','14399840',%s,true) RETURNING id", (SCH, firm))
+                tid = cur.fetchone()[0]
+                cur.execute("INSERT INTO public.user_tenants (user_id,tenant_id) VALUES (%s,%s)",
+                            (uid, tid))
+    
+            @contextlib.contextmanager
+            def _fake(schema=None):
+                with conn.cursor() as c:
+                    c.execute('SET search_path TO "%s", public' % schema if schema
+                              else "SET search_path TO public")
+                yield _ConnProxy(conn)
+    
+            monkeypatch.setattr(_db, "get_conn", _fake)
+            monkeypatch.setenv("ICONTA_BON_DIR", str(tmp_path / "bonuri"))   # [deficiența 9] directorul bonurilor, din sursa unică
+    
+            chemari = []
+    
+            def _citeste(imagini, prompt):
+                chemari.append(len(imagini))
+                return json.dumps({"tip": "bon", "comerciant": "ZT MAGAZIN", "cui": "14399840",
+                                   "data": "2026-09-14", "total": 121.0, "numar_document": "7",
+                                   "articole": [{"denumire": "cafea", "valoare": 100.0,
+                                                 "cota_tva": 21, "cont_propus": "623"}],
+                                   "tva": [{"cota": 21, "valoare": 21.0}],
+                                   "bon_complet": True, "orientare": 0})
+    
+            monkeypatch.setattr(ai_client, "disponibil", lambda: True)
+            monkeypatch.setattr(ai_client, "citeste_imagini", _citeste)
+    
+            from core import auth_api
+            yield {"tid": tid, "conn": conn, "chemari": chemari, "dir": tmp_path / "bonuri",
+                   "tok": auth_api.emite_token({"id": uid, "rol": "client",
+                                                "accounting_firm_id": firm})}
+        finally:
+            with conn.cursor() as c:
+>               c.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
+E               psycopg2.errors.InFailedSqlTransaction: current transaction is aborted, commands ignored until end of transaction block
+
+core/test_portal_bon.py:119: InFailedSqlTransaction
+=================================== FAILURES ===================================
+____________________ test_verdictul_si_precedenta_motivelor ____________________
+
+    def test_verdictul_si_precedenta_motivelor():
+>       m = _m()
+            ^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _m():
+>       from core import bon_tva_deductibil as m
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:25: ImportError
+_____________ test_textele_au_temei_si_nu_au_identificatori_de_cod _____________
+
+    def test_textele_au_temei_si_nu_au_identificatori_de_cod():
+>       m = _m()
+            ^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _m():
+>       from core import bon_tva_deductibil as m
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:25: ImportError
+____________ test_notele_de_cont_au_temei_numai_unde_exista_limita _____________
+
+    def test_notele_de_cont_au_temei_numai_unde_exista_limita():
+>       m = _m()
+            ^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _m():
+>       from core import bon_tva_deductibil as m
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:25: ImportError
+___________ test_notele_unui_bon_sunt_unice_si_in_ordinea_conturilor ___________
+
+    def test_notele_unui_bon_sunt_unice_si_in_ordinea_conturilor():
+>       m = _m()
+            ^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _m():
+>       from core import bon_tva_deductibil as m
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:25: ImportError
+___________ test_migrarea_e_a_registrului_si_sablonul_are_blocul_ei ____________
+
+    def test_migrarea_e_a_registrului_si_sablonul_are_blocul_ei():
+>       from core import migrare_bon_cui_cumparator as mig
+E       ImportError: cannot import name 'migrare_bon_cui_cumparator' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:94: ImportError
+_ test_firma_noua_are_coloana_nula_fara_implicit_si_migrarea_o_adauga_si_e_idempotenta _
+
+conn = <connection object at 0x7fa89d46eac0; dsn: 'user=iconta_test_user password=xxx dbname=iconta_test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>
+
+    def test_firma_noua_are_coloana_nula_fara_implicit_si_migrarea_o_adauga_si_e_idempotenta(conn):
+>       from core import migrare_bon_cui_cumparator as mig
+E       ImportError: cannot import name 'migrare_bon_cui_cumparator' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:142: ImportError
+_______ test_raspunsul_ai_da_cele_trei_stari_ale_codului_cumparatorului ________
+
+    def test_raspunsul_ai_da_cele_trei_stari_ale_codului_cumparatorului():
+        """Cheia absentă din răspunsul AI = NULL (necitit); cheia prezentă cu null, gol sau fără cifre = șirul gol (citit și absent de pe bon);
+        valoarea citită se păstrează în forma cui_forma.stocare (fără spații, fără «RO» în fața cifrelor). Cazurile AI: valori-substitut, codul
+        comerciantului pus la cumpărător, poza tăiată (bon_complet false)."""
+        from core import uc_portal
+>       f = uc_portal._cui_cumparator_din_raspuns
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'core.uc_portal' has no attribute '_cui_cumparator_din_raspuns'
+
+core/test_bon_cui_cumparator_17_5_P2.py:163: AttributeError
+______________ test_adauga_bon_pune_fiecare_valoare_pe_coloana_ei ______________
+
+conn = <connection object at 0x7fa89d46eac0; dsn: 'user=iconta_test_user password=xxx dbname=iconta_test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>
+
+    def test_adauga_bon_pune_fiecare_valoare_pe_coloana_ei(conn):
+        """Apelul din core/uc_portal.py (portal_bon) trece pozițional 14 argumente după (cur, schema); parametrii din semnătura lui adauga_bon au nume
+        deplasate față de coloane (`status` poartă valoarea coloanei `tip`, `tip` pe `numar_document`, `numar_document` pe `mentiuni`, `mentiuni` pe `orientare`).
+        Proba cheamă adauga_bon cu același apel, plus parametrul nou la sfârșit, și citește coloanele: o greșeală la parametrul nou (pus înaintea orientării,
+        uitat în apel, scris în altă coloană) lasă coloana NULL sau mută o coloană veche."""
+        from core import repo_casa
+        for valoare in (None, "", "401002001"):
+            with conn.cursor() as cur:
+>               bid = repo_casa.adauga_bon(cur, SCHEMA, "Magazin P SRL", "14399840", "2026-11-02", 60.5, 0, 10.5, "[]", "[]", 1, True,
+                                           "bon", "NR-77", "mentiune P", 90, valoare)[0]
+E               TypeError: adauga_bon() takes 16 positional arguments but 17 were given
+
+core/test_bon_cui_cumparator_17_5_P2.py:196: TypeError
+_ test_portal_bon_scrie_cui_cumparator_pe_coloana_lui_si_nu_muta_celelalte_coloane _
+
+env = {'tid': 370964, 'conn': <connection object at 0x7fa89d46eac0; dsn: 'user=iconta_test_user password=xxx dbname=iconta_t...: 0>, 'chemari': [], 'dir': PosixPath('/tmp/pytest-of-costin/pytest-2912/test_portal_bon_scrie_cui_cump0/bonuri'), ...}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa89a1014c0>
+
+    def test_portal_bon_scrie_cui_cumparator_pe_coloana_lui_si_nu_muta_celelalte_coloane(env, monkeypatch):
+        """Prin ruta portal_bon (apelul real repo_casa.adauga_bon din uc_portal.py), cu răspunsuri AI simulate: fără cheie = NULL; cheie null = șirul gol;
+        cod cu spații și RO = forma stocare; codul comerciantului = șirul gol; poză tăiată fără cod = NULL; tip, numar_document, mentiuni, orientare rămân pe coloanele lor."""
+        import json
+        from core import ai_client
+        from core.test_portal_bon import _client, _H, PNG, SCH as SCH_PB
+        cl = _client()
+    
+        def _incarca(raspuns):
+            monkeypatch.setattr(ai_client, "citeste_imagini", lambda imagini, prompt: json.dumps(raspuns))
+            r = cl.post("/portal/bon", files={"fisiere": ("bon.png", PNG, "image/png")}, headers=_H(env))
+            assert r.status_code == 200, r.text[:300]
+            with env["conn"].cursor() as cur:
+                cur.execute('SELECT cui_cumparator, tip, numar_document, mentiuni, orientare, status FROM "%s".bonuri WHERE id = %%s' % SCH_PB, (r.json()["bon_id"],))
+                return cur.fetchone()
+    
+        baza = {"tip": "bon", "comerciant": "ZT MAGAZIN", "cui": "14399840", "data": "2026-11-02", "total": 121.0, "numar_document": "NR-7",
+                "mentiuni": "mentiune", "articole": [], "tva": [{"cota": 21, "valoare": 21.0}], "bon_complet": True, "orientare": 90}
+>       assert _incarca(dict(baza)) == (None, "bon", "NR-7", "mentiune", 90, "extras")
+               ^^^^^^^^^^^^^^^^^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:247: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+raspuns = {'tip': 'bon', 'comerciant': 'ZT MAGAZIN', 'cui': '14399840', 'data': '2026-11-02', ...}
+
+    def _incarca(raspuns):
+        monkeypatch.setattr(ai_client, "citeste_imagini", lambda imagini, prompt: json.dumps(raspuns))
+        r = cl.post("/portal/bon", files={"fisiere": ("bon.png", PNG, "image/png")}, headers=_H(env))
+        assert r.status_code == 200, r.text[:300]
+        with env["conn"].cursor() as cur:
+>           cur.execute('SELECT cui_cumparator, tip, numar_document, mentiuni, orientare, status FROM "%s".bonuri WHERE id = %%s' % SCH_PB, (r.json()["bon_id"],))
+E           psycopg2.errors.UndefinedColumn: column "cui_cumparator" does not exist
+E           LINE 1: SELECT cui_cumparator, tip, numar_document, mentiuni, orient...
+E                          ^
+
+core/test_bon_cui_cumparator_17_5_P2.py:242: UndefinedColumn
+_ test_bonul_fara_codul_firmei_nu_isi_dedude_tva_si_valoarea_intreaga_intra_in_cheltuiala _
+
+uc = (<module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>, <connection object at 0x7fa89780d..._test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa898174e90>
+
+    def test_bonul_fara_codul_firmei_nu_isi_dedude_tva_si_valoarea_intreaga_intra_in_cheltuiala(uc, monkeypatch):
+        mod, conn = uc
+>       r, linii = _aproba(mod, conn, monkeypatch, "", Decimal("5"))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:307: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uc = <module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>
+conn = <connection object at 0x7fa89780de40; dsn: 'user=iconta_test_user password=xxx dbname=iconta_test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa898174e90>
+cui_cumparator = '', curs = Decimal('5'), total = 60.5, tva = 10.5
+cont = '6022'
+
+    def _aproba(uc, conn, monkeypatch, cui_cumparator, curs, total=60.5, tva=10.5, cont="6022"):
+        import types
+>       from core import bon_tva_deductibil
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:293: ImportError
+___________________ test_bonul_cu_alt_cod_nu_isi_dedude_tva ____________________
+
+uc = (<module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>, <connection object at 0x7fa89780d..._test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa898175280>
+
+    def test_bonul_cu_alt_cod_nu_isi_dedude_tva(uc, monkeypatch):
+        mod, conn = uc
+>       r, linii = _aproba(mod, conn, monkeypatch, "RO14399840", Decimal("5"))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:314: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uc = <module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>
+conn = <connection object at 0x7fa89780de40; dsn: 'user=iconta_test_user password=xxx dbname=iconta_test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa898175280>
+cui_cumparator = 'RO14399840', curs = Decimal('5'), total = 60.5, tva = 10.5
+cont = '6022'
+
+    def _aproba(uc, conn, monkeypatch, cui_cumparator, curs, total=60.5, tva=10.5, cont="6022"):
+        import types
+>       from core import bon_tva_deductibil
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:293: ImportError
+_ test_bonul_cu_codul_firmei_sub_100_euro_isi_dedude_tva_ca_pana_acum_fara_observatie _
+
+uc = (<module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>, <connection object at 0x7fa89780d..._test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa898177080>
+
+    def test_bonul_cu_codul_firmei_sub_100_euro_isi_dedude_tva_ca_pana_acum_fara_observatie(uc, monkeypatch):
+        mod, conn = uc
+>       r, linii = _aproba(mod, conn, monkeypatch, "401002001", Decimal("5"))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:321: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uc = <module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>
+conn = <connection object at 0x7fa89780de40; dsn: 'user=iconta_test_user password=xxx dbname=iconta_test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa898177080>
+cui_cumparator = '401002001', curs = Decimal('5'), total = 60.5, tva = 10.5
+cont = '6022'
+
+    def _aproba(uc, conn, monkeypatch, cui_cumparator, curs, total=60.5, tva=10.5, cont="6022"):
+        import types
+>       from core import bon_tva_deductibil
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:293: ImportError
+_ test_bonul_cu_codul_firmei_peste_100_euro_si_cel_vechi_isi_pastreaza_tva_cu_observatie _
+
+uc = (<module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>, <connection object at 0x7fa89780d..._test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa898174f20>
+
+    def test_bonul_cu_codul_firmei_peste_100_euro_si_cel_vechi_isi_pastreaza_tva_cu_observatie(uc, monkeypatch):
+        mod, conn = uc
+>       r, linii = _aproba(mod, conn, monkeypatch, "401002001", Decimal("5"), total=600, tva=104.13)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:328: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uc = <module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>
+conn = <connection object at 0x7fa89780de40; dsn: 'user=iconta_test_user password=xxx dbname=iconta_test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa898174f20>
+cui_cumparator = '401002001', curs = Decimal('5'), total = 600, tva = 104.13
+cont = '6022'
+
+    def _aproba(uc, conn, monkeypatch, cui_cumparator, curs, total=60.5, tva=10.5, cont="6022"):
+        import types
+>       from core import bon_tva_deductibil
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:293: ImportError
+_______ test_bonul_fara_tva_nu_cere_verdict_si_nu_citeste_nimic_in_plus ________
+
+uc = (<module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>, <connection object at 0x7fa89780d..._test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa897865ca0>
+
+    def test_bonul_fara_tva_nu_cere_verdict_si_nu_citeste_nimic_in_plus(uc, monkeypatch):
+        """Garda din test_flux_factura_f1_c.py: apel cu SimpleNamespace(tva=0) și fără atribute noi pe `b`."""
+        mod, conn = uc
+>       r, linii = _aproba(mod, conn, monkeypatch, "", Decimal("5"), total=12.1, tva=0, cont="604")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:339: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uc = <module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>
+conn = <connection object at 0x7fa89780de40; dsn: 'user=iconta_test_user password=xxx dbname=iconta_test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa897865ca0>
+cui_cumparator = '', curs = Decimal('5'), total = 12.1, tva = 0, cont = '604'
+
+    def _aproba(uc, conn, monkeypatch, cui_cumparator, curs, total=60.5, tva=10.5, cont="6022"):
+        import types
+>       from core import bon_tva_deductibil
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:293: ImportError
+___________ test_lista_de_verificat_poarta_codul_verdictul_si_notele ___________
+
+uc = (<module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>, <connection object at 0x7fa89780d..._test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa897864da0>
+
+    def test_lista_de_verificat_poarta_codul_verdictul_si_notele(uc, monkeypatch):
+        mod, conn = uc
+>       from core import bon_tva_deductibil
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:345: ImportError
+___ test_bonul_fara_tva_in_lista_nu_primeste_verdict_ci_numai_notele_de_cont ___
+
+uc = (<module 'core.uc_tenants' from '/home/costin/iconta_lot17_5p2/core/uc_tenants.py'>, <connection object at 0x7fa89780d..._test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa897864b60>
+
+    def test_bonul_fara_tva_in_lista_nu_primeste_verdict_ci_numai_notele_de_cont(uc, monkeypatch):
+        """Limita (4): fără TVA nu e nimic de dedus, deci nici «TVA nedeductibil» (text fals) și nici caseta-atenție dată de un verdict inexistent."""
+        mod, conn = uc
+>       from core import bon_tva_deductibil
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:358: ImportError
+_ test_curs_euro_real_converteste_data_si_ia_cursul_din_tuplul_lui_curs_pentru _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa89a103a70>
+
+    def test_curs_euro_real_converteste_data_si_ia_cursul_din_tuplul_lui_curs_pentru(monkeypatch):
+        """curs_euro nu e înlocuit aici: data poate fi șir ISO (BonAproba.data, bonuri.data), date sau None; curs_pentru întoarce (curs, data_curs, sursa);
+        refuzurile BNR dau None. Se înlocuiește curs_pentru ca atribut al modulului core.curs_bnr."""
+        from datetime import date
+        from core import curs_bnr
+>       m = _m()
+            ^^^^
+
+core/test_bon_cui_cumparator_17_5_P2.py:372: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _m():
+>       from core import bon_tva_deductibil as m
+E       ImportError: cannot import name 'bon_tva_deductibil' from 'core' (/home/costin/iconta_lot17_5p2/core/__init__.py)
+
+core/test_bon_cui_cumparator_17_5_P2.py:25: ImportError
+============================== slowest durations ===============================
+1.20s call     core/test_bon_cui_cumparator_17_5_P2.py::test_portal_bon_scrie_cui_cumparator_pe_coloana_lui_si_nu_muta_celelalte_coloane
+0.53s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_tva_in_lista_nu_primeste_verdict_ci_numai_notele_de_cont
+0.53s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_alt_cod_nu_isi_dedude_tva
+0.51s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_lista_de_verificat_poarta_codul_verdictul_si_notele
+0.48s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_firma_noua_are_coloana_nula_fara_implicit_si_migrarea_o_adauga_si_e_idempotenta
+0.45s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_tva_nu_cere_verdict_si_nu_citeste_nimic_in_plus
+0.45s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_codul_firmei_sub_100_euro_isi_dedude_tva_ca_pana_acum_fara_observatie
+0.42s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_codul_firmei_peste_100_euro_si_cel_vechi_isi_pastreaza_tva_cu_observatie
+0.39s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_codul_firmei_nu_isi_dedude_tva_si_valoarea_intreaga_intra_in_cheltuiala
+0.38s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_portal_bon_scrie_cui_cumparator_pe_coloana_lui_si_nu_muta_celelalte_coloane
+0.38s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_adauga_bon_pune_fiecare_valoare_pe_coloana_ei
+0.31s setup    core/test_bon_cui_cumparator_17_5_P2.py::test_verdictul_si_precedenta_motivelor
+0.08s call     core/test_bon_cui_cumparator_17_5_P2.py::test_raspunsul_ai_da_cele_trei_stari_ale_codului_cumparatorului
+0.02s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_curs_euro_real_converteste_data_si_ia_cursul_din_tuplul_lui_curs_pentru
+0.02s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_adauga_bon_pune_fiecare_valoare_pe_coloana_ei
+0.02s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_codul_firmei_nu_isi_dedude_tva_si_valoarea_intreaga_intra_in_cheltuiala
+0.02s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_firma_noua_are_coloana_nula_fara_implicit_si_migrarea_o_adauga_si_e_idempotenta
+0.02s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_codul_firmei_peste_100_euro_si_cel_vechi_isi_pastreaza_tva_cu_observatie
+0.02s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_codul_firmei_sub_100_euro_isi_dedude_tva_ca_pana_acum_fara_observatie
+0.02s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_tva_nu_cere_verdict_si_nu_citeste_nimic_in_plus
+0.02s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_lista_de_verificat_poarta_codul_verdictul_si_notele
+0.01s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_alt_cod_nu_isi_dedude_tva
+0.01s teardown core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_tva_in_lista_nu_primeste_verdict_ci_numai_notele_de_cont
+
+(28 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ============================
+ERROR core/test_bon_cui_cumparator_17_5_P2.py::test_portal_bon_scrie_cui_cumparator_pe_coloana_lui_si_nu_muta_celelalte_coloane
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_verdictul_si_precedenta_motivelor
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_textele_au_temei_si_nu_au_identificatori_de_cod
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_notele_de_cont_au_temei_numai_unde_exista_limita
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_notele_unui_bon_sunt_unice_si_in_ordinea_conturilor
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_migrarea_e_a_registrului_si_sablonul_are_blocul_ei
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_firma_noua_are_coloana_nula_fara_implicit_si_migrarea_o_adauga_si_e_idempotenta
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_raspunsul_ai_da_cele_trei_stari_ale_codului_cumparatorului
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_adauga_bon_pune_fiecare_valoare_pe_coloana_ei
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_portal_bon_scrie_cui_cumparator_pe_coloana_lui_si_nu_muta_celelalte_coloane
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_codul_firmei_nu_isi_dedude_tva_si_valoarea_intreaga_intra_in_cheltuiala
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_alt_cod_nu_isi_dedude_tva
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_codul_firmei_sub_100_euro_isi_dedude_tva_ca_pana_acum_fara_observatie
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_codul_firmei_peste_100_euro_si_cel_vechi_isi_pastreaza_tva_cu_observatie
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_tva_nu_cere_verdict_si_nu_citeste_nimic_in_plus
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_lista_de_verificat_poarta_codul_verdictul_si_notele
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_tva_in_lista_nu_primeste_verdict_ci_numai_notele_de_cont
+FAILED core/test_bon_cui_cumparator_17_5_P2.py::test_curs_euro_real_converteste_data_si_ia_cursul_din_tuplul_lui_curs_pentru
+17 failed, 1 error in 7.04s
+rc=1 durata=7.631908585 s
