@@ -1,0 +1,34 @@
+unelte
+lot: 17.5-P0
+fara praguri numerice pe durate in aceasta schema (lot de unelte; niciun rand `max <faza> <secunde>`: scripts/publica_lot.py compara numai randurile `max`); referintele de mai jos sunt cerinte de raport, cu cifra si cu sursa ei
+  hook ≤ 131 s (= 109 × 1,2; sursa: lotul 17.5-N4, rularea 1724540-1795208650710, 19 rulari complete)
+  poarta_verificator ≤ 117 s (= 97 × 1,2; sursa: lotul 17.5-N4, rularea 2105354-1795216164152, 3 rulari complete)
+  poarta_pytest ≤ 730 s (= 608 × 1,2; sursa: lotul 17.5-M4, rularea 3035521-1795139264128, 3 rulari complete)
+  poarta_plasa ≤ 3455 s (= 2879 × 1,2; sursa: lotul 17.5-N4, rularea 2105354-1795216828920, 3 rulari complete)
+runde_verificator_max: 0
+sursa pragurilor 17.5-P0: generate de scripts/praguri_automate.py la 2026-11-21T04:07:51+02:00 din .lot_jurnal.log; loturi folosite: 17.5-L, 17.5-M4, 17.5-N4 (3)
+  hook: maxim 109 s (lotul 17.5-N4, rularea 1724540-1795208650710) din 19 rulari complete, 0 rulari «intrerupt» ignorate, prag 131 s
+  poarta_verificator: maxim 97 s (lotul 17.5-N4, rularea 2105354-1795216164152) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 117 s
+  poarta_pytest: maxim 608 s (lotul 17.5-M4, rularea 3035521-1795139264128) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 730 s
+  poarta_plasa: maxim 2879 s (lotul 17.5-N4, rularea 2105354-1795216828920) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 3455 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_P0.txt
+  scripts/publica_lot.sh
+  scripts/publica_prod.sh
+  scripts/reguli_publicare_migrare.py
+  scripts/githooks/four-way
+  scripts/githooks/post-commit
+  CLAUDE.md
+  scripts/canal_migrare.py
+  scripts/semnatar_migrare.allowed_signers
+  core/test_delta_P0.py
+  scripts/jurnal_lot.py
+  scripts/incheie_lot.sh
+  core/migrari_registru.py
+  core/test_reguli_publicare_migrare.py
+  core/test_intrari_publicare_migrare.py
+  core/test_inchidere_publicare_migrare.py
+  docs/dovezi/17_5_P0/
+  DECIZII.md
+  PREDARE_LANT.md
