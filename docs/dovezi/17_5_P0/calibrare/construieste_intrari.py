@@ -27,8 +27,10 @@ def main(commit, dest, doar=''):
                             '.gitignore'], capture_output=True, check=True).stdout
     fisiere = {
         'ruleaza.sh': b'set -eu\nexec /usr/bin/python3 -I -B ./calibrare.py\n',
-        'calibrare.py': subprocess.run(['git', '-C', str(RAD), 'show', '%s:docs/dovezi/17_5_P0/calibrare/calibrare.py' % commit],
-                                       capture_output=True, check=True).stdout,
+        # driverul: din commit; CAL_DIN_ARBORE=1 (numai depanarea driverului) îl ia de pe disc — sursa calibrată rămâne cea din commit
+        'calibrare.py': ((AICI / 'calibrare.py').read_bytes() if os.environ.get('CAL_DIN_ARBORE') == '1' else
+                         subprocess.run(['git', '-C', str(RAD), 'show', '%s:docs/dovezi/17_5_P0/calibrare/calibrare.py' % commit],
+                                        capture_output=True, check=True).stdout),
         'verifica_margini_P0.py': din_ghid('verifica_margini_P0.py'),
         'verifica_parcurs_publicare.py': din_ghid('verifica_parcurs_publicare.py'),
         'conditii_predecesori.py': (GHID / 'conditii_predecesori.py').read_bytes(),

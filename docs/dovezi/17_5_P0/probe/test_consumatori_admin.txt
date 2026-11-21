@@ -1,0 +1,10 @@
+test_alt_lot_nu_opreste_veghea (__main__.Consumatori.test_alt_lot_nu_opreste_veghea) ... ok
+test_asteptare_si_incheiere (__main__.Consumatori.test_asteptare_si_incheiere) ... ok
+test_esec_real_ramane_terminal (__main__.Consumatori.test_esec_real_ramane_terminal) ... ok
+test_sursa_straina_nu_genereaza_delta (__main__.Consumatori.test_sursa_straina_nu_genereaza_delta) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.085s
+
+OK
+rc=0

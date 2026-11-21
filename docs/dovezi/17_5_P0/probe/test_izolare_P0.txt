@@ -1,0 +1,9 @@
+test_arhiva_si_director (__main__.Izolare.test_arhiva_si_director) ... ok
+test_cale_straina_si_symlink (__main__.Izolare.test_cale_straina_si_symlink) ... ok
+test_in_gazda_refuza_inainte_de_db (__main__.Izolare.test_in_gazda_refuza_inainte_de_db) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.010s
+
+OK
+rc=0

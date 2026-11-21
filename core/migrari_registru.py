@@ -289,6 +289,10 @@ def decizie_plan(ev, plan):
     r = _reguli()
     if ev["lipsa"] is None or ev["drift"] is None:
         return "necunoscut", ev.get("motiv") or "stare necunoscută"
+    if not ev["lipsa"] and ev["drift"]:
+        # după rulare, schema tot nu e la șablon (tip, nulabilitate, alte lipsuri): refuz, cu deriva numită pe chei
+        return "refuz", "deriva schemei după migrare: %s" % "; ".join(
+            "%s %s=%s" % (sch, k, v) for sch, d in sorted(ev["drift"].items()) for k, v in sorted(d.items()) if v)
     try:
         stare = r.situatie(plan, ev["lipsa"], ev["drift"])
     except r.Refuz as ex:

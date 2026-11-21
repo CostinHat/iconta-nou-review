@@ -1,0 +1,14 @@
+### surse N4 30d485ed (core/migrari_registru.py, scripts/publica_lot.sh; fără reguli/canal)
+test_publica_lot_separa_asteptarea_de_esec_1 (__main__.Probe.test_publica_lot_separa_asteptarea_de_esec_1) ... FAIL
+test_publica_lot_separa_asteptarea_de_esec_2 (__main__.Probe.test_publica_lot_separa_asteptarea_de_esec_2) ... ok
+test_rulatorul_public_refuza_inainte_de_acces_db_1 (__main__.Probe.test_rulatorul_public_refuza_inainte_de_acces_db_1) ... /tmp/claude-1000/-home-costin-iconta-nou/c2e2653c-6a98-4244-ba05-1900732b2233/scratchpad/n4/core/migrari_registru.py:258: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpva2haqh7/.git/publica_verdicte.log' mode='r' encoding='utf-8'>
+    assert run.returncode==75, (run.stdout,run.stderr,rows)
+AssertionError: A ajuns la mediul bazei inainte sa verifice versiunea migrarii
+Ran 3 tests in 0.898s
+FAILED (failures=2)
+### surse implementare (worktree a7906f78+)
+test_publica_lot_separa_asteptarea_de_esec_1 (__main__.Probe.test_publica_lot_separa_asteptarea_de_esec_1) ... ok
+test_publica_lot_separa_asteptarea_de_esec_2 (__main__.Probe.test_publica_lot_separa_asteptarea_de_esec_2) ... ok
+test_rulatorul_public_refuza_inainte_de_acces_db_1 (__main__.Probe.test_rulatorul_public_refuza_inainte_de_acces_db_1) ... /home/costin/iconta_lot17_5p0/core/migrari_registru.py:383: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmphvn6auyx/.git/publica_verdicte.log' mode='r' encoding='utf-8'>
+Ran 3 tests in 1.262s
+OK

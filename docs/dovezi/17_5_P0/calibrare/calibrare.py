@@ -311,6 +311,8 @@ def sablon(ident):
     baza = commit(REPO, 'baza de calibrare (sursa lotului 17.5-P0)')
     var = variante_lot(baza)
     (REPO / '.git/lot_curent.txt').write_text(LOT + '\n')
+    with open(REPO / '.git/info/exclude', 'a') as f:   # ca în depozitul real: legăturile venv nu sunt urmărite
+        f.write('venv\n')
     (REPO / '.git/publica_verdicte.log').touch()
     (REPO / '.lot_jurnal.log').touch()
     GITD.mkdir()
@@ -340,9 +342,8 @@ tmpl = sys.stdin.read()
 with c.cursor() as cur:
     cur.execute("DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='iconta_user') THEN CREATE ROLE iconta_user; END IF; END $$")
     for s in ("tenant_001", "tenant_002"):
-        cur.execute("CREATE SCHEMA %%s" %% s)
         cur.execute(tmpl.replace("TENANT_PLACEHOLDER", s))
-        cur.execute("INSERT INTO %%s.bonuri (id, comerciant, cui, data, total) VALUES (1, 'Magazin proba', 'RO000', '2099-01-05', 10)" %% s)
+        cur.execute("INSERT INTO %%s.bonuri (comerciant, cui, data, total) VALUES ('Magazin proba', 'RO000', '2099-01-05', 10)" %% s)
     for f, a in mr.migrari_la_commit(%r).items():
         mr.inregistreaza(cur, f, a, "baza", %r, "baza calibrarii")
     instante.aplica_ddl(c)
@@ -367,6 +368,7 @@ class Caz:
         self.drv = self.dir / 'driver.log'
         self.n = 0
         self.procese = []
+        self.pg_cursor = PG_LOG.stat().st_size
 
     def log(self, text):
         with open(self.drv, 'a') as f:
@@ -686,8 +688,8 @@ MOTIVE = {
     'vechi': 'Invocatie veche sau inlocuita', 'lipsa': 'arhiva', 'ilizibil': 'ora de creare a arhivei', 'serviciu_esuat': 'Serviciu, rezultat',
     'alta_db': 'Serviciu, rezultat, baza', 'alt_acord': 'acordul nu e valid', 'invocatie_inlocuita': 'Invocatie veche sau inlocuita',
     'doua_locale': 'Lipseste asocierea unica', 'doar_off_site': 'Lipseste asocierea unica',
-    'registru': 'registrul nu are rândul exact', 'marcata': 'registrul nu are rândul exact', 'tip': 'Deriva independenta',
-    'nullable': 'Deriva independenta', 'implicit': 'schema:',
+    'registru': 'registrul nu are rândul exact', 'marcata': 'registrul nu are rândul exact', 'tip': 'tip_dif=',
+    'nullable': 'nullable_dif=', 'implicit': 'schema:',
     'restart': 'restartul productiei NU s-a facut', 'static': 'confirmare refuzată', 'worker': 'confirmare refuzată',
     'backup_git': 'confirmare refuzată', 'ddl_necunoscut': 'RECONCILIERE',
 }
@@ -702,8 +704,11 @@ def urme(caz, rc_final):
     """Evenimentele observate efectiv, din fișierele brute (copiate la sfârșit în <caz>/), ordonate după ora observării (ns)."""
     d = caz.dir
     for nume, src in (('jurnal.log', REPO / '.lot_jurnal.log'), ('publica_verdicte.log', REPO / '.git/publica_verdicte.log'),
-                      ('poarta_verdicte.log', REPO / '.git/poarta_verdicte.log'), ('postgres.log', PG_LOG)):
+                      ('poarta_verdicte.log', REPO / '.git/poarta_verdicte.log')):
         shutil.copyfile(src, d / nume)
+    with open(PG_LOG, 'rb') as f:   # numai partea jurnalului PostgreSQL scrisă în acest caz
+        f.seek(caz.pg_cursor)
+        (d / 'postgres.log').write_bytes(f.read())
     for f in (W / 'obs').iterdir():
         shutil.copyfile(f, d / ('obs_' + f.name))
     for f in (GHID.glob('OPRIT_*.txt')):
@@ -788,12 +793,13 @@ def urme(caz, rc_final):
             if json.loads(ln.split(' ', 1)[1])['operatie'] is None:
                 ev.append((t, 'restart_legacy', p.name, i))
     # confirmarea operatorului: rândul JSON brut scris sub lacăt în operație (argv, pid, operatie)
-    pc = d / 'operatie/confirmari.jsonl'
+    pcs = sorted((d / 'operatie').glob('*/confirmari.jsonl')) if (d / 'operatie').exists() else []
+    pc = pcs[0] if pcs else d / 'operatie/-'
     if pc.exists():
         tconf = sorted(int(ln.split(' ', 1)[0]) for o in outs for ln in _linii(o) if '[confirmare] intrarea operatorului' in ln)
         for i, ln in enumerate(_linii(pc), 1):
             if i <= len(tconf):
-                ev.append((tconf[i - 1], 'confirmare_operator', 'operatie/confirmari.jsonl', i))
+                ev.append((tconf[i - 1], 'confirmare_operator', str(pc.relative_to(d)), i))
     # publicat: rândul jurnalului; ora = anunțul ieșirii oficiale care îl urmează imediat
     t = t_out(r'\[confirmare\] jurnal: publicare sfarsit publicat e=%s' % caz.e) or t_out(r'\[publica_lot\] publicat %s' % caz.e)
     if t:
@@ -842,8 +848,9 @@ def urme(caz, rc_final):
                     extras=brut.decode('utf-8').splitlines()[i - 1])
     rows = []
     antet = dict(tip='identitate', caz=caz.nume, conditie=caz.v, c=caz.c, e=caz.e)
-    if (d / 'operatie/operatie.json').exists():
-        o = json.loads((d / 'operatie/operatie.json').read_text())
+    po = sorted((d / 'operatie').glob('*/operatie.json')) if (d / 'operatie').exists() else []
+    if po:
+        o = json.loads(po[0].read_text())
         antet.update(lot=o['lot'], operatie=o['operatie'])
     rows.append(dict(antet, **citat('driver.log', len(dl) - 1)))
     for t, nume, rel, i in ev:
@@ -896,6 +903,7 @@ def main():
                 t0 = time.time()
                 try:
                     margini(ident)
+                    caz.log('stare_initiala worktree: %s' % (git('status', '--porcelain', cwd=WT).replace('\n', ' | ') or 'curat'))
                     rc = scenariu(caz, var)
                     stare, motiv, evs = urme(caz, rc)
                     linie = '%s rc=%s stare=%s motiv=%s %.0fs evenimente=%s\n' % (nume, rc, stare, motiv, time.time() - t0, ' '.join(evs))
