@@ -2,6 +2,9 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-P0 (unelte, 21.11.2026) — publicarea unui lot cu migrare declarată (A–D, B1–B5); ramura `lucru/lot17-5p0` (worktree `~/iconta_lot17_5p0`), bază main 30d485ed (17.5-N4)
+- C `36928332` (poarta VERDE), E = registrele. Operatorul unei migrări declarate: prima publicare iese 75 «AȘTEAPTĂ MIGRAREA <lot> pe <E> — operația <id>»; apoi acordul semnat (aprobare.json + .sig în `<git-common-dir>/operatii-migrare/<E>/<id>/`), `python -m core.migrari_registru backup-inainte --productie <fișier>`, `sudo systemctl start iconta-backup.service` (Costin), `python -m core.migrari_registru ruleaza --productie <fișier>`, `sh scripts/publica_lot.sh --confirma-migrare <lot> <E>`. Raportul: `~/lot_17_5_P0_raport.md`. Detalii: DECIZII.md «Lotul 17.5-P0». P și Q rămân ținute.
+
 ## LOTUL 17.5-N4 (produs, 20.11.2026) — continuarea lui 17.5-N3 (AC041 cu bara de jos adaptivă, AC050, AC058, AC060, AC061, AC077, AC117, AC118); ramura `lucru/lot17-5n4` (worktree `~/iconta_lot17_5n4`), bază main 6ddc059e (17.5-M4)
 - P0 `2b0403de`, P `7d1eabb1` (cele 28 de căi din P_N3 1a5eb318 + cadru.js, patch-ul barei adaptive, versionarea, straturi.py 41, harta e-Transport, SHA pilot X, CLAUDE.md 8019 N4), apoi C (registre, dovezi), complementul de 25 de e2e și poarta pe C, haiku_1 și «dupa», E. Raportul: `~/lot_17_5_N4_raport.md`. Detalii: DECIZII.md «Lotul 17.5-N4». Ramurile N, N2, N3 rămân neatinse.
 
