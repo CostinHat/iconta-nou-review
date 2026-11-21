@@ -11,6 +11,7 @@ Fazele obligatorii (aceeași listă la publica_lot.sh): pornire, hook, verificat
   pornire-coada <lot> <praguri> [<cheie> [<comandă>]]   lansarea din coadă: rândul „pornire” cu marcaj de proveniență (coada=1 marca=<hash>), unul singur pe lot
   rezumat <lot>                             duratele pe fază (copia din raport)
   lucru <lot>                               scrie fazele timpului de lucru ale lui Code (derivate din marcajele jurnalului; idempotent; 17.5-A)
+  publicare-stare <lot>                     starea publicării din ultimul rezultat al fazei «publicare» și încercările terminale; ieșirea 75 = așteaptă migrarea (17.5-P0)
   lot-curent                                tipărește lotul (LOT, ramura lucru/lotNN-M, fișierul lot_curent din depozit)"""
 import datetime
 import fcntl
@@ -402,6 +403,22 @@ def lucru(lot, cale=None):
     return len(linii)
 
 
+#: [17.5-P0] rezultatul intermediar al fazei «publicare»: lotul așteaptă migrarea declarată (nu e încheiat, nu e o încercare terminală)
+ASTEAPTA_MIGRAREA = "asteapta_migrare"
+
+
+def stare_publicare(rows, lot):
+    """[17.5-P0, B1 pct.1] PURĂ. Starea publicării lotului EXACT, din ultimul rezultat al fazei «publicare» (nicio apariție a altui lot sau una istorică nu decide):
+    (stare, încercări) — stare = «publicat» | «asteapta_migrare» | «nepublicat» | «-» (fără sfârșit); încercări = rândurile «sfarsit» terminale ale fazei (fără
+    «asteapta_migrare» și fără «intrerupt»), adică încercările reale de publicare."""
+    sf = [r for r in rows if len(r) > 5 and r[0] == lot and r[1] == "publicare" and r[2] == "sfarsit" and r[5] != "intrerupt"]
+    incercari = sum(1 for r in sf if r[5] != ASTEAPTA_MIGRAREA)
+    if not sf:
+        return "-", incercari
+    ultim = sf[-1][5]
+    return (ultim if ultim in ("publicat", ASTEAPTA_MIGRAREA) else "nepublicat"), incercari
+
+
 def main(a):
     if not a:
         print(__doc__)
@@ -423,6 +440,10 @@ def main(a):
             print("%-20s %-10s %s -> %s  %ss" % (f, r, b, s, sec))
     elif a[0] == "lucru":   # lucru <lot>: fazele timpului de lucru (17.5-A), idempotent
         print("%d rânduri noi" % lucru(a[1]))
+    elif a[0] == "publicare-stare":   # publicare-stare <lot>: «<stare> incercari=<n>»; ieșirea 75 = lotul așteaptă migrarea declarată (17.5-P0)
+        stare, n = stare_publicare(_citeste(cale_jurnal()), a[1])
+        print("%s incercari=%d" % (stare, n))
+        return 75 if stare == ASTEAPTA_MIGRAREA else 0
     else:
         print(__doc__)
         return 2

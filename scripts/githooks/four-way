@@ -31,7 +31,7 @@ banner() {   # $1=tinta  $2=sentinela  $3=motiv  $4=remediu
 # deci singurul lucru pe care l-ar obtine oprindu-se e sa ascunda restul pasilor.
 S_4W=".git/FOUR_WAY_NEINCHIS"; rm -f "$S_4W"
 REMOTE_MAIN=$(git rev-parse origin/main 2>/dev/null || echo "")
-if [ "$REMOTE_MAIN" != "$HEAD_SHA" ]; then
+if [ "$#" -eq 0 ] && [ "$REMOTE_MAIN" != "$HEAD_SHA" ]; then
     echo "[four-way] origin/main NU e la HEAD — reincerc push-ul"
     if git push origin main > /tmp/push_main_retry.log 2>&1; then
         echo "[four-way] push de recuperare REUSIT -> $(git rev-parse --short HEAD)"
@@ -42,8 +42,22 @@ if [ "$REMOTE_MAIN" != "$HEAD_SHA" ]; then
 fi
 
 # cele patru brate, citite acum: HEAD · origin/main · backup/<zi> · procesul viu (pornire > commit)
-BK4="backup/lant-$(date +%Y-%m-%d)"
-REMOTE_BK4=$(git ls-remote origin "$BK4" 2>/dev/null | cut -f1)
+case "$#" in
+  0) BK4="backup/lant-$(date +%Y-%m-%d)"
+     REMOTE_BK4=$(git ls-remote origin "$BK4" 2>/dev/null | cut -f1) ;;
+  3) [ "$1" = "--ref-migrare" ] && [ "$2" = "$HEAD_SHA" ] || exit 2
+     if ! BK4=$(python3 scripts/canal_migrare.py confirma-ref "$HEAD_SHA" "$3"); then
+        banner "four-way" "$S_4W" "referinta initiala a backupului nu confirma E" "verifica recipisa operatiei"
+        exit 1
+     fi
+     REMOTE_BK4="$HEAD_SHA"
+     REMOTE_MAIN=$(git ls-remote --exit-code --refs origin refs/heads/main | cut -f1)
+     if [ ! -x ./venv/bin/python ] || [ ! -f scripts/toate_poarta_head.py ]; then
+        banner "four-way" "$S_4W" "lipseste verificatorul tuturor workerilor" "verifica instalarea verificatorului"
+        exit 1
+     fi ;;
+  *) exit 2 ;;
+esac
 COMMIT_TS=$(git log -1 --format=%ct)
 START_TS=$(date -d "$(systemctl show iconta-nou -p ActiveEnterTimestamp --value 2>/dev/null)" +%s 2>/dev/null || echo 0)
 

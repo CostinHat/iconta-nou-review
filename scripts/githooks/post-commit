@@ -79,6 +79,12 @@ fi
 # ---------- 2. backup/lant-<data> (fast-forward, FARA --force) ----------
 S_BK=".git/PUSH_BACKUP_ESUAT"; rm -f "$S_BK"
 BK="backup/lant-$(date +%Y-%m-%d)"
+case "$#" in
+  0) ;;
+  3) [ "$1" = "--ref-migrare" ] && [ "$2" = "$HEAD_SHA" ] || exit 2
+     python3 scripts/canal_migrare.py retine-ref "$HEAD_SHA" "$3" "refs/heads/$BK" || exit 1 ;;
+  *) exit 2 ;;
+esac
 git fetch -q origin "$BK" 2>/dev/null || true
 REMOTE_BK=$(git ls-remote origin "$BK" 2>/dev/null | cut -f1)
 if [ -z "$REMOTE_BK" ]; then
@@ -103,6 +109,9 @@ else
            "verifica ramura; NU se forteaza din hook - muta backup-ul manual, constient"
 fi
 
+if [ "$#" -eq 3 ]; then
+    [ ! -e "$S_BK" ] && python3 scripts/canal_migrare.py confirma-ref "$HEAD_SHA" "$3" >/dev/null || exit 1
+fi
 # ---------- restartul producției și four-way: NU mai sunt aici (16.1-C3, pct.7) ----------
 # Restartul producției îl face numai scripts/publica_prod.sh, chemat de scripts/publica_lot.sh ca pas „restart” după push și înaintea sfârșitului fazei „publicare”; scriptul refuză fără
 # verdictul PASS pentru HEAD. Statica publicată și four-way-ul (confirmarea celor patru brațe) merg tot acolo, după restart. Un commit făcut direct pe main nu mai repornește nimic.
