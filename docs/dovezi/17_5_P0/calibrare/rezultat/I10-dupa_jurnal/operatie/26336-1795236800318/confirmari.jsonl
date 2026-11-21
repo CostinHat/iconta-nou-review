@@ -1,0 +1,2 @@
+{"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 27058, "operatie": "26336-1795236800318", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:53:25+02:00"}
+{"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 27600, "operatie": "26336-1795236800318", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:53:31+02:00"}

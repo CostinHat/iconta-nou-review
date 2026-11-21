@@ -1,0 +1,30 @@
+1795236754347077486 21581 | {"eveniment": "revenire", "argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 21581, "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:52:34+02:00"}
+1795236754384255928 21581 | [confirmare] intrarea operatorului: /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/20857-1795236748823/confirmari.jsonl
+1795236754384280455 21581 | {"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 21581, "operatie": "20857-1795236748823", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:52:34+02:00"}
+1795236755147616576 21581 | {"cod": 0, "e": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "", "operatie": "20857-1795236748823", "plan": true, "rand": ["core/migrare_cal_bon_cui.py", "3b7bafc29af2dcef91ea83c1846beebb63c228d594cf6b27575043fdfca3089d", "rulata", "bbeb88793b321d1456594954e8227163a41ff883"], "stare": "pregatit"}
+1795236755147803108 21581 | [operatie] stadiu restart_cerut 20857-1795236748823
+1795236757615911885 21581 | [publica_prod] static publicat: publicat in /lab/home/iconta_publicat/static <- commit bbeb8879 (83 fisiere)
+1795236759662376320 21581 | [publica_prod] iconta-nou restartat -> procesul viu preia bbeb887
+1795236759735714135 21581 | Traceback (most recent call last):
+1795236759735743299 21581 |   File "/lab/home/iconta_nou/scripts/canal_migrare.py", line 155, in <module>
+1795236759735752864 21581 |     print(ref_confirmat(Path.cwd(),*args[1:]))
+1795236759735795609 21581 |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1795236759735799625 21581 |   File "/lab/home/iconta_nou/scripts/canal_migrare.py", line 110, in ref_confirmat
+1795236759735849099 21581 |     return verifica_remote(repo,e,obj["ref"])
+1795236759735873636 21581 |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1795236759735877141 21581 |   File "/lab/home/iconta_nou/scripts/canal_migrare.py", line 80, in verifica_remote
+1795236759735930632 21581 |     cere(result.stdout.splitlines()==[e+"\t"+ref],"Ref-ul confirmat nu indica E")
+1795236759735956882 21581 |   File "/lab/home/iconta_nou/scripts/canal_migrare.py", line 17, in cere
+1795236759735991924 21581 |     if not conditie: raise ValueError(mesaj)
+1795236759735997963 21581 |                      ^^^^^^^^^^^^^^^^^^^^^^^
+1795236759736003872 21581 | ValueError: Ref-ul confirmat nu indica E
+1795236759741340804 21581 | 
+1795236759741364119 21581 | ############################################################
+1795236759741367955 21581 | ## [four-way] PUBLICARE pe four-way NEFACUTA: referinta initiala a backupului nu confirma E
+1795236759741371330 21581 | ## Commit-ul e local, dar NU pe four-way.
+1795236759741378881 21581 | ## Rezolva ACUM: verifica recipisa operatiei
+1795236759741381736 21581 | ## Sentinela .git/FOUR_WAY_NEINCHIS scrisa - raportul NU e 'incheiat' cat timp exista.
+1795236759741384420 21581 | ############################################################
+1795236759741386703 21581 | 
+1795236759786064761 21581 | [operatie] stadiu confirmare_refuzata 20857-1795236748823
+1795236759839200638 21581 | [confirmare] confirmare refuzată: statica, four-way-ul sau workerii nu confirmă E (rc=1); nepublicat

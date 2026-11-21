@@ -1,0 +1,34 @@
+1795236501990120552 2114 | [publica_lot] PASS bbeb88793b321d1456594954e8227163a41ff883 (lot 17.5-P) C=143cbf2c42cbf25e3cb7374c753c5fc3cf5b439a (dublura de calibrare)
+1795236502093997570 2114 | [operatie] stadiu deschisa 2130-1795236501930
+1795236502095187595 2114 | [publica_lot] migrare declarată: operația 2130-1795236501930 pe bbeb88793b321d1456594954e8227163a41ff883
+1795236502207864329 2114 | Updating bcbe947..bbeb887
+1795236502207891191 2114 | Fast-forward
+1795236502258868744 2114 |  core/migrare_cal_bon_cui.py               | 10 ++++++++++
+1795236502258892881 2114 |  docs/dovezi/17_5_P/migrare_asteptata.json |  7 +++++++
+1795236502258896366 2114 |  docs/dovezi/17_5_P/nota.md                |  1 +
+1795236502258899470 2114 |  docs/dovezi/17_5_P/registre.md            |  1 +
+1795236502258901794 2114 |  tenant_template.sql                       |  1 +
+1795236502258904218 2114 |  5 files changed, 20 insertions(+)
+1795236502258906791 2114 |  create mode 100644 core/migrare_cal_bon_cui.py
+1795236502258909175 2114 |  create mode 100644 docs/dovezi/17_5_P/migrare_asteptata.json
+1795236502258911438 2114 |  create mode 100644 docs/dovezi/17_5_P/nota.md
+1795236502258913682 2114 |  create mode 100644 docs/dovezi/17_5_P/registre.md
+1795236502374179874 2114 | [post-commit] publicat pe origin/main: bbeb887
+1795236502500149755 2114 | [post-commit] backup creat: backup/lant-2026-11-21 -> bbeb887
+1795236503436756229 2114 | migrare nerulată pe producție: core/migrare_cal_bon_cui.py (amprenta 3b7bafc29af2) — rulează: ./venv/bin/python -m core.migrari_registru ruleaza --productie core/migrare_cal_bon_cui.py
+1795236503436786765 2114 | schema tenant_001 e în urma șablonului: tabele lipsă -, coloane lipsă {'bonuri': ['cui_cumparator']}, triggere lipsă -
+1795236503436790921 2114 | schema tenant_002 e în urma șablonului: tabele lipsă -, coloane lipsă {'bonuri': ['comerciant', 'cui_cumparator']}, triggere lipsă -
+1795236503436795007 2114 | REFUZ: Alta coloana
+1795236503436799283 2114 | {"cod": 1, "e": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "Alta coloana", "operatie": "2130-1795236501930", "plan": true, "rand": null, "stare": "refuz"}
+1795236503436906415 2114 | [publica_prod] static NEpublicat: procesul viu ramane pe commitul anterior pana la migrare; rulatorul publica statica inaintea restartului
+1795236503436924333 2114 | 
+1795236503436928920 2114 | ############################################################
+1795236503436931894 2114 | ## [publica_prod] RESTART/PUBLICARE pe iconta-nou (restart OPRIT) NEFACUT: productia nu are inca migrarile commitului (lista de mai sus)
+1795236503436935229 2114 | ## Rezolva ACUM: ruleaza fiecare migrare listata: ./venv/bin/python -m core.migrari_registru ruleaza --productie <fisier> — dupa ultima, rulatorul reporneste aplicatia
+1795236503436941879 2114 | ## Sentinela .git/RESTART_OPRIT_MIGRARE scrisa - raportul NU e 'incheiat' cat timp exista.
+1795236503436945655 2114 | ############################################################
+1795236503436953897 2114 | 
+1795236503438595013 2114 | [publica_prod] restartul producției NU s-a făcut (productia nu are inca migrarile commitului (lista de mai sus)); four-way nu se rulează.
+1795236503550712093 2114 | [operatie] stadiu nepublicat 2130-1795236501930
+1795236503601257576 2114 | [publica_lot] restartul producției nu s-a făcut (vezi mai sus).
+1795236503622534338 2114 | [incheie_lot] /lab/home/ghid_incoming/OPRIT_17.5-P.txt: OPRIT — gata: 17.5-P nepublicat - 2026-11-21T06:48:23+02:00

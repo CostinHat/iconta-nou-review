@@ -1,0 +1,37 @@
+1795236499266825924 1665 | [publica_lot] PASS ead47921bc604e30449373731493143abd86f063 (lot 17.5-P) C=8b1eedc338aae752af24feb59c8401c448cd7eff (dublura de calibrare)
+1795236499386762833 1665 | [operatie] stadiu deschisa 1681-1795236499208
+1795236499387735680 1665 | [publica_lot] migrare declarată: operația 1681-1795236499208 pe ead47921bc604e30449373731493143abd86f063
+1795236499487344528 1665 | Updating bcbe947..ead4792
+1795236499487379692 1665 | Fast-forward
+1795236499545197636 1665 |  core/migrare_cal_bon_cui.py               | 10 ++++++++++
+1795236499545252229 1665 |  core/migrare_cal_extra.py                 | 10 ++++++++++
+1795236499545260942 1665 |  docs/dovezi/17_5_P/migrare_asteptata.json |  7 +++++++
+1795236499545266310 1665 |  docs/dovezi/17_5_P/nota.md                |  1 +
+1795236499545271728 1665 |  docs/dovezi/17_5_P/registre.md            |  1 +
+1795236499545276625 1665 |  tenant_template.sql                       |  1 +
+1795236499545281673 1665 |  6 files changed, 30 insertions(+)
+1795236499545286771 1665 |  create mode 100644 core/migrare_cal_bon_cui.py
+1795236499545292109 1665 |  create mode 100644 core/migrare_cal_extra.py
+1795236499545334072 1665 |  create mode 100644 docs/dovezi/17_5_P/migrare_asteptata.json
+1795236499545339030 1665 |  create mode 100644 docs/dovezi/17_5_P/nota.md
+1795236499545343837 1665 |  create mode 100644 docs/dovezi/17_5_P/registre.md
+1795236499653961918 1665 | [post-commit] publicat pe origin/main: ead4792
+1795236499743416235 1665 | [post-commit] backup creat: backup/lant-2026-11-21 -> ead4792
+1795236500599512568 1665 | migrare nerulată pe producție: core/migrare_cal_bon_cui.py (amprenta 3b7bafc29af2) — rulează: ./venv/bin/python -m core.migrari_registru ruleaza --productie core/migrare_cal_bon_cui.py
+1795236500599542483 1665 | migrare nerulată pe producție: core/migrare_cal_extra.py (amprenta 5a6852764ad3) — rulează: ./venv/bin/python -m core.migrari_registru ruleaza --productie core/migrare_cal_extra.py
+1795236500599547220 1665 | schema tenant_001 e în urma șablonului: tabele lipsă -, coloane lipsă {'bonuri': ['cui_cumparator']}, triggere lipsă -
+1795236500599550585 1665 | schema tenant_002 e în urma șablonului: tabele lipsă -, coloane lipsă {'bonuri': ['cui_cumparator']}, triggere lipsă -
+1795236500599553630 1665 | REFUZ: Set migrari diferit
+1795236500599557345 1665 | {"cod": 1, "e": "ead47921bc604e30449373731493143abd86f063", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "Set migrari diferit", "operatie": "1681-1795236499208", "plan": true, "rand": null, "stare": "refuz"}
+1795236500599856938 1665 | [publica_prod] static NEpublicat: procesul viu ramane pe commitul anterior pana la migrare; rulatorul publica statica inaintea restartului
+1795236500599883748 1665 | 
+1795236500599893983 1665 | ############################################################
+1795236500599902256 1665 | ## [publica_prod] RESTART/PUBLICARE pe iconta-nou (restart OPRIT) NEFACUT: productia nu are inca migrarile commitului (lista de mai sus)
+1795236500599910698 1665 | ## Rezolva ACUM: ruleaza fiecare migrare listata: ./venv/bin/python -m core.migrari_registru ruleaza --productie <fisier> — dupa ultima, rulatorul reporneste aplicatia
+1795236500599922096 1665 | ## Sentinela .git/RESTART_OPRIT_MIGRARE scrisa - raportul NU e 'incheiat' cat timp exista.
+1795236500599929427 1665 | ############################################################
+1795236500599935996 1665 | 
+1795236500602390921 1665 | [publica_prod] restartul producției NU s-a făcut (productia nu are inca migrarile commitului (lista de mai sus)); four-way nu se rulează.
+1795236500722444956 1665 | [operatie] stadiu nepublicat 1681-1795236499208
+1795236500772632718 1665 | [publica_lot] restartul producției nu s-a făcut (vezi mai sus).
+1795236500811442284 1665 | [incheie_lot] /lab/home/ghid_incoming/OPRIT_17.5-P.txt: OPRIT — gata: 17.5-P nepublicat - 2026-11-21T06:48:20+02:00

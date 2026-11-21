@@ -1,0 +1,12 @@
+1795236798267776621 26055 | {"eveniment": "revenire", "argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 26055, "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:53:18+02:00"}
+1795236798316833784 26055 | [confirmare] intrarea operatorului: /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/24807-1795236787302/confirmari.jsonl
+1795236798316867615 26055 | {"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 26055, "operatie": "24807-1795236787302", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:53:18+02:00"}
+1795236799069090254 26055 | {"cod": 0, "e": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "", "operatie": "24807-1795236787302", "plan": true, "rand": ["core/migrare_cal_bon_cui.py", "3b7bafc29af2dcef91ea83c1846beebb63c228d594cf6b27575043fdfca3089d", "rulata", "bbeb88793b321d1456594954e8227163a41ff883"], "stare": "pregatit"}
+1795236799095472417 26055 | [confirmare] ref_backup refs/heads/backup/lant-2026-11-21 = bbeb88793b321d1456594954e8227163a41ff883 (ref-ul inițial al operației 24807-1795236787302, verificat la remote)
+1795236799166782844 26055 | [four-way] asteptati 2 (Environment= din unitatea iconta-nou) · gasiti 2
+1795236799166806520 26055 | [four-way] TOATE procesele de productie poarta HEAD: 2 din 2
+1795236799168874410 26055 | [operatie] stadiu confirmat 24807-1795236787302
+1795236799213839649 26055 | [confirmare] jurnal: publicare sfarsit publicat e=bbeb88793b321d1456594954e8227163a41ff883 operatie=24807-1795236787302
+1795236799246498872 26055 | [incheie_lot] /lab/home/ghid_incoming/OPRIT_17.5-P.txt: OPRIT — gata: 17.5-P publicat bbeb88793b321d1456594954e8227163a41ff883 2026-11-21T06:53:19+02:00
+1795236799271258658 26055 | [operatie] stadiu publicat 24807-1795236787302
+1795236799271284086 26055 | publicat 17.5-P pe bbeb88793b321d1456594954e8227163a41ff883

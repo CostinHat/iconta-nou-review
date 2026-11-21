@@ -1,0 +1,2 @@
+1795236814665738190 28059 | {"cursor": 207, "eveniment": "backup_inainte", "invocatie_anterioara": "ffffffffffffffffffffffffffffffff", "pid": 28059}
+1795236814665817640 28059 | [migrari] Costin pornește acum, interactiv: sudo systemctl start iconta-backup.service ; apoi: ./venv/bin/python -m core.migrari_registru ruleaza --productie <fișier>

@@ -1,0 +1,4 @@
+1795236561157393468 9477 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 9477}
+1795236561237466149 9477 | {"emis_la": "2026-11-21T04:49:18+00:00", "eveniment": "acord", "operatie": "9025-1795236556686", "pid": 9477, "sha256_acord": "a880c0d27fe307e83a337aac4d236021df0ff2f9cc27705252d313d867c4a8fb"}
+1795236561237746673 9477 | [operatie] stadiu acord_verificat 9025-1795236556686
+1795236561303588292 9477 | REFUZ: Invocatie veche sau inlocuita

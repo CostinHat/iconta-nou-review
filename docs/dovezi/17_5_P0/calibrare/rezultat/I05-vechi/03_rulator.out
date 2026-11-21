@@ -1,0 +1,4 @@
+1795236526535262563 5968 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 5968}
+1795236526620339644 5968 | {"emis_la": "2026-11-21T04:48:46+00:00", "eveniment": "acord", "operatie": "5519-1795236524466", "pid": 5968, "sha256_acord": "e2a575de4bf8c98ddd8998342e6bcba1e6f9f718e8c0be4140fccc6b33cb6949"}
+1795236526620907221 5968 | [operatie] stadiu acord_verificat 5519-1795236524466
+1795236526643411745 5968 | REFUZ: Invocatie veche sau inlocuita: serviciul de backup nu are o invocație nouă după starea păstrată

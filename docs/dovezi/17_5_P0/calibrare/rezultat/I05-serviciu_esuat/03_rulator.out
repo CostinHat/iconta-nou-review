@@ -1,0 +1,4 @@
+1795236543818477032 7722 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 7722}
+1795236543897507591 7722 | {"emis_la": "2026-11-21T04:49:00+00:00", "eveniment": "acord", "operatie": "7271-1795236539289", "pid": 7722, "sha256_acord": "6bed5f29fe82843e86064c6397b5bc5ec80b8b2fe2a4d7f7be3031b756813d14"}
+1795236543897899461 7722 | [operatie] stadiu acord_verificat 7271-1795236539289
+1795236543973081535 7722 | REFUZ: backup neconfirmat: Serviciu, rezultat, baza sau E diferit

@@ -1,0 +1,4 @@
+1795236572509148250 10648 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 10648}
+1795236572579905406 10648 | {"emis_la": "2026-11-21T04:49:29+00:00", "eveniment": "acord", "operatie": "10196-1795236568106", "pid": 10648, "sha256_acord": "eb3fdf07bb263399ec24ab90032aa28e144963280cfdae23fe7ffc10bffaed3c"}
+1795236572580122452 10648 | [operatie] stadiu acord_verificat 10196-1795236568106
+1795236572641828823 10648 | REFUZ: Lipseste asocierea unica din backup.log

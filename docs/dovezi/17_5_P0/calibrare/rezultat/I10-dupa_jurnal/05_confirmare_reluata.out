@@ -1,0 +1,6 @@
+1795236811534512395 27600 | {"eveniment": "revenire", "argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 27600, "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:53:31+02:00"}
+1795236811583377518 27600 | [confirmare] intrarea operatorului: /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/26336-1795236800318/confirmari.jsonl
+1795236811583410377 27600 | {"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 27600, "operatie": "26336-1795236800318", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:53:31+02:00"}
+1795236811605537981 27600 | [incheie_lot] /lab/home/ghid_incoming/OPRIT_17.5-P.txt: OPRIT — gata: 17.5-P publicat bbeb88793b321d1456594954e8227163a41ff883 2026-11-21T06:53:31+02:00
+1795236811635902432 27600 | [operatie] stadiu publicat 26336-1795236800318
+1795236811635920570 27600 | publicat 17.5-P pe bbeb88793b321d1456594954e8227163a41ff883

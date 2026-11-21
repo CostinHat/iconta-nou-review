@@ -1,0 +1,4 @@
+1795236532232342145 6551 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 6551}
+1795236532325991601 6551 | {"emis_la": "2026-11-21T04:48:49+00:00", "eveniment": "acord", "operatie": "6100-1795236527818", "pid": 6551, "sha256_acord": "dcf311990efc4d38ff66c7a79e28e810d9188d8d3cd34c09bb32dcb1e3fd13ba"}
+1795236532326223952 6551 | [operatie] stadiu acord_verificat 6100-1795236527818
+1795236532391450173 6551 | REFUZ: arhiva /var/backups/iconta/iconta_v2_20261121_064850.dump lipsește

@@ -1,0 +1,10 @@
+1795236779358057355 23941 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 23941}
+1795236779469259518 23941 | {"emis_la": "2026-11-21T04:52:56+00:00", "eveniment": "acord", "operatie": "23489-1795236774855", "pid": 23941, "sha256_acord": "637b1c171511a57cb2892d0572089d4cab10035076af7d9a014f95fcb2d886a4"}
+1795236779469809067 23941 | [operatie] stadiu acord_verificat 23489-1795236774855
+1795236779557257902 23941 | {"cale": "/var/backups/iconta/iconta_v2_20261121_065257.dump", "eveniment": "backup", "invocatie": "e0dfdef46521176c518439a91cda61cd", "operatie": "23489-1795236774855", "pid": 23941, "sha256": "932bb938ebc288d2c88a5ac785085adc656ab5cfd63b9b1bb7043c7b78b5b9f6"}
+1795236779557929706 23941 | [operatie] stadiu backup_confirmat 23489-1795236774855
+1795236779561873757 23941 | {"baza": "iconta_v2", "eveniment": "acces_scriere", "pid": 23941}
+1795236780279617529 23941 | [operatie] stadiu ddl_inceput 23489-1795236774855
+1795236780279652972 23941 | {"eveniment": "scriere_db", "fisier": "core/migrare_cal_bon_cui.py", "operatie": "23489-1795236774855", "pid": 23941}
+1795236780286616398 23941 | {"amprenta": "3b7bafc29af2dcef91ea83c1846beebb63c228d594cf6b27575043fdfca3089d", "commit": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "registru", "fel": "rulata", "fisier": "core/migrare_cal_bon_cui.py", "operatie": "23489-1795236774855", "pid": 23941}
+1795236780286641776 23941 | [proba] intrerupere dupa_registru pid=23941

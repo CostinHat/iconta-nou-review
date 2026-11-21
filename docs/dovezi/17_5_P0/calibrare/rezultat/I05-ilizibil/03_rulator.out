@@ -1,0 +1,4 @@
+1795236537910182392 7136 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 7136}
+1795236537997603701 7136 | {"emis_la": "2026-11-21T04:48:55+00:00", "eveniment": "acord", "operatie": "6685-1795236533513", "pid": 7136, "sha256_acord": "b630ee171d71f6a77dc55559a9fa691e9068ccce10abbf7c9e89b4497819966d"}
+1795236537997823212 7136 | [operatie] stadiu acord_verificat 6685-1795236533513
+1795236538072677660 7136 | REFUZ: ora de creare a arhivei nu e în fereastra invocației

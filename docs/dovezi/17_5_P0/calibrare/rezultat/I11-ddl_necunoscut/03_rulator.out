@@ -1,0 +1,9 @@
+1795236830227529267 29459 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 29459}
+1795236830301619658 29459 | {"emis_la": "2026-11-21T04:53:47+00:00", "eveniment": "acord", "operatie": "29008-1795236825702", "pid": 29459, "sha256_acord": "0816d3a29a5bcd14e59a0959212640a482de6164826aaedea7fe545ac5112fb7"}
+1795236830301847241 29459 | [operatie] stadiu acord_verificat 29008-1795236825702
+1795236830380487507 29459 | {"cale": "/var/backups/iconta/iconta_v2_20261121_065348.dump", "eveniment": "backup", "invocatie": "9735fdb51cf211a06825e86ed1964151", "operatie": "29008-1795236825702", "pid": 29459, "sha256": "7249b4dd7c7253b89789676ba88985a29fc759d8438eb77cb498409ab5809ed2"}
+1795236830380979459 29459 | [operatie] stadiu backup_confirmat 29008-1795236825702
+1795236830384406089 29459 | {"baza": "iconta_v2", "eveniment": "acces_scriere", "pid": 29459}
+1795236831096829849 29459 | [operatie] stadiu ddl_inceput 29008-1795236825702
+1795236831096895328 29459 | {"eveniment": "scriere_db", "fisier": "core/migrare_cal_bon_cui.py", "operatie": "29008-1795236825702", "pid": 29459}
+1795236831103351999 29459 | [proba] intrerupere dupa_ddl pid=29459

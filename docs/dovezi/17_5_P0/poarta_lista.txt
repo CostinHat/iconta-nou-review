@@ -1,0 +1,10 @@
+{
+ "fisiere": [],
+ "toate_ecranele": false,
+ "plafon": 20,
+ "candidate": 0,
+ "lista": [],
+ "taiate": [],
+ "neacoperite": []
+}
+rc=0

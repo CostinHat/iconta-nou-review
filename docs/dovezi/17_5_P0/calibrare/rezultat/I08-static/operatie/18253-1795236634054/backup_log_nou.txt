@@ -1,0 +1,2 @@
+2026-11-21T06:50:37+02:00 backup LOCAL OK: /var/backups/iconta/iconta_v2_20261121_065037.dump (5.2M)
+2026-11-21T06:50:37+02:00 backup OFF-SITE OK: iconta/db/iconta_v2_20261121_065037.dump (remote 528666 octeti)

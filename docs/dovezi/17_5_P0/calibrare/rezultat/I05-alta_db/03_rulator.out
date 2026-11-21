@@ -1,0 +1,4 @@
+1795236549561854229 8309 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 8309}
+1795236549665640168 8309 | {"emis_la": "2026-11-21T04:49:06+00:00", "eveniment": "acord", "operatie": "7858-1795236545114", "pid": 8309, "sha256_acord": "6fd48a2faf594c0d4bdf8d52727fba725d2b3b00d0c733fca0c42c681ae24f33"}
+1795236549665876455 8309 | [operatie] stadiu acord_verificat 7858-1795236545114
+1795236549737199344 8309 | REFUZ: backup neconfirmat: Serviciu, rezultat, baza sau E diferit

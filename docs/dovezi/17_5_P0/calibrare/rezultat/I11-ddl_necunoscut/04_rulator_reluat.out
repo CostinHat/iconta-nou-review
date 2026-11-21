@@ -1,0 +1,5 @@
+1795236831289186479 29730 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 29730}
+1795236831342575286 29730 | {"baza": "iconta_v2", "eveniment": "acces_scriere", "pid": 29730}
+1795236831959277591 29730 | [operatie] stadiu reconciliere 29008-1795236825702
+1795236831959299313 29730 | {"eveniment": "reconciliere", "operatie": "29008-1795236825702", "pid": 29730, "registru": [], "schema": []}
+1795236831959303670 29730 | [migrari] RECONCILIERE: DDL-ul operației 29008-1795236825702 a început, dar registrul nu are rândul exact; rezultatul e necunoscut. Nu se reexecută și nu se scrie rândul: decizia o ia omul pe dovezile din /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/29008-1795236825702

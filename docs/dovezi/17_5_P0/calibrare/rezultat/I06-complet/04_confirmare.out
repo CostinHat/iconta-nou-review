@@ -1,0 +1,19 @@
+1795236579264428813 11504 | {"eveniment": "revenire", "argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 11504, "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:49:39+02:00"}
+1795236579311738482 11504 | [confirmare] intrarea operatorului: /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/10782-1795236573793/confirmari.jsonl
+1795236579311771582 11504 | {"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 11504, "operatie": "10782-1795236573793", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:49:39+02:00"}
+1795236580120892621 11504 | {"cod": 0, "e": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "", "operatie": "10782-1795236573793", "plan": true, "rand": ["core/migrare_cal_bon_cui.py", "3b7bafc29af2dcef91ea83c1846beebb63c228d594cf6b27575043fdfca3089d", "rulata", "bbeb88793b321d1456594954e8227163a41ff883"], "stare": "pregatit"}
+1795236580121082217 11504 | [operatie] stadiu restart_cerut 10782-1795236573793
+1795236582658658749 11504 | [publica_prod] static publicat: publicat in /lab/home/iconta_publicat/static <- commit bbeb8879 (83 fisiere)
+1795236584703606982 11504 | [publica_prod] iconta-nou restartat -> procesul viu preia bbeb887
+1795236584922319848 11504 | [four-way] asteptati 2 (Environment= din unitatea iconta-nou) · gasiti 2
+1795236584922345727 11504 | [four-way] TOATE procesele de productie poarta HEAD: 2 din 2
+1795236584928451950 11504 | [four-way] FOUR-WAY INCHIS: HEAD = origin/main = refs/heads/backup/lant-2026-11-21 = procesul viu
+1795236584972659819 11504 | [operatie] stadiu restart_ok 10782-1795236573793
+1795236584992112848 11504 | [confirmare] ref_backup refs/heads/backup/lant-2026-11-21 = bbeb88793b321d1456594954e8227163a41ff883 (ref-ul inițial al operației 10782-1795236573793, verificat la remote)
+1795236585092264333 11504 | [four-way] asteptati 2 (Environment= din unitatea iconta-nou) · gasiti 2
+1795236585092298665 11504 | [four-way] TOATE procesele de productie poarta HEAD: 2 din 2
+1795236585095568619 11504 | [operatie] stadiu confirmat 10782-1795236573793
+1795236585153583359 11504 | [confirmare] jurnal: publicare sfarsit publicat e=bbeb88793b321d1456594954e8227163a41ff883 operatie=10782-1795236573793
+1795236585176261054 11504 | [incheie_lot] /lab/home/ghid_incoming/OPRIT_17.5-P.txt: OPRIT — gata: 17.5-P publicat bbeb88793b321d1456594954e8227163a41ff883 2026-11-21T06:49:45+02:00
+1795236585210004495 11504 | [operatie] stadiu publicat 10782-1795236573793
+1795236585210030925 11504 | publicat 17.5-P pe bbeb88793b321d1456594954e8227163a41ff883

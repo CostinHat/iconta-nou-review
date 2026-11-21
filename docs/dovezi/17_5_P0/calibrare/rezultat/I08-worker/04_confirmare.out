@@ -1,0 +1,19 @@
+1795236651435677041 20240 | {"eveniment": "revenire", "argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 20240, "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:50:51+02:00"}
+1795236651473544483 20240 | [confirmare] intrarea operatorului: /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/19518-1795236645918/confirmari.jsonl
+1795236651473570321 20240 | {"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 20240, "operatie": "19518-1795236645918", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:50:51+02:00"}
+1795236652334028171 20240 | {"cod": 0, "e": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "", "operatie": "19518-1795236645918", "plan": true, "rand": ["core/migrare_cal_bon_cui.py", "3b7bafc29af2dcef91ea83c1846beebb63c228d594cf6b27575043fdfca3089d", "rulata", "bbeb88793b321d1456594954e8227163a41ff883"], "stare": "pregatit"}
+1795236652334053850 20240 | [operatie] stadiu restart_cerut 19518-1795236645918
+1795236654905077611 20240 | [publica_prod] static publicat: publicat in /lab/home/iconta_publicat/static <- commit bbeb8879 (83 fisiere)
+1795236656944967888 20240 | [publica_prod] iconta-nou restartat -> procesul viu preia bbeb887
+1795236747589324444 20240 | [four-way] asteptati 2 (Environment= din unitatea iconta-nou) · gasiti 1
+1795236747589363062 20240 | [four-way] INCOMPLET: 1 din 2 procese inregistrate in iconta_v2 dupa 90 s. Bratul NU se inchide pe o submultime: «toate poarta HEAD» ar afirma despre TOATE ce s-a verificat despre cateva.
+1795236747597621091 20240 | 
+1795236747597641442 20240 | ############################################################
+1795236747597645818 20240 | ## [four-way] PUBLICARE pe four-way NEFACUTA: brate care NU se inchid: toate-procesele-poarta-HEAD
+1795236747597650445 20240 | ## Commit-ul e local, dar NU pe four-way.
+1795236747597654271 20240 | ## Rezolva ACUM: publicarea LOCALA e intacta si commitul exista; rezolva bratul lipsa (de obicei: git push origin main)
+1795236747597662694 20240 | ## Sentinela .git/FOUR_WAY_NEINCHIS scrisa - raportul NU e 'incheiat' cat timp exista.
+1795236747597666700 20240 | ############################################################
+1795236747597670206 20240 | 
+1795236747641192188 20240 | [operatie] stadiu confirmare_refuzata 19518-1795236645918
+1795236747687777472 20240 | [confirmare] confirmare refuzată: statica, four-way-ul sau workerii nu confirmă E (rc=1); nepublicat

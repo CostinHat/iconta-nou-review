@@ -1,0 +1,18 @@
+1795236629402854488 17694 | {"eveniment": "revenire", "argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 17694, "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:50:29+02:00"}
+1795236629427811893 17694 | [confirmare] intrarea operatorului: /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/16972-1795236623896/confirmari.jsonl
+1795236629427832214 17694 | {"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 17694, "operatie": "16972-1795236623896", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:50:29+02:00"}
+1795236630214872158 17694 | {"cod": 0, "e": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "", "operatie": "16972-1795236623896", "plan": true, "rand": ["core/migrare_cal_bon_cui.py", "3b7bafc29af2dcef91ea83c1846beebb63c228d594cf6b27575043fdfca3089d", "rulata", "bbeb88793b321d1456594954e8227163a41ff883"], "stare": "pregatit"}
+1795236630215063407 17694 | [operatie] stadiu restart_cerut 16972-1795236623896
+1795236632718930729 17694 | [publica_prod] static publicat: publicat in /lab/home/iconta_publicat/static <- commit bbeb8879 (83 fisiere)
+1795236632750944139 17694 | 
+1795236632750978401 17694 | ############################################################
+1795236632750989438 17694 | ## [publica_prod] RESTART/PUBLICARE pe iconta-nou (restart) NEFACUT: restart a esuat: Job for iconta-nou.service failed (simulat)
+1795236632750993164 17694 | ## Rezolva ACUM: verifica sudoers (systemctl restart iconta-nou), apoi ruleaza: sudo systemctl restart iconta-nou
+1795236632750996108 17694 | ## Sentinela .git/RESTART_ESUAT scrisa - raportul NU e 'incheiat' cat timp exista.
+1795236632750998962 17694 | ############################################################
+1795236632751001416 17694 | 
+1795236632753814239 17694 | [publica_prod] restartul producției NU s-a făcut (restart a esuat: Job for iconta-nou.service failed (simulat)); four-way nu se rulează.
+1795236632815191292 17694 | [operatie] stadiu restart_esuat 16972-1795236623896
+1795236632815344984 17694 | [operatie] stadiu nepublicat 16972-1795236623896
+1795236632876616627 17694 | [incheie_lot] /lab/home/ghid_incoming/OPRIT_17.5-P.txt: OPRIT — gata: 17.5-P nepublicat - 2026-11-21T06:50:32+02:00
+1795236632926032694 17694 | [confirmare] restartul productiei NU s-a facut (rc=1); nepublicat

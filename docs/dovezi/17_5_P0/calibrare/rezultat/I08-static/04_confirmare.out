@@ -1,0 +1,16 @@
+1795236639553615222 18975 | {"eveniment": "revenire", "argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 18975, "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:50:39+02:00"}
+1795236639576812452 18975 | [confirmare] intrarea operatorului: /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/18253-1795236634054/confirmari.jsonl
+1795236639576829077 18975 | {"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 18975, "operatie": "18253-1795236634054", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:50:39+02:00"}
+1795236640349254550 18975 | {"cod": 0, "e": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "", "operatie": "18253-1795236634054", "plan": true, "rand": ["core/migrare_cal_bon_cui.py", "3b7bafc29af2dcef91ea83c1846beebb63c228d594cf6b27575043fdfca3089d", "rulata", "bbeb88793b321d1456594954e8227163a41ff883"], "stare": "pregatit"}
+1795236640349662145 18975 | [operatie] stadiu restart_cerut 18253-1795236634054
+1795236642584587677 18975 | 
+1795236642584623281 18975 | ############################################################
+1795236642584631323 18975 | ## [publica_prod] RESTART/PUBLICARE pe static publicat NEFACUT: publicarea staticului a esuat:   js/ecrane/woo_ecran.js: node --check a esuat
+1795236642584639295 18975 | ## Rezolva ACUM: citeste /tmp/publica_static.log (de obicei: un .js care nu se parseaza), repara, apoi: ./venv/bin/python scripts/publica_static.py
+1795236642584646686 18975 | ## Sentinela .git/PUBLICARE_STATIC_ESUATA scrisa - raportul NU e 'incheiat' cat timp exista.
+1795236642584653166 18975 | ############################################################
+1795236642584659605 18975 | 
+1795236644624933367 18975 | [publica_prod] iconta-nou restartat -> procesul viu preia bbeb887
+1795236644627502222 18975 | [publica_prod] restartul producției NU s-a făcut (publicarea staticului a esuat:   js/ecrane/woo_ecran.js: node --check a esuat); four-way nu se rulează.
+1795236644685677353 18975 | [operatie] stadiu confirmare_refuzata 18253-1795236634054
+1795236644733508689 18975 | [confirmare] confirmare refuzată: statica, four-way-ul sau workerii nu confirmă E (rc=1); nepublicat

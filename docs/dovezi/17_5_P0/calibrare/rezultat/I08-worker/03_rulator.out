@@ -1,0 +1,11 @@
+1795236650521476627 19969 | {"argv": ["/lab/home/iconta_nou/core/migrari_registru.py", "ruleaza", "--productie", "core/migrare_cal_bon_cui.py"], "eveniment": "intrare", "pid": 19969}
+1795236650602428513 19969 | {"emis_la": "2026-11-21T04:50:47+00:00", "eveniment": "acord", "operatie": "19518-1795236645918", "pid": 19969, "sha256_acord": "0ba24dcd6c4f0a2b3dc579bf405569fa08452b4881b49402ac145a890b80ce33"}
+1795236650602647784 19969 | [operatie] stadiu acord_verificat 19518-1795236645918
+1795236650682975257 19969 | {"cale": "/var/backups/iconta/iconta_v2_20261121_065049.dump", "eveniment": "backup", "invocatie": "8a324156c878484e2c6676daab5295bd", "operatie": "19518-1795236645918", "pid": 19969, "sha256": "af57887753b12dd3d1a5384d5fd5b8a21770aa7d81eea94467dde68dc8fe023c"}
+1795236650683524316 19969 | [operatie] stadiu backup_confirmat 19518-1795236645918
+1795236650686948782 19969 | {"baza": "iconta_v2", "eveniment": "acces_scriere", "pid": 19969}
+1795236651350421261 19969 | [operatie] stadiu ddl_inceput 19518-1795236645918
+1795236651350464748 19969 | {"eveniment": "scriere_db", "fisier": "core/migrare_cal_bon_cui.py", "operatie": "19518-1795236645918", "pid": 19969}
+1795236651357612661 19969 | {"amprenta": "3b7bafc29af2dcef91ea83c1846beebb63c228d594cf6b27575043fdfca3089d", "commit": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "registru", "fel": "rulata", "fisier": "core/migrare_cal_bon_cui.py", "operatie": "19518-1795236645918", "pid": 19969}
+1795236651357838462 19969 | [operatie] stadiu rulata 19518-1795236645918
+1795236651357905814 19969 | [migrari] registrul migrărilor: core/migrare_cal_bon_cui.py rulată (amprenta 3b7bafc29af2, E bbeb88793b321d1456594954e8227163a41ff883). Restartul îl face numai: sh scripts/publica_lot.sh --confirma-migrare 17.5-P bbeb88793b321d1456594954e8227163a41ff883

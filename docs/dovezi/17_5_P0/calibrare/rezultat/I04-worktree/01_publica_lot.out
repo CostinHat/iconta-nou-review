@@ -1,0 +1,26 @@
+1795236518871720328 4632 | [publica_lot] PASS bbeb88793b321d1456594954e8227163a41ff883 (lot 17.5-P) C=143cbf2c42cbf25e3cb7374c753c5fc3cf5b439a (dublura de calibrare)
+1795236518984907110 4632 | [operatie] stadiu deschisa 4648-1795236518819
+1795236518986355506 4632 | [publica_lot] migrare declarată: operația 4648-1795236518819 pe bbeb88793b321d1456594954e8227163a41ff883
+1795236519088815756 4632 | Updating bcbe947..bbeb887
+1795236519088848485 4632 | Fast-forward
+1795236519134626404 4632 |  core/migrare_cal_bon_cui.py               | 10 ++++++++++
+1795236519134650350 4632 |  docs/dovezi/17_5_P/migrare_asteptata.json |  7 +++++++
+1795236519134653645 4632 |  docs/dovezi/17_5_P/nota.md                |  1 +
+1795236519134656590 4632 |  docs/dovezi/17_5_P/registre.md            |  1 +
+1795236519134658953 4632 |  tenant_template.sql                       |  1 +
+1795236519134661597 4632 |  5 files changed, 20 insertions(+)
+1795236519134664021 4632 |  create mode 100644 core/migrare_cal_bon_cui.py
+1795236519134666414 4632 |  create mode 100644 docs/dovezi/17_5_P/migrare_asteptata.json
+1795236519134668858 4632 |  create mode 100644 docs/dovezi/17_5_P/nota.md
+1795236519134671111 4632 |  create mode 100644 docs/dovezi/17_5_P/registre.md
+1795236519232398540 4632 | [post-commit] publicat pe origin/main: bbeb887
+1795236519340457167 4632 | [post-commit] backup creat: backup/lant-2026-11-21 -> bbeb887
+1795236520234953581 4632 | migrare nerulată pe producție: core/migrare_cal_bon_cui.py (amprenta 3b7bafc29af2) — rulează: ./venv/bin/python -m core.migrari_registru ruleaza --productie core/migrare_cal_bon_cui.py
+1795236520234982365 4632 | schema tenant_001 e în urma șablonului: tabele lipsă -, coloane lipsă {'bonuri': ['cui_cumparator']}, triggere lipsă -
+1795236520234985990 4632 | schema tenant_002 e în urma șablonului: tabele lipsă -, coloane lipsă {'bonuri': ['cui_cumparator']}, triggere lipsă -
+1795236520234988914 4632 | AȘTEAPTĂ MIGRAREA 17.5-P pe bbeb88793b321d1456594954e8227163a41ff883 — operația 4648-1795236518819: core/migrare_cal_bon_cui.py nerulată (acord semnat, backup, apoi ruleaza --productie)
+1795236520234993291 4632 | {"cod": 75, "e": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "", "operatie": "4648-1795236518819", "plan": true, "rand": null, "stare": "asteapta_migrare"}
+1795236520235324110 4632 | [publica_prod] AȘTEAPTĂ MIGRAREA: static nepublicat, restart nefăcut; procesul viu rămâne pe commitul anterior până la confirmarea operatorului
+1795236520308051611 4632 | [operatie] stadiu asteapta_migrare 4648-1795236518819
+1795236520400569419 4632 | [publica_lot] pașii operatorului: acordul semnat în <git-common-dir>/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/4648-1795236518819/, backup-inainte, backupul manual, ruleaza --productie, apoi: sh scripts/publica_lot.sh --confirma-migrare 17.5-P bbeb88793b321d1456594954e8227163a41ff883
+1795236520400594236 4632 | AȘTEAPTĂ MIGRAREA 17.5-P pe bbeb88793b321d1456594954e8227163a41ff883 — operația 4648-1795236518819

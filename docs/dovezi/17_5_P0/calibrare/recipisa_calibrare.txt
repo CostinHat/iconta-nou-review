@@ -1,0 +1,25 @@
+RECIPISA CALIBRĂRII 17.5-P0 (I01–I12) — rulare finală
+commitul sursei calibrate: d599a0a7 (d599a0a76ec0ff6233d1ea904d9c8c6e6ce10116); driverul: docs/dovezi/17_5_P0/calibrare/calibrare.py la același commit
+arhiva intrari.tar: construieste_intrari.py d599a0a7 (CAL_DIN_ARBORE=0), sha256 f4224e92a3f1208af4353756a25963e1f1e9d61d51c7c9735060e48b934c78bd
+lansatorul: lanseaza_calibrare_P0.py sha256 7706732feb079b264a2ee1c45a15cbfbb86e237b9dad5236a44ee7e8c8726fd5 (pachetul r4, neschimbat)
+comanda (sesiunea Code, prin ssh code@iconta-calibrare): python3 -I -B lanseaza_calibrare_P0.py in9/intrari.tar out9 f4224e92a3f1208af4353756a25963e1f1e9d61d51c7c9735060e48b934c78bd
+VM: iconta-calibrare 28792d74e41d4c9fa83492531b57eecf postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) Python 3.12.3 
+ieșirea lansatorului (rc și ultimele rânduri):
+38/38 trasee conforme
+
+rc=0
+judecătorul (verifica_parcurs_publicare.py r4, sha256 41f5cb68…) pe rezultat/, rulat din nou pe server după copiere:
+38/38 trasee conforme
+rc=0
+verifica_parcurs_publicare.py --proba:
+REFUZ CONFIRMAT: OPRIT în așteptare
+REFUZ CONFIRMAT: succes în loc de 75
+REFUZ CONFIRMAT: restart pe calea veche
+REFUZ CONFIRMAT: confirmare lipsă
+REFUZ CONFIRMAT: altă operație
+REFUZ CONFIRMAT: restart dublat
+REFUZ CONFIRMAT: amprentă eronată
+REFUZ CONFIRMAT: citat diferit de jurnal
+PROBE OK: 8 negative, I02/I06 și sursa validă acceptate
+rc=0
+Limite (declarate și în docstringul driverului): publica_lot.py = dublură care scrie PASS pentru tripleta lot/C/E; poarta pe C a calibrării = rândul VERDE unic din starea inițială; marginile simulate: systemctl, journalctl, restart (workeri reali prin core.instante), alertă, tmux, sudo, node --check, date (I12); backupul lui Costin = pg_dump real al clusterului privat; cheia lui Costin = cheie efemeră (ancora bazei de calibrare); proprietarul arhivei = utilizatorul calibrării (ICONTA_PROBA_BACKUP_PROPRIETAR, onorată numai cu HOME=/lab/home și /lab/work/dubluri); I09 = două continuări lansate împreună de driver (barieră FIFO), întâlnirea la lacăt e în ieșirea celei de-a doua; I10/I11 = întreruperi cu ICONTA_PROBA_INTRERUPE (SIGKILL în punctul numit).

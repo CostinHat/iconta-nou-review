@@ -1,0 +1,4 @@
+1795236773653377734 23432 | {"eveniment": "revenire", "argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 23432, "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:52:53+02:00"}
+1795236773694480857 23432 | [confirmare] intrarea operatorului: /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/22135-1795236761007/confirmari.jsonl
+1795236773694501989 23432 | {"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 23432, "operatie": "22135-1795236761007", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:52:53+02:00"}
+1795236773694622340 23432 | [confirmare] rezultat existent: publicat 17.5-P pe bbeb88793b321d1456594954e8227163a41ff883 (operatia 22135-1795236761007); nimic de refacut

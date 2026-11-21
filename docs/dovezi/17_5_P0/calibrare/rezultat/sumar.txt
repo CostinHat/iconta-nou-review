@@ -1,0 +1,39 @@
+cluster privat system_identifier=7710481986056175631
+I01-normal rc=0 stare=publicat motiv=None 6s evenimente=poarta pass push static restart restart_legacy fourway publicat oprit alerta
+I02-asteptare rc=75 stare=asteapta_migrare motiv=None 2s evenimente=poarta pass push asteapta succesor_refuzat
+I03-migrare_in_plus rc=1 stare=nepublicat motiv=migrare_in_plus 2s evenimente=poarta pass push oprit alerta
+I03-drift rc=1 stare=nepublicat motiv=drift 2s evenimente=poarta pass push oprit alerta
+I03-necunoscut rc=1 stare=nepublicat motiv=necunoscut 2s evenimente=poarta pass push oprit alerta
+I04-alt_E rc=1 stare=refuz motiv=alt_E 2s evenimente=poarta pass push asteapta
+I04-alt_C rc=1 stare=refuz motiv=alt_C 2s evenimente=poarta pass push asteapta
+I04-alt_lot rc=1 stare=refuz motiv=alt_lot 2s evenimente=poarta pass push asteapta
+I04-alt_digest rc=1 stare=refuz motiv=alt_digest 2s evenimente=poarta pass push asteapta
+I04-worktree rc=1 stare=refuz motiv=worktree 2s evenimente=poarta pass push asteapta
+I04-local rc=1 stare=refuz motiv=local 2s evenimente=poarta pass push asteapta
+I05-vechi rc=1 stare=refuz motiv=vechi 3s evenimente=poarta pass push asteapta acord
+I05-lipsa rc=1 stare=refuz motiv=lipsa 5s evenimente=poarta pass push asteapta acord
+I05-ilizibil rc=1 stare=refuz motiv=ilizibil 5s evenimente=poarta pass push asteapta acord
+I05-serviciu_esuat rc=1 stare=refuz motiv=serviciu_esuat 5s evenimente=poarta pass push asteapta acord
+I05-alta_db rc=1 stare=refuz motiv=alta_db 5s evenimente=poarta pass push asteapta acord
+I05-alt_acord rc=1 stare=refuz motiv=alt_acord 5s evenimente=poarta pass push asteapta
+I05-invocatie_inlocuita rc=1 stare=refuz motiv=invocatie_inlocuita 5s evenimente=poarta pass push asteapta acord
+I05-doua_locale rc=1 stare=refuz motiv=doua_locale 5s evenimente=poarta pass push asteapta acord
+I05-doar_off_site rc=1 stare=refuz motiv=doar_off_site 5s evenimente=poarta pass push asteapta acord
+I06-complet rc=0 stare=publicat motiv=None 12s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema static restart fourway ref_backup publicat oprit alerta
+I07-registru rc=1 stare=refuz motiv=registru 7s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema
+I07-marcata rc=1 stare=refuz motiv=marcata 7s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema
+I07-tip rc=1 stare=refuz motiv=tip 7s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema
+I07-nullable rc=1 stare=refuz motiv=nullable 7s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema
+I07-implicit rc=1 stare=refuz motiv=implicit 7s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema
+I08-restart rc=1 stare=nepublicat motiv=restart 10s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema static restart oprit alerta
+I08-static rc=1 stare=refuz motiv=static 11s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema restart
+I08-worker rc=1 stare=refuz motiv=worker 102s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema static restart
+I08-backup_git rc=1 stare=refuz motiv=backup_git 12s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema static restart
+I09-concurenta rc=0 stare=publicat motiv=None 13s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru concurenta revenire revenire confirmare_operator schema static restart fourway ref_backup publicat oprit alerta confirmare_operator revenire confirmare_operator
+I10-dupa_registru rc=0 stare=publicat motiv=None 12s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru intrerupere revenire confirmare_operator schema static restart fourway ref_backup publicat oprit alerta
+I10-dupa_restart rc=0 stare=publicat motiv=None 12s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema static restart fourway intrerupere revenire confirmare_operator schema ref_backup publicat oprit alerta
+I10-dupa_jurnal rc=0 stare=publicat motiv=None 12s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema static restart fourway ref_backup publicat intrerupere revenire confirmare_operator oprit alerta
+I10-dupa_oprit rc=0 stare=publicat motiv=None 12s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema static restart fourway ref_backup publicat oprit alerta intrerupere revenire confirmare_operator
+I11-ddl_necunoscut rc=3 stare=reconciliere motiv=ddl_necunoscut 7s evenimente=poarta pass push asteapta acord backup acces_scriere scriere_db ddl intrerupere revenire acces_scriere reconciliere
+I12-eligibil rc=0 stare=publicat motiv=None 12s evenimente=poarta pass push asteapta succesor_refuzat acord backup acces_scriere scriere_db ddl registru revenire confirmare_operator schema static restart fourway ref_backup publicat oprit alerta succesor_eligibil
+I12-peste_miezul_noptii rc=0 stare=publicat motiv=None 12s evenimente=poarta pass push asteapta succesor_refuzat acord backup acces_scriere scriere_db ddl registru alta_zi revenire confirmare_operator schema static restart fourway ref_backup publicat oprit alerta succesor_eligibil

@@ -1,0 +1,4 @@
+1795236824535501083 28951 | {"eveniment": "revenire", "argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 28951, "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:53:44+02:00"}
+1795236824573890361 28951 | [confirmare] intrarea operatorului: /lab/home/iconta_nou/.git/operatii-migrare/bbeb88793b321d1456594954e8227163a41ff883/27672-1795236812817/confirmari.jsonl
+1795236824573934538 28951 | {"argv": ["scripts/publica_lot.sh", "--confirma-migrare", "17.5-P", "bbeb88793b321d1456594954e8227163a41ff883"], "pid": 28951, "operatie": "27672-1795236812817", "lot": "17.5-P", "e": "bbeb88793b321d1456594954e8227163a41ff883", "la": "2026-11-21T06:53:44+02:00"}
+1795236824574008950 28951 | [confirmare] rezultat existent: publicat 17.5-P pe bbeb88793b321d1456594954e8227163a41ff883 (operatia 27672-1795236812817); nimic de refacut

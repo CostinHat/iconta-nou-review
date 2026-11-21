@@ -1,0 +1,31 @@
+1795236504853671534 2560 | [publica_lot] PASS bbeb88793b321d1456594954e8227163a41ff883 (lot 17.5-P) C=143cbf2c42cbf25e3cb7374c753c5fc3cf5b439a (dublura de calibrare)
+1795236504943353715 2560 | [operatie] stadiu deschisa 2576-1795236504791
+1795236504944270598 2560 | [publica_lot] migrare declarată: operația 2576-1795236504791 pe bbeb88793b321d1456594954e8227163a41ff883
+1795236505057010908 2560 | Updating bcbe947..bbeb887
+1795236505057061305 2560 | Fast-forward
+1795236505107821180 2560 |  core/migrare_cal_bon_cui.py               | 10 ++++++++++
+1795236505107843854 2560 |  docs/dovezi/17_5_P/migrare_asteptata.json |  7 +++++++
+1795236505107847179 2560 |  docs/dovezi/17_5_P/nota.md                |  1 +
+1795236505107849743 2560 |  docs/dovezi/17_5_P/registre.md            |  1 +
+1795236505107852126 2560 |  tenant_template.sql                       |  1 +
+1795236505107855481 2560 |  5 files changed, 20 insertions(+)
+1795236505107858846 2560 |  create mode 100644 core/migrare_cal_bon_cui.py
+1795236505107862031 2560 |  create mode 100644 docs/dovezi/17_5_P/migrare_asteptata.json
+1795236505107865426 2560 |  create mode 100644 docs/dovezi/17_5_P/nota.md
+1795236505107869122 2560 |  create mode 100644 docs/dovezi/17_5_P/registre.md
+1795236505199297768 2560 | [post-commit] publicat pe origin/main: bbeb887
+1795236505298865454 2560 | [post-commit] backup creat: backup/lant-2026-11-21 -> bbeb887
+1795236505575051428 2560 | NU SE POATE ȘTI: baza de producție nu răspunde: connection to server at "127.0.0.1", port 15433 failed: Connection refused
+1795236505575096746 2560 | {"cod": 2, "e": "bbeb88793b321d1456594954e8227163a41ff883", "eveniment": "schema", "fisier": "core/migrare_cal_bon_cui.py", "lot": "17.5-P", "motiv": "baza de producție nu răspunde: connection to server at \"127.0.0.1\", port 15433 failed: Connection refused", "operatie": "2576-1795236504791", "plan": true, "rand": null, "stare": "necunoscut"}
+1795236505575208415 2560 | [publica_prod] static NEpublicat: procesul viu ramane pe commitul anterior pana la migrare; rulatorul publica statica inaintea restartului
+1795236505575217478 2560 | 
+1795236505575226712 2560 | ############################################################
+1795236505575250818 2560 | ## [publica_prod] RESTART/PUBLICARE pe iconta-nou (restart OPRIT) NEFACUT: productia nu are inca migrarile commitului (lista de mai sus)
+1795236505575254203 2560 | ## Rezolva ACUM: ruleaza fiecare migrare listata: ./venv/bin/python -m core.migrari_registru ruleaza --productie <fisier> — dupa ultima, rulatorul reporneste aplicatia
+1795236505575258871 2560 | ## Sentinela .git/RESTART_OPRIT_MIGRARE scrisa - raportul NU e 'incheiat' cat timp exista.
+1795236505575261776 2560 | ############################################################
+1795236505575267234 2560 | 
+1795236505578111355 2560 | [publica_prod] restartul producției NU s-a făcut (productia nu are inca migrarile commitului (lista de mai sus)); four-way nu se rulează.
+1795236505728401960 2560 | [operatie] stadiu nepublicat 2576-1795236504791
+1795236505779621520 2560 | [publica_lot] restartul producției nu s-a făcut (vezi mai sus).
+1795236505817039866 2560 | [incheie_lot] /lab/home/ghid_incoming/OPRIT_17.5-P.txt: OPRIT — gata: 17.5-P nepublicat - 2026-11-21T06:48:25+02:00
