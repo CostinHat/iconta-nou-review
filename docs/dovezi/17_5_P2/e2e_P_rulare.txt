@@ -1,0 +1,4 @@
+[e2e] aplicația din index pornită pe 8019 în 17s
+
+[e2e] 1 passed in 5.78s (23s; capturi în /home/costin/iconta_lot17_5p2/docs/dovezi/17_5_P2/e2e_P)
+rc=0 durata=25s

@@ -1,0 +1,4 @@
+[e2e] aplicația din index pornită pe 8019 în 17s
+
+[e2e] 14 passed in 108.02s (0:01:48) (125s; capturi în /home/costin/iconta_lot17_5p2/docs/dovezi/17_5_P2/teste_atinse_e2e/e2e_lot12_cx1)
+e2e_lot12_cx1.py rc=0 durata=127s

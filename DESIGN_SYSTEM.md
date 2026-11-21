@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.125 · 20 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.126 · 21 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -1620,6 +1620,8 @@ verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
 **(v2.125, lotul 17.5-N4, continuarea lui 17.5-N, AC077)** Contoarele unui ecran însumează toate rândurile listei: pastila fără scadență din Scadențar («<n> fără scadență în sistem», afișată mereu, și cu 0) intră în rândul de pastile alături de restante, scadențe apropiate și în termen, ca cele patru să numere fiecare factură din listă.
 
 **(v2.125, lotul 17.5-N4, continuarea lui 17.5-N, AC041)** Acțiune inactivă prin lipsa dreptului SPV: când se știe că firma n-are drept SPV (acoperire «neconectat» / «neacoperit»), butonul care trimite în SPV stă în bara de jos ca acțiune secundară marcată (`data-in-bara`), inactiv prin `inactiv(buton, motiv)`, lângă motivul vizibil (`.ds-motiv-inactiv`), iar alternativa manuală devine butonul principal (e-Transport: «Doar generează XML (manual)»; harta barei de jos: docs/dovezi/17_5_H/harta_bara_jos.txt). La lățime insuficientă se aplică regula de mai jos (bara pe două rânduri).
+
+**(v2.126, lotul 17.5-P2, continuarea lui 17.5-P, AC153 + AC154)** Un document pozat spune, imediat sub titlu și înaintea câmpurilor, ce a citit aplicația despre codul fiscal al cumpărătorului și temeiul deductibilității; textul de temei fiscal stă lângă cifra pe care o explică. Fereastra bonului fiscal are blocul `#d-fiscal` sub titlu, înaintea casetei de sumă și a ferestrei împărțite poză/câmpuri: rândul «CUI cumpărător pe bon: <cod | niciun cod înscris pe bon | necitit (bon încărcat înainte de această verificare)>», apoi verdictul TVA și notele conturilor propuse (6022, 623), fiecare cu temeiul; clasa `caseta-atentie` când TVA nu se deduce, cere verificare sau există note de cont, altfel `ecran-nota` (fără clase noi).
 
 ### Bara de jos cu motiv și acțiune secundară în bară (AC041)
 

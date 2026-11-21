@@ -1,0 +1,7 @@
+{
+  "lot": "17.5-P2",
+  "fisier": "core/migrare_bon_cui_cumparator.py",
+  "digest": "43a4c7dad4a6882ca9d36f37178b508107385f9ff78b949700acb13d54675205",
+  "tabel": "bonuri",
+  "coloana": "cui_cumparator"
+}

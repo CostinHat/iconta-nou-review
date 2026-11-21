@@ -1,0 +1,2 @@
+# scripts/verifica_liste_exceptii.py pe P
+[liste exceptii] VERDE: 7 titluri în cadru.js, 14 intrări în EXCEPTII_B, 7 numai în EXCEPTII_B (DOAR_PY)

@@ -1,0 +1,322 @@
+# Matricea textului tăiat, «inainte» pe baza publicată 17.5-P0 (420b0f1357cb8647cf36d7e4c32b6ac6d9db1a0c, matrice_inainte/) -> «dupa» pe P (3a2ae2baba7d4b7914e69bc18686556b97b32ae6, matrice/); 105 ecrane × 3 rezoluții
+ecran | rezoluție | inainte (tăieturi, stare) | dupa (tăieturi, stare) | verdict
+2133x1111: tăieturi 0 -> 0; nedeschis 1 -> 1
+1366x768: tăieturi 0 -> 0; nedeschis 1 -> 1
+603x590: tăieturi 0 -> 0; nedeschis 1 -> 1
+diferențe pe ecran × rezoluție: 0 (tăieturi noi: 0; «nedeschis» noi: 0; D177 F1 pasul 2 nedeschis pe ambele, aceeași cauză «Locator.click: Timeout 20000ms exceeded.»)
+«Bonuri și chitanțe F1»: 603x590 ('0', 'ok', '') -> ('0', 'ok', ''); 1366x768 ('0', 'ok', '') -> ('0', 'ok', ''); 2133x1111 ('0', 'ok', '') -> ('0', 'ok', '')
+Acces client F1 | 1366x768 | 0, ok | 0, ok | egal
+Acces client F1 | 2133x1111 | 0, ok | 0, ok | egal
+Acces client F1 | 603x590 | 0, ok | 0, ok | egal
+Activitate | 1366x768 | 0, ok | 0, ok | egal
+Activitate | 2133x1111 | 0, ok | 0, ok | egal
+Activitate | 603x590 | 0, ok | 0, ok | egal
+Analitică stoc F1 | 1366x768 | 0, ok | 0, ok | egal
+Analitică stoc F1 | 2133x1111 | 0, ok | 0, ok | egal
+Analitică stoc F1 | 603x590 | 0, ok | 0, ok | egal
+Asistenți | 1366x768 | 0, ok | 0, ok | egal
+Asistenți | 2133x1111 | 0, ok | 0, ok | egal
+Asistenți | 603x590 | 0, ok | 0, ok | egal
+Balanță de verificare F1 | 1366x768 | 0, ok | 0, ok | egal
+Balanță de verificare F1 | 2133x1111 | 0, ok | 0, ok | egal
+Balanță de verificare F1 | 603x590 | 0, ok | 0, ok | egal
+Bancă F1 | 1366x768 | 0, ok | 0, ok | egal
+Bancă F1 | 2133x1111 | 0, ok | 0, ok | egal
+Bancă F1 | 603x590 | 0, ok | 0, ok | egal
+Bilanț anual F2 | 1366x768 | 0, ok | 0, ok | egal
+Bilanț anual F2 | 2133x1111 | 0, ok | 0, ok | egal
+Bilanț anual F2 | 603x590 | 0, ok | 0, ok | egal
+Bonuri și chitanțe F1 | 1366x768 | 0, ok | 0, ok | egal
+Bonuri și chitanțe F1 | 2133x1111 | 0, ok | 0, ok | egal
+Bonuri și chitanțe F1 | 603x590 | 0, ok | 0, ok | egal
+Borderou de achiziție F1 | 1366x768 | 0, ok | 0, ok | egal
+Borderou de achiziție F1 | 2133x1111 | 0, ok | 0, ok | egal
+Borderou de achiziție F1 | 603x590 | 0, ok | 0, ok | egal
+Capacitate | 1366x768 | 0, ok | 0, ok | egal
+Capacitate | 2133x1111 | 0, ok | 0, ok | egal
+Capacitate | 603x590 | 0, ok | 0, ok | egal
+Cartea mare F1 | 1366x768 | 0, ok | 0, ok | egal
+Cartea mare F1 | 2133x1111 | 0, ok | 0, ok | egal
+Cartea mare F1 | 603x590 | 0, ok | 0, ok | egal
+Casare mijloace fixe F1 | 1366x768 | 0, ok | 0, ok | egal
+Casare mijloace fixe F1 | 2133x1111 | 0, ok | 0, ok | egal
+Casare mijloace fixe F1 | 603x590 | 0, ok | 0, ok | egal
+Casă F1 | 1366x768 | 0, ok | 0, ok | egal
+Casă F1 | 2133x1111 | 0, ok | 0, ok | egal
+Casă F1 | 603x590 | 0, ok | 0, ok | egal
+Casă — dispoziție nouă F1 | 1366x768 | 0, ok | 0, ok | egal
+Casă — dispoziție nouă F1 | 2133x1111 | 0, ok | 0, ok | egal
+Casă — dispoziție nouă F1 | 603x590 | 0, ok | 0, ok | egal
+Centre de cost F1 | 1366x768 | 0, ok | 0, ok | egal
+Centre de cost F1 | 2133x1111 | 0, ok | 0, ok | egal
+Centre de cost F1 | 603x590 | 0, ok | 0, ok | egal
+Certificat CM F5 | 1366x768 | 0, ok | 0, ok | egal
+Certificat CM F5 | 2133x1111 | 0, ok | 0, ok | egal
+Certificat CM F5 | 603x590 | 0, ok | 0, ok | egal
+Chei API | 1366x768 | 0, ok | 0, ok | egal
+Chei API | 2133x1111 | 0, ok | 0, ok | egal
+Chei API | 603x590 | 0, ok | 0, ok | egal
+Chirii / comodat / refacturări F2 | 1366x768 | 0, ok | 0, ok | egal
+Chirii / comodat / refacturări F2 | 2133x1111 | 0, ok | 0, ok | egal
+Chirii / comodat / refacturări F2 | 603x590 | 0, ok | 0, ok | egal
+Clienți F1 | 1366x768 | 0, ok | 0, ok | egal
+Clienți F1 | 2133x1111 | 0, ok | 0, ok | egal
+Clienți F1 | 603x590 | 0, ok | 0, ok | egal
+Coada de declarații F1 | 1366x768 | 0, ok | 0, ok | egal
+Coada de declarații F1 | 2133x1111 | 0, ok | 0, ok | egal
+Coada de declarații F1 | 603x590 | 0, ok | 0, ok | egal
+Compensări F1 | 1366x768 | 0, ok | 0, ok | egal
+Compensări F1 | 2133x1111 | 0, ok | 0, ok | egal
+Compensări F1 | 603x590 | 0, ok | 0, ok | egal
+Consolidare | 1366x768 | 0, ok | 0, ok | egal
+Consolidare | 2133x1111 | 0, ok | 0, ok | egal
+Consolidare | 603x590 | 0, ok | 0, ok | egal
+Contracte F1 | 1366x768 | 0, ok | 0, ok | egal
+Contracte F1 | 2133x1111 | 0, ok | 0, ok | egal
+Contracte F1 | 603x590 | 0, ok | 0, ok | egal
+Control fiscal | 1366x768 | 0, ok | 0, ok | egal
+Control fiscal | 2133x1111 | 0, ok | 0, ok | egal
+Control fiscal | 603x590 | 0, ok | 0, ok | egal
+Control fiscal (firmă) F1 | 1366x768 | 0, ok | 0, ok | egal
+Control fiscal (firmă) F1 | 2133x1111 | 0, ok | 0, ok | egal
+Control fiscal (firmă) F1 | 603x590 | 0, ok | 0, ok | egal
+Date firmă F1 | 1366x768 | 0, ok | 0, ok | egal
+Date firmă F1 | 2133x1111 | 0, ok | 0, ok | egal
+Date firmă F1 | 603x590 | 0, ok | 0, ok | egal
+De validat | 1366x768 | 0, ok | 0, ok | egal
+De validat | 2133x1111 | 0, ok | 0, ok | egal
+De validat | 603x590 | 0, ok | 0, ok | egal
+Declarație D104 F1 pasul 2 | 1366x768 | 0, ok | 0, ok | egal
+Declarație D104 F1 pasul 2 | 2133x1111 | 0, ok | 0, ok | egal
+Declarație D104 F1 pasul 2 | 603x590 | 0, ok | 0, ok | egal
+Declarație D107 F1 pasul 2 | 1366x768 | 0, ok | 0, ok | egal
+Declarație D107 F1 pasul 2 | 2133x1111 | 0, ok | 0, ok | egal
+Declarație D107 F1 pasul 2 | 603x590 | 0, ok | 0, ok | egal
+Declarație D110 F1 pasul 2 | 1366x768 | 0, ok | 0, ok | egal
+Declarație D110 F1 pasul 2 | 2133x1111 | 0, ok | 0, ok | egal
+Declarație D110 F1 pasul 2 | 603x590 | 0, ok | 0, ok | egal
+Declarație D114 F1 pasul 2 | 1366x768 | 0, ok | 0, ok | egal
+Declarație D114 F1 pasul 2 | 2133x1111 | 0, ok | 0, ok | egal
+Declarație D114 F1 pasul 2 | 603x590 | 0, ok | 0, ok | egal
+Declarație D177 F1 pasul 2 | 1366x768 | 0, nedeschis (Locator.click: Timeout 20000ms exceeded.) | 0, nedeschis (Locator.click: Timeout 20000ms exceeded.) | egal
+Declarație D177 F1 pasul 2 | 2133x1111 | 0, nedeschis (Locator.click: Timeout 20000ms exceeded.) | 0, nedeschis (Locator.click: Timeout 20000ms exceeded.) | egal
+Declarație D177 F1 pasul 2 | 603x590 | 0, nedeschis (Locator.click: Timeout 20000ms exceeded.) | 0, nedeschis (Locator.click: Timeout 20000ms exceeded.) | egal
+Declarație D205 F1 pasul 2 | 1366x768 | 0, ok | 0, ok | egal
+Declarație D205 F1 pasul 2 | 2133x1111 | 0, ok | 0, ok | egal
+Declarație D205 F1 pasul 2 | 603x590 | 0, ok | 0, ok | egal
+Declarație D301 F3 pasul 2 | 1366x768 | 0, ok | 0, ok | egal
+Declarație D301 F3 pasul 2 | 2133x1111 | 0, ok | 0, ok | egal
+Declarație D301 F3 pasul 2 | 603x590 | 0, ok | 0, ok | egal
+Declarație D307 F1 pasul 2 | 1366x768 | 0, ok | 0, ok | egal
+Declarație D307 F1 pasul 2 | 2133x1111 | 0, ok | 0, ok | egal
+Declarație D307 F1 pasul 2 | 603x590 | 0, ok | 0, ok | egal
+Declarație D398 F1 pasul 2 | 1366x768 | 0, ok | 0, ok | egal
+Declarație D398 F1 pasul 2 | 2133x1111 | 0, ok | 0, ok | egal
+Declarație D398 F1 pasul 2 | 603x590 | 0, ok | 0, ok | egal
+Declarație D710 F1 pasul 2 | 1366x768 | 0, ok | 0, ok | egal
+Declarație D710 F1 pasul 2 | 2133x1111 | 0, ok | 0, ok | egal
+Declarație D710 F1 pasul 2 | 603x590 | 0, ok | 0, ok | egal
+Declarații F1 pasul 1 | 1366x768 | 0, ok | 0, ok | egal
+Declarații F1 pasul 1 | 2133x1111 | 0, ok | 0, ok | egal
+Declarații F1 pasul 1 | 603x590 | 0, ok | 0, ok | egal
+Declarații lucrate | 1366x768 | 0, ok | 0, ok | egal
+Declarații lucrate | 2133x1111 | 0, ok | 0, ok | egal
+Declarații lucrate | 603x590 | 0, ok | 0, ok | egal
+Detaliu factură F1 | 1366x768 | 0, ok | 0, ok | egal
+Detaliu factură F1 | 2133x1111 | 0, ok | 0, ok | egal
+Detaliu factură F1 | 603x590 | 0, ok | 0, ok | egal
+Detaliu firmă F2 | 1366x768 | 0, ok | 0, ok | egal
+Detaliu firmă F2 | 2133x1111 | 0, ok | 0, ok | egal
+Detaliu firmă F2 | 603x590 | 0, ok | 0, ok | egal
+Detaliu firmă F5 | 1366x768 | 0, ok | 0, ok | egal
+Detaliu firmă F5 | 2133x1111 | 0, ok | 0, ok | egal
+Detaliu firmă F5 | 603x590 | 0, ok | 0, ok | egal
+Emite factură F1 | 1366x768 | 0, ok | 0, ok | egal
+Emite factură F1 | 2133x1111 | 0, ok | 0, ok | egal
+Emite factură F1 | 603x590 | 0, ok | 0, ok | egal
+Facturi F1 | 1366x768 | 0, ok | 0, ok | egal
+Facturi F1 | 2133x1111 | 0, ok | 0, ok | egal
+Facturi F1 | 603x590 | 0, ok | 0, ok | egal
+Facturi primite F1 | 1366x768 | 0, ok | 0, ok | egal
+Facturi primite F1 | 2133x1111 | 0, ok | 0, ok | egal
+Facturi primite F1 | 603x590 | 0, ok | 0, ok | egal
+Facturi recurente F1 | 1366x768 | 0, ok | 0, ok | egal
+Facturi recurente F1 | 2133x1111 | 0, ok | 0, ok | egal
+Facturi recurente F1 | 603x590 | 0, ok | 0, ok | egal
+Fereastră mică — confirmare storno F1 | 1366x768 | 0, ok | 0, ok | egal
+Fereastră mică — confirmare storno F1 | 2133x1111 | 0, ok | 0, ok | egal
+Fereastră mică — confirmare storno F1 | 603x590 | 0, ok | 0, ok | egal
+Firme | 1366x768 | 0, ok | 0, ok | egal
+Firme | 2133x1111 | 0, ok | 0, ok | egal
+Firme | 603x590 | 0, ok | 0, ok | egal
+Firme existente | 1366x768 | 0, ok | 0, ok | egal
+Firme existente | 2133x1111 | 0, ok | 0, ok | egal
+Firme existente | 603x590 | 0, ok | 0, ok | egal
+Firmă nouă | 1366x768 | 0, ok | 0, ok | egal
+Firmă nouă | 2133x1111 | 0, ok | 0, ok | egal
+Firmă nouă | 603x590 | 0, ok | 0, ok | egal
+Fișa salariatului F5 | 1366x768 | 0, ok | 0, ok | egal
+Fișa salariatului F5 | 2133x1111 | 0, ok | 0, ok | egal
+Fișa salariatului F5 | 603x590 | 0, ok | 0, ok | egal
+Fluturaș F5 | 1366x768 | 0, ok | 0, ok | egal
+Fluturaș F5 | 2133x1111 | 0, ok | 0, ok | egal
+Fluturaș F5 | 603x590 | 0, ok | 0, ok | egal
+Furnizori F1 | 1366x768 | 0, ok | 0, ok | egal
+Furnizori F1 | 2133x1111 | 0, ok | 0, ok | egal
+Furnizori F1 | 603x590 | 0, ok | 0, ok | egal
+Ghiduri | 1366x768 | 0, ok | 0, ok | egal
+Ghiduri | 2133x1111 | 0, ok | 0, ok | egal
+Ghiduri | 603x590 | 0, ok | 0, ok | egal
+Import date F1 | 1366x768 | 0, ok | 0, ok | egal
+Import date F1 | 2133x1111 | 0, ok | 0, ok | egal
+Import date F1 | 603x590 | 0, ok | 0, ok | egal
+Import date — Audit de preluare F7 | 1366x768 | 0, ok | 0, ok | egal
+Import date — Audit de preluare F7 | 2133x1111 | 0, ok | 0, ok | egal
+Import date — Audit de preluare F7 | 603x590 | 0, ok | 0, ok | egal
+Import date — Preluare F7 | 1366x768 | 0, ok | 0, ok | egal
+Import date — Preluare F7 | 2133x1111 | 0, ok | 0, ok | egal
+Import date — Preluare F7 | 603x590 | 0, ok | 0, ok | egal
+Import date — Solduri inițiale F1 | 1366x768 | 0, ok | 0, ok | egal
+Import date — Solduri inițiale F1 | 2133x1111 | 0, ok | 0, ok | egal
+Import date — Solduri inițiale F1 | 603x590 | 0, ok | 0, ok | egal
+Import salariați F5 | 1366x768 | 0, ok | 0, ok | egal
+Import salariați F5 | 2133x1111 | 0, ok | 0, ok | egal
+Import salariați F5 | 603x590 | 0, ok | 0, ok | egal
+Istoric facturi F1 | 1366x768 | 0, ok | 0, ok | egal
+Istoric facturi F1 | 2133x1111 | 0, ok | 0, ok | egal
+Istoric facturi F1 | 603x590 | 0, ok | 0, ok | egal
+Jurnal regim marjă F1 | 1366x768 | 0, ok | 0, ok | egal
+Jurnal regim marjă F1 | 2133x1111 | 0, ok | 0, ok | egal
+Jurnal regim marjă F1 | 603x590 | 0, ok | 0, ok | egal
+Magazin online F1 | 1366x768 | 0, ok | 0, ok | egal
+Magazin online F1 | 2133x1111 | 0, ok | 0, ok | egal
+Magazin online F1 | 603x590 | 0, ok | 0, ok | egal
+Migrare cabinet | 1366x768 | 0, ok | 0, ok | egal
+Migrare cabinet | 2133x1111 | 0, ok | 0, ok | egal
+Migrare cabinet | 603x590 | 0, ok | 0, ok | egal
+Mijloace fixe F1 | 1366x768 | 0, ok | 0, ok | egal
+Mijloace fixe F1 | 2133x1111 | 0, ok | 0, ok | egal
+Mijloace fixe F1 | 603x590 | 0, ok | 0, ok | egal
+Mijloace fixe — Leasing F1 | 1366x768 | 0, ok | 0, ok | egal
+Mijloace fixe — Leasing F1 | 2133x1111 | 0, ok | 0, ok | egal
+Mijloace fixe — Leasing F1 | 603x590 | 0, ok | 0, ok | egal
+Mișcări și fișe de magazie F1 | 1366x768 | 0, ok | 0, ok | egal
+Mișcări și fișe de magazie F1 | 2133x1111 | 0, ok | 0, ok | egal
+Mișcări și fișe de magazie F1 | 603x590 | 0, ok | 0, ok | egal
+Model factură F1 | 1366x768 | 0, ok | 0, ok | egal
+Model factură F1 | 2133x1111 | 0, ok | 0, ok | egal
+Model factură F1 | 603x590 | 0, ok | 0, ok | egal
+NIR nou F1 | 1366x768 | 0, ok | 0, ok | egal
+NIR nou F1 | 2133x1111 | 0, ok | 0, ok | egal
+NIR nou F1 | 603x590 | 0, ok | 0, ok | egal
+Operațiuni speciale F1 | 1366x768 | 0, ok | 0, ok | egal
+Operațiuni speciale F1 | 2133x1111 | 0, ok | 0, ok | egal
+Operațiuni speciale F1 | 603x590 | 0, ok | 0, ok | egal
+Ore suplimentare F5 | 1366x768 | 0, ok | 0, ok | egal
+Ore suplimentare F5 | 2133x1111 | 0, ok | 0, ok | egal
+Ore suplimentare F5 | 603x590 | 0, ok | 0, ok | egal
+Pachete lunare | 1366x768 | 0, ok | 0, ok | egal
+Pachete lunare | 2133x1111 | 0, ok | 0, ok | egal
+Pachete lunare | 603x590 | 0, ok | 0, ok | egal
+Panou Admin — Activitate cabinete | 1366x768 | 0, ok | 0, ok | egal
+Panou Admin — Activitate cabinete | 2133x1111 | 0, ok | 0, ok | egal
+Panou Admin — Activitate cabinete | 603x590 | 0, ok | 0, ok | egal
+Panou Admin — Analytics | 1366x768 | 0, ok | 0, ok | egal
+Panou Admin — Analytics | 2133x1111 | 0, ok | 0, ok | egal
+Panou Admin — Analytics | 603x590 | 0, ok | 0, ok | egal
+Panou Admin — Anunțuri | 1366x768 | 0, ok | 0, ok | egal
+Panou Admin — Anunțuri | 2133x1111 | 0, ok | 0, ok | egal
+Panou Admin — Anunțuri | 603x590 | 0, ok | 0, ok | egal
+Panou Admin — Invitații | 1366x768 | 0, ok | 0, ok | egal
+Panou Admin — Invitații | 2133x1111 | 0, ok | 0, ok | egal
+Panou Admin — Invitații | 603x590 | 0, ok | 0, ok | egal
+Panou Admin — Notificări | 1366x768 | 0, ok | 0, ok | egal
+Panou Admin — Notificări | 2133x1111 | 0, ok | 0, ok | egal
+Panou Admin — Notificări | 603x590 | 0, ok | 0, ok | egal
+Panou Admin — Raportări | 1366x768 | 0, ok | 0, ok | egal
+Panou Admin — Raportări | 2133x1111 | 0, ok | 0, ok | egal
+Panou Admin — Raportări | 603x590 | 0, ok | 0, ok | egal
+Panou Admin — Sănătate server | 1366x768 | 0, ok | 0, ok | egal
+Panou Admin — Sănătate server | 2133x1111 | 0, ok | 0, ok | egal
+Panou Admin — Sănătate server | 603x590 | 0, ok | 0, ok | egal
+Panou Admin — Înregistrare | 1366x768 | 0, ok | 0, ok | egal
+Panou Admin — Înregistrare | 2133x1111 | 0, ok | 0, ok | egal
+Panou Admin — Înregistrare | 603x590 | 0, ok | 0, ok | egal
+Parteneri F1 | 1366x768 | 0, ok | 0, ok | egal
+Parteneri F1 | 2133x1111 | 0, ok | 0, ok | egal
+Parteneri F1 | 603x590 | 0, ok | 0, ok | egal
+Plan de conturi F1 | 1366x768 | 0, ok | 0, ok | egal
+Plan de conturi F1 | 2133x1111 | 0, ok | 0, ok | egal
+Plan de conturi F1 | 603x590 | 0, ok | 0, ok | egal
+Pontaj F5 | 1366x768 | 0, ok | 0, ok | egal
+Pontaj F5 | 2133x1111 | 0, ok | 0, ok | egal
+Pontaj F5 | 603x590 | 0, ok | 0, ok | egal
+Produse F1 | 1366x768 | 0, ok | 0, ok | egal
+Produse F1 | 2133x1111 | 0, ok | 0, ok | egal
+Produse F1 | 603x590 | 0, ok | 0, ok | egal
+Rapoarte comerciale F1 | 1366x768 | 0, ok | 0, ok | egal
+Rapoarte comerciale F1 | 2133x1111 | 0, ok | 0, ok | egal
+Rapoarte comerciale F1 | 603x590 | 0, ok | 0, ok | egal
+Raport Z F1 | 1366x768 | 0, ok | 0, ok | egal
+Raport Z F1 | 2133x1111 | 0, ok | 0, ok | egal
+Raport Z F1 | 603x590 | 0, ok | 0, ok | egal
+Registratură F1 | 1366x768 | 0, ok | 0, ok | egal
+Registratură F1 | 2133x1111 | 0, ok | 0, ok | egal
+Registratură F1 | 603x590 | 0, ok | 0, ok | egal
+Registre art. 321 F1 | 1366x768 | 0, ok | 0, ok | egal
+Registre art. 321 F1 | 2133x1111 | 0, ok | 0, ok | egal
+Registre art. 321 F1 | 603x590 | 0, ok | 0, ok | egal
+Registru jurnal F1 | 1366x768 | 0, ok | 0, ok | egal
+Registru jurnal F1 | 2133x1111 | 0, ok | 0, ok | egal
+Registru jurnal F1 | 603x590 | 0, ok | 0, ok | egal
+Registru jurnal — notă nouă F1 | 1366x768 | 0, ok | 0, ok | egal
+Registru jurnal — notă nouă F1 | 2133x1111 | 0, ok | 0, ok | egal
+Registru jurnal — notă nouă F1 | 603x590 | 0, ok | 0, ok | egal
+Registru încasări/plăți F4 | 1366x768 | 0, ok | 0, ok | egal
+Registru încasări/plăți F4 | 2133x1111 | 0, ok | 0, ok | egal
+Registru încasări/plăți F4 | 603x590 | 0, ok | 0, ok | egal
+Registru încasări/plăți F4 + Operațiune nouă | 1366x768 | 0, ok | 0, ok | egal
+Registru încasări/plăți F4 + Operațiune nouă | 2133x1111 | 0, ok | 0, ok | egal
+Registru încasări/plăți F4 + Operațiune nouă | 603x590 | 0, ok | 0, ok | egal
+Registrul de evidență fiscală F1 | 1366x768 | 0, ok | 0, ok | egal
+Registrul de evidență fiscală F1 | 2133x1111 | 0, ok | 0, ok | egal
+Registrul de evidență fiscală F1 | 603x590 | 0, ok | 0, ok | egal
+Registrul-inventar F1 | 1366x768 | 0, ok | 0, ok | egal
+Registrul-inventar F1 | 2133x1111 | 0, ok | 0, ok | egal
+Registrul-inventar F1 | 603x590 | 0, ok | 0, ok | egal
+Scadențar F1 | 1366x768 | 0, ok | 0, ok | egal
+Scadențar F1 | 2133x1111 | 0, ok | 0, ok | egal
+Scadențar F1 | 603x590 | 0, ok | 0, ok | egal
+Setări cont | 1366x768 | 0, ok | 0, ok | egal
+Setări cont | 2133x1111 | 0, ok | 0, ok | egal
+Setări cont | 603x590 | 0, ok | 0, ok | egal
+Sinteza zilei | 1366x768 | 0, ok | 0, ok | egal
+Sinteza zilei | 2133x1111 | 0, ok | 0, ok | egal
+Sinteza zilei | 603x590 | 0, ok | 0, ok | egal
+Solicitări client F1 | 1366x768 | 0, ok | 0, ok | egal
+Solicitări client F1 | 2133x1111 | 0, ok | 0, ok | egal
+Solicitări client F1 | 603x590 | 0, ok | 0, ok | egal
+Stat de plată F5 | 1366x768 | 0, ok | 0, ok | egal
+Stat de plată F5 | 2133x1111 | 0, ok | 0, ok | egal
+Stat de plată F5 | 603x590 | 0, ok | 0, ok | egal
+Stocuri F1 | 1366x768 | 0, ok | 0, ok | egal
+Stocuri F1 | 2133x1111 | 0, ok | 0, ok | egal
+Stocuri F1 | 603x590 | 0, ok | 0, ok | egal
+Supervizor | 1366x768 | 0, ok | 0, ok | egal
+Supervizor | 2133x1111 | 0, ok | 0, ok | egal
+Supervizor | 603x590 | 0, ok | 0, ok | egal
+Termene | 1366x768 | 0, ok | 0, ok | egal
+Termene | 2133x1111 | 0, ok | 0, ok | egal
+Termene | 603x590 | 0, ok | 0, ok | egal
+Tipare de erori | 1366x768 | 0, ok | 0, ok | egal
+Tipare de erori | 2133x1111 | 0, ok | 0, ok | egal
+Tipare de erori | 603x590 | 0, ok | 0, ok | egal
+Verificări F1 | 1366x768 | 0, ok | 0, ok | egal
+Verificări F1 | 2133x1111 | 0, ok | 0, ok | egal
+Verificări F1 | 603x590 | 0, ok | 0, ok | egal
+e-Transport F1 | 1366x768 | 0, ok | 0, ok | egal
+e-Transport F1 | 2133x1111 | 0, ok | 0, ok | egal
+e-Transport F1 | 603x590 | 0, ok | 0, ok | egal
+Închidere lună F1 | 1366x768 | 0, ok | 0, ok | egal
+Închidere lună F1 | 2133x1111 | 0, ok | 0, ok | egal
+Închidere lună F1 | 603x590 | 0, ok | 0, ok | egal

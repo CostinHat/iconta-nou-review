@@ -1,0 +1,10 @@
+# 8.5 (i), grep -rnF: fragment | fișier | bază (420b0f1357cb8647cf36d7e4c32b6ac6d9db1a0c) | C (arborele lui C; codul = P 3a2ae2ba) | așteptat
+623 protocol (cafea, apa, mancare) | core/uc_portal.py | 1 | 0 | bază ≥1, C 0
+cui_cumparator | core/uc_portal.py | 0 | 7 | bază 0, C ≥1
+cui_cumparator | core/repo_casa.py | 0 | 7 | bază 0, C ≥1
+cui_cumparator | core/uc_tenants.py | 0 | 2 | bază 0, C ≥1
+cui_cumparator | static/js/ecrane/firme.js | 0 | 1 | bază 0, C ≥1
+cui_cumparator | tenant_template.sql | 0 | 3 | bază 0, C ≥1
+bon_tva_deductibil | core/uc_tenants.py | 0 | 2 | bază 0, C ≥1
+d-fiscal | static/js/ecrane/firme.js | 0 | 1 | bază 0, C ≥1
+migrare_bon_cui_cumparator | core/test_e2a_univers.py | 0 | 1 | bază 0, C ≥1

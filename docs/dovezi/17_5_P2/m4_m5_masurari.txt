@@ -1,0 +1,30 @@
+# M4: mulțimile măsurate cu scripts/scan_univers_sql.py pe bază (~/iconta_nou, main 420b0f13) și pe P (3a2ae2baba7d4b7914e69bc18686556b97b32ae6)
+MIGRARE_UNICA: bază 163, P 164; diferența (diff bază P):
+14a15
+> core/migrare_bon_cui_cumparator.py
+eliminări: 0
+D4b: bază 20, P 20; diferența: 0 (P2 nu adaugă niciun membru D4b)
+D4b în afara core/uc_tenants.py pe P: 19 (≤ 19)
+membrii D4b pe P:
+core/alerta_acces.py
+core/alerte_control_fiscal.py
+core/audit_retentie.py
+core/audit_schema.py
+core/cron.py
+core/etransport_send.py
+core/facturi_recurente.py
+core/firma_rezumat.py
+core/gdpr_sterge.py
+core/migrari_registru.py
+core/sonda_web.py
+core/spv_conector.py
+core/spv_poll.py
+core/spv_receive.py
+core/spv_refresh.py
+core/supervizor.py
+core/supervizor_cache.py
+core/uc_curs_bnr.py
+core/uc_tenants.py
+core/woocommerce.py
+# M5: apelurile repository: bază 462 (garzi_baza.txt: assert 462 == 460), P 465 (teste_core_P.txt: test_numarul_de_instructiuni_se_conserva trece cu == 465)
+P apeluri: 465

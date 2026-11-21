@@ -1,0 +1,23 @@
+# testul core al arhitectului pe P 3a2ae2baba7d4b7914e69bc18686556b97b32ae6
+.................                                                        [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_verdictul_si_precedenta_motivelor
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_textele_au_temei_si_nu_au_identificatori_de_cod
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_notele_de_cont_au_temei_numai_unde_exista_limita
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_notele_unui_bon_sunt_unice_si_in_ordinea_conturilor
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_migrarea_e_a_registrului_si_sablonul_are_blocul_ei
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_firma_noua_are_coloana_nula_fara_implicit_si_migrarea_o_adauga_si_e_idempotenta
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_raspunsul_ai_da_cele_trei_stari_ale_codului_cumparatorului
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_adauga_bon_pune_fiecare_valoare_pe_coloana_ei
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_portal_bon_scrie_cui_cumparator_pe_coloana_lui_si_nu_muta_celelalte_coloane
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_codul_firmei_nu_isi_dedude_tva_si_valoarea_intreaga_intra_in_cheltuiala
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_alt_cod_nu_isi_dedude_tva
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_codul_firmei_sub_100_euro_isi_dedude_tva_ca_pana_acum_fara_observatie
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_cu_codul_firmei_peste_100_euro_si_cel_vechi_isi_pastreaza_tva_cu_observatie
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_tva_nu_cere_verdict_si_nu_citeste_nimic_in_plus
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_lista_de_verificat_poarta_codul_verdictul_si_notele
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_bonul_fara_tva_in_lista_nu_primeste_verdict_ci_numai_notele_de_cont
+PASSED core/test_bon_cui_cumparator_17_5_P2.py::test_curs_euro_real_converteste_data_si_ia_cursul_din_tuplul_lui_curs_pentru
+17 passed in 6.34s
+rc=0 durata=6.919831586 s

@@ -1,0 +1,40 @@
+# 17.5-P2, pct.8.5 (ii): testele care citesc locurile schimbate, lista explicită din comandă, rulate o dată pe P 3a2ae2ba
+# (căile verificate cu test -f; nicio expresie largă). Ieșirile complete: teste_core_P.txt, test_core_P.txt, e2e_P_rulare.txt,
+# teste_atinse_e2e_*.txt, scan_selecturi.txt, liste_exceptii.txt; roșiile pe bază: rosii_871_872_baza.txt, garzi_baza.txt.
+
+## Testul nou al arhitectului
+core/test_bon_cui_cumparator_17_5_P2.py              17 teste   17 passed, 0 omise                 6,9 s    (bază: 17 failed, 1 error, 7,6 s — test_core_baza.txt)
+frontend_test/e2e/e2e_bon_cui_17_5_P2.py              1 test     1 passed: e.1–e.5 trec              25 s     (bază: e.1–e.4 pică, e.5 trece — dovada REAL)
+
+## Testele core din listă: o singură invocare `./venv/bin/python -m pytest -q -p no:cacheprovider <cele 17 fișiere>`
+## 489 de teste, 487 passed, 2 failed, rc=1, 496,8 s
+core/test_portal_bon.py                     5    trec          3,8 s   (răspunsul AI fără cheia nouă: coloana rămâne NULL)
+core/test_flux_factura_f1_c.py             18    trec          8,5 s   (:358–364, bon_aproba cu SimpleNamespace(tva=0))
+core/test_p7_uc.py                         21    trec         42,4 s   (bon_aproba: rotunjire, nota de bon; gărzile HTTP/apeluri: test_niciun_HTTPException_in_stratul_use_case, test_NICIUN_APEL_nu_s_a_pierdut_pe_drum, test_DECORATORII_rutelor_sunt_NEATINSI — trec)
+core/test_p7_straturi.py                   23    22 trec, 1 pică  348,7 s   pică test_cifra_din_motiv_nu_imbatraneste_tacut = 871, restanță de bază (același nodeid, aceeași aserțiune, aceeași listă de 4 cifre pe bază)
+core/test_e2a_univers.py                  299    trec          9,2 s   (M4: MIGRARE_UNICA 164, D4b 20 cu 19 în afara uc_tenants — m4_m5_masurari.txt)
+core/test_p7_v2_scrieri.py                 16    trec          7,2 s   (M5: 465)
+core/test_migrari_registru.py              11    trec         10,7 s
+core/test_get_fara_scriere.py               3    trec          1,8 s
+core/test_rotunjire_fiscala.py              2    trec          1,5 s
+core/test_text_afisat_limbaj.py            15    14 trec, 1 pică   24,7 s   pică test_textul_afisat_e_limba_romana = 872, restanță de bază (core/migrari_registru.py:323 și :329, identic pe bază)
+core/test_diacritice_afisate.py             7    trec          3,6 s
+core/test_lot11_cf_cui_forma_unica.py      21    trec          7,2 s
+core/test_lot12_int1_serie_raspuns.py       2    trec          0,5 s
+core/test_regula_importurilor.py           15    trec          0,1 s
+core/test_audit_schema.py                  11    trec          1,5 s
+core/test_lot13_migr_tva_preluat.py         3    trec          1,0 s
+core/test_lot11_y2_import_fidel.py         17    trec         13,7 s
+(duratele pe fișier = suma fazelor din --durations=0)
+
+## E2E din listă, în afara plasei (scripts/e2e_poarta.py --doar=<fișier>, baza restaurată înainte, 8019 liber la intrare și la ieșire)
+frontend_test/e2e/e2e_lot12_cx1.py         14    trec        127 s
+frontend_test/e2e/e2e_lot12_cx7.py         14    trec         93 s
+frontend_test/proba_drepturi_confirmari.py  —    nerulată: proba cere un cont de asistent cu drepturi puse de «lanțul care o rulează» (docstring), lanț care nu există în depozit; punerea drepturilor ar fi o scriere pe iconta_test în afara uneltelor oficiale (CLAUDE.md §3, Lacătul). Proba citește #d-poze și .ecran-nota din #d-poze, neschimbate (pct5_verificari.txt). Raport, E.
+
+## Scripturi din listă
+scripts/scan_selecturi_ecrane.py           rc=0
+scripts/verifica_liste_exceptii.py         rc=0, VERDE
+
+## Total: 17 fișiere core (489 de teste) + testul nou core (17) + e2e nou (1) + 2 e2e (28) + 2 scripturi; roșii pe P: 2, amândouă restanțe de bază
+## (871, 872) în afara diff-ului lotului, cu același nodeid, aceeași aserțiune și aceeași cauză pe bază; niciun test roșu numai pe P.

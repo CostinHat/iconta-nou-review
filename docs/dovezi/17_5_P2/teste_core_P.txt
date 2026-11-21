@@ -1,0 +1,310 @@
+# lista 8.5 (ii), testele core, o dată pe P 3a2ae2baba7d4b7914e69bc18686556b97b32ae6
+..................................................................F..... [ 14%]
+........................................................................ [ 29%]
+........................................................................ [ 44%]
+........................................................................ [ 58%]
+........................................................................ [ 73%]
+...........................................F............................ [ 88%]
+.........................................................                [100%]
+=================================== FAILURES ===================================
+__________________ test_cifra_din_motiv_nu_imbatraneste_tacut __________________
+
+    def test_cifra_din_motiv_nu_imbatraneste_tacut():
+        """O declaratie care spune «N instructiuni SQL» se confrunta cu modulul, la fiecare rulare.
+    
+        De ce exista garda asta: pana la V2, `main.py` purta in registru cifra 295, scrisa la V3 si
+        adevarata atunci. V1 si V2 au mutat 257 de instructiuni si nimic n-a intrebat registrul —
+        `D4` a continuat sa dea cifra veche drept DOVADA. Un registru care isi tine singur cifrele
+        la zi nu mai poate face asta.
+    
+        Metrica nu e aleasa azi ca sa iasa: din 28 de intrari care poarta o cifra, 27 coincideau deja
+        cu numarul de apeluri `execute`/`executemany` din modul. Singurul dezacord era cel imbatranit.
+        """
+        import scan_p7_straturi as _S
+    
+        def _numar_executii(arb):
+            return sum(1 for x in ast.walk(arb)
+                       if isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute)
+                       and x.func.attr in ("execute", "executemany"))
+    
+        def _numar_rute(arb, rel):
+            return len(_S.rute_din_arbore(arb, rel))
+    
+        # (tipar, cum se recalculeaza) — ambele cifre pe care le poarta un motiv
+        MASURI = ((re.compile(r"(\d+) instructiuni SQL"), _numar_executii, 28),
+                  (re.compile(r"(\d+) rute montate in modul"), _numar_rute, 1))
+        dezacorduri, vazute = [], []
+        for tipar, masoara, _prag in MASURI:
+            n = 0
+            for d in R.REGISTRU:
+                m = tipar.search(d.motiv)
+                if not m:
+                    continue
+                n += 1
+                cale = os.path.join(RADACINA, d.cale)
+                if not os.path.exists(cale):
+                    dezacorduri.append((d.cale, tipar.pattern, int(m.group(1)), None))
+                    continue
+                try:
+                    arb = ast.parse(io.open(cale, encoding="utf-8").read())
+                except SyntaxError:
+                    continue
+                real = masoara(arb) if masoara is _numar_executii else masoara(arb, d.cale)
+                if real != int(m.group(1)):
+                    dezacorduri.append((d.cale, tipar.pattern, int(m.group(1)), real))
+            vazute.append(n)
+        assert vazute >= [p for _t, _m, p in MASURI], (
+            "ANTI-VACUUM: garda nu mai vede cifrele din registru: %s" % vazute)
+>       assert dezacorduri == [], (
+            "registrul poarta cifre care nu mai sunt adevarate "
+            "(cale, masura, scris, real): %s" % dezacorduri)
+E       AssertionError: registrul poarta cifre care nu mai sunt adevarate (cale, masura, scris, real): [('core/repo_d300.py', '(\\d+) instructiuni SQL', 8, 9), ('core/repo_d301.py', '(\\d+) instructiuni SQL', 2, 3), ('core/uc_tenants.py', '(\\d+) instructiuni SQL', 0, 1), ('main.py', '(\\d+) rute montate in modul', 528, 529)]
+E       assert [('core/repo_...l', 528, 529)] == []
+E         
+E         Left contains 4 more items, first extra item: ('core/repo_d300.py', '(\\d+) instructiuni SQL', 8, 9)
+E         Use -v to get more diff
+
+core/test_p7_straturi.py:433: AssertionError
+______________________ test_textul_afisat_e_limba_romana _______________________
+
+texte = [('core/activitati_amef.py', 82, 'Chitanța nu s-a emis: o vânzare încasată în numerar fără factură se face cu bon fisc...s%% nu se poate folosi la data chitanței. Cotele posibile atunci: %s.'), ('core/activitati_amef.py', 115, '%s%%'), ...]
+
+    def test_textul_afisat_e_limba_romana(texte):
+        gasite = defecte(texte)
+        raport = "\n".join("  %s:%d  [%s] %s  <- %r" % (fn, ln, fel, ",".join(g), s[:110]) for fn, ln, fel, g, s in gasite)
+>       assert not gasite, "Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:\n" + raport
+E       AssertionError: Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:
+E           core/migrari_registru.py:323  [diacritice] fara,operatie  <- 'fara operatie'
+E           core/migrari_registru.py:329  [diacritice] operatie  <- 'alta operatie'
+E       assert not [('core/migrari_registru.py', 323, 'diacritice', ['fara', 'operatie'], 'fara operatie'), ('core/migrari_registru.py', 329, 'diacritice', ['operatie'], 'alta operatie')]
+
+core/test_text_afisat_limbaj.py:413: AssertionError
+============================== slowest durations ===============================
+81.84s call     core/test_p7_straturi.py::test_un_modul_NOU_in_univers_FARA_declaratie_pica
+75.46s call     core/test_p7_straturi.py::test_fiecare_modul_din_univers_are_un_strat_declarat
+73.79s call     core/test_p7_straturi.py::test_niciunul_dintre_cele_sapte_nu_e_EVIDENCE_LIMITATION
+62.60s call     core/test_p7_straturi.py::test_contabilitatea_P7_se_inchide_dupa_V3
+51.82s call     core/test_p7_straturi.py::test_ANTI_VACUUM_registrul_si_straturile_nu_sunt_goale
+14.92s call     core/test_p7_uc.py::test_INLOCUIRILE_declarate_chiar_exista
+12.48s call     core/test_p7_uc.py::test_SCOASELE_declarate_chiar_lipsesc
+7.85s call     core/test_p7_uc.py::test_EXTRAGERILE_declarate_chiar_cheama_ajutorul
+7.11s setup    core/test_text_afisat_limbaj.py::test_textul_afisat_e_limba_romana
+4.15s call     core/test_text_afisat_limbaj.py::test_aplicatia_vorbeste_la_persoana_a_treia
+3.90s call     core/test_lot11_y2_import_fidel.py::test_c80_reducerea_de_document_intra_in_baza_cotei_si_401_inchide_bt112
+3.62s call     core/test_lot11_cf_cui_forma_unica.py::test_garda_nicio_normalizare_locala_a_prefixului_ro
+3.58s call     core/test_lot11_cf_cui_forma_unica.py::test_exceptiile_sunt_toate_vii
+3.58s call     core/test_migrari_registru.py::test_verifica_opreste_pe_migrare_nerulata_si_trece_cand_toate_sunt_rulate
+3.12s call     core/test_text_afisat_limbaj.py::test_rolurile_noi_vad_limitele_verdictului
+2.69s call     core/test_diacritice_afisate.py::test_niciun_mesaj_user_facing_fara_diacritice
+2.54s call     core/test_migrari_registru.py::test_ordinea_numeste_tot_ce_creeaza_alta_migrare
+2.38s call     core/test_text_afisat_limbaj.py::test_textul_din_pdf_e_limba_romana
+2.09s call     core/test_e2a_univers.py::test_CLICHET_amestecul_observat_nu_creste
+2.04s call     core/test_e2a_univers.py::test_CLICHET_contradictia_declaratie_cod_nu_creste
+1.98s call     core/test_migrari_registru.py::test_verifica_opreste_pe_schema_in_urma_sablonului
+1.98s call     core/test_p7_v2_scrieri.py::test_ANTI_VACUUM_detectorul_inca_vede_rutele_si_repository_urile
+1.95s call     core/test_p7_uc.py::test_MUTARILE_in_ajutor_chiar_cheama_ajutorul
+1.92s call     core/test_migrari_registru.py::test_verifica_opreste_pe_trigger_lipsa
+1.74s call     core/test_lot11_y2_import_fidel.py::test_c79_d406_purchaseinvoices_suma_taxamount_e_tva_ul_facturii_si_duk_valid
+1.72s call     core/test_text_afisat_limbaj.py::test_datele_din_textul_afisat_trec_prin_data_ro
+1.62s call     core/test_p7_v2_scrieri.py::test_D1_e_zero_pe_toate_clasele_si_UNKNOWN_ramane_zero
+1.61s call     core/test_p7_v2_scrieri.py::test_TRANSACTION_CONTROL_IN_HTTP_ROUTE_e_zero
+1.61s call     core/test_p7_v2_scrieri.py::test_WRITE_SQL_IN_HTTP_ROUTE_e_zero
+1.61s call     core/test_text_afisat_limbaj.py::test_marcajul_intern_are_motiv_si_plafon
+1.57s call     core/test_text_afisat_limbaj.py::test_detectoarele_au_dinti
+1.51s call     core/test_e2a_univers.py::test_CRITERIU_niciun_modul_cu_SQL_nu_e_nedeclarat
+1.49s call     core/test_rotunjire_fiscala.py::test_rotunjirea_in_toata_aplicatia_e_aritmetica_sau_motivata
+1.46s call     core/test_e2a_univers.py::test_ANTI_VACUU_universul_e_cel_real
+1.45s call     core/test_e2a_univers.py::test_ANTI_VACUU_chiar_exista_depozite_de_probat
+1.28s call     core/test_lot11_y2_import_fidel.py::test_c79_d394_tvaA_e_tva_ul_facturii_si_duk_valid
+1.26s call     core/test_lot11_y2_import_fidel.py::test_c81_c83_valuta_curs_la_import_si_tva_ul_bt111_in_nota_d300_d394
+1.14s call     core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum
+0.98s call     core/test_p7_uc.py::test_ANTIVACUU_chiar_confrunta_ceva
+0.95s call     core/test_audit_schema.py::test_toti_tenantii_conform_cu_template
+0.94s call     core/test_p7_uc.py::test_perechile_cod_mesaj_sunt_NESCHIMBATE
+0.90s call     core/test_p7_straturi.py::test_un_motor_fiscal_FARA_db_nu_e_item
+0.83s call     core/test_portal_bon.py::test_un_bon_incarcat_ramane_DRAFT_pana_la_confirmare
+0.77s call     core/test_p7_straturi.py::test_cele_sapte_foste_EVIDENCE_LIMITATION_au_fiecare_un_strat
+0.75s call     core/test_text_afisat_limbaj.py::test_cuvintele_singure_afisate_au_diacritice
+0.74s setup    core/test_portal_bon.py::test_un_bon_incarcat_ramane_DRAFT_pana_la_confirmare
+0.70s call     core/test_get_fara_scriere.py::test_nicio_ruta_get_nu_scrie_stare_de_business
+0.68s call     core/test_text_afisat_limbaj.py::test_textul_afisat_e_limba_romana
+0.60s call     core/test_p7_straturi.py::test_D2_vede_FISCAL_ENGINE_cu_db_si_NU_vede_celelalte_straturi
+0.59s setup    core/test_lot11_y2_import_fidel.py::test_c81_fara_bt111_tva_ul_e_tva_x_curs
+0.59s call     core/test_get_fara_scriere.py::test_exceptia_de_jurnal_e_chiar_folosita
+0.58s setup    core/test_flux_factura_f1_c.py::test_nota_bonului_si_a_statului_de_plata_poarta_documentul
+0.56s setup    core/test_flux_factura_f1_c.py::test_descrierea_notei_de_iesire_are_cantitatea_cu_um
+0.56s setup    core/test_flux_factura_f1_c.py::test_iesirea_manuala_poarta_documentul_scris
+0.56s setup    core/test_lot11_y2_import_fidel.py::test_c82_fisa_de_magazie_are_valoarea_liniei_din_xml
+0.56s call     core/test_text_afisat_limbaj.py::test_ecranele_fara_majuscule_de_accent
+0.56s call     core/test_audit_schema.py::test_mutatie_negativa_poarta_prinde_coloana_lipsa
+0.56s call     core/test_p7_straturi.py::test_cifra_din_motiv_nu_imbatraneste_tacut
+0.55s setup    core/test_flux_factura_f1_c.py::test_descarcarea_din_factura_poarta_factura_ca_document_justificativ
+0.53s setup    core/test_flux_factura_f1_c.py::test_propunerea_pentru_linie_ia_pretul_si_um_din_nomenclator
+0.53s setup    core/test_lot11_y2_import_fidel.py::test_c83_bnr_indisponibil_la_import_contarea_spune_ce_se_face_si_reia_cursul
+0.53s setup    core/test_lot11_y2_import_fidel.py::test_c80_reducerea_de_document_se_imparte_pe_articolele_cotei_nu_devine_articol
+0.53s setup    core/test_flux_factura_f1_c.py::test_contarea_pe_nota_propusa_se_opreste_si_spune_nota_creata
+0.52s setup    core/test_lot11_y2_import_fidel.py::test_datele_existente_migrarea_completeaza_din_xml_bt131_si_reducerile_de_document
+0.52s call     core/test_get_fara_scriere.py::test_gardul_chiar_vede_rutele_get
+0.51s setup    core/test_lot11_y2_import_fidel.py::test_c80_reducerea_de_document_intra_in_baza_cotei_si_401_inchide_bt112
+0.51s setup    core/test_flux_factura_f1_c.py::test_contabilizata_numai_cu_nota_de_contare_validata
+0.51s setup    core/test_lot11_y2_import_fidel.py::test_c82_cantitate_neintreaga_baza_din_xml_la_ban
+0.51s setup    core/test_flux_factura_f1_c.py::test_contarea_pe_factura_poarta_extrasul
+0.50s setup    core/test_lot11_y2_import_fidel.py::test_c79_d394_tvaA_e_tva_ul_facturii_si_duk_valid
+0.50s setup    core/test_flux_factura_f1_c.py::test_sugestia_invatata_ruleaza_pe_linia_de_tip_necunoscut
+0.50s setup    core/test_portal_bon.py::test_ce_nu_e_imagine_se_refuza_INAINTE_de_apelul_la_AI
+0.50s setup    core/test_lot13_migr_tva_preluat.py::test_migrarea_marcheaza_facturile_preluate_cu_tva_si_numai_pe_ele
+0.49s setup    core/test_flux_factura_f1_c.py::test_filtrul_pe_stare_si_ordinea_liniilor
+0.49s setup    core/test_flux_factura_f1_c.py::test_documentul_justificativ_se_poate_scrie_pe_nota
+0.49s setup    core/test_flux_factura_f1_c.py::test_notele_nir_poarta_nir_ul
+0.49s call     core/test_text_afisat_limbaj.py::test_textul_js_compus_din_bucati_fara_majuscule_de_accent
+0.49s call     core/test_diacritice_afisate.py::test_niciun_text_afisat_js_fara_diacritice
+0.48s call     core/test_migrari_registru.py::test_drum_nou_orice_fisier_de_migrare_e_recunoscut_sau_numit
+0.47s setup    core/test_portal_bon.py::test_confirmarea_TRIMITE_bonul_la_contabil_si_nu_se_poate_repeta
+0.47s setup    core/test_flux_factura_f1_c.py::test_nota_de_casa_poarta_documentul_operatiunii
+0.46s call     core/test_lot12_int1_serie_raspuns.py::test_c181_fisa_partenerului_intoarce_seria_pe_care_o_afiseaza_ecranul
+0.45s setup    core/test_lot11_y2_import_fidel.py::test_c81_c83_valuta_curs_la_import_si_tva_ul_bt111_in_nota_d300_d394
+0.44s call     core/test_text_afisat_limbaj.py::test_pluralul_nu_se_scrie_cu_paranteza
+0.43s setup    core/test_flux_factura_f1_c.py::test_importul_numara_ce_s_a_potrivit_si_ce_nu
+0.43s setup    core/test_portal_bon.py::test_stergerea_ia_si_pozele_dar_NU_atinge_un_bon_deja_trimis
+0.42s setup    core/test_lot13_migr_tva_preluat.py::test_importul_scrie_marcajul_numai_pe_tva_ul_calculat
+0.40s setup    core/test_portal_bon.py::test_bonul_altui_tenant_nu_se_confirma_si_nu_se_sterge
+0.37s setup    core/test_lot11_y2_import_fidel.py::test_c79_d406_purchaseinvoices_suma_taxamount_e_tva_ul_facturii_si_duk_valid
+0.37s call     core/test_p7_uc.py::test_REDUCERILE_declarate_chiar_sunt_in_cod
+0.36s call     core/test_diacritice_afisate.py::test_generatoare_declaratii_cu_diacritice
+0.34s call     core/test_p7_uc.py::test_REDUCERILE_dupa_extragere_chiar_sunt_in_cod
+0.30s call     core/test_p7_v2_scrieri.py::test_numarul_de_instructiuni_se_conserva
+0.29s call     core/test_p7_uc.py::test_ADAUGARILE_declarate_chiar_exista
+0.26s call     core/test_p7_straturi.py::test_cele_37_de_module_separate_chiar_nu_mai_au_SQL
+0.24s call     core/test_p7_uc.py::test_DECORATORII_rutelor_sunt_NEATINSI
+0.24s call     core/test_p7_uc.py::test_CE_CERE_ALTCINEVA_de_la_main_exista
+0.22s call     core/test_p7_uc.py::test_niciun_HTTPException_in_stratul_use_case
+0.20s call     core/test_p7_uc.py::test_SCOASELE_perechi_chiar_lipsesc
+0.18s call     core/test_migrari_registru.py::test_nicio_migrare_noua_nu_scrie_in_notele_contabile
+0.16s call     core/test_p7_uc.py::test_CODURILE_adaugate_chiar_sunt_in_cod
+0.15s call     core/test_flux_factura_f1_c.py::test_nicio_compunere_serie_plus_numar_in_afara_helperului
+0.14s call     core/test_text_afisat_limbaj.py::test_literalele_js_in_proza_au_diacritice
+0.09s call     core/test_p7_uc.py::test_BIFA_INLOCUIRI_chiar_cheama_bifa
+0.08s call     core/test_diacritice_afisate.py::test_validatori_import_cu_diacritice
+0.08s teardown core/test_flux_factura_f1_c.py::test_contarea_pe_factura_poarta_extrasul
+0.07s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/salariati_api.py]
+0.07s call     core/test_p7_straturi.py::test_D2_SE_APRINDE_pe_un_univers_sintetic
+0.07s teardown core/test_flux_factura_f1_c.py::test_propunerea_pentru_linie_ia_pretul_si_um_din_nomenclator
+0.07s call     core/test_regula_importurilor.py::test_nicio_exceptie_interna_in_mesaj
+0.06s teardown core/test_flux_factura_f1_c.py::test_notele_nir_poarta_nir_ul
+0.06s teardown core/test_portal_bon.py::test_un_bon_incarcat_ramane_DRAFT_pana_la_confirmare
+0.06s teardown core/test_flux_factura_f1_c.py::test_contarea_pe_nota_propusa_se_opreste_si_spune_nota_creata
+0.06s teardown core/test_flux_factura_f1_c.py::test_descarcarea_din_factura_poarta_factura_ca_document_justificativ
+0.06s teardown core/test_lot11_y2_import_fidel.py::test_datele_existente_migrarea_completeaza_din_xml_bt131_si_reducerile_de_document
+0.06s teardown core/test_portal_bon.py::test_confirmarea_TRIMITE_bonul_la_contabil_si_nu_se_poate_repeta
+0.06s teardown core/test_portal_bon.py::test_ce_nu_e_imagine_se_refuza_INAINTE_de_apelul_la_AI
+0.06s teardown core/test_flux_factura_f1_c.py::test_importul_numara_ce_s_a_potrivit_si_ce_nu
+0.06s teardown core/test_portal_bon.py::test_bonul_altui_tenant_nu_se_confirma_si_nu_se_sterge
+0.05s teardown core/test_flux_factura_f1_c.py::test_iesirea_manuala_poarta_documentul_scris
+0.05s teardown core/test_flux_factura_f1_c.py::test_nota_de_casa_poarta_documentul_operatiunii
+0.05s teardown core/test_flux_factura_f1_c.py::test_contabilizata_numai_cu_nota_de_contare_validata
+0.05s teardown core/test_flux_factura_f1_c.py::test_descrierea_notei_de_iesire_are_cantitatea_cu_um
+0.05s teardown core/test_flux_factura_f1_c.py::test_filtrul_pe_stare_si_ordinea_liniilor
+0.05s teardown core/test_flux_factura_f1_c.py::test_documentul_justificativ_se_poate_scrie_pe_nota
+0.05s teardown core/test_flux_factura_f1_c.py::test_sugestia_invatata_ruleaza_pe_linia_de_tip_necunoscut
+0.05s teardown core/test_portal_bon.py::test_stergerea_ia_si_pozele_dar_NU_atinge_un_bon_deja_trimis
+0.05s teardown core/test_flux_factura_f1_c.py::test_nota_bonului_si_a_statului_de_plata_poarta_documentul
+0.05s call     core/test_lot11_y2_import_fidel.py::test_c82_cantitate_neintreaga_baza_din_xml_la_ban
+0.05s call     core/test_flux_factura_f1_c.py::test_contarea_pe_factura_poarta_extrasul
+0.04s call     core/test_p7_v2_scrieri.py::test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni
+0.04s call     core/test_p7_straturi.py::test_depozitele_D4_nu_deschid_conexiuni_si_nu_comit
+0.04s call     core/test_portal_bon.py::test_stergerea_ia_si_pozele_dar_NU_atinge_un_bon_deja_trimis
+0.04s call     core/test_flux_factura_f1_c.py::test_nota_de_casa_poarta_documentul_operatiunii
+0.03s teardown core/test_lot11_y2_import_fidel.py::test_c80_reducerea_de_document_intra_in_baza_cotei_si_401_inchide_bt112
+0.03s teardown core/test_lot13_migr_tva_preluat.py::test_importul_scrie_marcajul_numai_pe_tva_ul_calculat
+0.03s teardown core/test_lot11_y2_import_fidel.py::test_c81_c83_valuta_curs_la_import_si_tva_ul_bt111_in_nota_d300_d394
+0.03s call     core/test_flux_factura_f1_c.py::test_descarcarea_din_factura_poarta_factura_ca_document_justificativ
+0.03s teardown core/test_lot11_y2_import_fidel.py::test_c79_d406_purchaseinvoices_suma_taxamount_e_tva_ul_facturii_si_duk_valid
+0.03s teardown core/test_lot11_y2_import_fidel.py::test_c81_fara_bt111_tva_ul_e_tva_x_curs
+0.03s teardown core/test_lot11_y2_import_fidel.py::test_c79_d394_tvaA_e_tva_ul_facturii_si_duk_valid
+0.03s call     core/test_portal_bon.py::test_confirmarea_TRIMITE_bonul_la_contabil_si_nu_se_poate_repeta
+0.03s call     core/test_flux_factura_f1_c.py::test_contabilizata_numai_cu_nota_de_contare_validata
+0.03s teardown core/test_lot11_y2_import_fidel.py::test_c82_fisa_de_magazie_are_valoarea_liniei_din_xml
+0.03s call     core/test_portal_bon.py::test_bonul_altui_tenant_nu_se_confirma_si_nu_se_sterge
+0.03s teardown core/test_lot11_y2_import_fidel.py::test_c80_reducerea_de_document_se_imparte_pe_articolele_cotei_nu_devine_articol
+0.03s call     core/test_flux_factura_f1_c.py::test_notele_nir_poarta_nir_ul
+0.03s teardown core/test_lot11_y2_import_fidel.py::test_c83_bnr_indisponibil_la_import_contarea_spune_ce_se_face_si_reia_cursul
+0.03s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/coada_api.py]
+0.03s teardown core/test_lot11_y2_import_fidel.py::test_c82_cantitate_neintreaga_baza_din_xml_la_ban
+0.03s call     core/test_lot11_y2_import_fidel.py::test_c80_reducerea_de_document_se_imparte_pe_articolele_cotei_nu_devine_articol
+0.02s call     core/test_lot11_y2_import_fidel.py::test_c82_fisa_de_magazie_are_valoarea_liniei_din_xml
+0.02s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/facturi_api.py]
+0.02s call     core/test_flux_factura_f1_c.py::test_documentul_justificativ_se_poate_scrie_pe_nota
+0.02s call     core/test_lot11_y2_import_fidel.py::test_c83_bnr_indisponibil_la_import_contarea_spune_ce_se_face_si_reia_cursul
+0.02s teardown core/test_lot13_migr_tva_preluat.py::test_migrarea_marcheaza_facturile_preluate_cu_tva_si_numai_pe_ele
+0.02s call     core/test_flux_factura_f1_c.py::test_descrierea_notei_de_iesire_are_cantitatea_cu_um
+0.02s setup    core/test_migrari_registru.py::test_registrul_numara_amprenta_nu_numele
+0.02s call     core/test_lot11_y2_import_fidel.py::test_c81_fara_bt111_tva_ul_e_tva_x_curs
+0.02s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/coada_api.py]
+0.02s call     core/test_flux_factura_f1_c.py::test_nota_bonului_si_a_statului_de_plata_poarta_documentul
+0.02s call     core/test_flux_factura_f1_c.py::test_contarea_pe_nota_propusa_se_opreste_si_spune_nota_creata
+0.02s call     core/test_flux_factura_f1_c.py::test_e_factura_poarta_numarul_facturii_fara_seria_dublata
+0.02s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/stocuri_cv_api.py]
+0.02s call     core/test_lot11_y2_import_fidel.py::test_datele_existente_migrarea_completeaza_din_xml_bt131_si_reducerile_de_document
+0.02s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/facturi_api.py]
+0.02s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/stocuri_cv_api.py]
+0.01s call     core/test_flux_factura_f1_c.py::test_filtrul_pe_stare_si_ordinea_liniilor
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/solduri_parteneri_api.py]
+0.01s call     core/test_text_afisat_limbaj.py::test_perioada_afisata_are_o_singura_forma
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/audit_preluare.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/casa_api.py]
+0.01s call     core/test_flux_factura_f1_c.py::test_iesirea_manuala_poarta_documentul_scris
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/stat_plata_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/clienti_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/reevaluare_valuta.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/salariati_api.py]
+0.01s call     core/test_p7_straturi.py::test_motorul_fiscal_efactura_send_NU_mai_atinge_baza
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/stat_plata_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/stocuri_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/audit_preluare.py]
+0.01s call     core/test_flux_factura_f1_c.py::test_sugestia_invatata_ruleaza_pe_linia_de_tip_necunoscut
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/solduri_parteneri_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/casa_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/jurnal_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/firma_profil_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/bilant_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/solduri_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/mijloace_fixe_import_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/salariati_import_api.py]
+0.01s call     core/test_lot13_migr_tva_preluat.py::test_migrarea_marcheaza_facturile_preluate_cu_tva_si_numai_pe_ele
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/asistenti_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/reevaluare_valuta.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/clienti_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/reconciliere_api.py]
+0.01s call     core/test_regula_importurilor.py::test_fiecare_rand_cu_date_se_citeste[core.mijloace_fixe_import_api:extrage]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/stocuri_api.py]
+0.01s call     core/test_flux_factura_f1_c.py::test_importul_numara_ce_s_a_potrivit_si_ce_nu
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/istoric_declaratii_import_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/jurnal_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/regim_tva_incasare.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/firma_profil_api.py]
+0.01s call     core/test_lot13_migr_tva_preluat.py::test_importul_scrie_marcajul_numai_pe_tva_ul_calculat
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/solduri_api.py]
+0.01s call     core/test_migrari_registru.py::test_ruleaza_refuza_migrarea_inaintea_celei_de_care_depinde
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/mijloace_fixe_import_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/bilant_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/salariati_import_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/produse_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/asistenti_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/reconciliere_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/mf_registru.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/z_descarcare.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/rectificativa.py]
+0.01s call     core/test_portal_bon.py::test_ce_nu_e_imagine_se_refuza_INAINTE_de_apelul_la_AI
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/istoric_declaratii_import_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/tenant_provisioning.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite[core/regim_tva_incasare.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/pachete_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/asociati_import_api.py]
+0.01s call     core/test_e2a_univers.py::test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului[core/articole_import_api.py]
+
+(1246 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ============================
+FAILED core/test_p7_straturi.py::test_cifra_din_motiv_nu_imbatraneste_tacut
+FAILED core/test_text_afisat_limbaj.py::test_textul_afisat_e_limba_romana - A...
+2 failed, 487 passed in 496.13s (0:08:16)
+rc=1 durata=496.757174092 s

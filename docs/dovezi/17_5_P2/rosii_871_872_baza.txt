@@ -1,0 +1,80 @@
+# 871/872 pe bază, din ~/iconta_nou (main 420b0f1357cb8647cf36d7e4c32b6ac6d9db1a0c)
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+__________________ test_cifra_din_motiv_nu_imbatraneste_tacut __________________
+
+    def test_cifra_din_motiv_nu_imbatraneste_tacut():
+        """O declaratie care spune «N instructiuni SQL» se confrunta cu modulul, la fiecare rulare.
+    
+        De ce exista garda asta: pana la V2, `main.py` purta in registru cifra 295, scrisa la V3 si
+        adevarata atunci. V1 si V2 au mutat 257 de instructiuni si nimic n-a intrebat registrul —
+        `D4` a continuat sa dea cifra veche drept DOVADA. Un registru care isi tine singur cifrele
+        la zi nu mai poate face asta.
+    
+        Metrica nu e aleasa azi ca sa iasa: din 28 de intrari care poarta o cifra, 27 coincideau deja
+        cu numarul de apeluri `execute`/`executemany` din modul. Singurul dezacord era cel imbatranit.
+        """
+        import scan_p7_straturi as _S
+    
+        def _numar_executii(arb):
+            return sum(1 for x in ast.walk(arb)
+                       if isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute)
+                       and x.func.attr in ("execute", "executemany"))
+    
+        def _numar_rute(arb, rel):
+            return len(_S.rute_din_arbore(arb, rel))
+    
+        # (tipar, cum se recalculeaza) — ambele cifre pe care le poarta un motiv
+        MASURI = ((re.compile(r"(\d+) instructiuni SQL"), _numar_executii, 28),
+                  (re.compile(r"(\d+) rute montate in modul"), _numar_rute, 1))
+        dezacorduri, vazute = [], []
+        for tipar, masoara, _prag in MASURI:
+            n = 0
+            for d in R.REGISTRU:
+                m = tipar.search(d.motiv)
+                if not m:
+                    continue
+                n += 1
+                cale = os.path.join(RADACINA, d.cale)
+                if not os.path.exists(cale):
+                    dezacorduri.append((d.cale, tipar.pattern, int(m.group(1)), None))
+                    continue
+                try:
+                    arb = ast.parse(io.open(cale, encoding="utf-8").read())
+                except SyntaxError:
+                    continue
+                real = masoara(arb) if masoara is _numar_executii else masoara(arb, d.cale)
+                if real != int(m.group(1)):
+                    dezacorduri.append((d.cale, tipar.pattern, int(m.group(1)), real))
+            vazute.append(n)
+        assert vazute >= [p for _t, _m, p in MASURI], (
+            "ANTI-VACUUM: garda nu mai vede cifrele din registru: %s" % vazute)
+>       assert dezacorduri == [], (
+            "registrul poarta cifre care nu mai sunt adevarate "
+            "(cale, masura, scris, real): %s" % dezacorduri)
+E       AssertionError: registrul poarta cifre care nu mai sunt adevarate (cale, masura, scris, real): [('core/repo_d300.py', '(\\d+) instructiuni SQL', 8, 9), ('core/repo_d301.py', '(\\d+) instructiuni SQL', 2, 3), ('core/uc_tenants.py', '(\\d+) instructiuni SQL', 0, 1), ('main.py', '(\\d+) rute montate in modul', 528, 529)]
+E       assert [('core/repo_...l', 528, 529)] == []
+E         
+E         Left contains 4 more items, first extra item: ('core/repo_d300.py', '(\\d+) instructiuni SQL', 8, 9)
+E         Use -v to get more diff
+
+core/test_p7_straturi.py:433: AssertionError
+______________________ test_textul_afisat_e_limba_romana _______________________
+
+texte = [('core/activitati_amef.py', 82, 'Chitanța nu s-a emis: o vânzare încasată în numerar fără factură se face cu bon fisc...s%% nu se poate folosi la data chitanței. Cotele posibile atunci: %s.'), ('core/activitati_amef.py', 115, '%s%%'), ...]
+
+    def test_textul_afisat_e_limba_romana(texte):
+        gasite = defecte(texte)
+        raport = "\n".join("  %s:%d  [%s] %s  <- %r" % (fn, ln, fel, ",".join(g), s[:110]) for fn, ln, fel, g, s in gasite)
+>       assert not gasite, "Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:\n" + raport
+E       AssertionError: Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:
+E           core/migrari_registru.py:323  [diacritice] fara,operatie  <- 'fara operatie'
+E           core/migrari_registru.py:329  [diacritice] operatie  <- 'alta operatie'
+E       assert not [('core/migrari_registru.py', 323, 'diacritice', ['fara', 'operatie'], 'fara operatie'), ('core/migrari_registru.py', 329, 'diacritice', ['operatie'], 'alta operatie')]
+
+core/test_text_afisat_limbaj.py:413: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_p7_straturi.py::test_cifra_din_motiv_nu_imbatraneste_tacut
+FAILED core/test_text_afisat_limbaj.py::test_textul_afisat_e_limba_romana - A...
+2 failed in 15.28s
+rc=1

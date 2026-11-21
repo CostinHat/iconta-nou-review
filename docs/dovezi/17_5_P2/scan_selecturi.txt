@@ -1,0 +1,3 @@
+# scripts/scan_selecturi_ecrane.py pe P
+Counter({'FISCAL_REPARAT': 43, 'NEFISCAL': 13, 'PRESELECTAT_PERMIS': 11, 'ARE_GOL_IN_BUILDER': 5, 'VALOARE_EXISTENTA': 3, 'CERUT_LA_PRIMA_FOLOSIRE': 1})
+rc=0
