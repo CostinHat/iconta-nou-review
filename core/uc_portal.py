@@ -583,6 +583,22 @@ def _defalcare_tva(tva_lista, la_data):
     return _suma(r_red), _suma(r_std), (AVERT_COTE_TVA_INDISPONIBILE if (lipsa_std or lipsa_red) else None)
 
 
+def _cui_cumparator_din_raspuns(date):
+    """[17.5-P, AC153; decizia D1] Codul cumpărătorului din răspunsul AI, în cele trei stări ale coloanei `bonuri.cui_cumparator`:
+    None = necitit (cheia lipsește din răspuns, sau poza e tăiată și nu s-a citit niciun cod), «» = citit și absent de pe bon (null, gol,
+    fără nicio cifră, ori codul comerciantului copiat la cumpărător), altfel codul în forma `cui_forma.stocare`."""
+    from core import cui_forma as _cui_forma
+    if "cui_cumparator" not in date:
+        return None
+    valoare = date.get("cui_cumparator")
+    cod = _cui_forma.stocare(None if valoare is None else str(valoare)) or ""
+    if not any(c in "0123456789" for c in cod) or cod == (_cui_forma.stocare(date.get("cui")) or ""):
+        cod = ""
+    if cod == "" and date.get("bon_complet") is False:
+        return None
+    return cod
+
+
 def portal_bon(fisiere, tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/portal/bon`; docstringul ei a ramas in stratul HTTP."""
     from core import ai_client
@@ -609,15 +625,19 @@ def portal_bon(fisiere, tenant_id, ctx):
         imagini.append((b, _tip))
     prompt = ("Primesti un document pozat (un singur document, posibil pe mai multe imagini, in ordine). "
               "Clasifica-l: bon fiscal SAU chitanta. Raspunde DOAR cu JSON, fara alt text: "
-              '{"tip": "bon", "comerciant": "...", "cui": "...", "data": "YYYY-MM-DD", "total": 0.0, '
+              '{"tip": "bon", "comerciant": "...", "cui": "...", "cui_cumparator": "...", "data": "YYYY-MM-DD", "total": 0.0, '
               '"numar_document": "...", "mentiuni": "...", '
               '"articole": [{"denumire": "...", "valoare": 0.0, "cota_tva": 0, "cont_propus": "..."}], '
               '"tva": [{"cota": 0, "valoare": 0.0}], "bon_complet": true, "orientare": 0}. '
               'tip = "bon" pentru bon fiscal, "chitanta" pentru chitanta. '
               "Pentru BON FISCAL: numar_document = numarul bonului daca se vede; articole si tva ca mai jos. "
+              "cui = codul fiscal (CUI) al COMERCIANTULUI. cui_cumparator = codul de identificare fiscala (CUI/CIF, cu sau fara RO) "
+              "tiparit pe bon la rubrica cumparatorului sau clientului, NU codul comerciantului; daca pe bon nu e tiparit niciun cod "
+              "al cumparatorului, pune null (nu ghici si nu copia codul comerciantului). "
               "Cotele TVA le citesti EXACT cum apar pe bon (pot fi 19/9/11/21/5 in functie de anul bonului). "
               "cont_propus = contul de cheltuiala OMFP 1802 potrivit articolului: 6022 combustibil, "
-              "623 protocol (cafea, apa, mancare), 604 materiale nestocate, 628 alte servicii. "
+              "604 materiale nestocate (inclusiv cafea, apa, alimente de consum curent), 628 alte servicii. "
+              "Nu propune 623 protocol: scopul cheltuielii nu se vede pe bon, il alege contabilul. "
               "Reducerile primesc contul articolului principal. "
               "Pentru CHITANTA: comerciant = emitentul chitantei (cel care a incasat), total = suma platita, "
               "numar_document = numarul chitantei, mentiuni = textul de dupa 'reprezentand' (ex. factura platita); "
@@ -664,7 +684,7 @@ def portal_bon(fisiere, tenant_id, ctx):
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             tip_doc = "chitanta" if date.get("tip") == "chitanta" else "bon"  # bon_flux_e1b_v1
-            bon_id = repo_casa.adauga_bon(cur, schema, date.get("comerciant"), date.get("cui"), date.get("data"), total, tva_11, tva_21, _json.dumps(date.get("articole") or []), _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False, tip_doc, date.get("numar_document"), date.get("mentiuni"), orientare)[0]
+            bon_id = repo_casa.adauga_bon(cur, schema, date.get("comerciant"), date.get("cui"), date.get("data"), total, tva_11, tva_21, _json.dumps(date.get("articole") or []), _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False, tip_doc, date.get("numar_document"), date.get("mentiuni"), orientare, _cui_cumparator_din_raspuns(date))[0]
     dir_bon = _os.path.join(_common.dir_bonuri(), schema, str(bon_id))
     _os.makedirs(dir_bon, exist_ok=True)
     _EXT = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}

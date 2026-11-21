@@ -7125,9 +7125,24 @@ async function ecranBonuri(corp, nav, t) {
     const eChitanta = b.tip === "chitanta";
     const sumaArt = (b.articole || []).reduce((s, a) => s + (Number(a.valoare) || 0), 0);
     const dif = (b.articole || []).length ? Math.abs(Math.round((sumaArt - b.total) * 100) / 100) : 0;
+    // [17.5-P, AC153/AC154; D6] blocul fiscal al bonului, imediat sub titlu: codul cumpărătorului citit de pe bon, verdictul TVA și notele de cont
+    // (textele vin de la ruta de verificat: întâi verdictul, dacă bonul are TVA, apoi notele conturilor propuse)
+    let blocFiscal = "";
+    if (!eChitanta) {
+      const cc = b.cui_cumparator;
+      const valCui = cc == null ? "necitit (bon încărcat înainte de această verificare)" : (cc === "" ? "niciun cod înscris pe bon" : cc);
+      const av = b.avertismente || [];
+      const areNote = av.length > (b.tva_deductibil ? 1 : 0);
+      const atentie = b.tva_deductibil === "nu" || b.tva_deductibil === "de_verificat" || areNote;
+      blocFiscal = `<div id="d-fiscal" class="${atentie ? "caseta-atentie" : "ecran-nota"}">
+        <div class="ca-mesaj"><b>CUI cumpărător pe bon:</b> ${esc(valCui)}</div>
+        ${av.map((a) => `<p class="ca-mesaj">${esc(a)}</p>`).join("")}
+      </div>`;
+    }
 
     corp.innerHTML = `
       <h2 class="pf-titlu">${eChitanta ? "Chitanță" : "Bon fiscal"}${b.numar_document ? " · nr. " + b.numar_document : ""}</h2>
+      ${blocFiscal}
       ${b.mentiuni ? `<p class="pf-intro">reprezentând: ${b.mentiuni}</p>` : ""}
       ${!eChitanta && dif > 0.05 ? `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">Suma articolelor citite (${bani(sumaArt)}) nu se închide cu totalul (${bani(b.total)}) — verifică cu poza.</div></div>` : ""}
       <div class="doc-split">
@@ -7271,13 +7286,14 @@ async function ecranBonuri(corp, nav, t) {
         const linii = Object.entries(grupe).map(([cont, valoare]) => ({ cont, valoare: Math.round(valoare * 100) / 100 }));
         btn.disabled = true; btn.textContent = "Se contează...";
         try {
+          const raspuns =   // [17.5-P, D6] avertismentul verdictului TVA întors de aprobare se spune după «Bonul a fost contat.»
           await api.post(`/tenants/${t.id}/bonuri/${b.id}/aproba`, {
             comerciant: v("#d-com"), data: v("#d-data"),
             total: parseFloat(v("#d-tot")) || 0,
             tva: parseFloat(v("#d-tva")) || 0,
             linii,
           });
-          _bonuriMesaj = "Bonul a fost contat.";
+          _bonuriMesaj = "Bonul a fost contat." + (raspuns && raspuns.avertisment ? " " + esc(raspuns.avertisment) : "");
           nav.inapoiPas();
         } catch (e) {
           btn.disabled = false; btn.textContent = "Certifică și contează";

@@ -1,0 +1,38 @@
+# pct.4: importuri în core/uc_tenants.py (diff față de bază) și apelurile prin atributul modulului
+21:+            rf = repo_firma_profil.cui_firma(cur, schema)
+24:+        from core import bon_tva_deductibil as _btd
+43:+            note = _btd.note_conturi(b["articole"])
+48:+                cursuri[r[3]] = _btd.curs_euro(conn, r[3])
+49:+            stare, motiv = _btd.verdict(r[16], cui_f, r[4] or 0, cursuri[r[3]])
+50:+            primul = _btd.text(motiv, r[16], cui_f)
+57:+    from core import bon_tva_deductibil as _btd
+59:+        _uc_comun._preincalzeste_cursul("EUR", b.data)
+74:+                rc = repo_casa.cui_cumparator_bon(cur, schema, bon_id)
+75:+                rf = repo_firma_profil.cui_firma(cur, schema)
+77:+            stare, motiv = _btd.verdict(cui_bon, cui_f, b.total, _btd.curs_euro(conn, b.data))
+79:+                avertisment = _btd.text(motiv, cui_bon, cui_f)
+# importuri de nume din core.uc_curs_bnr / core.bon_tva_deductibil în uc_tenants.py (așteptat: 0):
+0
+# curs_euro cheamă curs_bnr.curs_pentru prin modul:
+11:`curs_euro` (cursul EUR al zilei bonului numai din cache, prin `core.curs_bnr.curs_pentru`: fără rețea, fără scriere).
+14:from datetime import date
+15:from decimal import Decimal
+17:from core import cui_forma
+18:from core import curs_bnr
+108:        return Decimal(str(curs_bnr.curs_pentru(conn, "EUR", zi)[0]))
+# funcții noi (def) în diff:
+60:+def verdict(cui_cumparator, cui_firma, total, curs_eur):
+79:+def text(motiv, cui_bon=None, cui_firma=None):
+87:+def nota_cont(cont):
+92:+def note_conturi(articole):
+102:+def curs_euro(conn, data):
+142:+def sql(s):
+146:+def bloc_template():
+150:+def aplica(conn, schema):
+158:+def verifica(conn, schema):
+166:+def _main():
+206:+def cui_cumparator_bon(cur, schema, bon_id):
+221:+def adauga_bon(cur, schema, comerciant, cui, data_, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, cui_cumparator=None):
+242:+def _cui_cumparator_din_raspuns(date):
+# rute noi în main.py (așteptat: main.py neatins):
+# Notă: adauga_bon apare cu «+def» fiindcă semnătura existentă primește parametrul nou cui_cumparator=None la sfârșit; nu e funcție nouă. Funcțiile noi sunt exact cele numite la pct.4.

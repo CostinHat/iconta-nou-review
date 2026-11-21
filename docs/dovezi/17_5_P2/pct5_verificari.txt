@@ -1,0 +1,52 @@
+# pct.5: comparația pe bază (420b0f1357cb8647cf36d7e4c32b6ac6d9db1a0c) și pe P (arborele de lucru, identic cu f07a3c8b) a controalelor citite de oracolele anterioare și a ferestrei bonului
+== (i) oracolele anterioare care citesc ferestrele atinse (grep pe docs/dovezi/*/pasi.json după d-tva, d-certifica, d-com, d-tot, d-msg, d-poze, «Bonuri și chitanțe», «Bonul a fost contat», bonuri/de-verificat, pf-titlu, doc-split):
+17_1 a.12 | egal | «Facturi,Bonuri și chitanțe,Raport Z,…» | dom:… #fgc-zilnic .firme-optiune-titlu|text — cardurile ferestrei firmei (formularul din lista cabinetului); static/js/ecrane/firme.js: cardurile neatinse de diff (diff-ul lui firme.js e numai în randeazaDetaliu + ?v=)
+17_1 e.7 | egal | «Facturi,Bonuri și chitanțe,…,Încasări/plăți» | aceeași cheie — idem, neschimbat
+17_5_I a.35/a.36 | text_contine/lipseste | Salariați / Stat de plată | h2.pf-titlu a ferestrei Salariați — selectorul pf-titlu e comun; fereastra Salariați neatinsă; titlul bonului (h2.pf-titlu) neschimbat
+17_5_L a.3 | text_contine | «Fotografiază bon sau chitanță» | dom:body|text pe portal (static/js/ecrane/portal.js neatins)
+Elemente schimbate citite de aceste oracole: 0.
+== (ii) id-urile din randeazaDetaliu (fereastra bonului):
+bază: id="d-cand" id="d-certifica" id="d-com" id="d-cont-${j}" id="d-data" id="d-den-${j}" id="d-msg" id="d-poze" id="d-tot" id="d-tva" id="d-val-${j}"
+P:    id="d-cand" id="d-certifica" id="d-com" id="d-cont-${j}" id="d-data" id="d-den-${j}" id="d-fiscal" id="d-msg" id="d-poze" id="d-tot" id="d-tva" id="d-val-${j}"
+id-uri adăugate: id="d-fiscal"; id-uri scoase: niciunul
+== titlul, d-tva și butonul principal (bază -> P):
+«class="pf-titlu">${eChitanta»: bază 1 -> P 1
+«id="d-tva"»: bază 1 -> P 1
+«id="d-certifica"»: bază 1 -> P 1
+«Certifică și contează»: bază 2 -> P 2
+«Bonul a fost contat.»: bază 1 -> P 2
+«class="doc-split"»: bază 1 -> P 1
+«nu se închide cu totalul»: bază 1 -> P 1
+== (iii) rânduri eliminate din static/ și core/ (diff bază..P, fără cascada ?v= și fără testele gărzilor):
+-                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva, creat_la, orientare
+-def adauga_bon(cur, schema, comerciant, cui, data_, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni):
+-                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, orientare)
+-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'extras', %s, %s, %s, %s) RETURNING id
+-                (comerciant, cui, data_, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni))
+-PLAFON_D4B = 19                        # 41 înainte de E2b; 18 -> 19 la 09.10.2026: `core/migrari_registru.py`, rulatorul
+-    assert 40 <= len(mg) <= 163, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+-    assert _apeluri_catre_repository() == 460
+-              '{"tip": "bon", "comerciant": "...", "cui": "...", "data": "YYYY-MM-DD", "total": 0.0, '
+-              "623 protocol (cafea, apa, mancare), 604 materiale nestocate, 628 alte servicii. "
+-            bon_id = repo_casa.adauga_bon(cur, schema, date.get("comerciant"), date.get("cui"), date.get("data"), total, tva_11, tva_21, _json.dumps(date.get("articole") or []), _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False, tip_doc, date.get("numar_document"), date.get("mentiuni"), orientare)[0]
+-            bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
+-                       "data": r[3].isoformat() if r[3] else None,
+-                       "total": float(r[4] or 0),
+-                       "tva": (round(sum(float(x.get("valoare") or 0) for x in r[13]), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+-                               if r[13] else float(r[5] or 0) + float(r[6] or 0)),
+-                       "articole": r[7] or [], "status": r[8],
+-                       "nr_imagini": r[9] or 0, "tip": r[10] or "bon",
+-                       "numar_document": r[11], "mentiuni": r[12],
+-                       "primit_la": r[14].isoformat() if r[14] else None,
+-                       "orientare": r[15] or 0}
+-                      for r in repo_casa.bonuri_de_verificat(cur, schema)]  # bon_flux_e9_v1
+-        # valorile articolelor sunt cu TVA inclus; scad TVA proportional
+-        factor = (b.total - b.tva) / b.total if b.total else 1
+-            if b.tva:
+-                repo_contabilitate.adauga_linie_tva_din_casa(cur, schema, iid, b.tva)
+-    return {"ok": True, "nota_id": iid}
+-          _bonuriMesaj = "Bonul a fost contat.";
+== Explicația rândurilor eliminate: fiecare e înlocuit în același loc de forma cu cui_cumparator (SELECT/INSERT/semnătura lui adauga_bon, forma JSON a promptului), fraza cont_propus (AC154, textul impus), lista bonurilor (rescrisă ca buclă cu cheile noi, aceleași chei vechi), factorul și linia 4426 (calculate cu tva_dedus, D3), răspunsul aprobării (cheile vechi + tva_dedus, avertisment), mesajul «Bonul a fost contat.» (păstrat, urmat de avertisment). Niciun text măsurat de un oracol anterior nu dispare.
+== e2e existente care citesc fereastra bonului:
+frontend_test/e2e/e2e_bon_cui_17_5_P2.py frontend_test/e2e/e2e_lot13_fact.py 
+== Formularul din lista cabinetului («Bonuri și chitanțe», lista) neschimbat; detaliul bonului primește blocul #d-fiscal sub titlu. Harta barei de jos (docs/dovezi/17_5_H/harta_bara_jos.txt) neatinsă; butonul «Certifică și contează» neschimbat.

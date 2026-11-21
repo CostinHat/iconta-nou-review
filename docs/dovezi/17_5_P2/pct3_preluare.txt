@@ -1,0 +1,46 @@
+# pct.3: fișierele de produs după produs_reluat_17_5_P2.patch, comparate cu bloburile lui f07a3c8b (git hash-object vs git rev-parse f07a3c8b:<cale>)
+identic core/repo_casa.py 40450b45b8b11ee37caa568e97aad8d7412947d6 40450b45b8b11ee37caa568e97aad8d7412947d6
+identic core/uc_portal.py 4fa7827436b2fa717557411889e2fe8bcb27d527 4fa7827436b2fa717557411889e2fe8bcb27d527
+identic core/uc_tenants.py 8228936885ef66a57f86125e866654adb4e8ef31 8228936885ef66a57f86125e866654adb4e8ef31
+identic static/js/cautare.js 053a767f490fc68fae310a96b27411154da869a2 053a767f490fc68fae310a96b27411154da869a2
+identic static/js/ecrane/asistent.js ee07fb738100f23a13b1982af3e86f4b7658d498 ee07fb738100f23a13b1982af3e86f4b7658d498
+identic static/js/ecrane/borderou_ecran.js 47e62bd27a84e2dc32862b77d47e8c8f29695d07 47e62bd27a84e2dc32862b77d47e8c8f29695d07
+identic static/js/ecrane/cabinet.js 0686516ec953be0e10d0c7cf6e0914798621020d 0686516ec953be0e10d0c7cf6e0914798621020d
+identic static/js/ecrane/coada_trimite.js 3839e45f50659c63c5beebd4040cfe78589bf71c 3839e45f50659c63c5beebd4040cfe78589bf71c
+identic static/js/ecrane/control_verdict.js f957e7dd0d2b5c22be24d33c212f6f9baa1a964f f957e7dd0d2b5c22be24d33c212f6f9baa1a964f
+identic static/js/ecrane/ecran_destinatie.js 30f6bd3c592dbfa2d5df5c44065f331e2b62a739 30f6bd3c592dbfa2d5df5c44065f331e2b62a739
+identic static/js/ecrane/facturi_ecran.js 4498f97ae97172ea9d98d5c53e4abe8ff94c66e3 4498f97ae97172ea9d98d5c53e4abe8ff94c66e3
+identic static/js/ecrane/firme.js 0afe20e0caf312fb6a8af824b868945521887b52 0afe20e0caf312fb6a8af824b868945521887b52
+identic static/js/ecrane/inceput.js 97219e61d1efa1425cb16e5f6b44a8c74d946e62 97219e61d1efa1425cb16e5f6b44a8c74d946e62
+identic static/js/ecrane/migrare.js 76a04957c55816025d97b9dc092fde567b16ed67 76a04957c55816025d97b9dc092fde567b16ed67
+identic static/js/ecrane/operatiuni_ecran.js 38b707273b45a695deadf7b483bf6bdfc3b234f5 38b707273b45a695deadf7b483bf6bdfc3b234f5
+identic static/js/ecrane/termene.js 3600ef40be83a3c09623132714fd2b08a9b17e3d 3600ef40be83a3c09623132714fd2b08a9b17e3d
+identic static/js/ecrane/validat.js 92c7d04fc4e48f17b89cbbbc8297c108b4851e26 92c7d04fc4e48f17b89cbbbc8297c108b4851e26
+identic static/js/navigator.js 69f0c6ce4afe8be39a3f7da6616e48a0afaa8d4a 69f0c6ce4afe8be39a3f7da6616e48a0afaa8d4a
+identic tenant_template.sql 8a2afb128e8dc2418b9e11b605c3a282edf03c14 8a2afb128e8dc2418b9e11b605c3a282edf03c14
+identic core/bon_tva_deductibil.py df4b88b70fd3b3e68061ce87ee4c80cb14fe8f86 df4b88b70fd3b3e68061ce87ee4c80cb14fe8f86
+identic core/migrare_bon_cui_cumparator.py 64bbd00dfd6bfbd1de5e0af447e61a3d83e437f2 64bbd00dfd6bfbd1de5e0af447e61a3d83e437f2
+# fișiere atinse de f07a3c8b față de 7ed40f29 (P0-ul lui P):
+core/bon_tva_deductibil.py
+core/migrare_bon_cui_cumparator.py
+core/repo_casa.py
+core/test_e2a_univers.py
+core/test_p7_v2_scrieri.py
+core/uc_portal.py
+core/uc_tenants.py
+static/js/cautare.js
+static/js/ecrane/asistent.js
+static/js/ecrane/borderou_ecran.js
+static/js/ecrane/cabinet.js
+static/js/ecrane/coada_trimite.js
+static/js/ecrane/control_verdict.js
+static/js/ecrane/ecran_destinatie.js
+static/js/ecrane/facturi_ecran.js
+static/js/ecrane/firme.js
+static/js/ecrane/inceput.js
+static/js/ecrane/migrare.js
+static/js/ecrane/operatiuni_ecran.js
+static/js/ecrane/termene.js
+static/js/ecrane/validat.js
+static/js/navigator.js
+tenant_template.sql

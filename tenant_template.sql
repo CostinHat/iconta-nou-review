@@ -2580,6 +2580,9 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS numerotare_
 
 -- bon_flux_e9_v1
 ALTER TABLE TENANT_PLACEHOLDER.bonuri ADD COLUMN IF NOT EXISTS orientare smallint NOT NULL DEFAULT 0;
+-- [bon_cui_cumparator_v1, lotul 17.5-P, AC153] codul fiscal al cumpărătorului de pe bon — SURSA: core/migrare_bon_cui_cumparator.py
+ALTER TABLE TENANT_PLACEHOLDER.bonuri ADD COLUMN IF NOT EXISTS cui_cumparator text;
+-- [bon_cui_cumparator_v1] sfârșit
 
 -- perioada_blocata_trigger_v1 (#66): blocheaza INSERT/UPDATE/DELETE pe luna inchisa — funcția și triggerul pe `inregistrari`
 -- se definesc acum în blocul reguli_fond_v1 (sfârșitul fișierului), cu golul UPDATE închis (data veche). O singură definiție.

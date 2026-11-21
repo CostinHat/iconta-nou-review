@@ -456,7 +456,11 @@ def test_numarul_de_instructiuni_se_conserva():
     #     cazul „verificarea stocurilor compară validat cu validat”);
     #   + repo_contabilitate.jurnal_pe_an în `uc_comun._numar_note_luna` (P8, 602.1 / 781: numărătoarea notelor lunii în Verificări, aceeași
     #     citire ca Registrul jurnal).
-    assert _apeluri_catre_repository() == 460
+    # De la 460 la 462 pe bază: repo_salariati.salariatul_exista_2 (J)
+    # și repo_portal.facturi_deschise_nevalidate (L).
+    # 17.5-P2 adaugă trei citiri: cui_cumparator_bon și cui_firma în bon_aproba,
+    # apoi cui_firma în bonuri_de_verificat. Totalul măsurat devine 465.
+    assert _apeluri_catre_repository() == 465
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

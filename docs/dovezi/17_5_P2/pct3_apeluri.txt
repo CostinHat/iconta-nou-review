@@ -1,0 +1,48 @@
+# pct.3: git diff 420b0f13 (arborele P) -- static core main.py | grep -E "^\+.*(addEventListener|fetch\(|api\.(get|post|put|delete)|SELECT |INSERT |UPDATE |ALTER )"
+5:+++ b/core/bon_tva_deductibil.py
+121:+++ b/core/migrare_bon_cui_cumparator.py
+143:+    return "ALTER TABLE %(s)s.bonuri ADD COLUMN IF NOT EXISTS cui_cumparator text;" % {"s": s}
+161:+        cur.execute("SELECT data_type, is_nullable, column_default FROM information_schema.columns WHERE table_schema = %s "
+170:+            cur.execute("SELECT schema_name FROM information_schema.schemata "
+194:+++ b/core/repo_casa.py
+200:+                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva, creat_la, orientare, cui_cumparator
+208:+    cur.execute(f"SELECT cui_cumparator FROM {schema}.bonuri WHERE id=%s",
+226:+                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, orientare, cui_cumparator)
+238:+++ b/core/test_bon_cui_cumparator_17_5_P2.py
+338:+    assert "ALTER TABLE TENANT_PLACEHOLDER.bonuri ADD COLUMN IF NOT EXISTS cui_cumparator text;" in mig.bloc_template()
+346:+        for interzis in ("UPDATE ", "INSERT ", "DELETE ", "inregistrari"):
+353:+        cur.execute("SELECT current_database()")
+375:+        cur.execute("SELECT data_type, is_nullable, column_default FROM information_schema.columns WHERE table_schema = %s "
+384:+        cur.execute("ALTER TABLE bonuri DROP COLUMN cui_cumparator")        # schema de dinainte de migrare
+385:+        cur.execute("INSERT INTO bonuri (comerciant, total, status) VALUES ('Vechi SRL', 10, 'de_verificat')")
+391:+        cur.execute("SELECT cui_cumparator FROM bonuri WHERE comerciant = 'Vechi SRL'")
+437:+            cur.execute("SELECT cui_cumparator, tip, numar_document, mentiuni, orientare, status, comerciant, cui, total, tva_21 FROM bonuri WHERE id = %s", (bid,))
+461:+        cur.execute("SELECT to_regnamespace(%s)", (schema,))
+481:+            cur.execute('SELECT cui_cumparator, tip, numar_document, mentiuni, orientare, status FROM "%s".bonuri WHERE id = %%s' % SCH_PB, (r.json()["bon_id"],))
+502:+        cur.execute("INSERT INTO firma_profil (id, nume, cui, platitor_tva, forma_juridica, capital_subscris, metoda_stoc) "
+523:+        cur.execute("INSERT INTO bonuri (comerciant, cui, data, total, tva_21, status, articole, tva, tip, cui_cumparator) "
+539:+        cur.execute("SELECT cont_debit, cont_credit, suma FROM inregistrari_linii WHERE inregistrare_id = %s ORDER BY cont_debit", (r["nota_id"],))
+633:+++ b/core/test_e2a_univers.py
+667:+++ b/core/test_p7_v2_scrieri.py
+684:+++ b/core/uc_portal.py
+742:+++ b/core/uc_tenants.py
+841:+++ b/static/js/cautare.js
+854:+++ b/static/js/ecrane/asistent.js
+867:+++ b/static/js/ecrane/borderou_ecran.js
+880:+++ b/static/js/ecrane/cabinet.js
+893:+++ b/static/js/ecrane/coada_trimite.js
+906:+++ b/static/js/ecrane/control_verdict.js
+919:+++ b/static/js/ecrane/ecran_destinatie.js
+932:+++ b/static/js/ecrane/facturi_ecran.js
+954:+++ b/static/js/ecrane/firme.js
+999:+++ b/static/js/ecrane/inceput.js
+1012:+++ b/static/js/ecrane/migrare.js
+1025:+++ b/static/js/ecrane/operatiuni_ecran.js
+1038:+++ b/static/js/ecrane/termene.js
+1051:+++ b/static/js/ecrane/validat.js
+1064:+++ b/static/js/navigator.js
+# Judecata (rândurile «+++» sunt antetele fișierelor, puse ca reper):
+#   core/migrare_bon_cui_cumparator.py (nou): :143 ALTER-ul coloanei (sql); :161 SELECT de catalog în verifica; :170 SELECT de catalog în _main — excepții numite în comandă.
+#   core/repo_casa.py: :200 SELECT-ul lui bonuri_de_verificat (coloana nouă la sfârșit); :208 SELECT-ul lui cui_cumparator_bon; :226 INSERT-ul lui adauga_bon cu coloana nouă — excepții numite.
+#   core/test_bon_cui_cumparator_17_5_P2.py (nou, al arhitectului, din P0): citirile și fixture-urile testului de nucleu livrat — excepție numită.
+#   Niciun addEventListener, fetch( sau api.get/post/put/delete nou; niciun alt rând. Nimic de reparat.

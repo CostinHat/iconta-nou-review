@@ -55,10 +55,17 @@ def chitante_toate(cur, schema):
 
 def bonuri_de_verificat(cur, schema):
     cur.execute(f"""
-                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva, creat_la, orientare
+                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva, creat_la, orientare, cui_cumparator
                 FROM {schema}.bonuri WHERE status = 'de_verificat' ORDER BY creat_la DESC
             """)
     return cur.fetchall()
+
+
+def cui_cumparator_bon(cur, schema, bon_id):
+    """[17.5-P, AC153] Codul cumpărătorului stocat pe bon: rândul (valoare,) sau None dacă bonul nu există (NULL = necitit, «» = citit și absent)."""
+    cur.execute(f"SELECT cui_cumparator FROM {schema}.bonuri WHERE id=%s",
+                (bon_id,))
+    return cur.fetchone()
 
 
 # ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
@@ -79,12 +86,13 @@ def sterge_bonurile_extrase_vechi(cur, schema):
     return cur.fetchall()
 
 
-def adauga_bon(cur, schema, comerciant, cui, data_, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni):
+def adauga_bon(cur, schema, comerciant, cui, data_, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, cui_cumparator=None):
+    # [17.5-P, AC153] `cui_cumparator` (ultimul, nou) intră în coloana lui; ordinea pozițională veche rămâne (status → tip, tip → numar_document, …).
     cur.execute(f"""
-                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, orientare)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'extras', %s, %s, %s, %s) RETURNING id
+                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, orientare, cui_cumparator)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'extras', %s, %s, %s, %s, %s) RETURNING id
             """,
-                (comerciant, cui, data_, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni))
+                (comerciant, cui, data_, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, cui_cumparator))
     return cur.fetchone()
 
 

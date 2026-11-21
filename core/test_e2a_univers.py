@@ -33,7 +33,7 @@ from scripts import scan_univers_sql as _u  # noqa: E402
 #: Măsurate la 15.09.2026. `D4b` scade prin SEPARARE (E2b), nu prin redefinirea cuvântului
 #: „amestec". Cele 18 rămase sunt ACTE — cron-uri, lucrători, sonde, conectori — care își dețin
 #: tranzacția fiindcă aia e treaba lor (`PLAN_HARDENING.md:840`).
-PLAFON_D4B = 19                        # 41 înainte de E2b; 18 -> 19 la 09.10.2026: `core/migrari_registru.py`, rulatorul
+PLAFON_D4B = 20                        # 41 înainte de E2b; 18 -> 19 la 09.10.2026: `core/migrari_registru.py`, rulatorul
                                        # migrărilor (comanda Costin pct.2) — un ACT cu tranzacția lui, ca celelalte
 #: **ZERO, și rămâne zero.** Un depozit care își deschide singur conexiunea sau comite taie
 #: tranzacția apelantului în două (P4) — iar `db.get_conn` comite oricum la ieșirea din bloc.
@@ -63,6 +63,10 @@ def test_D4_ramane_ZERO_desi_universul_s_a_largit():
 def test_CLICHET_amestecul_observat_nu_creste():
     """`D4b_MIXT_OBSERVAT`: module cu SQL care își deschid singure conexiunea sau comit."""
     d4b = _u.d4b_mixt_observat()
+    # 870: singura abatere în plus este SQL-ul de profil din core/uc_tenants.py (17.5-J).
+    # Celelalte module păstrează plafonul istoric, inclusiv după retragerea acestei datorii.
+    alte_module = [rand for rand in d4b if rand[0] != "core/uc_tenants.py"]
+    assert len(alte_module) <= 19, alte_module
     assert len(d4b) <= PLAFON_D4B, (
         "amestec observat: %d > %d\n  %s"
         % (len(d4b), PLAFON_D4B,
@@ -165,7 +169,8 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # formularul D398 — decizia Costin „6 da”); idempotentă (ADD COLUMN IF NOT EXISTS), rulată o dată prin `core.migrari_registru`.
     # [29.10.2026, lotul 14.3, 715.1] 162 -> 163: `migrare_cabinet_de_test` (coloana `accounting_firms.de_test`, marcajul cabinetului de test); idempotentă
     # (ADD COLUMN IF NOT EXISTS), rulată o dată prin `core.migrari_registru`.
-    assert 40 <= len(mg) <= 163, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [17.5-P2, AC153] O singură migrare nouă: migrare_bon_cui_cumparator.
+    assert 40 <= len(mg) <= 164, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

@@ -1493,22 +1493,46 @@ def bonuri_de_verificat(tenant_id, ctx):
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
-            bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
-                       "data": r[3].isoformat() if r[3] else None,
-                       "total": float(r[4] or 0),
-                       "tva": (round(sum(float(x.get("valoare") or 0) for x in r[13]), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-                               if r[13] else float(r[5] or 0) + float(r[6] or 0)),
-                       "articole": r[7] or [], "status": r[8],
-                       "nr_imagini": r[9] or 0, "tip": r[10] or "bon",
-                       "numar_document": r[11], "mentiuni": r[12],
-                       "primit_la": r[14].isoformat() if r[14] else None,
-                       "orientare": r[15] or 0}
-                      for r in repo_casa.bonuri_de_verificat(cur, schema)]  # bon_flux_e9_v1
+            randuri = repo_casa.bonuri_de_verificat(cur, schema)  # bon_flux_e9_v1
+            rf = repo_firma_profil.cui_firma(cur, schema)
+        # [17.5-P, AC153/AC154; D3, D6] pe fiecare bon, în plus: codul cumpărătorului, verdictul TVA (codul stocat, codul firmei, totalul cu TVA,
+        # cursul EUR numai din cache: GET-ul nu descarcă și nu scrie) și notele de cont; chitanța nimic, bonul cu TVA 0 numai notele de cont
+        from core import bon_tva_deductibil as _btd
+        cui_f = rf[0] if rf else None
+        cursuri = {}
+        bonuri = []
+        for r in randuri:
+            b = {"id": r[0], "comerciant": r[1], "cui": r[2],
+                 "data": r[3].isoformat() if r[3] else None,
+                 "total": float(r[4] or 0),
+                 "tva": (round(sum(float(x.get("valoare") or 0) for x in r[13]), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+                         if r[13] else float(r[5] or 0) + float(r[6] or 0)),
+                 "articole": r[7] or [], "status": r[8],
+                 "nr_imagini": r[9] or 0, "tip": r[10] or "bon",
+                 "numar_document": r[11], "mentiuni": r[12],
+                 "primit_la": r[14].isoformat() if r[14] else None,
+                 "orientare": r[15] or 0,
+                 "cui_cumparator": r[16], "tva_deductibil": None, "avertismente": []}
+            bonuri.append(b)
+            if b["tip"] != "bon":
+                continue
+            note = _btd.note_conturi(b["articole"])
+            if not b["tva"]:
+                b["avertismente"] = note
+                continue
+            if r[3] not in cursuri:
+                cursuri[r[3]] = _btd.curs_euro(conn, r[3])
+            stare, motiv = _btd.verdict(r[16], cui_f, r[4] or 0, cursuri[r[3]])
+            primul = _btd.text(motiv, r[16], cui_f)
+            b["tva_deductibil"], b["avertismente"] = stare, [primul] + [n for n in note if n != primul]
     return {"bonuri": bonuri}
 
 
 def bon_aproba(tenant_id, bon_id, b, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/bonuri/{bon_id}/aproba`; docstringul ei a ramas in stratul HTTP."""
+    from core import bon_tva_deductibil as _btd
+    if b.tva:   # [17.5-P, D5] cursul EUR al zilei bonului se aduce înainte de tranzacție (pragul de 100 euro); o eroare nu oprește aprobarea
+        _uc_comun._preincalzeste_cursul("EUR", b.data)
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -1523,8 +1547,20 @@ def bon_aproba(tenant_id, bon_id, b, ctx):
         suma_linii = sum(l.valoare for l in b.linii)
         if abs(suma_linii - b.total) > 0.05:
             raise _erori.CerereGresita(f"suma articolelor ({suma_linii}) != total ({b.total})")
-        # valorile articolelor sunt cu TVA inclus; scad TVA proportional
-        factor = (b.total - b.tva) / b.total if b.total else 1
+        # [17.5-P, AC153; D2–D3] verdictul TVA din codul cumpărătorului STOCAT (nu din cerere), codul firmei și cursul EUR al zilei bonului:
+        # «nu» = TVA nedeductibil (valoarea întreagă a liniilor pe cheltuială, fără 4426); «da» și «de_verificat» = ca până acum
+        stare, avertisment = "da", None
+        if b.tva:
+            with conn.cursor() as cur:
+                rc = repo_casa.cui_cumparator_bon(cur, schema, bon_id)
+                rf = repo_firma_profil.cui_firma(cur, schema)
+            cui_bon, cui_f = (rc[0] if rc else None), (rf[0] if rf else None)
+            stare, motiv = _btd.verdict(cui_bon, cui_f, b.total, _btd.curs_euro(conn, b.data))
+            if stare != "da":
+                avertisment = _btd.text(motiv, cui_bon, cui_f)
+        tva_dedus = b.tva if (b.tva and stare != "nu") else 0
+        # valorile articolelor sunt cu TVA inclus; scad TVA proportional (numai TVA dedus)
+        factor = (b.total - tva_dedus) / b.total if b.total else 1
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_bon_ciorna(cur, schema, b.data, f"BON-{bon_id}", f"Bon {b.comerciant}",
                                                        _jurnal_api.eticheta_document("Bon fiscal", None, b.data, b.comerciant))[0]
@@ -1532,10 +1568,10 @@ def bon_aproba(tenant_id, bon_id, b, ctx):
                 # [280] valoarea fără TVA a liniei e o sumă nouă, intră în notă: rotunjire aritmetică (`common._q`), nu `round()` la par
                 repo_contabilitate.adauga_linie_credit_casa(cur, schema, iid, l.cont,
                                                             float(_common._q(_common._dec(l.valoare) * _common._dec(factor))))
-            if b.tva:
-                repo_contabilitate.adauga_linie_tva_din_casa(cur, schema, iid, b.tva)
+            if tva_dedus:
+                repo_contabilitate.adauga_linie_tva_din_casa(cur, schema, iid, tva_dedus)
             repo_casa.aproba_bonul(cur, schema, b.comerciant, b.data, b.total, iid, bon_id)
-    return {"ok": True, "nota_id": iid}
+    return {"ok": True, "nota_id": iid, "tva_dedus": float(tva_dedus), "avertisment": avertisment}
 
 
 def salarii_contare_propunere(tenant_id, an, luna, ctx):
