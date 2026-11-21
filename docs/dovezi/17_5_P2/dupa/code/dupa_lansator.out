@@ -1,0 +1,5 @@
+semanat: 1
+[lacat_test] lacăt preluat de la pid 615013 (mort sau refolosit)
+[parcurs] pasul implicit: trece [('f.1', 'trece', '')]
+[parcurs] pasul bon: trece [('f.2', 'trece', ''), ('f.3', 'trece', ''), ('a.1', 'trece', ''), ('a.2', 'trece', ''), ('a.3', 'trece', '')]
+

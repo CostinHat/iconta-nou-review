@@ -1,0 +1,21 @@
+semanat: 1
+[lacat_test] lacăt preluat de la pid 613630 (mort sau refolosit)
+[parcurs] pasul implicit: trece [('f.1', 'trece', '')]
+[parcurs] pasul bon: trece [('f.2', 'trece', ''), ('f.3', 'trece', ''), ('a.1', 'trece', ''), ('a.2', 'trece', ''), ('a.3', 'trece', '')]
+[haiku, instanța 1] cod 0
+Am citit cele șase capturi. Pe toate, textul cerut de descriere apare clar pe ecran.
+
+- **f.1**: cardul «Control fiscal» este vizibil pe pagina principală.
+- **f.2**: titlul ferestrei este «Bon fiscal · nr. P-1».
+- **f.3**: eticheta «Comerciant» apare în grila bonului.
+- **a.1**: sub titlu apare «CUI cumpărător pe bon: niciun cod înscris pe bon».
+- **a.2**: fraza «TVA nedeductibil: pe bon nu este înscris codul fiscal al firmei cumpărătoare» este prezentă integral.
+- **a.3**: textul conține «(art. 298 alin. (1))» în fraza despre combustibil, iar contul 6022 apare în grilă.
+
+Captura nu arată data ceasului înghețat din antetul paginii principale, dar descrierea nu cere această verificare, așa că nu a influențat răspunsul.
+
+```json
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Pe pagina principală apare cardul «Control fiscal», iar textul paginii conține această expresie."}, {"id": "f.2", "raspuns": "corespunde", "motiv": "Titlul ferestrei este «Bon fiscal · nr. P-1», deci conține «Bon fiscal»."}, {"id": "f.3", "raspuns": "corespunde", "motiv": "Textul ferestrei conține eticheta «Comerciant» deasupra câmpului cu numele comerciantului."}, {"id": "a.1", "raspuns": "corespunde", "motiv": "Sub titlu apare rândul «CUI cumpărător pe bon: niciun cod înscris pe bon», care conține expresia cerută."}, {"id": "a.2", "raspuns": "corespunde", "motiv": "Blocul fiscal conține integral fraza «TVA nedeductibil: pe bon nu este înscris codul fiscal al firmei cumpărătoare»."}, {"id": "a.3", "raspuns": "corespunde", "motiv": "Blocul fiscal conține «(art. 298 alin. (1))», iar contul 6022 apare în grila articolului."}]
+```
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: f.1=corespunde; f.2=corespunde; f.3=corespunde; a.1=corespunde; a.2=corespunde; a.3=corespunde | nejudecabile: 0 din 6
