@@ -33,20 +33,20 @@ def apel(d, intrerupe=None):
 
 
 class Inchidere(unittest.TestCase):
-    def verifica(self,d):
+    def assertInchidereUnica(self,d):   # [17.5-P0] ajutorul de aserție, cu nume assert* (contorul static al porții)
         self.assertEqual((d/"jurnal").read_text().splitlines(),[" ".join((plan.lot,plan.e,idop))])
         self.assertEqual((d/"oprit").read_text().splitlines(),[" ".join((plan.lot,plan.e))])
 
     def test_procese_concurente(self):
         with TemporaryDirectory() as cale:
             with get_context("spawn").Pool(3) as pool: pool.map(apel,[cale]*6)
-            self.verifica(Path(cale))
+            self.assertInchidereUnica(Path(cale))
 
     def test_reia_dupa_jurnal_sau_dupa_semnal(self):
         for pas in ("jurnal","oprit"):
             with self.subTest(pas=pas), TemporaryDirectory() as cale:
                 with self.assertRaises(InterruptedError): apel(cale,pas)
-                apel(cale); apel(cale); self.verifica(Path(cale))
+                apel(cale); apel(cale); self.assertInchidereUnica(Path(cale))
 
     def test_stari_contradictorii(self):
         for nume,text in [("jurnal","P alt E"),("jurnal","x\nx"),("oprit","17.5-P "+plan.e)]:

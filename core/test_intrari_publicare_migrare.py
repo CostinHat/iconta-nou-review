@@ -7,6 +7,8 @@ import subprocess
 import sys
 
 import unittest
+
+import pytest
 from tempfile import TemporaryDirectory
 from contextlib import ExitStack
 from unittest.mock import patch
@@ -22,7 +24,7 @@ def git(cwd,*args):
     return subprocess.check_output(["git","-C",str(cwd),"-c","core.hooksPath=/dev/null",*args],text=True).strip()
 
 
-def proba_rulatorul_public_refuza_inainte_de_acces_db(tmp_path,stack):
+def test_rulatorul_public_refuza_inainte_de_acces_db(tmp_path,stack):
     path=radacina()/"core/migrari_registru.py"
     spec=importlib.util.spec_from_file_location("migrari_in_proba",path)
     mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
@@ -47,7 +49,7 @@ def proba_rulatorul_public_refuza_inainte_de_acces_db(tmp_path,stack):
     assert rc not in (0,None)
 
 
-def proba_publica_lot_separa_asteptarea_de_esec(tmp_path,rc,asteptare):
+def test_publica_lot_separa_asteptarea_de_esec(tmp_path,rc,asteptare):
     # Prima intrare prin scriptul oficial. Inlocuim numai dependentele externe ale shell-ului.
     src=radacina()
     principal=tmp_path/"repo"; principal.mkdir()
@@ -113,29 +115,15 @@ fi
         assert any("esec_restart" in row for row in rows)
 
 
-class Probe(unittest.TestCase):
-    """Fiecare intrare parametrizată este un test separat și în pytest."""
+@pytest.fixture
+def stack():
+    with ExitStack() as s:
+        yield s
 
-def inregistreaza(nume, proba, cazuri, nr_argumente, fixture=None, foloseste_stack=False):
-    def construieste(args):
-        def test(self):
-            with ExitStack() as stack:
-                baza = Path(stack.enter_context(TemporaryDirectory())) if fixture else None
-                context = []
-                if fixture == "depozit":
-                    context.append(depozit(baza))  # noqa: F821 — ramură nefolosită în fișierul livrat (17.5-P0, abatere E)
-                elif fixture == "tmp_path":
-                    context.append(baza)
-                if foloseste_stack:
-                    context.append(stack)
-                proba(*context, *args)
-        return test
-    for i, caz in enumerate(cazuri):
-        args = (caz,) if nr_argumente == 1 else caz
-        setattr(Probe, nume + "_" + str(i + 1), construieste(args))
 
-inregistreaza("test_rulatorul_public_refuza_inainte_de_acces_db", proba_rulatorul_public_refuza_inainte_de_acces_db, [()], 0, 'tmp_path', True)
-inregistreaza("test_publica_lot_separa_asteptarea_de_esec", proba_publica_lot_separa_asteptarea_de_esec, [(75,True),(1,False)], 2, 'tmp_path', False)
+# [17.5-P0] Aceleași cazuri ca înregistrarea dinamică din exemplarul livrat (ascunsă contorului static al porții), ca parametri pytest.
+test_publica_lot_separa_asteptarea_de_esec = pytest.mark.parametrize("rc,asteptare", [(75, True), (1, False)])(
+    test_publica_lot_separa_asteptarea_de_esec)
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    sys.exit(pytest.main([__file__, "-v"]))
