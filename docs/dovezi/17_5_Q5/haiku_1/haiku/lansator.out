@@ -1,0 +1,24 @@
+[lacat_test] lacăt preluat de la pid 635680 (mort sau refolosit)
+[parcurs] implicit trece [('f.1', 'trece', '')]
+[parcurs] solduri_f1 trece [('f.2', 'trece', '')]
+[parcurs] solduri_f7 trece [('f.3', 'trece', '')]
+[parcurs] termene trece [('f.4', 'trece', '')]
+[parcurs] stocuri trece [('f.5', 'trece', ''), ('a.2', 'trece', '')]
+[parcurs] banca trece [('a.3', 'trece', ''), ('f.6', 'trece', '')]
+[haiku, instanța 1] cod 0
+Verificare pe capturi, judecând doar după descriere și ecran:
+
+- **f.1**: cardul „Control fiscal” apare pe ecranul Cabinet.
+- **f.2**: zona de încărcare afișează „Niciun fișier ales”.
+- **f.3**: butonul din bara de jos este „Încarcă balanța”.
+- **f.4**: antetul tabelului Termene are coloana „Declarație”.
+- **f.5**: butonul „+ NIR nou” este vizibil și activ pe ecranul Stocuri.
+- **a.2**: „Descarcă gestiunea lunii” apare ca buton alb cu contur, nu ca buton principal albastru (spre deosebire de „+ NIR nou”). Verificarea prezenței acțiunii ține de e.4, care nu este în listă, deci nu o judec aici.
+- **a.3**: butoanele „Contează” de pe linii apar gri/alb, fără stilul albastru de principal. Existența și legătura lor pe ID-uri țin de e.5, care nu este în listă.
+- **f.6**: în bara de jos apare „Importă extras”.
+
+```json
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Cardul „Control fiscal” este vizibil pe ecranul Cabinet."}, {"id": "f.2", "raspuns": "corespunde", "motiv": "Zona de încărcare arată „Niciun fișier ales”, adică starea inițială a fișierului."}, {"id": "f.3", "raspuns": "corespunde", "motiv": "Butonul din bara de jos este „Încarcă balanța”."}, {"id": "f.4", "raspuns": "corespunde", "motiv": "Antetul tabelului de termene conține coloana „Declarație”."}, {"id": "f.5", "raspuns": "corespunde", "motiv": "Butonul „+ NIR nou” este vizibil pe ecranul Stocuri F1."}, {"id": "a.2", "raspuns": "corespunde", "motiv": "„Descarcă gestiunea lunii” apare ca buton alb cu contur, fără stilul albastru de principal."}, {"id": "a.3", "raspuns": "corespunde", "motiv": "Butoanele „Contează” de pe linii sunt gri/albe, fără stilul de principal; existența și legătura lor pe ID-uri nu se judecă din captură."}, {"id": "f.6", "raspuns": "corespunde", "motiv": "În bara de jos apare butonul „Importă extras”."}]
+```
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: f.1=corespunde; f.2=corespunde; f.3=corespunde; f.4=corespunde; f.5=corespunde; a.2=corespunde; a.3=corespunde; f.6=corespunde | nejudecabile: 0 din 8

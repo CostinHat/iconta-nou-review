@@ -1,0 +1,22 @@
+# 17.5-Q5 — diagnostic complementar al parcurgerii «dupa» pe C 86d01984f3501f66f727940f6cae45ec04ae582e (22.11.2026 ~23:30), cu lansatorul oficial, CSV și jurnal de faze în afara arborelui (/home/costin/probe_Q5.Uo9baen9).
+# Motiv: parcurgerea oficială «dupa» (lansator.out din acest director) a căzut la pasul termene (TimeoutError pe #term-lista thead) fiindcă baza de test a fost restaurată cu serverul 8019 încă pornit după haiku_1
+# (restaurarea golește directorul generat al serverului); cheia (lot, dupa, pas, sha, code) există deja pentru f.1–f.3, deci o reluare oficială pe același C e refuzată de verifica_pas.adauga_rand.
+# Aici: restaurare → porneste_8019.sh → lansator (--csv /home/costin/probe_Q5.Uo9baen9/jurnal_verificare.csv --jurnal /home/costin/probe_Q5.Uo9baen9/jurnal_faze.log) → opreste → restaurare. rc=0.
+[lacat_test] lacăt preluat de la pid 647022 (mort sau refolosit)
+[parcurs] implicit trece [('f.1', 'trece', '')]
+[parcurs] solduri_f1 trece [('f.2', 'trece', '')]
+[parcurs] solduri_f7 trece [('f.3', 'trece', '')]
+[parcurs] termene trece [('f.4', 'trece', '')]
+[parcurs] stocuri trece [('f.5', 'trece', ''), ('a.2', 'trece', '')]
+[parcurs] banca trece [('a.3', 'trece', ''), ('f.6', 'trece', '')]
+
+# rândurile CSV-ului extern (commit, verificator, pas, verdict, parcurgere):
+commit,verificator,pas,verdict,parcurgere
+86d01984f3501f66f727940f6cae45ec04ae582e,code,f.1,trece,dupa
+86d01984f3501f66f727940f6cae45ec04ae582e,code,f.2,trece,dupa
+86d01984f3501f66f727940f6cae45ec04ae582e,code,f.3,trece,dupa
+86d01984f3501f66f727940f6cae45ec04ae582e,code,f.4,trece,dupa
+86d01984f3501f66f727940f6cae45ec04ae582e,code,f.5,trece,dupa
+86d01984f3501f66f727940f6cae45ec04ae582e,code,a.2,trece,dupa
+86d01984f3501f66f727940f6cae45ec04ae582e,code,a.3,trece,dupa
+86d01984f3501f66f727940f6cae45ec04ae582e,code,f.6,trece,dupa

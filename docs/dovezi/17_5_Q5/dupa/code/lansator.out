@@ -1,0 +1,8 @@
+[lacat_test] lacăt preluat de la pid 637231 (mort sau refolosit)
+[parcurs] implicit trece [('f.1', 'trece', '')]
+[parcurs] solduri_f1 trece [('f.2', 'trece', '')]
+[parcurs] solduri_f7 trece [('f.3', 'trece', '')]
+parcursul a căzut: TimeoutError: Locator.wait_for: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(".fereastra-overlay:not(.fundal) #term-lista thead") to be visible
+
