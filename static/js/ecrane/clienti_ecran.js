@@ -54,6 +54,22 @@ export async function ecranFurnizori(corp, nav, t, opt = {}) {
   return ecranParteneri(corp, nav, t, "furnizori", opt);
 }
 
+// [17.5-Q3, 855] butoanele din meniul „Acțiuni” al fișei: cel care nu se aplică rămâne inactiv (`aria-disabled`, motivul în `title`) și are motivul scris
+// sub el, în meniu (`tip-desc`, legat prin `aria-describedby`), ca să se citească fără hover sau focus; cel activ își păstrează acțiunea.
+function actiuniFisa(P, F, x) {
+  const k = esc(x.cheie);
+  const cuMotiv = (id, buton, motiv) => motiv
+    ? buton.replace("<button ", `<button aria-describedby="${id}-motiv" `).replace(">", atributeInactiv(motiv) + ">") + `<div class="tip-desc ${P}-motiv-inactiv" id="${id}-motiv">${esc(motiv)}</div>`
+    : buton;
+  const motivAnaf = x.cui ? null : "Partenerul n-are cod fiscal: ANAF n-are ce verifica.";
+  const motivSterge = !x.id ? "Partenerul n-are fișă: datele lui vin din facturi, nu e nimic de șters."
+    : (x.facturi ? `Are ${cate(x.facturi, "factură", "facturi")}: fișa ține localitatea și județul din D394 / D406, deci nu se șterge.` : null);
+  return [
+    cuMotiv(`${P}-anaf-${k}`, `<button type="button" class="buton-secundar ${P}-anaf fisa-anaf" id="${P}-anaf-${k}" data-cheie="${k}" data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}">Verifică la ANAF</button>`, motivAnaf),
+    cuMotiv(`${P}-sterge-${k}`, `<button type="button" class="buton-secundar ${P}-sterge" id="${P}-sterge-${k}" data-cheie="${k}" data-actiune="${F.actSterge}">Șterge</button>`, motivSterge),
+  ];
+}
+
 async function ecranParteneri(corp, nav, t, fel, opt) {
   const F = FEL[fel];
   const P = F.pre;
@@ -100,12 +116,7 @@ async function ecranParteneri(corp, nav, t, fel, opt) {
             id="${P}-salveaza-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}" disabled data-actiune="${actiune(x)}">Salvează</button>
           <!-- [lotul 13, 675 — DS cap.1 v2.104] fiecare rând are aceleași acțiuni, în aceeași ordine; cea care nu se aplică stă inactivă, cu
                motivul. Trei butoane pe rând -> „Salvează” (al formularului rândului) rămâne la vedere, celelalte în meniul „Acțiuni” (DS cap.9 v2.83) -->
-          ${meniuActiuni([`<button type="button" class="buton-secundar ${P}-anaf fisa-anaf" id="${P}-anaf-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}"
-              data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}"${x.cui ? "" : atributeInactiv("Partenerul n-are cod fiscal: ANAF n-are ce verifica.")}>Verifică la ANAF</button>`,
-            `<button type="button" class="buton-secundar ${P}-sterge" id="${P}-sterge-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}"
-              data-actiune="${F.actSterge}"${!x.id ? atributeInactiv("Partenerul n-are fișă: datele lui vin din facturi, nu e nimic de șters.")
-                : (x.facturi ? atributeInactiv(`Are ${cate(x.facturi, "factură", "facturi")}: fișa ține localitatea și județul din D394 / D406, deci nu se șterge.`) : "")}>Șterge</button>`],
-            { clasa: `${P}-actiuni` })}
+          ${meniuActiuni([...actiuniFisa(P, F, x)], { clasa: `${P}-actiuni` })}
           <div id="${P}-anaf-stare-${esc(x.cheie)}"></div></td>
       </tr>`;
     // [lotul 13, 640] căutarea după nume sau cod fiscal (fără diacritice)

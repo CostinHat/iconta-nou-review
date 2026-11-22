@@ -33,7 +33,7 @@ import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu }
 import { randA as randConstatare } from "./control_verdict.js?v=0caee663ad";
 import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=27188e9ea0";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=956057387b";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 

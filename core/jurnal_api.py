@@ -737,6 +737,75 @@ def raport_z_iso_afisat(descriere):
     return explicatie_raport_z(m.group(1), m.group(2), m.group(3)) if m else None
 
 
+_STORNARE_REF_RUPTA = re.compile(r"^Stornare: n \((?P<motiv>[^)]*)\)ota (?P<ref>nr\. crt\. (?P<nr>\d+) din (?P<data>\d{2}\.\d{2}\.\d{4}))$")
+_STORNARE_FARA_NR = re.compile(r"^Stornare: nota din (?P<data>\d{2}\.\d{2}\.\d{4}) \((?P<descr>[^()]*)\)(?P<rest>.*)$")
+_IESIRE_CANT_VECHE = re.compile(r"^Iesire stoc (?P<art>.+) x(?P<cant>\d+\.\d{3})$")
+
+
+def _val(r, cheie, i):
+    return r[cheie] if isinstance(r, dict) else r[i]
+
+
+def explicatii_stoc_vechi(cur, schema, nota_ids):
+    """[17.5-Q3, 852] {nota_id: explicația de arătat} pentru notele de stoc VALIDATE scrise înainte de forma de azi, fără să le modifice (OMFP 1802/2014 pct.69):
+    (a) stornarea scrisă de prima rulare a reparației 409 cu motivul lipit în eticheta notei stornate („Stornare: n (…)ota nr. crt. 8 din 05.10.2026”,
+    scripts/stoc2_409_1_dubluri_corectie.py:11) -> „Stornare: nota nr. crt. 8 din 05.10.2026 (<explicația notei 8>) — <motiv>”; (b) stornarea care numește nota
+    stornată numai prin dată și explicație („Stornare: nota din 05.10.2026 (…)”) -> cu numărul ei din Registrul-jurnal, când explicația o identifică o singură
+    dată în acea zi; (c) cantitatea în forma veche a coloanei NUMERIC(12,3) („Iesire stoc Marfa A x2.000”) -> forma generatorului de azi
+    (`stocuri_cv_api`: „Ieșire stoc Marfa A × 2 buc”), din mișcarea de stoc a notei (cantitatea și unitatea ei). Orice alt text rămâne neschimbat."""
+    ids = [int(i) for i in (nota_ids or []) if i]
+    if not ids:
+        return {}
+    from core import pdf_util as _pu
+    p = ('"%s".' % str(schema).strip('"')) if schema else ""
+    cur.execute(f"""SELECT i.id, i.descriere FROM {p}inregistrari i
+                     WHERE i.id = ANY(%s) AND i.status = 'validata' AND i.sursa = 'stocuri'
+                       AND (i.descriere LIKE 'Stornare: %%' OR i.descriere LIKE 'Iesire stoc %% x%%')""", (ids,))
+    tinte = [(_val(r, "id", 0), _val(r, "descriere", 1)) for r in cur.fetchall()]
+    if not tinte:
+        return {}
+
+    def iesire_azi(nid, text):
+        m = _IESIRE_CANT_VECHE.match(text or "")
+        if not m:
+            return text
+        cur.execute(f"""SELECT m.cantitate, a.um FROM {p}miscari_stoc m LEFT JOIN {p}articole a ON a.id = m.articol_id
+                         WHERE m.inregistrare_id = %s ORDER BY m.id LIMIT 1""", (nid,))
+        r = cur.fetchone()
+        cant, um = (_val(r, "cantitate", 0), _val(r, "um", 1)) if r else (m.group("cant"), "")
+        return "Ieșire stoc %s × %s" % (m.group("art"), _pu.cantitate(cant, um))
+
+    def nota_validata(data_ro, nr=None, descr=None):
+        z, l, a = data_ro.split(".")
+        if nr is not None:
+            cur.execute(f"""SELECT i.id, i.descriere, r.nr_curent FROM {p}inregistrari i JOIN {p}registru_jurnal_numere r ON r.inregistrare_id = i.id
+                             WHERE r.nr_curent = %s AND i.data = %s AND i.status = 'validata'""", (int(nr), "%s-%s-%s" % (a, l, z)))
+        else:
+            cur.execute(f"""SELECT i.id, i.descriere, r.nr_curent FROM {p}inregistrari i JOIN {p}registru_jurnal_numere r ON r.inregistrare_id = i.id
+                             WHERE i.descriere = %s AND i.data = %s AND i.status = 'validata'""", (descr, "%s-%s-%s" % (a, l, z)))
+        rez = cur.fetchall()
+        return [(_val(r, "id", 0), _val(r, "descriere", 1), _val(r, "nr_curent", 2)) for r in rez]
+
+    out = {}
+    for nid, text in tinte:
+        nou = text
+        m = _STORNARE_REF_RUPTA.match(text or "")
+        if m:
+            orig = nota_validata(m.group("data"), nr=m.group("nr"))
+            if len(orig) == 1:
+                nou = "Stornare: nota %s (%s) — %s" % (m.group("ref"), iesire_azi(orig[0][0], orig[0][1]), m.group("motiv"))
+        m = _STORNARE_FARA_NR.match(nou or "") if nou == text else None
+        if m:
+            orig = nota_validata(m.group("data"), descr=m.group("descr"))
+            if len(orig) == 1 and orig[0][0] != nid:
+                nou = "Stornare: nota nr. crt. %s din %s (%s)%s" % (orig[0][2], m.group("data"), iesire_azi(orig[0][0], orig[0][1]), m.group("rest"))
+        if nou == text:
+            nou = iesire_azi(nid, text)
+        if nou != text:
+            out[nid] = nou[:200]
+    return out
+
+
 def note_fara_serie_lipita(cur, schema, nota_ids):
     """{nota_id: {"descriere" | "document": text cu seria separat}} — ce arată Registrul jurnal în locul textului salvat cu seria lipită
     (`note_cu_serie_lipita`): nota validată rămâne în bază cum a fost scrisă, iar rândul ei spune „Contare factura F6 nr. 1” / „Factură F6
@@ -764,4 +833,8 @@ def note_fara_serie_lipita(cur, schema, nota_ids):
             nou = raport_z_iso_afisat(descr)
             if nou:
                 out.setdefault(nid, {})["descriere"] = nou
+    # [17.5-Q3, 852] stornările și ieșirile de stoc validate scrise înainte de forma de azi (`explicatii_stoc_vechi`): referința întreagă la nota stornată și cantitatea
+    # cu unitatea ei; în bază rămân cum au fost scrise
+    for nid, nou in explicatii_stoc_vechi(cur, schema, ids).items():
+        out.setdefault(nid, {})["descriere"] = nou
     return out

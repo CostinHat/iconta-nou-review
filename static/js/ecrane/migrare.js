@@ -82,7 +82,7 @@ async function _existaPas(corp, firma, strat, nav = null) {
           an = z.getFullYear(); luna = z.getMonth() + 1;
         }
       } catch { /* fără dată citită: luna de lucru */ }
-      const { deschideBalanta } = await import("./firme.js?v=27188e9ea0");
+      const { deschideBalanta } = await import("./firme.js?v=956057387b");
       await deschideBalanta(nav, firma.tenant_id, an, luna);
     });
     el.append(" ", b);
@@ -1080,7 +1080,7 @@ function importSolduriFirma(corp, nav, firma, app = null) {   // [270] `app` = a
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din programul vechi.</p>
     <div id="mig-carduri"></div>
     ${_exportHTML(app, "solduri") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
-    <div class="mig-drop" id="mig-drop">
+    <div class="mig-drop mig-drop-pasiv" id="mig-drop">
       <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/solduri/incarca" accept=".csv,.txt,.tsv,.xlsx,.xls" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">Niciun fișier ales</div>
@@ -1094,6 +1094,7 @@ function importSolduriFirma(corp, nav, firma, app = null) {   // [270] `app` = a
     deschide: (c2) => { c2.innerHTML = `<h2 class="pf-titlu">Ce se citește din balanță</h2><p class="ecran-nota" id="mig-cum-balanta">Din ea se iau soldurile finale și, dacă le are, soldurile de la 1 ianuarie și rulajele anului (sold inițial și sume precedente, cu toate conturile care au rulaj); fără ele, ecranul spune ce lipsește. Debitul total trebuie să fie egal cu creditul total. Analiticele din balanță (de exemplu 4111.01, 401.00012) se adaugă în planul de conturi, sub sinteticul lor; un cont care nu există în planul de conturi al normei firmei e respins, cu motivul. Un sold pe partea opusă funcțiunii contului (de exemplu 5121 creditor) se semnalează pe rând.</p>`; } }], nav);
   // [17.5-Q, F084] numai butonul din bară deschide alegerea fișierului (clic sau Enter): zona din corp nu mai e o etichetă legată de câmp și nu repetă titlul
   // acțiunii; arată fișierul ales și formatul acceptat
+  // [17.5-Q3, C236] zona e pasivă (`mig-drop-pasiv`, static/stil.css): cursor neutru și același aspect în repaus și la trecerea mouse-ului — nu pare clicabilă
   _butonAlegeFisier(corp, "Încarcă balanța");
   _existaPas(corp, firma, "solduri", nav);   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există; [17.5-Q, AC088] drumul spre Balanța de verificare
   const fileInput = corp.querySelector("#mig-file");
@@ -2496,7 +2497,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=27188e9ea0"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=956057387b"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat

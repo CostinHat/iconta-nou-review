@@ -9,6 +9,7 @@
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
 import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1, F-A.1] caseta SPV de după emitere
 import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=7396e03327";
+import { inactiv, activ } from "../api.js?v=7396e03327";   // [17.5-Q3, F172 / F252] starea butonului de emitere, cu motivul scris în bară de cadru
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";
 import { textStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -175,12 +176,14 @@ async function salveazaConfig(tenantId, serie, numar_start, platitor_tva) {
 // poartă (DS cap.5 v2.14: `.caseta-poarta` > `.cp-mesaj` + `.cp-butoane`, două alegeri care merg amândouă înainte) pe care o pune serverul
 // prin refuzul `INTREABA_PLEACA_MARFA`: aceeași întrebare, același text, la emiterea din formular și la „Transformă în factură” (detaliul
 // proformei / avizului, `facturi_ecran.js`). `laRaspuns(true|false)` retrimite cu răspunsul; `ids` = id-urile celor două butoane.
+// [17.5-Q3, F172] cele două alegeri ale porții au același aspect (niciuna nu e acțiunea principală a ferestrei): stau împreună în casetă, iar butonul care
+// emite (din bară) rămâne inactiv cât poarta e deschisă — `asteaptaPoarta` / `poartaRaspunsa` în fluxul emiterii. Aceeași regulă la „Ai dovada transportului?”.
 export function intrebarePleacaMarfa(zona, nrArticole, laRaspuns, ids) {
   zona.innerHTML = `
     <div class="caseta-poarta">
       <div class="cp-mesaj">Pleacă marfa acum? ${cate(nrArticole, "articol", "articole")} de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, livrare ulterioară sau serviciu, alege „Nu, doar factură".</div>
       <div class="cp-butoane">
-        <button class="buton-primar" id="${ids.da}">Da, pleacă marfa</button>
+        <button class="buton-secundar em-buton-sec" id="${ids.da}">Da, pleacă marfa</button>
         <button class="buton-secundar em-buton-sec" id="${ids.nu}">Nu, doar factură</button>
       </div>
     </div>`;
@@ -228,7 +231,7 @@ export function intrebareDovadaTransport(zona, intrebare, laRaspuns, ids) {
     <div class="caseta-poarta">
       <div class="cp-mesaj">${esc(intrebare || "")} Dacă nu o ai încă, factura se emite și îți spune ce lipsește.</div>
       <div class="cp-butoane">
-        <button class="buton-primar" id="${ids.da}">Da, am dovada transportului</button>
+        <button class="buton-secundar em-buton-sec" id="${ids.da}">Da, am dovada transportului</button>
         <button class="buton-secundar em-buton-sec" id="${ids.nu}">Nu încă, emite factura</button>
       </div>
     </div>`;
@@ -1265,7 +1268,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       rez2.className = "em-rezultat em-bun em-emisa";
       arataAvertismenteEmitere(rez2, r.avertismente);   // [lotul 12, C157 / C84] emisă, cu ce trebuie știut
       if (r.vies_de_reverificat) reverificaVies(rez2, r.vies_de_reverificat);   // [lotul 13, C199 / 550] VIES n-a răspuns: reîncercarea
-      if (btn) btn.textContent = "Emisă ✓";
+      // [17.5-Q3, F252] factura e emisă: butonul rămâne inactiv cu motivul lui (cadrul îl scrie în bară), nu cu „Completează datele cerute…” al unui formular necompletat
+      if (btn) { btn.textContent = "Emisă ✓"; inactiv(btn, "Factura e emisă: o a doua emitere nu se oferă."); }
       stergeCiorna(tenantId);   // [lotul 07.10 pct.2] emisă: ciorna și-a terminat rostul
       { const zcEmisa = corp.querySelector("#em-ciorna"); if (zcEmisa) zcEmisa.innerHTML = ""; }   // [15.1, F-A.1] anunțul „Factura începută… a fost păstrată” nu rămâne după emitere
       ciornaPornita = false;
@@ -1440,10 +1444,17 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       trimiteEmitere(null);
     }
   }
+  // [17.5-Q3, F172] cât o poartă („Pleacă marfa acum?”, „Ai dovada transportului?”) e deschisă, „Emite factură” din bară e inactiv, cu motivul: răspunsul e
+  // una din cele două alegeri din casetă (fiecare emite o singură dată); nu există a treia acțiune și nici o a doua cale de emitere
+  const MOTIV_POARTA = "Răspunde întâi la întrebarea de deasupra: alegerea ta emite factura.";
+  const asteaptaPoarta = () => { const b = corp.querySelector("#em-emite"); if (b) inactiv(b, MOTIV_POARTA); };
+  const poartaRaspunsa = () => { const b = corp.querySelector("#em-emite"); if (b && b.getAttribute("data-motiv-inactiv") === MOTIV_POARTA) activ(b); };
   function intreabaDovada(intrebare) {
     const rez = corp.querySelector("#em-rezultat");
     rez.className = "em-rezultat";
+    asteaptaPoarta();
     intrebareDovadaTransport(rez, intrebare, (da) => {
+      poartaRaspunsa();
       dovadaTransportCurent = da; semnDovada = semnLivrareIc(); trimiteEmitere(null);
     }, { da: "em-dovada-da", nu: "em-dovada-nu" });
   }
@@ -1454,7 +1465,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   function intreabaPleacaMarfa() {
     const rez = corp.querySelector("#em-rezultat");
     rez.className = "em-rezultat";
+    asteaptaPoarta();
     intrebarePleacaMarfa(rez, linii.filter((l) => l && l.articol_id).length, (da) => {
+      poartaRaspunsa();
       pleacaMarfaCurent = da; semnMarfa = semnArticole(); salveazaCiorna(); trimiteEmitere(null);
     }, { da: "em-poarta-da", nu: "em-poarta-nu" });
   }

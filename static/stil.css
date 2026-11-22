@@ -572,6 +572,10 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   transition: border-color 0.15s, background 0.15s;
 }
 .mig-drop:hover { border-color: #16a34a; background: #f3fbf5; }
+/* [17.5-Q3, C236] zona pasivă din Solduri inițiale (alegerea fișierului e butonul din bara de jos): cursor neutru și același aspect în repaus și la hover */
+.mig-drop.mig-drop-pasiv, .mig-drop.mig-drop-pasiv:hover { cursor: default; border-color: var(--linie); background: none; }
+/* [17.5-Q3, 860] motivul blocării inactive din antetul Registrului jurnal: la vedere peste 700 px; sub 700 px antetul ar lua zonei tabelului sub 40% din corp (X09) — motivul rămâne în title / aria-describedby */
+@media (max-width: 700px) { .motiv-blocare { display: none; } }
 .mig-drop-titlu { font-size: var(--text-mic); font-weight: 600; color: var(--ardezie); margin-top: 6px; }
 .mig-drop-desc { font-size: var(--text-mic); color: var(--gri); margin-top: 2px; }
 .mig-eroare { color: #a32d2d; font-size: var(--text-mic); margin: 12px 0 0; min-height: 0; }

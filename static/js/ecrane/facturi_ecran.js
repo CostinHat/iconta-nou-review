@@ -9,7 +9,7 @@ import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=7847deeeb4";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=4cd799989f";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
@@ -77,6 +77,8 @@ export const monedaScrisa = (m) => (!m || String(m).toUpperCase() === "RON") ? "
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
+
+const MOTIV_TOATE_FACTURILE = "Toate facturile lunii sunt afișate.";   // [17.5-Q3, 863]
 
 export function randeazaFacturi(corp, nav, tenantId, opt = {}) {
   meniuFacturi(corp, nav, tenantId, opt);
@@ -325,7 +327,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=27188e9ea0");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=956057387b");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -722,11 +724,14 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         <button class="buton-secundar" id="fac-next"${opt.client && (an > anCurent || (an === anCurent && luna >= lunaCurenta)) ? atributeInactiv("Aceasta e luna curentă.") : ""}>luna \u2192</button>
         ${opt.client ? "" : `<button class="buton-secundar" id="fac-saga-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-saga" style="margin-left:12px">Export SAGA lun\u0103</button>
         <button class="buton-secundar" id="fac-winmentor-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-winmentor">Export WinMentor lun\u0103</button>`}
-        <button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px"${maiSunt ? "" : atributeInactiv("Toate facturile lunii sunt afișate.")}>Arată încă ${cate(ramase, "factură a lunii", "facturi ale lunii")}</button></p>
+        ${maiSunt ? `<button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px">Arată încă ${cate(ramase, "factură a lunii", "facturi ale lunii")}</button>`
+          : `<button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px" aria-describedby="fac-mai-multe-motiv"${atributeInactiv(MOTIV_TOATE_FACTURILE)}>Arată mai multe facturi ale lunii</button> <span class="tip-micut" id="fac-mai-multe-motiv">${MOTIV_TOATE_FACTURILE}</span>`}</p>
       ${explicatie ? `<p class="ecran-nota" id="fac-luna-explicatie">${_fraza_luna_goala}</p>` : ""}
       ${blocInchidere}
       ${opt.client ? "" : `<div id="fac-saga-zona"></div>`}
       <div class="pf-lista zebra-lista">${corpuri}</div>`;
+    // [17.5-Q3, 863] „Arată încă N” numai cât mai sunt facturi ale lunii (N = câte aduce clicul, cel mult 10); la zero butonul nu mai promite „încă 0”: rămâne inactiv
+    // (675: nu dispare), cu eticheta generală și cu motivul scris lângă el, la vedere (`fac-mai-multe-motiv`)
     corp.querySelector("#fac-mai-multe")?.addEventListener("click", () => { afisate += 10; deseneaza(); });
     corp.querySelector("#fac-prev").addEventListener("click", () => { afisate = 10; explicatie = false; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#fac-next").addEventListener("click", () => {
@@ -1451,7 +1456,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div id="fd-nota-linii" class="fd-nota-linii">${nota && nota.linii.length ? liniiNotaHtml(nota.linii) : "Nota n-are rânduri de afișat."}</div>
         <p style="margin-top:12px"><button type="button" class="buton-secundar" id="fd-nota-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Deschide în Registrul jurnal</button></p>`;
       c2.querySelector("#fd-nota-jurnal").addEventListener("click", async () => {
-        const { ecranJurnal } = await import("./firme.js?v=27188e9ea0");   // dinamic: firme.js importă deja ecranul facturilor
+        const { ecranJurnal } = await import("./firme.js?v=956057387b");   // dinamic: firme.js importă deja ecranul facturilor
         const [an, luna] = String(nc.data).split("-").map(Number);
         nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
       });
