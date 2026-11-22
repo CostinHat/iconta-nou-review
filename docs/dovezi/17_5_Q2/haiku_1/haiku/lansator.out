@@ -1,0 +1,35 @@
+[lacat_test] lacăt preluat de la pid 2471327 (mort sau refolosit)
+[parcurs] implicit trece [('f.1', 'trece', '')]
+[parcurs] solduri trece [('f.2', 'trece', ''), ('a.1', 'trece', '')]
+[parcurs] card_balanta trece [('a.2', 'trece', '')]
+[parcurs] solduri_actiune trece [('a.3', 'trece', '')]
+MASURA AC093 {'sus': 211, 'jos': 680, 'top': 219, 'inaltime': 625, 'vizibil': True}
+[parcurs] audit_raport trece [('a.4', 'trece', '')]
+[parcurs] audit_buton trece [('f.3', 'trece', '')]
+[parcurs] declaratii trece [('f.4', 'trece', ''), ('a.5', 'trece', '')]
+[parcurs] d110 trece [('f.5', 'trece', '')]
+[parcurs] d110_621 trece [('a.6', 'trece', '')]
+[parcurs] d110_638 trece [('a.7', 'trece', '')]
+[haiku, instanța 1] cod 0
+Am judecat fiecare aserțiune după descriere și captură, fără alte criterii.
+
+- **a.1**: pe ecran, „Ce se citește din balanță” apare ca un card fără paragraf vizibil și fără control „▾ detalii”, deci nu există rânduri de explicație afișate.
+- **a.4**: captura arată antetul raportului („Ultimul audit…”) plus șase rânduri „Coerent”, nu un singur rând, iar conținutul pare derulat.
+- **f.3**: fereastra se intitulează „Control fiscal”, nu „Audit de preluare”, dar eticheta butonului din bara de jos este cea cerută.
+- **f.4 și a.6/a.7**: titlul grupului apare în majuscule (efect de stil al aceluiași text), iar opțiunile lungi sunt rupte pe mai multe rânduri; textul este același.
+
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Cardul «Control fiscal» apare în pagina principală a cabinetului, cu indicatorii 3/0/0/5."},
+{"id": "f.2", "raspuns": "corespunde", "motiv": "Fereastra Solduri inițiale este deschisă, iar butonul «Încarcă balanța» apare în colțul din dreapta jos cu textul exact."},
+{"id": "a.1", "raspuns": "corespunde", "motiv": "În fereastra Solduri inițiale nu apare niciun paragraf al explicației și nici un control «▾ detalii» pentru ea; există doar cardul «Ce se citește din balanță»."},
+{"id": "a.2", "raspuns": "corespunde", "motiv": "Fereastra deschisă din card are titlul «Ce se citește din balanță» deasupra paragrafului explicativ."},
+{"id": "a.3", "raspuns": "corespunde", "motiv": "Rândul «Există deja: …» are butonul secundar «Deschide Balanța de verificare» și «▾ detalii»."},
+{"id": "a.4", "raspuns": "nu corespunde", "motiv": "După rulare apar antetul «Ultimul audit» și șase rânduri «Coerent», nu un singur rând; conținutul pare derulat, deci captura nu arată doar începutul."},
+{"id": "f.3", "raspuns": "corespunde", "motiv": "Eticheta butonului din bara de jos este «Rerulează auditul», deși titlul ferestrei este «Control fiscal», nu «Audit de preluare»."},
+{"id": "f.4", "raspuns": "corespunde", "motiv": "Deasupra rândului «D100 · T4/2025 · termen 26.01.2026» apare titlul grupului «DATORATE ÎNAINTE DE PRELUAREA ÎN ICONTA.EU» (afișat cu majuscule)."},
+{"id": "a.5", "raspuns": "corespunde", "motiv": "Rândul «D100 · T4/2025 · termen 26.01.2026» din grup are doar eticheta «înainte de preluare», fără «restanță»; grupul are un singur rând vizibil."},
+{"id": "f.5", "raspuns": "corespunde", "motiv": "Pasul 2 al D110 este deschis și formularul are câmpul «Cod obligație*»."},
+{"id": "a.6", "raspuns": "corespunde", "motiv": "Opțiunea 621 din lista deschisă este «621 — Impozit pe veniturile din jocuri de noroc», rupt pe trei rânduri."},
+{"id": "a.7", "raspuns": "corespunde", "motiv": "Opțiunea 638 din lista deschisă este «638 — Impozit pe veniturile obținute la jocuri de noroc practicate în România de persoane fizice nerezidente», rupt pe patru rânduri."}]
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+[haiku, instanța 2 pe a.4] ('nejudecabil', 'Captura arată antetul raportului și secțiunile Coerent/Divergent, dar elementul tăiat de deasupra antetului lasă neclar dacă e chiar începutul raportului, iar din imagine nu se poate stabili dacă a fost vreo derulare manuală înainte de captură.')
+răspunsuri: f.1=corespunde; f.2=corespunde; a.1=corespunde; a.2=corespunde; a.3=corespunde; a.4=nu corespunde; f.3=corespunde; f.4=corespunde; a.5=corespunde; f.5=corespunde; a.6=corespunde; a.7=corespunde | nejudecabile: 0 din 12

@@ -1,0 +1,13 @@
+[lacat_test] lacăt preluat de la pid 2481969 (mort sau refolosit)
+[parcurs] implicit trece [('f.1', 'trece', '')]
+[parcurs] solduri trece [('f.2', 'trece', ''), ('a.1', 'trece', '')]
+[parcurs] card_balanta trece [('a.2', 'trece', '')]
+[parcurs] solduri_actiune trece [('a.3', 'trece', '')]
+MASURA AC093 {'sus': 211, 'jos': 680, 'top': 219, 'inaltime': 625, 'vizibil': True}
+[parcurs] audit_raport trece [('a.4', 'trece', '')]
+[parcurs] audit_buton trece [('f.3', 'trece', '')]
+[parcurs] declaratii trece [('f.4', 'trece', ''), ('a.5', 'trece', '')]
+[parcurs] d110 trece [('f.5', 'trece', '')]
+[parcurs] d110_621 trece [('a.6', 'trece', '')]
+[parcurs] d110_638 trece [('a.7', 'trece', '')]
+
