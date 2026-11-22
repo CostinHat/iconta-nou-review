@@ -1,0 +1,3 @@
+[e2e] aplicația din index pornită pe 8019 în 22s
+FAILED frontend_test/e2e/e2e_lot12_reev2.py::test_def_630_reevaluarea_lunii_in_curs_arata_diferenta_provizorie_stornarea_si_soldul_din_4111
+[e2e] 1 failed, 2 passed in 82.03s (0:01:22) (105s; capturi în docs/dovezi/17_5_Q/teste_atinse_baza/e2e_lot12_reev2)

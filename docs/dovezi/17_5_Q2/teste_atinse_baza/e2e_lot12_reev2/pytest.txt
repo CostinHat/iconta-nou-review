@@ -1,0 +1,77 @@
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_def_630_reevaluarea_lunii_in_curs_arata_diferenta_provizorie_stornarea_si_soldul_din_4111 _
+
+patron = <conftest.Ecran object at 0x7690710ad1c0>
+firma_r = {'tenant_id': 370964, 'schema': 'tenant_9732', 'nume': 'E2E Probă 2042261 SRL', 'cabinet_id': 1968}
+
+    def test_def_630_reevaluarea_lunii_in_curs_arata_diferenta_provizorie_stornarea_si_soldul_din_4111(patron, firma_r):
+        """630. Pașii: factura EUR de azi, contată și validată; a doua factură EUR, contată, validată și stornată (stornarea rămâne cu nota în
+        ciornă) -> Închidere lună (luna în curs) -> „Reevaluare valută”: rândul DANTE are cursul BNR cu virgulă, „din <ziua cursului> —
+        provizoriu” și diferența „provizorie”; caseta spune simplu că cursul ultimei zile bancare nu e publicat încă (fără „flux întrerupt”);
+        „Sold în lei” = suma de pe 4111 a notelor validate; stornarea apare numită la „Facturi în valută care nu intră”; „Generează nota”
+        inactiv. MUTAȚIE (JS): marcajul „provizoriu” scos -> pică."""
+        from core import curs_bnr as _cb
+        f = firma_r
+        pregateste_firma(patron, f, platitor=True, regim_fiscal="profit")
+        f1 = _factura_eur_azi(patron, f)
+        f2 = _factura_eur_azi(patron, f)
+        _ok(_api(patron, "POST", "/tenants/%d/facturi/%d/storno" % (f["tenant_id"], f2), {}), "stornarea")
+        from core.pdf_util import serie_nr
+        ((st_serie, st_numar),) = sql('SELECT serie, numar FROM "%s".facturi WHERE storno_din_id = %%s' % f["schema"], (f2,))
+        ((o_serie, o_numar),) = sql('SELECT serie, numar FROM "%s".facturi WHERE id = %%s' % f["schema"], (f2,))
+        eticheta_storno = "Factură %s din %s (stornarea %s)" % (serie_nr(st_serie, st_numar), AZI.strftime("%d.%m.%Y"), serie_nr(o_serie, o_numar))
+        (lei_4111,) = sql('SELECT COALESCE(SUM(l.suma), 0) FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
+                          'WHERE i.factura_id = ANY(%%s) AND i.status = \'validata\' AND l.cont_debit LIKE \'411%%%%\'' % (f["schema"], f["schema"]),
+                          ([f1, f2],))[0]
+        pg = patron.pg
+        patron.firma(f["nume"])
+        pg.click("#fa-inchidere")
+        pg.wait_for_selector(".fereastra:last-of-type #il-reevaluare", timeout=60000)
+        pg.click(".fereastra:last-of-type #il-reevaluare")
+>       pg.wait_for_selector(".fereastra:last-of-type #rv-tabel", timeout=60000)
+
+frontend_test/e2e/e2e_lot12_reev2.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q/venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+/home/costin/iconta_lot17_5q/venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+/home/costin/iconta_lot17_5q/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x769071049730>
+cb = <function Channel.send.<locals>.<lambda> at 0x769070e80860>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 60000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fereastra:last-of-type #rv-tabel") to be visible
+
+/home/costin/iconta_lot17_5q/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_lot12_reev2.py::test_def_630_reevaluarea_lunii_in_curs_arata_diferenta_provizorie_stornarea_si_soldul_din_4111
+1 failed, 2 passed in 82.03s (0:01:22)

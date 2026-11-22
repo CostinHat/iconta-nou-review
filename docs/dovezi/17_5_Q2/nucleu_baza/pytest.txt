@@ -1,0 +1,69 @@
+............................F................                            [100%]
+=================================== FAILURES ===================================
+______________________ test_textul_afisat_e_limba_romana _______________________
+
+texte = [('core/activitati_amef.py', 82, 'Chitanța nu s-a emis: o vânzare încasată în numerar fără factură se face cu bon fisc...s%% nu se poate folosi la data chitanței. Cotele posibile atunci: %s.'), ('core/activitati_amef.py', 115, '%s%%'), ...]
+
+    def test_textul_afisat_e_limba_romana(texte):
+        gasite = defecte(texte)
+        raport = "\n".join("  %s:%d  [%s] %s  <- %r" % (fn, ln, fel, ",".join(g), s[:110]) for fn, ln, fel, g, s in gasite)
+>       assert not gasite, "Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:\n" + raport
+E       AssertionError: Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:
+E           core/migrari_registru.py:323  [diacritice] fara,operatie  <- 'fara operatie'
+E           core/migrari_registru.py:329  [diacritice] operatie  <- 'alta operatie'
+E       assert not [('core/migrari_registru.py', 323, 'diacritice', ['fara', 'operatie'], 'fara operatie'), ('core/migrari_registru.py', 329, 'diacritice', ['operatie'], 'alta operatie')]
+
+core/test_text_afisat_limbaj.py:413: AssertionError
+==================================== PASSES ====================================
+__________________ test_niciun_text_afisat_js_fara_diacritice __________________
+----------------------------- Captured stdout call -----------------------------
+
+[gard-diacritice-JS] fisiere JS scanate: 73
+=========================== short test summary info ============================
+PASSED core/test_d110.py::test_d110_dif_si_total
+PASSED core/test_d110.py::test_d110_nr_evid_control_si_cod_bugetar
+PASSED core/test_d110.py::test_d110_erori
+PASSED core/test_d110.py::test_d110_valid_pe_validatorul_oficial
+PASSED core/test_d110_formular.py::test_d110_nu_e_doar_api
+PASSED core/test_d110_formular.py::test_d110_cerere_goala_refuza_la_api
+PASSED core/test_d110_formular.py::test_d110_baza_valida_fara_erori
+PASSED core/test_d110_formular.py::test_d110_structural
+PASSED core/test_d110_formular.py::test_d110_suma_rest_zero_refuza
+PASSED core/test_d110_formular.py::test_d110_temei_incoerent_refuza
+PASSED core/test_nomenclator_obligatii.py::test_fisierul_e_regenerarea_din_ordine
+PASSED core/test_nomenclator_obligatii.py::test_pozitiile_si_denumirile_citate_din_ordin
+PASSED core/test_nomenclator_obligatii.py::test_pozitiile_retrase_nu_intra
+PASSED core/test_nomenclator_obligatii.py::test_fiecare_cod_emis_de_aplicatie_are_denumire
+PASSED core/test_nomenclator_obligatii.py::test_componentele_d112_poarta_denumirea_din_nomenclator
+PASSED core/test_nomenclator_obligatii.py::test_componentele_d100_si_d710_poarta_denumirea_din_nomenclator
+PASSED core/test_nomenclator_obligatii.py::test_formularul_d710_primeste_codurile_cu_denumirea_de_la_server
+PASSED core/test_lot13_ds_ferestre.py::test_def_673_fereastra_deschisa_peste_alta_e_fereastra_de_lucru_cat_ecranul
+PASSED core/test_lot13_ds_ferestre.py::test_def_673_confirmarea_ramane_fereastra_mica_si_prima_fereastra_nu_se_schimba
+PASSED core/test_lot13_ds_ferestre.py::test_def_676_lista_scurta_e_butoane_alaturate_fara_nimic_ales
+PASSED core/test_lot13_ds_ferestre.py::test_def_676_alegerea_lipsa_se_cere_langa_butoane
+PASSED core/test_lot13_ds_ferestre.py::test_def_675_butonul_care_nu_se_aplica_sta_inactiv_cu_motivul
+PASSED core/test_lot13_ds_ferestre.py::test_def_581_caseta_din_bara_de_jos_nu_mananca_tabelul
+PASSED core/test_text_afisat_limbaj.py::test_detectoarele_au_dinti
+PASSED core/test_text_afisat_limbaj.py::test_rolurile_noi_vad_limitele_verdictului
+PASSED core/test_text_afisat_limbaj.py::test_marcajul_intern_are_motiv_si_plafon
+PASSED core/test_text_afisat_limbaj.py::test_cuvintele_singure_afisate_au_diacritice
+PASSED core/test_text_afisat_limbaj.py::test_ecranele_fara_majuscule_de_accent
+PASSED core/test_text_afisat_limbaj.py::test_textul_din_pdf_e_limba_romana
+PASSED core/test_text_afisat_limbaj.py::test_literalele_js_in_proza_au_diacritice
+PASSED core/test_text_afisat_limbaj.py::test_aplicatia_vorbeste_la_persoana_a_treia
+PASSED core/test_text_afisat_limbaj.py::test_detectorul_de_voce_are_dinti
+PASSED core/test_text_afisat_limbaj.py::test_datele_din_textul_afisat_trec_prin_data_ro
+PASSED core/test_text_afisat_limbaj.py::test_perioada_afisata_are_o_singura_forma
+PASSED core/test_text_afisat_limbaj.py::test_detectoarele_de_format_au_dinti
+PASSED core/test_text_afisat_limbaj.py::test_pluralul_nu_se_scrie_cu_paranteza
+PASSED core/test_text_afisat_limbaj.py::test_textul_js_compus_din_bucati_fara_majuscule_de_accent
+PASSED core/test_diacritice_afisate.py::test_autotest_criteriu_are_dinti
+PASSED core/test_diacritice_afisate.py::test_niciun_mesaj_user_facing_fara_diacritice
+PASSED core/test_diacritice_afisate.py::test_validatori_import_cu_diacritice
+PASSED core/test_diacritice_afisate.py::test_generatoare_declaratii_cu_diacritice
+PASSED core/test_diacritice_afisate.py::test_autotest_js_criteriu_are_dinti
+PASSED core/test_diacritice_afisate.py::test_niciun_text_afisat_js_fara_diacritice
+PASSED core/test_diacritice_afisate.py::test_ternarul_cu_atributul_data_actiune_e_ruta_nu_text
+FAILED core/test_text_afisat_limbaj.py::test_textul_afisat_e_limba_romana - A...
+1 failed, 44 passed in 35.84s
+pytest rc=1

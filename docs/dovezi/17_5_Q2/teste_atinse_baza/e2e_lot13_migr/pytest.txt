@@ -1,0 +1,28 @@
+.....................F..                                                 [100%]
+=================================== FAILURES ===================================
+_______ test_def_623_auditul_spune_temeiul_o_singura_data_pe_verificare ________
+
+patron = <conftest.Ecran object at 0x75cc8c5f2600>
+firma = {'tenant_id': 370985, 'schema': 'tenant_9753', 'nume': 'E2E Probă 2578552 SRL', 'cabinet_id': 1968}
+
+    def test_def_623_auditul_spune_temeiul_o_singura_data_pe_verificare(patron, firma):
+        """623: „Audit de preluare: același paragraf repetat la fiecare rând”. Pașii: balanța cu 4423, 444 și 4315 (datorii fiscale), fără istoricul
+        declarațiilor -> auditul: grupul „Neverificat” are constatările istoricului (fiecare sold numit), iar temeiul lor („Un sold de deschidere
+        pe un cont de datorie/creanță fiscală …”) apare o singură dată.
+        MUTAȚIA: fiecare constatare cu temeiul ei, ca înainte -> ROȘU."""
+        pg = patron.pg
+        _balanta_api(patron, firma, (("4423", 0, 2940), ("444", 0, 520), ("4315", 0, 2000), ("5121", 5460, 0)))
+        t = _audit(patron, firma)
+        patron.captura("audit_grupat")
+        assert "Sold de deschidere pe 4423 (TVA de plată, 2.940,00 lei) fără D300 în istoricul importat." in t, t[:3000]
+        assert "Sold de deschidere pe 444 (impozit pe venituri din salarii, 520,00 lei) fără D112 în istoricul importat." in t
+>       assert t.count("Un sold de deschidere pe un cont de datorie/creanță fiscală provine dintr-o declarație") == 1, t[:4000]
+E       AssertionError: Primul audit după preluare de Dobrescu Elena — păstrat: ce s-a primit de la contabilul anterior · firmă în iConta.eu din 22.11.2026 · rulat 22.11.2026 01:09 · nu se poate verifica · 5 coerent · 0 divergent · 5 neverificat Coerent (5) Balanța de deschidere se echilibrează (5.460,00 lei). ▾ detalii Toate soldurile balanței de deschidere stau pe partea funcțiunii contului lor. ▾ detalii Nici registrul, nici balanța de deschidere nu au mijloace fixe. ▾ detalii Nici stocul inițial, nici balanța de deschidere nu au solduri pe conturi de stoc. ▾ detalii Textele importate n-au litere pierdute la citirea fișierului. ▾ detalii Neverificat (5) Nu există solduri pe parteneri de verificat. ▾ detalii Importă soldurile Istoricul declarațiilor nu a fost importat — nu se poate confirma ce s-a depus înainte de preluare. ▾ detalii Sold de deschidere pe 4423 (TVA de plată, 2.940,00 lei) fără D300 în istoricul importat. Sold de deschidere pe 444 (impozit pe venituri din salarii, 520,00 lei) fără D112 în istoricul importat. Sold de deschidere pe 4315 (CAS, 2.000,00 lei) fără D112 în istoricul importat. Verificat (partidă dublă (SRL)): echilibru balanță, soldul fiecărui cont pe partea funcțiunii lui (A / P, planul OMFP), defalcare parteneri vs sintetic, facturile deschise preluate vs soldul fiecărui ▾ detalii
+E       assert 0 == 1
+E        +  where 0 = <built-in method count of str object at 0x1c3b1510>('Un sold de deschidere pe un cont de datorie/creanță fiscală provine dintr-o declarație')
+E        +    where <built-in method count of str object at 0x1c3b1510> = 'Primul audit după preluare de Dobrescu Elena — păstrat: ce s-a primit de la contabilul anterior · firmă în iConta.eu ...ii lui (A / P, planul OMFP), defalcare parteneri vs sintetic, facturile deschise preluate vs soldul fiecărui ▾ detalii'.count
+
+frontend_test/e2e/e2e_lot13_migr.py:579: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_lot13_migr.py::test_def_623_auditul_spune_temeiul_o_singura_data_pe_verificare
+1 failed, 23 passed in 115.87s (0:01:55)

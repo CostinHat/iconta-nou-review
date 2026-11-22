@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.126 · 21 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.127 · 22 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -1622,6 +1622,10 @@ verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
 **(v2.125, lotul 17.5-N4, continuarea lui 17.5-N, AC041)** Acțiune inactivă prin lipsa dreptului SPV: când se știe că firma n-are drept SPV (acoperire «neconectat» / «neacoperit»), butonul care trimite în SPV stă în bara de jos ca acțiune secundară marcată (`data-in-bara`), inactiv prin `inactiv(buton, motiv)`, lângă motivul vizibil (`.ds-motiv-inactiv`), iar alternativa manuală devine butonul principal (e-Transport: «Doar generează XML (manual)»; harta barei de jos: docs/dovezi/17_5_H/harta_bara_jos.txt). La lățime insuficientă se aplică regula de mai jos (bara pe două rânduri).
 
 **(v2.126, lotul 17.5-P2, continuarea lui 17.5-P, AC153 + AC154)** Un document pozat spune, imediat sub titlu și înaintea câmpurilor, ce a citit aplicația despre codul fiscal al cumpărătorului și temeiul deductibilității; textul de temei fiscal stă lângă cifra pe care o explică. Fereastra bonului fiscal are blocul `#d-fiscal` sub titlu, înaintea casetei de sumă și a ferestrei împărțite poză/câmpuri: rândul «CUI cumpărător pe bon: <cod | niciun cod înscris pe bon | necitit (bon încărcat înainte de această verificare)>», apoi verdictul TVA și notele conturilor propuse (6022, 623), fiecare cu temeiul; clasa `caseta-atentie` când TVA nu se deduce, cere verificare sau există note de cont, altfel `ecran-nota` (fără clase noi).
+
+**(v2.127, lotul 17.5-Q2, continuarea lui 17.5-Q, F084-incarca + AC091 + AC093 + AC088)** Patru reguli ale ferestrelor de import și audit: (1) alegerea fișierului unui import o deschide un singur control, butonul acțiunii principale din bara de jos («Încarcă balanța»), cu clic sau cu Enter; zona din corp (`#mig-drop`) nu e o etichetă legată de câmpul de fișier și nu repetă titlul acțiunii: arată fișierul ales («Niciun fișier ales» până la alegere) și formatul acceptat (Solduri inițiale; celelalte importuri rămân pe forma din 17.5-D până la o decizie); (2) explicația secundară a unei ferestre de import nu stă într-un details/summary lângă «▾ detalii»: e un card-rezumat (`siraCarduri`, `#mig-carduri`), iar textul ei stă neschimbat în fereastra cardului, sub titlul cu același nume; (3) după o acțiune care desenează rezultatul sub pliul ferestrei (Audit de preluare), începutul rezultatului se aduce în zona vizibilă, oricât a durat cererea; (4) un rând care spune că datele există deja («Există deja: …») are, în același rând, drumul spre ele, ca buton secundar (Solduri inițiale: «Deschide Balanța de verificare»), iar fereastra rămâne cu un singur buton principal.
+
+**(v2.127, lotul 17.5-Q2, AC133 + AC104 + 749.1)** O listă de coduri fiscale arată «<cod> — <denumire>» (D110: denumirea din documentul ANAF D110, dată de server în `obligatii_d110`; D710 își păstrează forma «denumire (cod)»), cu valoarea codului neschimbată; o perioadă dinainte de preluarea în iConta.eu nu poartă eticheta «restanță» nicăieri (lista «Tip declarație» spune «termen de depunere … · înainte de preluare», ca Control fiscal); eticheta declarației stă o singură dată pe rând: motivul care o repetă la început, cu sau fără liniuță («D301 nu se datorează — …»), pierde prefixul.
 
 ### Bara de jos cu motiv și acțiune secundară în bară (AC041)
 

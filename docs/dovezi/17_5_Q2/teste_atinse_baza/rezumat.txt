@@ -1,0 +1,12 @@
+e2e_lot10_principal.py restaurare rc=0
+e2e_lot10_principal.py rc=0 durata=31s 2 passed in 10.62s
+e2e_lot12_reev2.py restaurare rc=0
+e2e_lot12_reev2.py rc=1 durata=107s 1 failed, 2 passed in 82.03s (0:01:22)
+e2e_lot13_decl.py restaurare rc=0
+e2e_lot13_decl.py rc=0 durata=176s 23 passed in 155.26s (0:02:35)
+e2e_lot13_migr.py restaurare rc=0
+e2e_lot13_migr.py rc=1 durata=135s 1 failed, 23 passed in 115.87s (0:01:55)
+e2e_lot14_3.py restaurare rc=0
+e2e_lot14_3.py rc=0 durata=61s 7 passed in 39.66s
+e2e_lot91.py restaurare rc=0
+e2e_lot91.py rc=0 durata=155s 29 passed in 134.44s (0:02:14)

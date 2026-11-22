@@ -7,3 +7,9 @@ baza.json                            <- docs/dovezi/17_5_Q/baza.json (commit_baz
 # Dovada REAL Q2 pe E (dovada_baza.sh, registrul oficial ~/ghid_incoming/.registru_dovezi_baza.tsv rândul 18, unic):
 # 5312a5ff9806f8c70783dedcbce5191b7b787542546c62559b697e5b13067b63 17_5_Q2 e2e_ferestre_17_5_Q2.py b0e9821c… REAL, 04:24:17 → 04:27:59 (222 s întregul fișier; pytest 34 s):
 # «1 failed, 2 passed in 33.30s»; e.1–e.5 pica (e.2/e.5 obligatorii), 667 și 392 verzi.
+# Pct.8.5 — adoptate din 17.5-Q (70378b86), aceleași intrări acceptate:
+nucleu_baza/           <- docs/dovezi/17_5_Q/nucleu_baza/ (pe E: 44 passed + 872; scan_selecturi și liste rc=0)
+teste_atinse_baza/     <- docs/dovezi/17_5_Q/teste_atinse_baza/ (cele 6 suite pe E, același snapshot)
+teste_atinse_P_Q/      <- docs/dovezi/17_5_Q/teste_atinse_P/ (cele 6 suite pe P Q 1eb4c52d). Identitatea față de P Q2 8ba7b68d: static/ identic cu P Q
+                          (git diff 1eb4c52d -- static gol), e2e_lot13_migr.py și e2e_lot91.py = P Q, diferă numai core/d110.py (textul 626) și core/test_d110.py;
+                          niciuna din cele 6 suite nu citește D110 / 626 / obligatii_d110 (grep -lin «d110|626|obligatii_d110»: niciun fișier).
