@@ -1,0 +1,9 @@
+{
+  "judecate": {
+    "e.1": true,
+    "e.2": true,
+    "e.4": true,
+    "e.5": true
+  },
+  "neexecutate": {}
+}

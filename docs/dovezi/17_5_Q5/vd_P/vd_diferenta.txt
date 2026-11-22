@@ -1,0 +1,12 @@
+# 17.5-Q5 pct.8.5 — verificatorul de design (scripts/verificator_design_lot.py, 1920×1080 și 1366×768) pe P Q5 7a5dce04, ferestrele produsului preluat;
+# copia: baza_test.sh restaureaza + dovada_firme_test.py --cloneaza (clonarea oficială; parola copiei nu mai corespundea snapshotului), 8019 cu porneste_8019.sh.
+# Comparația: Q3 vd_dupa.out pe accdf00e (toate cele 105) și pe b0e45e0a (Casă, Registru jurnal, Bancă, Stocuri); baza = vd_inainte adoptat în Q3 din Q2 (același produs ca E).
+# Între b0e45e0a și C2 fb5208ee (= P Q5) s-a schimbat numai Registrul jurnal (19 linii de conținut în afara ?v=): restul ferestrelor adoptă rezultatul Q3.
+Registru jurnal F1        ..c...g. / .bc...g.   = Q3 = baza (litera b la 1366 roșie și pe bază: derulare laterală 12 px în zona tabelului)
+Registru jurnal — notă nouă F1  ........ / ........   = Q3
+Închidere lună F1         ...de... / .b.de...   = Q3
+Casă F1                   ..c...g. / ..c...g.   = Q3 pe b0e45e0a = baza
+Bancă F1, Stocuri F1      ..c..... / ..c.....   = Q3
+Istoric facturi F1        .b...... / .b......   = Q3
+Emite factură F1, Import date — Solduri inițiale F1, Termene: ........ / ........ = Q3
+Litere noi roșii față de bază: 0.

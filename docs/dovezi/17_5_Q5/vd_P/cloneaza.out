@@ -1,0 +1,7 @@
+[dovada] 1. surse verificate (producție, numai-citire)    0.1 s
+[dovada] 2a. copia veche scoasă                        0.6 s
+[dovada] 2b. pg_dump + restaurare (7 scheme)           6.4 s
+[dovada] 3. public: cabinet, utilizatori, firme, rânduri    1.9 s
+[dovada] 4. migrările nepublicate (0)                  0.0 s
+[dovada] copia gata în 9 s: tenant_9049=F1 Comert Stoc SRL, tenant_9050=F2 Profit Amortizare SRL, tenant_9051=F3 Intracomunitar SRL, tenant_9052=F4 PFA Sistem Real, tenant_9053=F5 SRL Salariati SRL, tenant_9054=FISCALOS ICONTA S.R.L., tenant_9055=F6 Migrare Test SRL, tenant_9057=F7 Preluare Test SRL
+[dovada] rânduri publice: {'accounting_firms': 1, 'users': 7, 'tenants': 8, 'user_tenants': 16, 'declaratii_depuse': 3, 'declaratii_coada': 41, 'firma_tip': 8, 'alerte_control_emise': 6, 'declaratii_in_asteptare': 0, 'pachet_povestea': 1, 'notificari': 113, 'raportari': 7, 'raportari_mesaje': 16, 'anunturi_cabinet': 1, 'superadmin': 217593, 'curs_bnr_zilnic (citite)': 8288}

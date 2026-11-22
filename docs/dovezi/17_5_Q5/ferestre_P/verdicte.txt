@@ -1,0 +1,4 @@
+VERDICT e.1 trece
+VERDICT e.2 trece
+VERDICT e.4 trece
+VERDICT e.5 trece

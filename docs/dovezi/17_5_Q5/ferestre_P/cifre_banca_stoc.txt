@@ -1,0 +1,20 @@
+== banca chei: ['randuri', 'api_id', 'stare_api', 'sectiuni_dom', 'sectiuni', 'martori_activi']
+ principale: [('Importă extras', True)]
+ «Contează»: 11 principal: 0 active: 0 linii: ['1', '10', '11', '2', '3', '4', '5', '6', '7', '8', '9']
+  randuri ["11", "9", "8", "6", "5", "4", "3", "2", "1", "10", "7"]
+  api_id ["11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"]
+  stare_api {"11": "contat", "10": "ignorat", "9": "contat", "8": "contat", "7": "ignorat", "6": "contat", "5": "contat", "4": "contat", "3": "contat", "2": "contat", "1": "contat"}
+  sectiuni_dom {"bk-lucru": ["11", "9", "8", "6", "5", "4", "3", "2", "1", "10", "7"], "bk-deoparte": ["10", "7"]}
+  sectiuni {"bk-lucru": ["11", "9", "8", "6", "5", "4", "3", "2", "1"], "bk-deoparte": ["10", "7"]}
+  martori_activi 0
+== stoc chei: ['randuri', 'martori_activi', 'martor_vizual']
+ principale: [('+ NIR nou', True)]
+ s-desc: [('Descarcă gestiunea lunii', False, True, 'rgb(255, 255, 255)')]
+ NIR: [('6 NIR-uri în luna aleasă', False, False), ('+ NIR nou', True, True)]
+  randuri []
+  martori_activi 1
+  martor_vizual {"id": "s-desc", "text": "Descarcă gestiunea lunii", "activ": true, "fond": "rgb(255, 255, 255)", "culoare": "rgb(43, 52, 64)", "bordura": "rgb(185, 194, 207)", "perioada": "Luna 10/2026"}
+stil F1-1366 [{"cursor": ["default", "default", "default", "default", "default", "default", "default"], "aspect": [["rgb(43, 52, 64)", "rgba(0, 0, 0, 0)", "none", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "none", "rgb(43, 52, 64)", "none", "none", "none", "1"], ["rgb
+stil F1-603 [{"cursor": ["default", "default", "default", "default", "default", "default", "default"], "aspect": [["rgb(43, 52, 64)", "rgba(0, 0, 0, 0)", "none", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "none", "rgb(43, 52, 64)", "none", "none", "none", "1"], ["rgb
+stil F7-1366 [{"cursor": ["default", "default", "default", "default", "default", "default", "default"], "aspect": [["rgb(43, 52, 64)", "rgba(0, 0, 0, 0)", "none", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "none", "rgb(43, 52, 64)", "none", "none", "none", "1"], ["rgb
+stil F7-603 [{"cursor": ["default", "default", "default", "default", "default", "default", "default"], "aspect": [["rgb(43, 52, 64)", "rgba(0, 0, 0, 0)", "none", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "rgb(226, 229, 234)", "none", "rgb(43, 52, 64)", "none", "none", "none", "1"], ["rgb

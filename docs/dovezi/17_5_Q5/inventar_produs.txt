@@ -1,0 +1,79 @@
+# 17.5-Q5 pct.4/7 — inventarul de produs: E Q2 c3253235 → C2 Q3 fb5208ee față de E Q2 c3253235 → P Q5 7a5dce04 (git diff --name-status --no-renames)
+## E→C2: 1241 căi; în afara docs/dovezi/17_5_Q3: 30
+## ultima corecție f6792fcb→fb5208ee (în afara dovezilor):
+M	DECIZII.md
+M	DEFICIENTE.md
+M	DESIGN_SYSTEM.md
+M	static/index.html
+M	static/js/cautare.js
+M	static/js/ecrane/asistent.js
+M	static/js/ecrane/borderou_ecran.js
+M	static/js/ecrane/cabinet.js
+M	static/js/ecrane/coada_trimite.js
+M	static/js/ecrane/control_verdict.js
+M	static/js/ecrane/ecran_destinatie.js
+M	static/js/ecrane/facturi_ecran.js
+M	static/js/ecrane/firme.js
+M	static/js/ecrane/inceput.js
+M	static/js/ecrane/migrare.js
+M	static/js/ecrane/operatiuni_ecran.js
+M	static/js/ecrane/termene.js
+M	static/js/ecrane/validat.js
+M	static/js/navigator.js
+M	static/spv_callback.html
+M	static/stil.css
+## E→P (Q5), toate căile:
+M	core/jurnal_api.py
+A	frontend_test/e2e/e2e_ferestre_17_5_Q5.py
+M	scripts/plasa_16_2.manifest
+A	scripts/praguri_17_5_Q5.txt
+M	static/index.html
+M	static/js/cautare.js
+M	static/js/ecrane/ansamblu.js
+M	static/js/ecrane/asistent.js
+M	static/js/ecrane/borderou_ecran.js
+M	static/js/ecrane/cabinet.js
+M	static/js/ecrane/clienti_ecran.js
+M	static/js/ecrane/coada_trimite.js
+M	static/js/ecrane/control_verdict.js
+M	static/js/ecrane/ecran_destinatie.js
+M	static/js/ecrane/emitere_ecran.js
+M	static/js/ecrane/facturi_ecran.js
+M	static/js/ecrane/firme.js
+M	static/js/ecrane/inceput.js
+M	static/js/ecrane/migrare.js
+M	static/js/ecrane/operatiuni_ecran.js
+M	static/js/ecrane/portal.js
+M	static/js/ecrane/termene.js
+M	static/js/ecrane/validat.js
+M	static/js/navigator.js
+M	static/spv_callback.html
+M	static/stil.css
+  + 20 căi A docs/dovezi/17_5_Q5/ (P0)
+## bloburile de produs/cascadă la P față de C2 (cale, blob P, blob C2, mod P, verdict):
+core/jurnal_api.py	1a639dabfbeb896a75119e04fc367dd4f620521b	1a639dabfbeb896a75119e04fc367dd4f620521b	100644	identic
+static/index.html	941d958e85739601b7da7e057a5dafc768c0ef77	941d958e85739601b7da7e057a5dafc768c0ef77	100644	identic
+static/js/cautare.js	43b2fac6141a248a3b755d77aee234e3ea7a839d	43b2fac6141a248a3b755d77aee234e3ea7a839d	100644	identic
+static/js/ecrane/ansamblu.js	ed7218b3a041b49a62384458502aa8bb60e42d5f	ed7218b3a041b49a62384458502aa8bb60e42d5f	100644	identic
+static/js/ecrane/asistent.js	04a0370c87f4c7de51a7a10930e3526ea21de294	04a0370c87f4c7de51a7a10930e3526ea21de294	100644	identic
+static/js/ecrane/borderou_ecran.js	3a0e05e2d7d8bf9020b0e91f6552ff1a9ac0df52	3a0e05e2d7d8bf9020b0e91f6552ff1a9ac0df52	100644	identic
+static/js/ecrane/cabinet.js	c0fbdd27fa86f1898ff002bf5c67053d7a61d93c	c0fbdd27fa86f1898ff002bf5c67053d7a61d93c	100644	identic
+static/js/ecrane/clienti_ecran.js	b57d552b6828784d77edff9d6bfc7900361c035e	b57d552b6828784d77edff9d6bfc7900361c035e	100644	identic
+static/js/ecrane/coada_trimite.js	3191b5704502b328a3d0c9772cc62999e4688222	3191b5704502b328a3d0c9772cc62999e4688222	100644	identic
+static/js/ecrane/control_verdict.js	4c12f02af6459ee0a1f5f462c012d5721dd1733e	4c12f02af6459ee0a1f5f462c012d5721dd1733e	100644	identic
+static/js/ecrane/ecran_destinatie.js	beea705838912ecffab4e573a2381904f793c635	beea705838912ecffab4e573a2381904f793c635	100644	identic
+static/js/ecrane/emitere_ecran.js	ae63e301919a36b8c7ebaf03ea21e675db976d05	ae63e301919a36b8c7ebaf03ea21e675db976d05	100644	identic
+static/js/ecrane/facturi_ecran.js	c22a86289a65139757e50b2d7e76688dd5d2989c	c22a86289a65139757e50b2d7e76688dd5d2989c	100644	identic
+static/js/ecrane/firme.js	649e32bfb0153ba76361c2e873846d2500cb8be6	649e32bfb0153ba76361c2e873846d2500cb8be6	100644	identic
+static/js/ecrane/inceput.js	de9936217c4b6f12c7e2a495c85be2dab6f7de1c	de9936217c4b6f12c7e2a495c85be2dab6f7de1c	100644	identic
+static/js/ecrane/migrare.js	bb9ca8cdb738ca4acbacff3b54abe325821bbe47	bb9ca8cdb738ca4acbacff3b54abe325821bbe47	100644	identic
+static/js/ecrane/operatiuni_ecran.js	6524fb2d98fccd69da1a4b08a280325956f2fa92	6524fb2d98fccd69da1a4b08a280325956f2fa92	100644	identic
+static/js/ecrane/portal.js	49daae37d49b34ef0cd2ae40e1a464084550491f	49daae37d49b34ef0cd2ae40e1a464084550491f	100644	identic
+static/js/ecrane/termene.js	f003062793bc432e9f48facea1d559fc91d39ca8	f003062793bc432e9f48facea1d559fc91d39ca8	100644	identic
+static/js/ecrane/validat.js	fefbb51d8cd2ed405c733f16bcb4ec7fedc697c9	fefbb51d8cd2ed405c733f16bcb4ec7fedc697c9	100644	identic
+static/js/navigator.js	454a9368b312c115eff42f023815a2f9d45a129a	454a9368b312c115eff42f023815a2f9d45a129a	100644	identic
+static/spv_callback.html	907c002f984cc4d31d15372f422c71770ffc59c8	907c002f984cc4d31d15372f422c71770ffc59c8	100644	identic
+static/stil.css	01a7a5208210b98750d5944dbf8f559707d91072	01a7a5208210b98750d5944dbf8f559707d91072	100644	identic
+## căi de produs din E→C2 care NU sunt în P: DECIZII.md DEFICIENTE.md DESIGN_SYSTEM.md frontend_test/e2e/e2e_ferestre_17_5_Q3.py PREDARE_LANT.md scripts/praguri_17_5_Q3.txt 
+  (registrele DECIZII/DEFICIENTE/DESIGN_SYSTEM/PREDARE_LANT se integrează cu proveniență în C; marcajele Q3 — e2e_ferestre_17_5_Q3.py, praguri_17_5_Q3.txt, rândul Q3 al plasei — rămân în Q3)
+## diferențe de infrastructură de lot Q5 (nu sunt produs): scripts/praguri_17_5_Q5.txt, scripts/plasa_16_2.manifest (rândul Q5), frontend_test/e2e/e2e_ferestre_17_5_Q5.py, docs/dovezi/17_5_Q5/

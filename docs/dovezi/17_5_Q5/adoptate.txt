@@ -1,0 +1,12 @@
+17.5-Q5 — probe adoptate (origine păstrată), 22.11.2026
+1. REAL Q5 (identitate Q5, pe E c32532357caa): ~/ghid_incoming/dovada_baza_17_5_Q5.{gata,log,pytest.txt}; log sha256 f770a41376f9e2a1fe4308b8ad263849739fe4b7277958bcc4c6bc2c8efeebbb,
+   rândul oficial 2026-11-22T20:41:45; e2e_ferestre_17_5_Q5.py (29cc944d…) pe E: e.1, e.2, e.4, e.5 pică (rc pytest 1). Copiat octet cu octet în dovada_real/.
+2. K1/K2 (identitate Q5): ~/ghid_incoming/k12_17_5_Q5.json, verdict «trece»; garda_predare_python.py 17_5_Q5 --baza E: rc=0 (k12_p0.txt).
+3. B4 — proba arhitectului din Q3, adoptată pe E cu acordul lui Costin (verificare_arhitect_17_5_Q5.txt, F1: «Adoptat … acceptate de Costin la 20:30»):
+   oracolul TXT 43bf1054… (= pasi_17_5_Q5.txt, hash-ul din rândul «pornire» Q5), JSON 14f21cf7… (= pasi.json), CSV e3149c30… (proba_arhitect_17_5_Q5.csv = proba_arhitect_17_5_Q3.csv,
+   octet cu octet), așteptarea proba_arhitect_17_5_Q5_asteptat.txt (5bef2a7d…). Lotul, semnăturile, capturile, octeții și datele originale Q3 rămân cum sunt.
+4. B6 / înghețarea: unelte_inghetate_17_5_Q5.txt, praguri_17_5_Q5.txt (b34a8e66… = rândul «pornire»); verdictul extern verdict_extern_17_5_Q5_r3.txt (8933196…): «POATE PORNI».
+5. baza.json din Q3 (8c09fc4b, sha256 efedbd5303c61748f805d359c7120639dc0599c161fb3ed5a4a5bc233294dcf6): commit_baza = E Q2, manifest_sha256 3b782e2c… (manifestul E Q2),
+   snapshot iconta_test-20261104-171456 (054cd769…, = ~/backups_test/iconta_test.dump). Identitățile corespund; nicio diferență de predat.
+6. Reproducerea pe E, frazele §4 pct.1, martorii și capturile: din Q3 (reproducere_preluata.tsv, fraze_4_1.txt); ~/lot_17_5_Q3.zip sha256 1b5a618f… păstrat.
+Faza pornire, proba_contract, semnăturile, starea porții și verdictul Q5 se obțin pe identitatea Q5 (jurnalul comun, lotul 17.5-Q5).

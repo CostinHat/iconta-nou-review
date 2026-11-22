@@ -1,0 +1,333 @@
+{
+  "inchise": [
+    "F089"
+  ],
+  "redeschise": [],
+  "net": 1,
+  "inainte": 1,
+  "dupa": 2,
+  "total": 45,
+  "tinta_10": false,
+  "tinta_pozitii": {
+    "F081": true,
+    "F089": true,
+    "F122": false
+  },
+  "criterii_nejudecate_dupa": {
+    "F003": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F011": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F012": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F015": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F017": [
+      "Aspect",
+      "Simplitate",
+      "Stabilitate"
+    ],
+    "F018": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F019": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F022": [
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F023": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F025": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F026": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F028": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F031": [
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Stabilitate"
+    ],
+    "F034": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F035": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F043": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F045": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Stabilitate"
+    ],
+    "F046": [
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F054": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F061": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F070": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F073": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F078": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F080": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Stabilitate"
+    ],
+    "F084": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F085": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F087": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F118": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F122": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F126": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F131": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F134": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F139": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F162": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F169": [
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Stabilitate"
+    ],
+    "F172": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F176": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F179": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F183": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F252": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "F254": [
+      "Funcțional",
+      "Aspect",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "X02": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ],
+    "X05": [
+      "Funcțional",
+      "Aspect",
+      "Design",
+      "Simplitate",
+      "Conformitate",
+      "Stabilitate"
+    ]
+  }
+}

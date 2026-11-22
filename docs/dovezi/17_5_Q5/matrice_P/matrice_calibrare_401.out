@@ -1,0 +1,50 @@
+[lacat_test] lacăt preluat de la pid 333340 (mort sau refolosit)
+[verificator design] oprit; portul 8019 liber
+[verificator design] serverul de lucru pe 8019, commit 7a5dce04 (arbore murdar: se verifică indexul)
+[verificator design] oprit; portul 8019 liber
+Traceback (most recent call last):
+  File "/home/costin/iconta_lot17_5q5/scripts/matrice_text_taiat.py", line 271, in <module>
+    sys.exit(main(sys.argv[1:]))
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/costin/iconta_lot17_5q5/scripts/matrice_text_taiat.py", line 260, in main
+    return C.ruleaza_pe_server("matrice_text_taiat.py", lambda: calibrare(a.iesire),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/costin/iconta_lot17_5q5/scripts/calibreaza_16_7.py", line 87, in ruleaza_pe_server
+    return corp()
+           ^^^^^^
+  File "/home/costin/iconta_lot17_5q5/scripts/matrice_text_taiat.py", line 260, in <lambda>
+    return C.ruleaza_pe_server("matrice_text_taiat.py", lambda: calibrare(a.iesire),
+                                                                ^^^^^^^^^^^^^^^^^^^
+  File "/home/costin/iconta_lot17_5q5/scripts/matrice_text_taiat.py", line 214, in calibrare
+    js_rau = C.deschide(nume, rez, INJECTIE_RAU, JS)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/costin/iconta_lot17_5q5/scripts/calibreaza_16_7.py", line 200, in deschide
+    cod = VD.ecran(nume, rez, CAPTURI, interventie=interventie, masuri_alt=masuri_alt, director_png=CAPTURI)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/costin/iconta_lot17_5q5/scripts/verificator_design.py", line 683, in ecran
+    init, firme = _sesiune(e.get("utilizator", "cabinet"))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/costin/iconta_lot17_5q5/scripts/verificator_design.py", line 664, in _sesiune
+    return pasi.autentifica("http://127.0.0.1:%d" % PORT, email, parola), stare["firme"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/costin/iconta_lot17_5q5/frontend_test/dovada/pasi.py", line 71, in autentifica
+    r = json.loads(urllib.request.urlopen(cer, timeout=30).read().decode())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 521, in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 630, in http_response
+    response = self.parent.error(
+               ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 559, in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 639, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 401: Unauthorized
