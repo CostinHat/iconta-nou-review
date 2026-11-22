@@ -1,0 +1,36 @@
+produs
+lot: 17.5-Q2
+max hook 198
+max poarta_verificator 117
+max poarta_pytest 726
+max poarta_plasa 3474
+runde_verificator_max: 2
+sursa pragurilor 17.5-Q2: generate de scripts/praguri_automate.py la 2026-11-22T03:27:15+02:00 din .lot_jurnal.log; loturi folosite: 17.5-N4, 17.5-P0, 17.5-P2 (3)
+  hook: maxim 165 s (lotul 17.5-P0, rularea 2738559-1795232839728) din 18 rulari complete, 0 rulari «intrerupt» ignorate, prag 198 s
+  poarta_verificator: maxim 97 s (lotul 17.5-N4, rularea 2105354-1795216164152) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 117 s
+  poarta_pytest: maxim 605 s (lotul 17.5-P2, rularea 438494-1795276904851) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 726 s
+  poarta_plasa: maxim 2895 s (lotul 17.5-P2, rularea 438494-1795277509032) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 3474 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_Q2.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_ferestre_17_5_Q2.py)
+  static/js/ecrane/migrare.js (numai: _existaPas și apelul lui din importSolduriFirma, zona de explicații a lui importSolduriFirma — details#mig-cum-balanta înlocuit cu cardul din #mig-carduri, AC088, AC091; alegerea fișierului și indicațiile în importSolduriFirma și opțiune locală în _butonAlegeFisier numai dacă e necesară, cu comportamentul implicit păstrat pentru celelalte importuri, F084-incarca)
+  static/js/ecrane/firme.js (numai: ecranBalanta — parametrul opțional opt cu an și luna — și funcția nouă exportată deschideBalanta, AC088)
+  static/js/ecrane/control_verdict.js (numai: ruleazaAudit și comentariul ei — raportul adus în vedere după rulare, AC093; motivFaraEticheta/randMotiv pentru prefixul redundant D301, 749.1)
+  static/js/ecrane/declaratii.js (numai: optDatorata — eticheta «restanță» —, încărcarea S.obligatiiD110 de lângă S.obligatiiD710, _D110_CODURI și optCod, rândul grilei și lățimea câmpului «Cod obligație» din randeazaFormularD110, AC104, AC133)
+  core/d110.py (numai: constanta nouă COD_OBLIG_DENUMIRI, lângă _COD_OBLIG_VALIDE, AC133)
+  core/uc_declaratii.py (numai: funcția nouă _obligatii_d110 și cheia nouă obligatii_d110 din răspunsul lui declaratii_tipuri, AC133)
+  core/test_d110.py (numai: testele noi ale nomenclatorului COD_OBLIG_DENUMIRI și ale cheii obligatii_d110, AC133)
+  frontend_test/e2e/e2e_ferestre_17_5_Q2.py (nou)
+  frontend_test/e2e/e2e_lot13_migr.py (numai asertiunea details#mig-cum-balanta din test_def_667, AC091; corpul istoric este apelat în plasa Q printr-un nod pytest separat)
+  frontend_test/e2e/e2e_lot91.py (numai citirea lui #mig-cum-balanta din test_def_392, AC091; corpul istoric este apelat în plasa Q printr-un nod pytest separat)
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  DEFICIENTE.md (cele șapte obiective și înregistrarea cursorului ca deficiență pentru ulterior)
+  scripts/poarta_e2e_restante.txt (numai rândul R037)
+  docs/dovezi/17_5_Q2/

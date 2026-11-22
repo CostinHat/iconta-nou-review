@@ -1,0 +1,9 @@
+# K1/K2: garda_predare_python.py 17_5_Q2 --baza b0e9821cde199ca03bb15385b9d42d461eb87cea, 22.11.2026 04:37
+K1/K2: dovadă reutilizată pentru 17_5_Q2 pe b0e9821cde199ca03bb15385b9d42d461eb87cea: /home/costin/ghid_incoming/k12_17_5_Q2.json
+rc garda=0
+Ruff (configurația hook-ului) pe cele 3 destinații:
+All checks passed!
+sha256 la destinații:
+21faa2a07cc196fee957675b80250235fd5bd5960b0918a6fc6f00a5766c67b1  frontend_test/e2e/e2e_ferestre_17_5_Q2.py
+293f4208cfe9eaa2453c5026a27e8d9da24ec4bedd79cabef76eda86e24f0ee4  docs/dovezi/17_5_Q2/parcurs_17_5_Q2.py
+fe72d75d772531db7c0347b76ab8406ac94421305e2e2beaab44e725f9d40202  docs/dovezi/17_5_Q2/extrage_produs_17_5_Q2.py

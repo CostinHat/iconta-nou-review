@@ -1,0 +1,1 @@
+genereaza_manifest_plasa.py --verifica: rc=0 (31 de linii cu antetul; 29 de intrări de test de la E + rândul e2e_ferestre_17_5_Q2.py = 30; 3 noduri; sha256 21faa2a07cc196fee957675b80250235fd5bd5960b0918a6fc6f00a5766c67b1)

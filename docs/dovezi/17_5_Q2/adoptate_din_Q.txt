@@ -1,0 +1,9 @@
+# Măsurători «inainte» adoptate din 17.5-Q (comanda 17.5-Q2 pct.8: «Pentru baseline-ul matricei refolosește rezultatul adoptat al bazei când identitatea și consumatorul coincid»).
+# Identitatea: aceeași bază E b0e9821cde199ca03bb15385b9d42d461eb87cea, același snapshot iconta_test.dump 054cd769c34408ac8bd2a90ba5dc03f5c323a1879dbc81a2081d4521a8ccb0ba,
+# aceleași unelte (scripts/verificator_design_lot.py, scripts/matrice_text_taiat.py la E), aceleași ferestre (catalogul E). Sursa: commitul P0 al lui Q 55ca882a7f923616a0ebbd208135a2a3c5102426.
+vd_inainte/ vd_inainte.out           <- docs/dovezi/17_5_Q/ (verificatorul de design pe E, 420 de fișiere)
+matrice_inainte/ matrice_inainte_*.out <- docs/dovezi/17_5_Q/ (matricea textului tăiat pe E: 0 tăieturi la 3 rezoluții, 1 nedeschis D177 F1 pasul 2)
+baza.json                            <- docs/dovezi/17_5_Q/baza.json (commit_baza = merge-base E, manifest_sha256 c52d8ab0… = manifestul lui E: 1 antet + 29 de intrări de test)
+# Dovada REAL Q2 pe E (dovada_baza.sh, registrul oficial ~/ghid_incoming/.registru_dovezi_baza.tsv rândul 18, unic):
+# 5312a5ff9806f8c70783dedcbce5191b7b787542546c62559b697e5b13067b63 17_5_Q2 e2e_ferestre_17_5_Q2.py b0e9821c… REAL, 04:24:17 → 04:27:59 (222 s întregul fișier; pytest 34 s):
+# «1 failed, 2 passed in 33.30s»; e.1–e.5 pica (e.2/e.5 obligatorii), 667 și 392 verzi.

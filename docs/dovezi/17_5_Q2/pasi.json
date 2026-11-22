@@ -1,0 +1,124 @@
+{
+  "asertiuni": [
+    {
+      "id": "f.1",
+      "pas": "implicit",
+      "operator": "text_contine",
+      "valoare": "Control fiscal",
+      "cheie": "dom:main button.cab-card .cab-card-titlu|text",
+      "ac": null,
+      "martor": "cabinetul administratorului dovada.71507",
+      "de_ce": "Cardul Control fiscal este prezent în cabinet."
+    },
+    {
+      "id": "f.2",
+      "pas": "solduri",
+      "operator": "text_contine",
+      "valoare": "Încarcă balanța",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #mig-alege|text",
+      "ac": null,
+      "martor": "F1 Comert Stoc SRL (tenant_9049), Import date › Solduri inițiale",
+      "de_ce": "fereastra Solduri inițiale s-a deschis și butonul «Încarcă balanța» e la locul lui; textul butonului conține «Încarcă balanța»"
+    },
+    {
+      "id": "a.1",
+      "pas": "solduri",
+      "operator": "nr_randuri",
+      "valoare": "0",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) details#mig-cum-balanta|numar",
+      "ac": "AC091",
+      "martor": "F1 Comert Stoc SRL (tenant_9049), Import date › Solduri inițiale",
+      "de_ce": "Explicația nu mai este pliată în details#mig-cum-balanta. Cardul înlocuitor se dovedește separat la a.2."
+    },
+    {
+      "id": "a.2",
+      "pas": "card_balanta",
+      "operator": "text_contine",
+      "valoare": "Ce se citește din balanță",
+      "cheie": "dom:.fereastra-overlay:not(.fundal):has(p#mig-cum-balanta) h2.pf-titlu|text",
+      "ac": "AC091",
+      "martor": "F1 Comert Stoc SRL (tenant_9049), Import date › Solduri inițiale",
+      "de_ce": "În fereastra deschisă prin card, titlul deasupra paragrafului este «Ce se citește din balanță»."
+    },
+    {
+      "id": "a.3",
+      "pas": "solduri_actiune",
+      "operator": "text_contine",
+      "valoare": "Deschide Balanța de verificare",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #mig-exista button|text",
+      "ac": "AC088",
+      "martor": "F1 Comert Stoc SRL (tenant_9049), Import date › Solduri inițiale (balanța are 6 conturi pe snapshot, după auditul complet)",
+      "de_ce": "rândul «Există deja: …» are butonul secundar «Deschide Balanța de verificare» (drumul spre cifrele balanței de deschidere); textul butoanelor rândului conține «Deschide Balanța de verificare»"
+    },
+    {
+      "id": "a.4",
+      "pas": "audit_raport",
+      "operator": "nr_randuri",
+      "valoare": "1",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-audit-istoric[data-vizibil-dupa-rulare='da']|numar",
+      "ac": "AC093",
+      "martor": "F7 Preluare Test SRL (CUI 401007009), Import date › Audit de preluare",
+      "de_ce": "Imediat după rulare se vede începutul raportului în fereastra de audit. Captura precedă orice derulare manuală."
+    },
+    {
+      "id": "f.3",
+      "pas": "audit_buton",
+      "operator": "text_contine",
+      "valoare": "Rerulează auditul",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-audit-run|text",
+      "ac": null,
+      "martor": "F7 Preluare Test SRL (CUI 401007009), Import date › Audit de preluare",
+      "de_ce": "Citește eticheta butonului principal din bara de jos. Textul întreg este «Rerulează auditul»."
+    },
+    {
+      "id": "f.4",
+      "pas": "declaratii",
+      "operator": "text_contine",
+      "valoare": "înainte de preluare",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #dec-tip optgroup[data-titlu='Datorate înainte de preluarea în iConta.eu']|text",
+      "ac": null,
+      "martor": "F1 Comert Stoc SRL (tenant_9049), Declarații",
+      "de_ce": "Deasupra rândului «D100 · T4/2025 · termen 26.01.2026» se vede titlul grupului «Datorate înainte de preluarea în iConta.eu»."
+    },
+    {
+      "id": "a.5",
+      "pas": "declaratii",
+      "operator": "lipseste",
+      "valoare": "restanță",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #dec-tip optgroup[data-titlu='Datorate înainte de preluarea în iConta.eu'] option|text",
+      "ac": "AC104",
+      "martor": "F1 Comert Stoc SRL (tenant_9049), Declarații (30 de perioade dinainte de preluare, după auditul complet)",
+      "de_ce": "În grupul anterior preluării, rândul «D100 · T4/2025 · termen 26.01.2026» se vede fără eticheta «restanță». Oracolul verifică toate opțiunile grupului."
+    },
+    {
+      "id": "f.5",
+      "pas": "d110",
+      "operator": "text_contine",
+      "valoare": "Cod obligație",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #dec-d110-form|text",
+      "ac": null,
+      "martor": "F1 Comert Stoc SRL (tenant_9049), Declarații › D110 › Continuă",
+      "de_ce": "pasul 2 al D110 s-a deschis și formularul are câmpul «Cod obligație»; textul formularului conține «Cod obligație»"
+    },
+    {
+      "id": "a.6",
+      "pas": "d110_621",
+      "operator": "text_contine",
+      "valoare": "621 — Impozit pe veniturile din jocuri de noroc",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #d110-cod option[value='621']|text",
+      "ac": "AC133",
+      "martor": "F1 Comert Stoc SRL (tenant_9049), Declarații › D110 › Continuă",
+      "de_ce": "Citește rândul din lista deschisă. El afișează «621 — Impozit pe veniturile din jocuri de noroc»."
+    },
+    {
+      "id": "a.7",
+      "pas": "d110_638",
+      "operator": "text_contine",
+      "valoare": "638 — Impozit pe veniturile obținute la jocuri de noroc practicate în România de persoane fizice nerezidente",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #d110-cod option[value='638']|text",
+      "ac": "AC133",
+      "martor": "F1 Comert Stoc SRL (tenant_9049), Declarații › D110 › Continuă",
+      "de_ce": "Citește rândul din lista deschisă. El afișează «638 — Impozit pe veniturile obținute la jocuri de noroc practicate în România de persoane fizice nerezidente»."
+    }
+  ]
+}

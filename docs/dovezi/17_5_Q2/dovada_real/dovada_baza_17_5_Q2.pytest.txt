@@ -1,0 +1,87 @@
+MASURA F084 F1 Comert Stoc SRL 1366x768 pica: titlul de încărcare se repetă în fereastră
+assert 2 == 1
+ +  where 2 = sum(<generator object solduri_alegere.<locals>.<genexpr> at 0x754253774ad0>)
+MASURA F084 F1 Comert Stoc SRL 603x590 pica: titlul de încărcare se repetă în fereastră
+assert 2 == 1
+ +  where 2 = sum(<generator object solduri_alegere.<locals>.<genexpr> at 0x754253775490>)
+MASURA F084 F7 Preluare Test SRL 1366x768 pica: titlul de încărcare se repetă în fereastră
+assert 2 == 1
+ +  where 2 = sum(<generator object solduri_alegere.<locals>.<genexpr> at 0x754253775e50>)
+MASURA F084 F7 Preluare Test SRL 603x590 pica: titlul de încărcare se repetă în fereastră
+assert 2 == 1
+ +  where 2 = sum(<generator object solduri_alegere.<locals>.<genexpr> at 0x754253775e50>)
+MASURA AC088 pica: F1 Comert Stoc SRL: buton în rând
+assert (0 == 1)
+ +  where 0 = count()
+ +    where count = <Locator frame=<Frame name= url='http://127.0.0.1:8019/'> selector='.fereastra-overlay:not(.fundal) #mig-exista >> internal:role=button[name="Deschide Balanța de verificare"s]'>.count
+MASURA AC093 {'sus': 211, 'jos': 680, 'top': 1943, 'inaltime': 618, 'vizibil': False} întârziere POST (ms) 3202
+MASURA 749.1 pica: D301 — D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)
+assert 'D301 — D301 ...opuri de TVA)' == 'D301 — nu se...opuri de TVA)'
+  
+  - D301 — nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)
+  + D301 — D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)
+  ?       +++++
+MASURA AC104 pica: (('d100', 2025, 12), 'restanță', 'Datorate înainte de preluarea în iConta.eu')
+assert ('Datorate \xe...een iConta.eu' == 'Datorate \xe...een iConta.eu'
+  
+    Datorate înainte de preluarea în iConta.eu and 'restanță' == 'înainte de preluare'
+  
+  - înainte de preluare
+  + restanță)
+MASURA e.1 F084 F1 Comert Stoc SRL 1366x768: titlul de încărcare se repetă în fereastră
+VERDICT e.1 pica
+MASURA e.2 explicație în details
+VERDICT e.2 pica
+MASURA e.3 {'sus': 211, 'jos': 680, 'top': 1943, 'inaltime': 618, ...}
+VERDICT e.3 pica
+MASURA e.4 749.1: D301 — D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)
+VERDICT e.4 pica
+MASURA e.5 cheia din răspunsul HTTP
+VERDICT e.5 pica
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+_____________________________ test_ferestre_17_5_Q _____________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.real_Q2.OiM3mNEB/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+capsys = <_pytest.capture.CaptureFixture object at 0x754254ce1700>
+
+    def test_ferestre_17_5_Q(browser, capsys):
+        origine = origine_proba(BAZA)
+        # Pregătirea contului este precondiție; o autentificare eșuată nu este verdict de produs.
+        initializare = sesiune("dovada.71507@sesiuneab.test")
+        verdicte, tehnice = {}, []
+        for ident, proba in [("e.1", solduri_complete), ("e.2", explicatie), ("e.3", raport), ("e.4", etichete_complete), ("e.5", d110)]:
+            ctx = browser.new_context(viewport={"width": 1366, "height": 768})
+            try:
+                if ident == "e.3":
+                    ctx.clock.install(time=MOMENT_REF)
+                else:
+                    ctx.clock.set_fixed_time(MOMENT_REF)
+                ctx.add_init_script(initializare)
+                pg = ctx.new_page()
+                pg.goto(origine + "/")
+                with capsys.disabled():
+                    proba(pg)
+            except AssertionError as exc:
+                verdicte[ident] = ("pica", str(exc).splitlines()[0] if str(exc) else "aserțiune")
+            except (PlaywrightError, RuntimeError, KeyError, TypeError, ValueError) as exc:
+                tehnice.append((ident, type(exc).__name__, str(exc).splitlines()[:1]))
+            else:
+                verdicte[ident] = ("trece", "observat")
+            finally:
+                ctx.close()
+        assert not tehnice, f"NEJUDECABIL — mediu/navigare/date: {tehnice}"
+        with capsys.disabled():
+            for ident, (stare, motiv) in verdicte.items():
+                print(f"MASURA {ident} {motiv}", flush=True)
+                print(f"VERDICT {ident} {stare}", flush=True)
+>       assert len(verdicte) == 5 and all(v[0] == "trece" for v in verdicte.values()), verdicte
+E       AssertionError: {'e.1': ('pica', 'F084 F1 Comert Stoc SRL 1366x768: titlul de încărcare se repetă în fereastră'), 'e.2': ('pica', 'exp...749.1: D301 — D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)'), ...}
+E       assert (5 == 5 and False)
+E        +  where 5 = len({'e.1': ('pica', 'F084 F1 Comert Stoc SRL 1366x768: titlul de încărcare se repetă în fereastră'), 'e.2': ('pica', 'exp...749.1: D301 — D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)'), ...})
+E        +  and   False = all(<generator object test_ferestre_17_5_Q.<locals>.<genexpr> at 0x7542527f4ad0>)
+
+frontend_test/e2e/e2e_ferestre_17_5_Q2.py:465: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_ferestre_17_5_Q2.py::test_ferestre_17_5_Q - Asse...
+1 failed, 2 passed in 33.30s

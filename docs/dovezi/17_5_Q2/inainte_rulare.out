@@ -1,0 +1,13 @@
+[lacat_test] lacăt preluat de la pid 2084758 (mort sau refolosit)
+[parcurs] implicit trece [('f.1', 'trece', '')]
+[parcurs] solduri pica [('f.2', 'trece', ''), ('a.1', 'pica', 'găsit 1, așteptat 0')]
+[parcurs] card_balanta pica [('a.2', 'pica', "'Ce se citește din balanță' nu apare în ''")]
+[parcurs] solduri_actiune pica [('a.3', 'pica', "'Deschide Balanța de verificare' nu apare în ''")]
+MASURA AC093 {'sus': 211, 'jos': 680, 'top': 1943, 'inaltime': 625, 'vizibil': False}
+[parcurs] audit_raport pica [('a.4', 'pica', 'găsit 0, așteptat 1')]
+[parcurs] audit_buton trece [('f.3', 'trece', '')]
+[parcurs] declaratii pica [('f.4', 'trece', ''), ('a.5', 'pica', "'restanță' apare în 'D100 · T4/2025 · restanță — termenul a fost 26.01.2026 · înainte de preluare,D112 · 01/2026 · restanță — termenul a fost 25.02.2026 · înainte de preluare,D300 · 01/2026 · restanță — termenul a fost 25'")]
+[parcurs] d110 trece [('f.5', 'trece', '')]
+[parcurs] d110_621 pica [('a.6', 'pica', "'621 — Impozit pe veniturile din jocuri de noroc' nu apare în '621'")]
+[parcurs] d110_638 pica [('a.7', 'pica', "'638 — Impozit pe veniturile obținute la jocuri de noroc practicate în România de persoane fizice nerezidente' nu apare în '638'")]
+
