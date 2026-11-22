@@ -1,0 +1,45 @@
+produs
+lot: 17.5-Q5
+max hook 198
+max poarta_verificator 113
+max poarta_pytest 726
+max poarta_plasa 3532
+runde_verificator_max: 2
+sursa pragurilor 17.5-Q5: reper Q3 confirmat prin citirea jurnalului pentru P0, P2 și Q2; ajustarea se stabilește prin REAL Q5, generate de scripts/praguri_automate.py la 2026-11-22T09:37:09+02:00 din .lot_jurnal.log; loturi folosite: 17.5-P0, 17.5-P2, 17.5-Q2 (3)
+  hook: maxim 165 s (lotul 17.5-P0, rularea 2738559-1795232839728) din 19 rulari complete, 0 rulari «intrerupt» ignorate, prag 198 s
+  poarta_verificator: maxim 94 s (lotul 17.5-P2, rularea 438494-1795276810615) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 113 s
+  poarta_pytest: maxim 605 s (lotul 17.5-P2, rularea 438494-1795276904851) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 726 s
+  poarta_plasa: maxim 2943 s (lotul 17.5-Q2, rularea 2309082-1795320186851) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 3532 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_Q5.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_ferestre_17_5_Q5.py)
+  frontend_test/e2e/e2e_ferestre_17_5_Q5.py (nou)
+  docs/dovezi/17_5_Q5/
+  static/stil.css (starea exactă din C2 Q3)
+  static/js/cautare.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/ansamblu.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/asistent.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/borderou_ecran.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/cabinet.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/clienti_ecran.js (starea exactă din C2 Q3)
+  static/js/ecrane/coada_trimite.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/control_verdict.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/ecran_destinatie.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/emitere_ecran.js (starea exactă din C2 Q3)
+  static/js/ecrane/facturi_ecran.js (starea exactă din C2 Q3)
+  static/js/ecrane/firme.js (starea exactă din C2 Q3)
+  static/js/ecrane/inceput.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/migrare.js (starea exactă din C2 Q3)
+  static/js/ecrane/operatiuni_ecran.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/portal.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/termene.js (numai cascada ?v= din C2 Q3)
+  static/js/ecrane/validat.js (numai cascada ?v= din C2 Q3)
+  static/js/navigator.js (numai cascada ?v= din C2 Q3)
+  static/index.html (numai cascada din C2 Q3)
+  static/spv_callback.html (numai cascada din C2 Q3)
+  core/jurnal_api.py (numai starea din C2 Q3 pentru 852)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  DEFICIENTE.md

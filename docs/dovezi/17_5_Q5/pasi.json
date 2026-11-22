@@ -1,0 +1,84 @@
+{
+  "asertiuni": [
+    {
+      "id": "f.1",
+      "pas": "implicit",
+      "operator": "text_contine",
+      "valoare": "Control fiscal",
+      "cheie": "dom:main button.cab-card .cab-card-titlu|text",
+      "ac": null,
+      "martor": "Cabinet",
+      "de_ce": "Cardul Control fiscal este prezent."
+    },
+    {
+      "id": "f.2",
+      "pas": "solduri_f1",
+      "operator": "text_contine",
+      "valoare": "Niciun fișier ales",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #mig-drop|text",
+      "ac": null,
+      "martor": "Solduri inițiale F1",
+      "de_ce": "Zona indică starea inițială a fișierului."
+    },
+    {
+      "id": "f.3",
+      "pas": "solduri_f7",
+      "operator": "text_contine",
+      "valoare": "Încarcă balanța",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #mig-alege|text",
+      "ac": null,
+      "martor": "Solduri inițiale F7",
+      "de_ce": "Butonul din bară păstrează eticheta încărcării."
+    },
+    {
+      "id": "f.4",
+      "pas": "termene",
+      "operator": "text_contine",
+      "valoare": "Declarație",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #term-lista thead th|text",
+      "ac": null,
+      "martor": "Termene pe portofoliu",
+      "de_ce": "În antetul tabelului de scadențe se vede coloana „Declarație”."
+    },
+    {
+      "id": "f.5",
+      "pas": "stocuri",
+      "operator": "text_contine",
+      "valoare": "+ NIR nou",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) button|text",
+      "ac": null,
+      "martor": "Stocuri F1",
+      "de_ce": "Acțiunea de deschidere a NIR este disponibilă."
+    },
+    {
+      "id": "a.2",
+      "pas": "stocuri",
+      "operator": "nr_randuri",
+      "valoare": "0",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #s-desc.buton-primar|numar",
+      "ac": "858",
+      "martor": "Stocuri F1",
+      "de_ce": "Descarcă gestiunea lunii pierde stilul de principal. Prezența acțiunii este măsurată de e.4."
+    },
+    {
+      "id": "a.3",
+      "pas": "banca",
+      "operator": "nr_randuri",
+      "valoare": "0",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) tbody[data-linie-id] button[data-cont].buton-primar|numar",
+      "ac": "761",
+      "martor": "Bancă F1",
+      "de_ce": "Acțiunile Contează de pe linii pierd stilul de principal. e.5 verifică existența și legătura lor pe fiecare ID restituit de API pentru F1 pe copia măsurată."
+    },
+    {
+      "id": "f.6",
+      "pas": "banca",
+      "operator": "text_contine",
+      "valoare": "Importă extras",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos button|text",
+      "ac": null,
+      "martor": "Bancă F1",
+      "de_ce": "Bara de jos oferă Importă extras."
+    }
+  ]
+}

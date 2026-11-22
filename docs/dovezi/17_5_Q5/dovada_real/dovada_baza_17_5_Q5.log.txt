@@ -1,0 +1,68 @@
+# dovada pe baza — lot 17_5_Q5 — test e2e_ferestre_17_5_Q5.py — 2026-11-22T20:38:22+02:00 — main c32532357caa6b212529842c61a29cc6abb8626e
+sha_test=29cc944d0a8bffc2 e2e_ferestre_17_5_Q5.py
+id-uri rosii obligatorii: e.1,e.2
+contract ancorat: sha256 d881a3a9ac5ef6d27d55c80e0d9e9a078d847c037d796990d37cb8f752c2457f (/home/costin/.real_Q5.ahPjKZ3U/ghid_incoming/pornire_17_5_Q5.txt)
+lacat: liber
+pornesc 8019 din main (scripts/porneste_8019.sh)
+[verificator design] serverul de lucru pe 8019, commit c3253235
+restaurez baza de test
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (***:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 82s
+restaurare: 82 s, rc=0
+rulez testul pe baza: e2e_ferestre_17_5_Q5.py
+                    cale = urlsplit(r.url).path
+                    if cale == "/tenants/105779/banca/reconciliere":
+                        trafic.append([cale, r.status])
+                pg.on("response", raspuns)
+                try:
+                    pg.goto(origine + "/", wait_until="load")
+                    if nume == "stil":
+                        masuri[nume] = solduri(pg)
+                        verdicte.update(css_observat(masuri[nume]))
+                    else:
+                        masuri[nume] = culege_actiuni(pg, director, nume)
+                        if nume == "banca":
+                            verdicte["e.5"] = banca_corecta(masuri[nume])
+                        else:
+                            verdicte["e.4"] = stoc_corect(masuri[nume])
+                except (EroareBrowser, ValueError, RuntimeError, KeyError, TypeError) as exc:
+                    erori[nume] = type(exc).__name__
+                    diagnostic(pg, director, nume, exc, trafic)
+                finally:
+                    salveaza(director, "masuri.json", masuri)
+                    salveaza(director, "pas_cu_pas.json", {"judecate": verdicte, "neexecutate": erori})
+            finally:
+                ctx.close()
+        if erori:
+            raise RuntimeError(f"NEEXECUTAT: {erori}; măsurările independente sunt în pas_cu_pas.json")
+        assert set(verdicte) == {"e.1", "e.2", "e.4", "e.5"}
+        with capsys.disabled():
+            for ident, trecut in sorted(verdicte.items()):
+                print(f"VERDICT {ident} {'trece' if trecut else 'pica'}", flush=True)
+>       assert all(verdicte.values()), verdicte
+E       AssertionError: {'e.1': False, 'e.2': False, 'e.4': False, 'e.5': False}
+E       assert False
+E        +  where False = all(dict_values([False, False, False, False]))
+E        +    where dict_values([False, False, False, False]) = <built-in method values of dict object at 0x7d7a699d0bc0>()
+E        +      where <built-in method values of dict object at 0x7d7a699d0bc0> = {'e.1': False, 'e.2': False, 'e.4': False, 'e.5': False}.values
+
+frontend_test/e2e/e2e_ferestre_17_5_Q5.py:279: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_ferestre_17_5_Q5.py::test_ferestre_17_5_Q5 - Ass...
+1 failed in 23.97s
+randuri VERDICT/MASURA in iesirea completa (/home/costin/.real_Q5.ahPjKZ3U/ghid_incoming/dovada_baza_17_5_Q5.pytest.txt, 80 randuri): 4
+  VERDICT e.1 pica
+  VERDICT e.2 pica
+  VERDICT e.4 pica
+  VERDICT e.5 pica
+pytest rc=1 durata=24 s
+rezumat pytest: 1 failed in 23.97s; randuri FAILED ale testului: 1
+id e.1: pica=1 trece=0
+id e.2: pica=1 trece=0
+oprire 8019 (verificator_design.py opreste, Z): rc=0; [verificator design] oprit; portul 8019 liber
+restaurez baza de test (dupa)
+[baza_test] restaurat în 76s
+arbore main: curat, HEAD = refs/heads/main = c32532357caa6b212529842c61a29cc6abb8626e
+VERDICT: ROSU PE BAZA (rc=1) — dovada valabila
+# sfarsit 2026-11-22T20:41:45+02:00

@@ -1,0 +1,80 @@
+VERDICT e.1 pica
+VERDICT e.2 pica
+VERDICT e.4 pica
+VERDICT e.5 pica
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________________________ test_ferestre_17_5_Q5 _____________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.real_Q5.ahPjKZ3U/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+capsys = <_pytest.capture.CaptureFixture object at 0x7d7a68b28110>
+
+    def test_ferestre_17_5_Q5(browser, capsys):
+        from playwright.sync_api import Error as EroareBrowser
+        from conftest import BAZA, CAPTURI, sesiune
+        from core.ceas_proba import MOMENT_REF
+        origine = origine_proba(BAZA)
+        init = sesiune("dovada.71507@sesiuneab.test")
+        director = Path(CAPTURI) / "17_5_Q5"
+        director.mkdir(parents=True, exist_ok=True)
+        masuri, verdicte, erori = {}, {}, {}
+        def solduri(pg):
+            stil = {}
+            for nume in (F1, F7):
+                for w, h in ((1366, 768), (603, 590)):
+                    pg.set_viewport_size({"width": w, "height": h})
+                    import_pas(pg, nume, "Solduri inițiale", "#mig-alege")
+                    cheie = f"{nume[:2]}-{w}"
+                    stil[cheie] = stiluri(pg, director, cheie)
+                    masuri["stil"] = stil
+                    salveaza(director, "masuri.json", masuri)
+            return stil
+    
+        for nume in ("stil", "stoc", "banca"):
+            ctx = browser.new_context(viewport={"width": 1366, "height": 768})
+            try:
+                ctx.clock.set_fixed_time(MOMENT_REF)
+                ctx.add_init_script(init)
+                pg = ctx.new_page()
+                trafic = []
+                def raspuns(r):
+                    cale = urlsplit(r.url).path
+                    if cale == "/tenants/105779/banca/reconciliere":
+                        trafic.append([cale, r.status])
+                pg.on("response", raspuns)
+                try:
+                    pg.goto(origine + "/", wait_until="load")
+                    if nume == "stil":
+                        masuri[nume] = solduri(pg)
+                        verdicte.update(css_observat(masuri[nume]))
+                    else:
+                        masuri[nume] = culege_actiuni(pg, director, nume)
+                        if nume == "banca":
+                            verdicte["e.5"] = banca_corecta(masuri[nume])
+                        else:
+                            verdicte["e.4"] = stoc_corect(masuri[nume])
+                except (EroareBrowser, ValueError, RuntimeError, KeyError, TypeError) as exc:
+                    erori[nume] = type(exc).__name__
+                    diagnostic(pg, director, nume, exc, trafic)
+                finally:
+                    salveaza(director, "masuri.json", masuri)
+                    salveaza(director, "pas_cu_pas.json", {"judecate": verdicte, "neexecutate": erori})
+            finally:
+                ctx.close()
+        if erori:
+            raise RuntimeError(f"NEEXECUTAT: {erori}; măsurările independente sunt în pas_cu_pas.json")
+        assert set(verdicte) == {"e.1", "e.2", "e.4", "e.5"}
+        with capsys.disabled():
+            for ident, trecut in sorted(verdicte.items()):
+                print(f"VERDICT {ident} {'trece' if trecut else 'pica'}", flush=True)
+>       assert all(verdicte.values()), verdicte
+E       AssertionError: {'e.1': False, 'e.2': False, 'e.4': False, 'e.5': False}
+E       assert False
+E        +  where False = all(dict_values([False, False, False, False]))
+E        +    where dict_values([False, False, False, False]) = <built-in method values of dict object at 0x7d7a699d0bc0>()
+E        +      where <built-in method values of dict object at 0x7d7a699d0bc0> = {'e.1': False, 'e.2': False, 'e.4': False, 'e.5': False}.values
+
+frontend_test/e2e/e2e_ferestre_17_5_Q5.py:279: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_ferestre_17_5_Q5.py::test_ferestre_17_5_Q5 - Ass...
+1 failed in 23.97s

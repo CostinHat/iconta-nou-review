@@ -1,0 +1,8 @@
+[lacat_test] lacăt preluat de la pid 292137 (mort sau refolosit)
+[parcurs] implicit trece [('f.1', 'trece', '')]
+[parcurs] solduri_f1 trece [('f.2', 'trece', '')]
+[parcurs] solduri_f7 trece [('f.3', 'trece', '')]
+[parcurs] termene trece [('f.4', 'trece', '')]
+[parcurs] stocuri pica [('f.5', 'trece', ''), ('a.2', 'pica', 'găsit 1, așteptat 0')]
+[parcurs] banca pica [('a.3', 'pica', 'găsit 11, așteptat 0'), ('f.6', 'trece', '')]
+
