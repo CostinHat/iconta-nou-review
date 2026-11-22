@@ -14,7 +14,7 @@ import { panouConectareSPV } from "./setari.js?v=37902f6231";
 import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";
 import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=90325032fc";   // [lotul 11, decizia 10.3] fișa partenerului
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
-import { meniuMigrarePerFirma } from "./migrare.js?v=99c0553ca3";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
+import { meniuMigrarePerFirma } from "./migrare.js?v=fcf65c21ea";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { api } from "../api.js?v=7396e03327";
 
@@ -59,7 +59,7 @@ export const ECRANE = {
   // [15.1-E3, 728.1 / 735] „Contabilizează statul de plată” (constatarea de control fiscal) deschide Salariați, unde se face contarea statului
   salarii: {
     titlu: "Salariați",
-    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=6856424c91"); await deschideSalariati(nav, tenantId); },
+    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=27188e9ea0"); await deschideSalariati(nav, tenantId); },
   },
   conectare_spv: {
     titlu: "Conectare SPV",

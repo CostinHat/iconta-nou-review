@@ -436,7 +436,11 @@ def test_def_392_textul_spune_respingerea_si_5121_creditor_e_semnalat(patron, fi
     cu observație”: „5121 (activ) are sold creditor 20.000,00 lei: soldul stă pe partea opusă funcțiunii contului …”."""
     _pas(patron, firma_srl, "Solduri ini")
     pg = patron.pg
-    intro = " ".join(((pg.text_content("#mig-cum-balanta") or "") + " " + pg.inner_text(".mig-intro")).split())
+    top = pg.locator(".fereastra-overlay:not(.fundal)")
+    top.locator("#mig-carduri button[data-card='cum-balanta']").click()
+    intro = " ".join(top.locator("#mig-cum-balanta").inner_text().split())
+    top.locator(".nav-inapoi:visible").click()
+    top.locator("#mig-alege").wait_for()
     assert "e respins, cu motivul" in intro and "nu sunt respinse" not in intro, intro
     _incarca(patron, "balanta.csv", "Cont;Denumire;Sold final debitor;Sold final creditor\n5121;Banca;0;20000\n1012;Capital;20000;0\n"
              .encode(), "#mig-salveaza-sold")

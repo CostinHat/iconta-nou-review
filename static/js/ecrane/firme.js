@@ -48,10 +48,10 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=67fef9d46d";
-import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=99c0553ca3";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=fcf65c21ea";  // [p96_import_firma] + [Q4] import in masa
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [17.5-J, AC052] refuzul care trimite la ce lipsește
-import { declaratiiPerFirma } from "./declaratii.js?v=93956357f7";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=9db6cd666e";  // renderer unic verdict control fiscal (DS cap.20)
+import { declaratiiPerFirma } from "./declaratii.js?v=4343fbfbc2";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=0caee663ad";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";  // [date_firma_v1]
@@ -7314,9 +7314,17 @@ async function ecranBonuri(corp, nav, t) {
 // descarcand-o nu se poate verifica pe ecran - chiar criteriul listei 5. Acum cifrele vin pe
 // `/tenants/{id}/balanta`, iar totalurile si inchiderea sunt calculate pe SERVER, in aceeasi sursa
 // din care se tipareste PDF-ul (`documente_api.totaluri_balanta`): ecranul nu aduna nimic.
-async function ecranBalanta(corp, nav, t) {
+// [17.5-Q, AC088] Balanța de verificare deschisă din alt ecran (rândul «Există deja» din Import date — Solduri inițiale), pe luna dată; fără lună, luna de lucru
+export async function deschideBalanta(nav, tenantId, an, luna) {
+  const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
+  if (!t) return;
+  nav.deschide("Balanță de verificare", (c2) => ecranBalanta(c2, nav, t, { an, luna }), { lat: "tabel" });
+}
+
+async function ecranBalanta(corp, nav, t, opt = {}) {
   let an, luna;
-  { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()) || await lunaDeLucru(t.id); ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii; [817] altfel luna de lucru
+  if (opt.an && opt.luna) { an = opt.an; luna = opt.luna; }   // [17.5-Q, AC088] luna cerută de apelant
+  else { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()) || await lunaDeLucru(t.id); ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii; [817] altfel luna de lucru
 
   // [08.10.2026, decizia Costin W1] cinci egalități (OMFP 2634/2015, cod 14-6-30/a): rulajele CURENTE sunt notele lunii —
   // aceleași pe care le arată Registrul jurnal pe luna asta —, iar notele lunilor anterioare stau în „sume precedente”.

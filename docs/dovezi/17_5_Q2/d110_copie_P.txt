@@ -1,0 +1,12 @@
+test_626_din_P apply rc=0
+E                 + te la art.114 alin.(2) lit.k
+
+core/test_d110.py:118: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_d110.py::test_q_d110_denumirile_fiecarui_cod - AssertionErro...
+1 failed, 5 passed in 3.51s
+pytest_inainte rc=1
+corectie_626 apply rc=0
+......                                                                   [100%]
+6 passed in 3.31s
+pytest_dupa rc=0

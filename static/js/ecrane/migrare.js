@@ -57,7 +57,10 @@ async function _adaugaUrmatorii(firma) {
   if (t) { _migMesaj += (_migMesaj ? "\n" : "") + t; if (_migTip === "ok") _migTip = "avert"; }   // se adaugă la confirmarea salvării
 }
 // [580, 584] sub introducerea ecranului de import: ce s-a adus deja la pas și ce face importul cu ce există
-async function _existaPas(corp, firma, strat) {
+// [17.5-Q, AC088] la soldurile care există deja, rândul are drumul spre cifre: «Deschide Balanța de verificare» (secundar; principalul ferestrei rămâne
+// «Încarcă balanța»). Balanța se deschide pe luna zilei de după data balanței (soldurile sunt «la» acea dată, evidența începe a doua zi — core/luna_preluare.py);
+// fără dată (data_referinta NULL), pe luna de lucru, ca butonul Balanței din fereastra firmei. Nicio dată inventată, nicio rută nouă.
+async function _existaPas(corp, firma, strat, nav = null) {
   const intro = corp.querySelector(".mig-intro");
   const st = await _starePreluare(firma && firma.tenant_id);
   const p = st && st.pasi && st.pasi[strat];
@@ -65,6 +68,25 @@ async function _existaPas(corp, firma, strat) {
   const el = document.createElement("p");
   el.className = "mig-intro"; el.id = "mig-exista"; el.dataset.existaPas = strat;
   el.textContent = `${p.exista ? "Există deja: " + p.exista + "." : "Nu e nimic adus încă la acest pas."} ${p.comportament || ""}`.trim();
+  if (strat === "solduri" && p.exista && nav) {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "buton-secundar"; b.id = "mig-deschide-balanta"; b.textContent = "Deschide Balanța de verificare";
+    b.dataset.faraActiune = "navigare la Balanța de verificare; cifrele balanței de deschidere se citesc acolo";
+    b.addEventListener("click", async () => {
+      let an, luna;
+      try {
+        const s = await api.get(`/tenants/${firma.tenant_id}/solduri`);
+        if (s && s.data_referinta) {
+          const z = new Date(`${String(s.data_referinta).slice(0, 10)}T12:00:00`);
+          z.setDate(z.getDate() + 1);
+          an = z.getFullYear(); luna = z.getMonth() + 1;
+        }
+      } catch { /* fără dată citită: luna de lucru */ }
+      const { deschideBalanta } = await import("./firme.js?v=27188e9ea0");
+      await deschideBalanta(nav, firma.tenant_id, an, luna);
+    });
+    el.append(" ", b);
+  }
   intro.after(el);
 }
 // [lotul 10, deficiențele 421 / 424 — contractul cu fereastra (navigator + CSS, DS cap.9)] PREVIZUALIZAREA COMUNĂ a importurilor: rezumatul
@@ -1041,11 +1063,12 @@ function _descarcaModelCSV(spec) {
 
 // [17.5-D, 819] alegerea fișierului unui import e un buton „Încarcă …” marcat ca acțiune principală a ferestrei (bara de jos îl ia); apasă același câmp de fișier,
 // care rămâne în pagină (ascuns); tragerea fișierului peste zona de import rămâne. Textul butonului = titlul zonei.
-function _butonAlegeFisier(corp) {
+// [17.5-Q, F084] `text` (opțional): eticheta butonului, când zona nu mai poartă titlul acțiunii (Solduri inițiale); implicit, titlul zonei, ca până acum
+function _butonAlegeFisier(corp, text = null) {
   const zona = corp.querySelector("#mig-drop"), camp = corp.querySelector("#mig-file"), titlu = corp.querySelector("#mig-drop-titlu");
   if (!zona || !camp || !titlu) return;
   const b = document.createElement("button");
-  b.type = "button"; b.className = "buton-secundar"; b.id = "mig-alege"; b.textContent = titlu.textContent.trim();
+  b.type = "button"; b.className = "buton-secundar"; b.id = "mig-alege"; b.textContent = text || titlu.textContent.trim();
   b.setAttribute("data-actiune-principala", "");
   b.dataset.faraActiune = "deschide alegerea fișierului; încărcarea o face câmpul de fișier";
   b.addEventListener("click", () => camp.click());
@@ -1055,19 +1078,24 @@ function _butonAlegeFisier(corp) {
 function importSolduriFirma(corp, nav, firma, app = null) {   // [270] `app` = aplicația aleasă în Migrare cabinet
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din programul vechi.</p>
-    <details class="dec-xml" id="mig-cum-balanta"><summary>Ce se citește din balanță</summary><p class="ecran-nota">Din ea se iau soldurile finale și, dacă le are, soldurile de la 1 ianuarie și rulajele anului (sold inițial și sume precedente, cu toate conturile care au rulaj); fără ele, ecranul spune ce lipsește. Debitul total trebuie să fie egal cu creditul total. Analiticele din balanță (de exemplu 4111.01, 401.00012) se adaugă în planul de conturi, sub sinteticul lor; un cont care nu există în planul de conturi al normei firmei e respins, cu motivul. Un sold pe partea opusă funcțiunii contului (de exemplu 5121 creditor) se semnalează pe rând.</p></details>
+    <div id="mig-carduri"></div>
     ${_exportHTML(app, "solduri") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
-    <label class="mig-drop" id="mig-drop">
+    <div class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/solduri/incarca" accept=".csv,.txt,.tsv,.xlsx,.xls" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
-      <div class="mig-drop-titlu" id="mig-drop-titlu">Încarcă balanța</div>
+      <div class="mig-drop-titlu" id="mig-drop-titlu">Niciun fișier ales</div>
       <div class="mig-drop-desc">Excel (XLSX, XLS) sau CSV</div>
-    </label>
+    </div>
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
-  _butonAlegeFisier(corp);
-  _existaPas(corp, firma, "solduri");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
+  // [17.5-Q, AC091] «Ce se citește din balanță» e un card-rezumat (DS cap.9 v2.105), nu un details: textul, neschimbat, stă în fereastra cardului
+  siraCarduri(corp.querySelector("#mig-carduri"), [{ id: "cum-balanta", ton: "info", text: "Ce se citește din balanță", titlu: "Ce se citește din balanță",
+    deschide: (c2) => { c2.innerHTML = `<h2 class="pf-titlu">Ce se citește din balanță</h2><p class="ecran-nota" id="mig-cum-balanta">Din ea se iau soldurile finale și, dacă le are, soldurile de la 1 ianuarie și rulajele anului (sold inițial și sume precedente, cu toate conturile care au rulaj); fără ele, ecranul spune ce lipsește. Debitul total trebuie să fie egal cu creditul total. Analiticele din balanță (de exemplu 4111.01, 401.00012) se adaugă în planul de conturi, sub sinteticul lor; un cont care nu există în planul de conturi al normei firmei e respins, cu motivul. Un sold pe partea opusă funcțiunii contului (de exemplu 5121 creditor) se semnalează pe rând.</p>`; } }], nav);
+  // [17.5-Q, F084] numai butonul din bară deschide alegerea fișierului (clic sau Enter): zona din corp nu mai e o etichetă legată de câmp și nu repetă titlul
+  // acțiunii; arată fișierul ales și formatul acceptat
+  _butonAlegeFisier(corp, "Încarcă balanța");
+  _existaPas(corp, firma, "solduri", nav);   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există; [17.5-Q, AC088] drumul spre Balanța de verificare
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", descarcaModelSolduri);
   fileInput.addEventListener("change", async () => {
@@ -2468,7 +2496,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=6856424c91"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=27188e9ea0"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat

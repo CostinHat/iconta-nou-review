@@ -183,9 +183,12 @@ function domeniuAfirmatie(x) {
 }
 
 // [17.5-S, 749] eticheta declarației stă o singură dată: motivul care o repetă la început («D205 — nu se poate verifica: …») pierde prefixul «<tip> — »; domeniul rămâne în șablon
+// [17.5-Q, 749.1] la fel prefixul fără liniuță («D301 nu se datorează — …» → «nu se datorează — …»): eticheta o pune șablonul; codul citat mai departe în motiv rămâne
 export function motivFaraEticheta(x) {
-  const motiv = String(x.motiv || ""), prefix = `${(x.tip || "").toUpperCase()} — `;
-  return prefix.trim() !== "—" && motiv.toUpperCase().startsWith(prefix) ? motiv.slice(prefix.length) : motiv;
+  const motiv = String(x.motiv || ""), tip = (x.tip || "").toUpperCase();
+  if (!tip) return motiv;
+  for (const prefix of [`${tip} — `, `${tip} `]) if (motiv.toUpperCase().startsWith(prefix) && motiv.length > prefix.length) return motiv.slice(prefix.length);
+  return motiv;
 }
 
 function randMotiv(arr, semnale = [], felCls = "") {
@@ -454,7 +457,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=6856424c91");
+    const { deschideInchidereLuna } = await import("./firme.js?v=27188e9ea0");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {
@@ -619,6 +622,10 @@ export function legaVerdict(corp, nav, firma) {
     }
     if (btn) btn.disabled = false;
     await arataIstoricAudit();
+    // [17.5-Q, AC093] raportul se desenează sub celelalte grupuri: începutul lui se aduce în zona vizibilă a ferestrei, oricât a durat cererea
+    // (nu aduInVedere din api.js, care refuză după FEREASTRA_ACTIUNE_MS de la clic); calea de eroare rămâne cum e (mesajul stă deja în zonă)
+    const zona = corp.querySelector("#cf-audit-istoric");
+    if (zona && zona.isConnected && zona.textContent.trim()) zona.scrollIntoView({ block: "start" });
   }
   arataIstoricAudit();
   const zonaSpv = corp.querySelector("#cf-spv-stare");   // [deficiența 463] dreptul SPV, cu drumul spre Conectare SPV când lipsește

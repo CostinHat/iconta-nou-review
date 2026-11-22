@@ -64,6 +64,7 @@ def declaratii_tipuri(tenant_id, ctx):
             "datorate": _datorate_firmei(tenant_id, ctx),
             # [comanda Costin 9.1, A.3] obligațiile pe care le corectează formularul D710, cu denumirea oficială din nomenclator
             "obligatii_d710": _obligatii_d710(),
+            "obligatii_d110": _obligatii_d110(),   # [17.5-Q, AC133] codurile D110 cu denumirea din documentul ANAF D110
             # [lotul 13, 636 / 594] Date firmă pentru formularele manuale (D318, D398 …): ecranul le pune în câmpuri, vizibile și modificabile
             "firma": {**{k: v for k, v in antet.items() if k not in ("platitor_tva", "inreg_art317")}, "cod_tva": _cod_tva_firma(antet)},
             # [lotul 13, 653] statele de rezidență acceptate de validatorul D207 (lista cu căutare a formularului)
@@ -101,6 +102,13 @@ def _obligatii_d710():
     `core.nomenclator_obligatii` (OPANAF 587/2016, anexa nr. 3). Ecranul nu mai ține o listă scrisă de mână."""
     from core import d100 as _d100, nomenclator_obligatii as _nom
     return [{"cod": c, "denumire": _nom.denumire("d710", c)} for c in sorted(_d100.COD_BUGETAR, key=int)]
+
+
+def _obligatii_d110():
+    """[17.5-Q, AC133] [{cod, denumire}] — codurile pe care D110 le acceptă (`d110._COD_OBLIG_VALIDE`), în ordinea numerică a listei din ecran,
+    cu denumirea din documentul ANAF D110 (`d110.COD_OBLIG_DENUMIRI`). Ecranul arată «<cod> — <denumire>»; valoarea trimisă rămâne codul."""
+    from core import d110 as _d110
+    return [{"cod": c, "denumire": _d110.COD_OBLIG_DENUMIRI[c]} for c in sorted(_d110._COD_OBLIG_VALIDE, key=int)]
 
 
 def _datorate_firmei(tenant_id, ctx):

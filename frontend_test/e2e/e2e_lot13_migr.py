@@ -283,7 +283,10 @@ def test_def_667_rezumatul_lipit_al_balantei_e_mic_si_nu_acopera_tabelul(patron,
     MUTAȚIA: avertismentul rulajelor și nota balanței înapoi în rezumatul lipit -> ROȘU."""
     pg = patron.pg
     _pas(patron, firma, "Solduri ini")
-    assert pg.locator("details#mig-cum-balanta").count() == 1 and not pg.eval_on_selector("details#mig-cum-balanta", "d => d.open")
+    top = pg.locator(".fereastra-overlay:not(.fundal)")
+    card = top.locator("#mig-carduri button[data-card='cum-balanta']")
+    assert card.is_visible() and "Ce se citește din balanță" in card.inner_text()
+    assert top.locator("#mig-cum-balanta:visible").count() == 0
     _incarca(patron, "balanta_f7.csv", BALANTA_CSV, "#mig-salveaza-sold")
     patron.captura("previzualizare")
     assert pg.locator(".rezumat-fix #mig-rulaje, .rezumat-fix .caseta-info, .rezumat-fix details").count() == 0

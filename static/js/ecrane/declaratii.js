@@ -144,6 +144,7 @@ async function incarcaTipuri(tenantId) {
     S.deLamurit = d.de_lamurit || {};   // [D2, 14.3] tip -> „de lămurit — …” (activ, cu trimitere): D398 fără răspuns OSS
     S.datorate = d.datorate || [];   // [283] ce datorează firma, cu termenul (motorul termenelor)
     S.obligatiiD710 = d.obligatii_d710 || [];   // [9.1 A.3] codurile D710 cu denumirea oficială din nomenclator
+    S.obligatiiD110 = d.obligatii_d110 || null;   // [17.5-Q, AC133] codurile D110 cu denumirea din documentul ANAF D110; lipsă = răspuns vechi: numai codul
     S.firmaDate = d.firma || {};                 // [lotul 13, 636 / 594] Date firmă pentru precompletarea formularelor manuale
     S.nomenclatoare = d.nomenclatoare || {};     // [lotul 13, 653 / 636] statele D207, monedele BNR
     S.tipuriEsuat = false;
@@ -171,9 +172,12 @@ function pas1(corp, nav) {
     const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip])
       .map((d, i) => [d, i]).sort((x, y) => Number(!!y[0].restanta) - Number(!!x[0].restanta) || x[1] - y[1]).map(([d]) => d);
     // [719, 14.3] restanța (termenul a trecut, nedepusă) se spune ca restanță și stă prima: nu dispare din listă după termen
-    const optDatorata = (d) => `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}" data-nume="${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen ${esc(dataRo(d.termen))}"`
-      + ` data-motiv="${d.restanta ? "restanță" : d.inainte_de_preluare ? "înainte de preluare" : ""}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
-      + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · ${d.restanta ? "restanță — termenul a fost " : "termen de depunere "}${esc(dataRo(d.termen))}${d.inainte_de_preluare ? " · înainte de preluare" : ""}</option>`;
+    // [17.5-Q, AC104] perioada dinainte de preluare nu se numără la restanțe (regula din Control fiscal): poartă «termen de depunere … · înainte de preluare»,
+    // nu «restanță», oricare ar fi d.restanta; restanța reală și termenul obișnuit rămân neschimbate
+    const optDatorata = (d) => { const restanta = d.restanta && !d.inainte_de_preluare;
+      return `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}" data-nume="${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen ${esc(dataRo(d.termen))}"`
+      + ` data-motiv="${d.inainte_de_preluare ? "înainte de preluare" : restanta ? "restanță" : ""}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
+      + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · ${restanta ? "restanță — termenul a fost " : "termen de depunere "}${esc(dataRo(d.termen))}${d.inainte_de_preluare ? " · înainte de preluare" : ""}</option>`; };
     // [lotul 10, deficiența 432] obligațiile pe perioade dinaintea preluării rămân vizibile (termenul cade după preluare), dar într-un grup
     // separat, marcate — regula de la 157 (decizia U2, 08.10); marcajul vine din motorul termenelor (`luna_preluare.inainte`)
     const deLaPreluare = datorate.filter((d) => !d.inainte_de_preluare), inainte = datorate.filter((d) => d.inainte_de_preluare);
@@ -2188,6 +2192,8 @@ function randeazaFormularD114(corp, nav) {
 }
 
 const _D110_CODURI = ["602","604","605","606","607","608","611","619","621","622","623","625","626","627","628","629","631","632","633","634","635","636","637","638","639","640","641","642","690"];
+// [17.5-Q, AC133] «<cod> — <denumire>» din obligatii_d110 (serverul); la un răspuns fără cheie, numai codul (lista _D110_CODURI, rezervă)
+function _d110_et(cod) { const c = (S.obligatiiD110 || []).find((x) => x.cod === String(cod)); return c ? c.cod + " — " + c.denumire : String(cod); }
 
 function _d110Manual() {
   const d = S.d110 || {};
@@ -2208,11 +2214,11 @@ function randeazaFormularD110(corp, nav) {
   let sPlata = 0, sRest = 0;
   obl.forEach((o) => { const sd = Math.round(_n(o.suma_dat) || 0), sr = Math.round(_n(o.suma_rest) || 0);
     if (sd >= sr) sPlata += sd - sr; else sRest += sr - sd; });
-  const optCod = _D110_CODURI.map((c) => '<option value="' + c + '">' + c + "</option>").join("");
+  const optCod = (S.obligatiiD110 ? S.obligatiiD110.map((c) => c.cod) : _D110_CODURI).map((c) => '<option value="' + esc(c) + '">' + esc(_d110_et(c)) + "</option>").join("");
   const grila = obl.length
     ? obl.map((o, i) => { const sd = Math.round(_n(o.suma_dat) || 0), sr = Math.round(_n(o.suma_rest) || 0);
         const dp = sd >= sr ? sd - sr : 0, dr = sd < sr ? sr - sd : 0;
-        return '<div class="dec-man-rand"><span class="dec-recl-desc">cod ' + esc(String(o.cod_oblig)) + " · datorat " + bani(sd) + " · reținut " + bani(sr) +
+        return '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc(_d110_et(o.cod_oblig)) + " · datorat " + bani(sd) + " · reținut " + bani(sr) +
           (dp > 0 ? (" · de plată " + bani(dp)) : "") + (dr > 0 ? (" · de restituit " + bani(dr)) : "") + " lei</span>" +
           '<button class="btn-link dec-d110-del" data-idx="' + i + '">șterge</button></div>'; }).join("")
     : '<div class="stare-goala stare-goala--inline">Nicio obligație. Adaugă codul obligației + impozitul datorat și cel reținut.</div>';
@@ -2231,7 +2237,7 @@ function randeazaFormularD110(corp, nav) {
     '<div class="camp-eticheta" style="margin:8px 0 4px">Obligații (impozit reținut la sursă)</div>' +
     grila +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
-      '<label class="camp" style="width:150px"><span class="camp-eticheta">Cod obligație</span><select id="d110-cod" class="camp-input">' + ALEGE + optCod + "</select></label>" +
+      '<label class="camp" style="width:340px"><span class="camp-eticheta">Cod obligație</span><select id="d110-cod" class="camp-input">' + ALEGE + optCod + "</select></label>" +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit datorat</span><input id="d110-dat" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit reținut</span><input id="d110-rest" type="number" step="1" min="1" class="camp-input"></label>' +
       '<button class="buton-secundar" id="d110-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ obligație</button>' +

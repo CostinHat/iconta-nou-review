@@ -1,0 +1,5 @@
+# R037 (comanda pct.6), 22.11.2026 04:43
+baza.json: frontend_test/e2e/e2e_bon_cui_17_5_P2.py::test_bon_cui_cumparator_17_5_P2 pica în plasa_e2e, «'bloc': None» (#d-fiscal invizibil), e.2/e.3 False
+logul plasei bazei /tmp/poarta_e2e.log (21.11 23:51): 4:FAILED frontend_test/e2e/e2e_bon_cui_17_5_P2.py::test_bon_cui_cumparator_17_5_P2
+verdele izolat pe același E: docs/dovezi/17_5_Q/bon_cui_izolat_baza/pytest.txt (70378b86): 1 passed in 5.88s, e.1–e.5 trece
+R037 liber pe E (ultimul ID R036); restanta_17_5_Q2.patch: check/apply rc=0; inventar_restante.py valideaza rc=0

@@ -42,6 +42,42 @@ _COD_OBLIG_VALIDE = {"604", "605", "606", "608", "621", "690", "631", "632", "63
                      "637", "638", "639", "640", "641", "642", "628", "629", "602", "611", "622", "623",
                      "619", "626", "607", "625", "627"}
 
+#: [17.5-Q, AC133] cod obligație → denumirea creanței fiscale, cuvânt cu cuvânt din documentul ANAF D110 (anaf_surse/structura_D110_2026_240326.txt,
+#: «Nomenclator D100» și «Nomenclatorul D112», 24.03.2026), pentru exact codurile din _COD_OBLIG_VALIDE. Singura intervenție: diacriticele restabilite
+#: (ș, ț, ă, â, î); prescurtările ANAF (625, 627) rămân, litera k¹) se păstrează la 626, iar notele editoriale («mutat în nomenclator D112», «se aplică din
+#: 01.2023», «Modif. în …») nu intră. Sursa NU e core/nomenclator_obligatii.py (n-are 638; alt cuvânt la 602, 622, 623, 625, 627).
+COD_OBLIG_DENUMIRI = {
+    "602": "Impozit pe veniturile din salarii",
+    "604": "Impozit pe veniturile din dividende distribuite persoanelor fizice",
+    "605": "Impozit pe veniturile din dobânzi",
+    "606": "Impozit pe veniturile din lichidarea unei persoane juridice",
+    "607": "Impozit pe veniturile din pensii",
+    "608": "Impozit pe veniturile din premii",
+    "611": "Impozit pe veniturile din drepturi de proprietate intelectuală",
+    "619": "Impozit pe veniturile din arendarea bunurilor agricole",
+    "621": "Impozit pe veniturile din jocuri de noroc",
+    "622": "Impozit pe veniturile realizate de persoanele fizice dintr-o asociere cu o persoană juridică contribuabil, potrivit titlului II din Legea nr.227/2015 privind Codul fiscal, cu modificările și completările ulterioare",
+    "623": "Impozit pe veniturile realizate de persoanele fizice dintr-o asociere cu o persoană juridică contribuabil, potrivit titlului III din Legea nr.227/2015 privind Codul fiscal, cu modificările și completările ulterioare",
+    "625": "Impozit pe ven. realiz. de PF din activit. indep. realizate în baza contractelor de activitate sportivă",
+    "626": "Plăți anticipate ale impozitului pentru unele venituri din activități independente, precum și pentru venituri din alte surse prevăzute la art. 114 alin. (2) lit. k¹)",
+    "627": "Impozit PF care realizează venituri din desfășurarea activităților casnice",
+    "628": "Impozit pe veniturile din cedarea folosinței bunurilor, altele decât cele din arendarea bunurilor agricole și din închirierea în scop turistic a camerelor situate în locuințe proprietate personală, plătite de persoane juridice sau alte entități care au obligația de a conduce evidență contabilă",
+    "629": "Impozit pe veniturile din transferul dezmembrămintele dreptului de proprietate sub condiție suspensivă",
+    "631": "Impozit pe veniturile din dividende obținute din România de persoane nerezidente",
+    "632": "Impozit pe veniturile din dobânzi obținute din România de persoane nerezidente",
+    "633": "Impozit pe veniturile din redevențe obținute din România de persoane nerezidente",
+    "634": "Impozit pe veniturile din comisioane obținute din România de persoane nerezidente",
+    "635": "Impozit pe veniturile obținute din România de persoane nerezidente din activități sportive și de divertisment",
+    "636": "Impozit pe veniturile din servicii prestate de persoane nerezidente",
+    "637": "Impozit pe veniturile obținute de persoane fizice nerezidente din premii acordate la concursuri organizate în România",
+    "638": "Impozit pe veniturile obținute la jocuri de noroc practicate în România de persoane fizice nerezidente",
+    "639": "Impozit pe venituri din lichidarea unei persoane juridice române realizate de persoane nerezidente",
+    "640": "Impozit pe veniturile reprezentând remunerații primite de persoane juridice nerezidente care acționează în calitate de administrator, fondator sau membru al consiliului de administrație al unei persoane juridice române",
+    "641": "Impozit pe veniturile realizate din transferul masei patrimoniale fiduciare de la fiduciar la beneficiarul nerezident",
+    "642": "Impozit pe veniturile din transferul titlurilor de valoare și din operațiuni cu instrumente financiare derivate",
+    "690": "Impozit pe veniturile din alte surse",
+}
+
 
 def _i(x, camp="D110"):
     if x in (None, ""):
