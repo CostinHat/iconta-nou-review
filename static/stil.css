@@ -3554,7 +3554,7 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 
 /* [15.1-E3, 722] lista cu căutare permanentă (Declarații, pasul 1): căutarea de 44 px și rândurile de 44 px la vedere; derulează numai lista, nu fereastra */
 .ds-lista-permanenta .ds-lista-panou { margin-top: 0; padding: 8px; }
-.ds-lista-permanenta .ds-lista-randuri { max-height: none; overflow: visible; margin-top: 8px; }   /* [17.5-Q4, 865 / 726 / 742 — DS-865/726/742] lista permanentă (Declarații, pasul 1) nu mai are derulare proprie: o singură derulare, a corpului ferestrei, de la primul la ultimul rând (inclusiv datoratele); la 1366×768 se văd întregi cel puțin 8 rânduri. Înlocuiește [15.1-E5, 742] max(352px, 100vh − 420px). */
+.ds-lista-permanenta .ds-lista-randuri { max-height: max(352px, calc(100vh - 420px)); margin-top: 8px; }   /* [15.1-E5, 742] umple fereastra: minimum 8 rânduri la 1366×768, mai multe pe ecran mai înalt; derulare internă numai peste */
 .fereastra-corp .ds-lista input.ds-lista-cauta:not([type=checkbox]):not([type=radio]):not([type=file]) { height: 44px; }   /* câmpul de căutare al listei: 44 px (DS), peste regula generală a câmpurilor din fereastră */
 .ds-lista-permanenta .ds-lista-grup { padding: 8px 12px 4px; }
 .dec-existente-lista { list-style: none; margin: 0; padding: 0; max-height: 132px; overflow-y: auto; }
