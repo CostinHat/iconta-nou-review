@@ -3458,6 +3458,10 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .ds-semnal-plie, .ds-semnale-inca { height: 28px; padding: 0 10px; font-size: 13px; border: 1px solid var(--linie); border-radius: 8px; background: var(--alb); cursor: pointer; }
 .ds-semnal-detalii { margin: 0 0 4px 16px; padding: 8px 12px; font-size: 14px; color: var(--ardezie); background: var(--fundal); border-radius: 8px; }
 .ds-semnal-cutie[hidden], .ds-semnal-detalii[hidden] { display: none; }
+/* [17.5-Q4, DS-C235] grupa de semnale pliată (`limita: 0`): titlul cu numărul și „arată ▾” pe un rând; lista se vede după o deschidere */
+.ds-semnale-pliate { display: flex; align-items: center; flex-wrap: wrap; gap: 0 12px; }
+.ds-semnale-pliate > .ds-sectiune-titlu { margin: 8px 0; }
+.ds-semnale-pliate > .ds-semnale-lista { display: none; }
 /* DS 15.1 — fereastra mică stă peste fereastra de dedesubt (vizibilă, inertă), nu peste ecranul cabinetului */
 .fereastra-overlay.fundal { background: transparent; pointer-events: none; }
 .fereastra.fer-mic { width: 480px; max-width: calc(100vw - 32px); }
@@ -3550,7 +3554,7 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 
 /* [15.1-E3, 722] lista cu căutare permanentă (Declarații, pasul 1): căutarea de 44 px și rândurile de 44 px la vedere; derulează numai lista, nu fereastra */
 .ds-lista-permanenta .ds-lista-panou { margin-top: 0; padding: 8px; }
-.ds-lista-permanenta .ds-lista-randuri { max-height: max(352px, calc(100vh - 420px)); margin-top: 8px; }   /* [15.1-E5, 742] umple fereastra: minimum 8 rânduri la 1366×768, mai multe pe ecran mai înalt; derulare internă numai peste */
+.ds-lista-permanenta .ds-lista-randuri { max-height: none; overflow: visible; margin-top: 8px; }   /* [17.5-Q4, 865 / 726 / 742 — DS-865/726/742] lista permanentă (Declarații, pasul 1) nu mai are derulare proprie: o singură derulare, a corpului ferestrei, de la primul la ultimul rând (inclusiv datoratele); la 1366×768 se văd întregi cel puțin 8 rânduri. Înlocuiește [15.1-E5, 742] max(352px, 100vh − 420px). */
 .fereastra-corp .ds-lista input.ds-lista-cauta:not([type=checkbox]):not([type=radio]):not([type=file]) { height: 44px; }   /* câmpul de căutare al listei: 44 px (DS), peste regula generală a câmpurilor din fereastră */
 .ds-lista-permanenta .ds-lista-grup { padding: 8px 12px 4px; }
 .dec-existente-lista { list-style: none; margin: 0; padding: 0; max-height: 132px; overflow-y: auto; }
@@ -3626,7 +3630,7 @@ textarea.em-adresa { overflow: hidden; }
 .em-linie, .em-linie-antet { grid-template-columns: minmax(120px, 1fr) 60px 52px 84px 188px 36px; }
 .em-linie .alegere-butoane > button { white-space: nowrap; }
 .em-linie .em-l-categorie + .alegere-butoane, .em-linie .alegere-butoane:has(+ .em-l-categorie) { grid-column: 1 / -1; grid-row: 2; flex-wrap: wrap; }
-.em-linie .alegere-butoane:has(+ .em-l-categorie) > button { flex: 0 1 auto; padding: 0 12px; font-size: 14px; }
+.em-linie .alegere-butoane:has(+ .em-l-categorie) > button { flex: 0 0 auto; max-width: 100%; height: auto; min-height: 40px; white-space: normal; padding: 0 12px; font-size: 14px; }   /* [17.5-Q4, 800] butonul categoriei nu se strânge sub textul lui («Livrare intracomunitară» la 643 px): trece pe rândul următor, întreg */
 .em-linie textarea.camp-input { overflow: hidden; resize: none; }
 .em-client-grila { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
 .em-client-grila .em-benef { flex-wrap: nowrap; }
@@ -3774,4 +3778,30 @@ fieldset { min-width: 0; }
 .fereastra-corp.cu-zona:has(> .fereastra-jos.fj-cu-secundar.fj-doua-randuri) > .lant-zona:has(> .bara-fixa),
 .fereastra-corp.cu-zona:has(> .fereastra-jos.fj-cu-secundar.fj-doua-randuri) > .lant-zona:has(> .bara-fixa) .lant-zona {
   flex-shrink: 0;
+}
+
+/* [17.5-Q4, 854 / 848 / 814 — DS v2.129 „Tabelul sub 700 px”] Tabelul care nu încape pe lățime sub 700 px (clasa pusă de `tabeleStivuiteAplica`,
+   ds_piese.js) devine o stivă de rânduri: un rând = un bloc cu chenar jos; fiecare celulă = eticheta coloanei (gri, 12 px) deasupra valorii, celulele
+   curg pe coloane de cel puțin 140 px; celula care cuprinde mai multe coloane (detaliul unei note) ia tot rândul. Capul tabelului nu se mai arată, rândul
+   de totaluri e un bloc ca celelalte, fără lipire. Nicio derulare pe orizontală, niciun text tăiat, nicio valoare ascunsă; fontul rămâne cel al tabelului. */
+@media (max-width: 700px) {
+  table.ds-tabel-stiva { display: block; width: 100%; table-layout: auto; overflow: visible !important; }
+  table.ds-tabel-stiva > thead { display: none; }
+  table.ds-tabel-stiva > :is(tbody, tfoot):not([hidden]) { display: block; width: 100%; }
+  table.ds-tabel-stiva > :is(tbody, tfoot) > tr:not([hidden]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 4px 12px; padding: 8px 4px; border-bottom: 1px solid var(--linie); }
+  table.ds-tabel-stiva > :is(tbody, tfoot) > tr > :is(td, th) { display: block; width: auto !important; min-width: 0; height: auto !important; padding: 0 !important;
+    border: 0 !important; text-align: left !important; white-space: normal !important; overflow-wrap: anywhere; position: static !important; box-shadow: none !important; }
+  table.ds-tabel-stiva > :is(tbody, tfoot) > tr > :is(td, th)[colspan]:not([colspan="1"]) { grid-column: 1 / -1; }
+  table.ds-tabel-stiva > :is(tbody, tfoot) > tr > :is(td, th)[data-eticheta]::before { content: attr(data-eticheta); display: block; font-size: 12px; font-weight: 400; line-height: 16px; color: var(--gri); }
+  table.ds-tabel-stiva > :is(tbody, tfoot) > tr > :is(td, th):empty { display: none; }
+  table.ds-tabel-stiva > tfoot > tr { background: var(--fundal); }
+}
+/* [17.5-Q4, DS-814] măsurarea tabelului De validat cu cuvintele întregi (clasa stă pe tabel numai cât `tabeleStivuiteAplica` îi citește lățimea) */
+table.ds-tabel-proba :is(th, td) { overflow-wrap: normal !important; word-break: normal !important; }
+/* [17.5-Q4, 853 / 866] cardul cu textul întreg pe mai multe linii nu-și lipește rândurile de chenar (la un singur rând înălțimea rămâne 44 px) */
+.fereastra .ds-rezumat { padding-top: 4px; padding-bottom: 4px; }
+/* [17.5-Q4, AC187] sub 700 px „← Înapoi la <fereastră>” se rupe pe două linii și se strânge, iar titlul ferestrei își păstrează cel puțin 96 px: amândouă se citesc */
+@media (max-width: 700px) {
+  .fereastra-antet .nav-sageata.nav-inapoi-la { flex: 0 1 auto; min-width: 40px; height: auto; min-height: 40px; white-space: normal; line-height: 15px; text-align: left; }
+  .fereastra-antet .fereastra-fir { flex: 1 1 0; min-width: 96px; }
 }

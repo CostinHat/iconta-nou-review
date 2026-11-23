@@ -29,11 +29,11 @@
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=7396e03327";
-import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=74b676ef63";  // [lotul 12, 622] tabelul comun de note
+import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 622] tabelul comun de note
 import { randA as randConstatare } from "./control_verdict.js?v=0caee663ad";
-import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] pliarea semnalelor constatărilor
+import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=18c84ba990";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=956057387b";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=aea8654f70";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -295,7 +295,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     <div id="val-zona" data-zona-derulare>
     <section id="val-note">
       <div class="cf-grup-titlu cf-galben" id="val-note-titlu">Note de validat (${noteDeValidatInCoada(noteDeValidat)})</div>
-      ${noteDeValidat.length ? htmlTabelNote({ pre: "val-n", randuri: randuriCoada, firma: true, pregatitDe: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })
+      ${noteDeValidat.length ? htmlTabelNote({ pre: "val-n", randuri: randuriCoada, firma: true, pregatitDe: true, cuvinteIntregi: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })
         : `<div class="stare-goala" id="val-note-gol">Nicio notă nu așteaptă validarea. Aici ajung notele trimise la validare de colegi și de tine; ciornele tale sunt mai jos.</div>`}
     </section>
     <section id="val-declaratii">
@@ -309,7 +309,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
       <div class="cf-grup-titlu" id="val-ciorne-titlu">Notele tale în ciornă (${ciorneMele.length})</div>
       ${ciorne == null ? `<div class="msg-eroare" id="val-ciorne-eroare">Nu s-au putut încărca notele tale în ciornă${eroareCiorne ? " (" + esc(eroareCiorne) + ")" : ""}.</div>`
         : ciorneMele.length ? `<p class="mig-intro">Notele scrise de tine care nu sunt încă în evidență și nici în „Note de validat”. ${valideaza ? "Le validezi de aici" : "Le trimiți la validare de aici"} sau din Registrul jurnal al firmei; acolo se și șterg.</p>
-          ${htmlTabelNote({ pre: "val-c", randuri: randuriCiorne, firma: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })}`
+          ${htmlTabelNote({ pre: "val-c", randuri: randuriCiorne, firma: true, cuvinteIntregi: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })}`
         : `<div class="stare-goala" id="val-ciorne-gol">Nicio notă de-a ta în ciornă. Notele noi le faci din fereastra firmei, în Registru jurnal.</div>`}
     </section>
     </div>

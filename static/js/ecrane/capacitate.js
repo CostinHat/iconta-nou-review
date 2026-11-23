@@ -4,7 +4,7 @@
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
 import { api, esc, cate } from "../api.js?v=7396e03327";
 import { randeazaAsistenti } from "./asistenti.js?v=55670c24d1";
-import { tabelDSHtml } from "../ds_piese.js?v=ab8a4ad1c3";
+import { tabelDSHtml } from "../ds_piese.js?v=18c84ba990";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
 function celulaCifra(valoare, eticheta, accent) {

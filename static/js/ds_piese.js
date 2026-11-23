@@ -54,10 +54,11 @@ export function actualizeazaGrupe(radacina) {
 }
 
 /** Cardul-rezumat de un rând (44 px), cu detaliile pliate sub „▾ detalii”. `ton`: avertisment | eroare | ok. Întoarce elementul. */
-export function cardRezumat({ text, ton = "avertisment", detalii = "", actiune = null }) {
+export function cardRezumat({ text, ton = "avertisment", detalii = "", actiune = null, intreg = false }) {
   const el = document.createElement("div");
   el.className = "ds-rezumat-cutie";
-  const scurt = String(text).length > 90 ? String(text).slice(0, 89) + "…" : String(text);
+  // [17.5-Q4, 866 / 853 — DS v2.129 (3)] `intreg`: textul care poartă o dată, o oră sau o stare de citit se arată întreg, pe câte linii are nevoie (fără „…”)
+  const scurt = !intreg && String(text).length > 90 ? String(text).slice(0, 89) + "…" : String(text);
   el.innerHTML = `<div class="ds-rezumat ds-rezumat-${esc(ton)}" role="status"><span class="ds-rezumat-text" title="${esc(text)}">${esc(scurt)}</span></div>`;
   const rand = el.firstElementChild;
   const buton = (clasa, eticheta, laClic) => {   // o piesă care nu are ce arăta nu pune buton deloc (nu e o acțiune care dispare: nu exista)
@@ -224,8 +225,12 @@ export function semnaleDS(zona, items, { titlu = "Semnale", ton = "avertisment",
     ul.appendChild(li);
   });
   if (lista.length > limita) {
-    const inca = buton("ds-semnale-inca", `încă ${lista.length - limita} ▾`, () => { ul.querySelectorAll(".ds-semnal-cutie[hidden]").forEach((e) => { e.hidden = false; }); inca.remove(); });
-    zona.querySelector(".ds-semnale").appendChild(inca);
+    // [17.5-Q4, DS-C235] `limita: 0` = grupa pliată: titlul cu numărul și „arată ▾” pe același rând; o singură deschidere arată toate rândurile
+    const sectiune = zona.querySelector(".ds-semnale");
+    if (!limita) sectiune.classList.add("ds-semnale-pliate");
+    const inca = buton("ds-semnale-inca", limita ? `încă ${lista.length - limita} ▾` : "arată ▾", () => { ul.querySelectorAll(".ds-semnal-cutie[hidden]").forEach((e) => { e.hidden = false; }); sectiune.classList.remove("ds-semnale-pliate"); inca.remove(); });
+    inca.setAttribute("aria-expanded", "false");
+    sectiune.appendChild(inca);
   }
   return zona;
 }
@@ -357,9 +362,9 @@ export function tabelDSHtml({ coloane, randuri, subsol = "", randCls = "" }) {
 }
 
 /** Card-rezumat ca text HTML (aceleași clase ca `cardRezumat`): o linie de 44 px, banda din stânga după ton, butonul S (`actiuneHtml`) în dreapta, detaliile pliate. */
-export function rezumatHtml({ ton = "avertisment", text, detaliiHtml = "", actiuneHtml = "" }) {
+export function rezumatHtml({ ton = "avertisment", text, detaliiHtml = "", actiuneHtml = "", intreg = false }) {
   const t = String(text || "");
-  const scurt = t.length > 90 ? t.slice(0, 89) + "…" : t;
+  const scurt = !intreg && t.length > 90 ? t.slice(0, 89) + "…" : t;   // [17.5-Q4, 853] `intreg`: ca la `cardRezumat`
   return `<div class="ds-rezumat-cutie"><div class="ds-rezumat ds-rezumat-${esc(ton)}" role="status"><span class="ds-rezumat-text" title="${esc(t)}">${esc(scurt)}</span>${actiuneHtml}${
     detaliiHtml ? _butonPlie("ds-rezumat-plie") : ""}</div>${
     detaliiHtml ? `<div class="ds-rezumat-detalii" hidden>${detaliiHtml}</div>` : ""}</div>`;
@@ -456,7 +461,62 @@ export function tabeleDSAplica(corp) {
     const nou = cate(randuri.length, "rând", "rânduri");
     if (sub.textContent !== nou) sub.textContent = nou;
   }
+  tabeleStivuiteAplica(corp);
 }
+
+/** [17.5-Q4, 854 / 848 / 814 — DS-tabele, DS v2.129] Sub 700 px lățime de pagină, tabelul care nu încape în lățimea locului lui devine o stivă de rânduri:
+ *  fiecare rând al tabelului e un bloc, fiecare celulă își poartă eticheta coloanei (`data-eticheta`, din capul tabelului) lângă valoare; nimic nu se
+ *  ascunde, nimic nu se taie, nu există derulare pe orizontală. Capul tabelului nu se mai arată (eticheta e pe fiecare valoare); rândul de totaluri e tot un
+ *  bloc, cu etichetele lui. Peste 700 px tabelul rămâne cum era (regula stă sub `@media (max-width: 700px)` în stil.css). Tabelul care încape nu se atinge. */
+export const LATIME_STIVA = 700;
+function _eticheteCap(t) {
+  const rand = t.tHead && t.tHead.rows.length ? t.tHead.rows[t.tHead.rows.length - 1] : null;
+  if (!rand) return [];
+  const et = [];
+  for (const c of rand.cells) for (let k = 0; k < (c.colSpan || 1); k++) et.push(_txt(c.textContent));
+  return et;
+}
+function _eticheteazaStiva(t) {
+  const et = _eticheteCap(t);
+  for (const sect of [...t.tBodies, t.tFoot].filter(Boolean)) {
+    for (const r of sect.rows) {
+      let i = 0;
+      for (const c of r.cells) {
+        const span = c.colSpan || 1;
+        const e = span === 1 ? (et[i] || "") : "";
+        if (e && c.dataset.eticheta !== e) c.dataset.eticheta = e;
+        else if (!e && c.dataset.eticheta) delete c.dataset.eticheta;
+        i += span;
+      }
+    }
+  }
+}
+export function tabeleStivuiteAplica(corp) {
+  const ingust = window.innerWidth <= LATIME_STIVA;
+  for (const t of corp.querySelectorAll("table")) {
+    if (t.classList.contains("ds-tabel-stiva")) { if (ingust) _eticheteazaStiva(t); else t.classList.remove("ds-tabel-stiva"); continue; }
+    if (!ingust || t.closest("template, [data-fara-piesa], .fereastra-antet") || !t.tHead || !_vizibilDS(t)) continue;
+    const loc = t.parentElement;
+    if (!loc) continue;
+    // [17.5-Q4, 814 — DS-814, decizia Costin 3] tabelul De validat (`data-stiva-cuvinte-intregi`) se judecă cu cuvintele întregi (fără ruperea în mijlocul
+    // cuvântului): dacă numai așa încape, rămâne tabel; altfel devine stivă, cu etichetele întregi lângă valori
+    const intregi = t.hasAttribute("data-stiva-cuvinte-intregi");
+    if (intregi) t.classList.add("ds-tabel-proba");
+    const lat = Math.ceil(t.getBoundingClientRect().width);
+    if (intregi) t.classList.remove("ds-tabel-proba");
+    if (lat <= loc.clientWidth + 1) continue;   // încape: rămâne tabel
+    _eticheteazaStiva(t);
+    t.classList.add("ds-tabel-stiva");
+  }
+}
+// lățimea paginii schimbată (fereastra trasă, telefonul rotit): tabelele ferestrelor deschise se reevaluează
+let _stivaAscultator = false;
+function _ascultaLatimea() {
+  if (_stivaAscultator || typeof window === "undefined") return;
+  _stivaAscultator = true;
+  window.addEventListener("resize", () => { for (const c of document.querySelectorAll(".fereastra-corp")) tabeleStivuiteAplica(c); });
+}
+_ascultaLatimea();
 
 const _TON = [
   [/caseta-atentie|msg-eroare|\beroare\b|mig-eroare/, "eroare"],

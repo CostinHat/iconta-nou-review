@@ -7,11 +7,11 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1, F-A.1] caseta SPV de după emitere
+import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=18c84ba990";   // [15.1, F-A.1] caseta SPV de după emitere
 import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=7396e03327";
 import { inactiv, activ } from "../api.js?v=7396e03327";   // [17.5-Q3, F172 / F252] starea butonului de emitere, cu motivul scris în bară de cadru
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";
-import { textStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6, 275c] */
+import { textStareSpv } from "./spv_stare.js?v=a491746870";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { optiuniTara as _optiuniTara, taraDinCui, nepotrivireTara } from "./tari_partener.js?v=47a26608a6";   // [lotul 12, C160] sursa unică
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
@@ -21,7 +21,7 @@ import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.
 import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
 
 // [15.1-E5, pct.1] cardul ciornei: card-rezumat informativ cu butonul S „Renunță la factură” (confirmarea și ștergerea ciornei o face ecranul, la clic)
-const cardCiorna = (text) => rezumatHtml({ ton: "info", text,
+const cardCiorna = (text) => rezumatHtml({ ton: "info", text, intreg: true,   // [17.5-Q4, 853] data și ora ultimei modificări se citesc întregi, fără „…”
   actiuneHtml: '<button type="button" class="buton-secundar buton-s" id="em-renunta" data-fara-actiune="ciorna e a celui care o scrie: oricine vede formularul poate renunța la ciorna lui, fără un drept anume">Renunță la factură</button>' });
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {

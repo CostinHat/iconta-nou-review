@@ -116,7 +116,7 @@ function htmlExplicatii(pre, randuri, explicatii) {
  *  stare: {fel, text, culoare}, stari, semne: [{fel, text}], inainte (HTML în prima celulă, ex. bifa), actiuni (HTML, pe rând),
  *  detaliu (HTML: mesajele și acțiunile de sub linii), editor (HTML: înlocuiește detaliul, deschis), clasa (pe <tbody>)}. */
 export function htmlTabelNote(opt) {
-  const { pre, randuri = [], nrCrt = false, firma = false, pregatitDe = false, explicatii = {}, gol = "Nicio notă." } = opt;
+  const { pre, randuri = [], nrCrt = false, firma = false, pregatitDe = false, explicatii = {}, gol = "Nicio notă.", cuvinteIntregi = false } = opt;   // [17.5-Q4, DS-814] cuvinteIntregi: sub 700 px antetele nu se rup în mijlocul cuvântului (De validat)
   const deschise = opt.deschise || new Set();
   if (!randuri.length) return `<div class="stare-goala" id="${pre}-gol">${esc(gol)}</div>`;
   const nCol = 7 + (nrCrt ? 1 : 0) + (firma ? 1 : 0) + (pregatitDe ? 1 : 0);
@@ -146,7 +146,7 @@ export function htmlTabelNote(opt) {
     </tbody>`;
   }).join("");
   return `${htmlExplicatii(pre, randuri, explicatii)}
-    <table class="fd-tabel tn-tabel" id="${pre}-tabel">
+    <table class="fd-tabel tn-tabel" id="${pre}-tabel"${cuvinteIntregi ? " data-stiva-cuvinte-intregi" : ""}>
       <thead><tr><th>${nrCrt ? "Nr. crt." : "Data"}</th>${nrCrt ? "<th>Data</th>" : ""}${firma ? "<th>Firma</th>" : ""}<th>Explicație</th><th>Document</th><th>Conturi</th><th class="fd-td-num">Sumă (lei)</th>${pregatitDe ? "<th>Pregătit de</th>" : ""}<th>Stare</th><th>Acțiune</th></tr></thead>
       ${corp}
     </table>

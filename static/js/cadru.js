@@ -16,7 +16,7 @@
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
 import { alegereButoane, alegereComutator, alegereText, esteAlege, inactiv, activ, MAX_BUTOANE, cate } from "./api.js?v=7396e03327";
-import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_piese.js?v=ab8a4ad1c3";
+import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_piese.js?v=18c84ba990";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);

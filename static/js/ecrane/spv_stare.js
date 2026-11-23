@@ -3,7 +3,7 @@
 // `spv_conector.stare_firma`). Când lipsește ceva ce se repară în Setări cont → Conectare SPV, mesajul are butonul spre acolo
 // (`ecran_destinatie.butonSpreEcran`). O singură sursă a textului — nu câte o frază pe ecran.
 import { api, arataMesaj, cate, dataRo } from "../api.js?v=7396e03327";
-import { cardRezumat } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1, 687.1-SPV]
+import { cardRezumat } from "../ds_piese.js?v=18c84ba990";   // [15.1, 687.1-SPV]
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";
 
 const _ora = (iso) => { const d = new Date(iso); return `${dataRo(iso)}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
@@ -52,10 +52,11 @@ export async function randeazaStareSpv(zona, nav, tenantId) {
   const t = textStareSpv(st);
   // [15.1, 687.1-SPV] starea SPV e un card-rezumat de un rând („SPV: fără drept pentru această firmă” + „Deschide Conectare SPV”); explicația și ce e de făcut,
   // pliate sub „▾ detalii”
+  // [17.5-Q4, 866] prima propoziție (starea, cu momentul ultimei verificări) se arată întreagă pe rândul cardului, fără „…”; restul explicației, sub „▾ detalii”
   const [scurt, ...rest] = t.text.split(/(?<=\.)\s+/);
-  const detalii = rest.length && scurt.length <= 90 ? rest.join(" ") : (t.text.length > 90 ? t.text : "");   // [15.1-E5] prima propoziție tăiată la 90 de caractere (CUI-ul de la capăt) se citește întreagă sub „detalii”
+  const detalii = rest.join(" ");
   zona.innerHTML = "";
-  const card = cardRezumat({ text: scurt.replace(/\.$/, ""), ton: t.tip === "ok" ? "ok" : "avertisment", detalii });
+  const card = cardRezumat({ text: scurt.replace(/\.$/, ""), ton: t.tip === "ok" ? "ok" : "avertisment", detalii, intreg: true });
   card.classList.add("spv-stare-text");
   zona.appendChild(card);
   if (t.spreConectare) butonSpreEcran(card.querySelector(".ds-rezumat"), "conectare_spv", nav, tenantId, { clasa: "buton-secundar" });

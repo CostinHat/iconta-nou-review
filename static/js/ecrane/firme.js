@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=18c84ba990";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
 import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=7396e03327";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=7396e03327";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
@@ -39,9 +39,9 @@ import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, c
 import { fluxConcediu } from "./flux_concediu.js?v=a5c3501ac4";  /* cm_flux_v1 */
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=7396e03327";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
-import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
+import { randeazaStareSpv } from "./spv_stare.js?v=a491746870";  /* [lotul 6: 273, 275, 289] */
 import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=b4a93cf6ac";   // [lotul 13, 543] seria chitanțelor pe loc
-import { cautaInLista } from "./emitere_ecran.js?v=4cd799989f";   /* [lotul 12, 488] căutarea în listele lungi de articole */
+import { cautaInLista } from "./emitere_ecran.js?v=b35fa5b9ce";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=b26ef32cac";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
@@ -61,7 +61,7 @@ import { ecranCompensari } from "./compensari_ecran.js?v=ed3e73a2f0";  // [lotul
 import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=2e5615906c";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";  // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
-import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=74b676ef63";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
+import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -6057,10 +6057,10 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
     corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
     const actuala = cerereNoua();
     const facturiDin = (per) => (per.confirmat
-        ? `<div class="caseta-info"><span class="ci-mesaj">Evidența facturilor e închisă${per.confirmat_la ? " la " + dataRo(String(per.confirmat_la).slice(0, 10)) : ""}: e completă, iar semaforul se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-secundar" id="il-fac-redeschide" data-actiune="POST /tenants/{tenant_id}/facturi/perioada/redeschide">Redeschide evidența facturilor</button></p></div>`
+        ? `<div class="caseta-info"><span class="ci-mesaj">Evidența facturilor e închisă${per.confirmat_la ? " la " + dataRo(String(per.confirmat_la).slice(0, 10)) : ""}: e completă, iar semaforul se poate sprijini pe ea.</span> <button class="buton-secundar buton-s" id="il-fac-redeschide" data-actiune="POST /tenants/{tenant_id}/facturi/perioada/redeschide">Redeschide evidența facturilor</button></div>`
         : (per.blocaj
           ? `<div class="caseta-info"><span class="ci-mesaj">Evidența facturilor nu se poate închide încă: ${esc(per.blocaj)}${per.remediu ? " " + esc(per.remediu) : ""}</span></div>`
-          : `<div class="caseta-info"><span class="ci-mesaj">Evidența facturilor e deschisă — informativă până la închidere.</span><p style="margin-top:8px"><button class="buton-verde" id="il-fac-inchide" data-actiune="POST /tenants/{tenant_id}/facturi/perioada/confirma">Închide evidența facturilor</button></p></div>`));
+          : `<div class="caseta-info"><span class="ci-mesaj">Evidența facturilor e deschisă — informativă până la închidere.</span> <button class="buton-verde buton-s" id="il-fac-inchide" data-actiune="POST /tenants/{tenant_id}/facturi/perioada/confirma">Închide evidența facturilor</button></div>`));
     const lunaInCurs = lunaNeincheiata(an, luna);   // [15.1, 687.1-a] amortizarea lunii în curs nu se oferă (serverul o refuză)
     corp.innerHTML = `
       <h2 class="pf-titlu">Închidere lună</h2>
@@ -6071,7 +6071,7 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
       ${dubla ? `<h3 class="pf-subtitlu">Perioada contabilă</h3>
       <p class="pf-intro" id="il-stare-perioada"></p>
       <div id="il-controale"></div>   <!-- [15.1, 687.1-a] semnalele nu derulează: primele n și „încă n ▾” -->
-      <p><button class="buton-primar" id="il-lock" data-actiune-principala></button> <button class="buton-secundar" id="il-amort" data-genereaza-nota data-actiune="POST /tenants/{tenant_id}/amortizare"${lunaInCurs ? atributeInactiv("Amortizarea lunii se generează după ce luna se încheie.") : ""}>Generează amortizarea</button> <button class="buton-secundar" id="il-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Registru jurnal</button></p>` : ""}
+      <p class="ds-actiuni-rand" id="il-actiuni"><button class="buton-primar" id="il-lock" data-actiune-principala></button> <button class="buton-secundar" id="il-amort" data-genereaza-nota data-actiune="POST /tenants/{tenant_id}/amortizare"${lunaInCurs ? atributeInactiv("Amortizarea lunii se generează după ce luna se încheie.") : ""}>Generează amortizarea</button> <button class="buton-secundar" id="il-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Registru jurnal</button></p>` : ""}
       <h3 class="pf-subtitlu">Evidența facturilor</h3>
       <div id="il-facturi"><p class="ecran-nota">Se încarcă…</p></div>`;
     // [proba plasei, 58/96] navigarea se leagă ÎNAINTEA cererilor ecranului: un clic dat cât ele rulează nu se pierde
@@ -6164,9 +6164,11 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
           { lat: "tabel" });
         // [15.1-E4, 736] semnalul care spune „deschide „X”” are butonul S care deschide X (ACTIUNI_BLOCAJ_ECRAN: codul blocajului → butonul; același ecran ca butonul fix de mai jos)
         const ACTIUNI_BLOCAJ_ECRAN = { REEVALUARE_VALUTA: { eticheta: "Reevaluare valută", faraActiune: "navigare la Reevaluare valută; reevaluarea de acolo poartă acțiunea", laClic: () => deschideReevaluare() } };
-        if (ctl.blocaje.length) semnaleDS(zc.querySelector("#il-sem-blocaje"), ctl.blocaje.map((x) => ({ mesaj: x.mesaj, actiune: ACTIUNI_BLOCAJ_ECRAN[x.cod] })), { titlu: "Ce oprește închiderea", ton: "eroare", limita: window.innerHeight < 800 ? 3 : 6 });
+        // [17.5-Q4, C235 — DS-C235] la 768 px înălțime corpul încape fără derulare: din blocaje se vede primul (restul sub „încă n ▾”), semnalele stau pliate sub titlul lor cu numărul (o deschidere)
+        const compact = window.innerHeight < 800;
+        if (ctl.blocaje.length) semnaleDS(zc.querySelector("#il-sem-blocaje"), ctl.blocaje.map((x) => ({ mesaj: x.mesaj, actiune: ACTIUNI_BLOCAJ_ECRAN[x.cod] })), { titlu: "Ce oprește închiderea", ton: "eroare", limita: compact ? 1 : 6 });
         else if (!blocata) zc.querySelector("#il-sem-blocaje").innerHTML = `<div class="ds-semnal ds-semnal-ok"><span class="ds-semnal-text">Nimic nu oprește închiderea lunii.</span></div>`;
-        if (ctl.semnale.length) semnaleDS(zc.querySelector("#il-sem-semnale"), ctl.semnale.map((x) => x.mesaj), { titlu: "Semnale", ton: "avertisment", limita: window.innerHeight < 800 ? 3 : 6 });
+        if (ctl.semnale.length) semnaleDS(zc.querySelector("#il-sem-semnale"), ctl.semnale.map((x) => x.mesaj), { titlu: "Semnale", ton: "avertisment", limita: compact ? 0 : 6 });
         // [deficiența 281, comanda Costin 16.10.2026] amortizarea restantă dintr-o singură acțiune (o notă pe lună); iar când NUMAI ea
         // oprește închiderea, luna se închide cu confirmarea explicită (amortizarea lipsă schimbă profitul — D100/D101)
         // [deficiența 312] amortizarea deja generată (ciornă, `de_validat`) nu mai cere butonul: se validează în Registrul jurnal
@@ -6202,7 +6204,7 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
         // care se validează în Registrul jurnal; până atunci luna nu se blochează
         const tvaRegul = ctl.blocaje.filter((b) => b.cod === "TVA_NEREGULARIZAT" && !b.de_validat && !blocata);   // [688.1] nu se oferă într-o lună blocată
         if (tvaRegul.length) {
-          zc.insertAdjacentHTML("beforeend", `<p style="margin-top:8px"><button class="buton-secundar" id="il-tva-regularizare" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/inchidere/regularizare-tva">Propune regularizarea TVA</button></p>`);
+          zc.insertAdjacentHTML("beforeend", `<p class="ds-actiuni-rand"><button class="buton-secundar" id="il-tva-regularizare" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/inchidere/regularizare-tva">Propune regularizarea TVA</button></p>`);
           zc.querySelector("#il-tva-regularizare").addEventListener("click", async () => {
             try {
               const r = await api.post(`/tenants/${t.id}/inchidere/regularizare-tva?an=${an}&luna=${luna}`, {});
@@ -6223,7 +6225,7 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
         }
         const confirmabile = ctl.blocaje.filter((b) => b.confirmabil);
         if (!blocata && confirmabile.length && confirmabile.length === ctl.blocaje.length) {
-          zc.insertAdjacentHTML("beforeend", `<p style="margin-top:8px"><button class="buton-secundar" id="il-lock-confirma" data-actiune="POST /tenants/{tenant_id}/perioade-blocate">Închide luna fără amortizarea lunilor anterioare</button></p>`);
+          zc.insertAdjacentHTML("beforeend", `<p class="ds-actiuni-rand"><button class="buton-secundar" id="il-lock-confirma" data-actiune="POST /tenants/{tenant_id}/perioade-blocate">Închide luna fără amortizarea lunilor anterioare</button></p>`);
           const bC = zc.querySelector("#il-lock-confirma");
           const intrebare = `Închizi luna deși ${esc(confirmabile.map((b) => b.mesaj.split(" — ")[0]).join("; "))}? Amortizarea lipsă schimbă profitul (D100/D101). Confirmarea rămâne în istoricul închiderii, cu numele tău.`;
           // textul întrebării stă în afara handlerului: legarea apelului de buton (scan_drepturi_ui) citește acoladele handlerului
@@ -6232,6 +6234,9 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
             catch (e) { arataMesaj(zm, (e && e.mesaj) || "Luna nu s-a putut închide.", "eroare"); }
           }, { textOk: "Închid luna" }));
         }
+        // [17.5-Q4, C235 — DS-C235] acțiunile secundare ale lunii (amortizarea, Registrul jurnal) stau pe același rând cu cele ale controalelor (`.ds-actiuni-rand`, inline)
+        const pa = corp.querySelector("#il-actiuni");
+        if (pa) zc.appendChild(pa);
       }
     }
   };
