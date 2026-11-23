@@ -1,0 +1,5 @@
+[lacat_test] lacăt preluat de la pid 2221704 (mort sau refolosit)
+[parcurs] implicit trece [('f.1', 'trece', '')]
+[parcurs] inchidere trece [('f.2', 'trece', ''), ('f.3', 'trece', ''), ('a.1', 'trece', '')]
+[parcurs] balanta trece [('f.4', 'trece', ''), ('f.5', 'trece', ''), ('f.6', 'trece', ''), ('a.2', 'trece', '')]
+
