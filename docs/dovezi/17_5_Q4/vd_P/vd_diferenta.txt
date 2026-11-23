@@ -1,0 +1,10 @@
+# 17.5-Q4 pct.8.5 — verificatorul de design (scripts/verificator_design_lot.py, 1920×1080 și 1366×768) pe P e4938e81; copia: baza_test.sh restaureaza + dovada_firme_test.py --cloneaza, 8019 cu porneste_8019.sh, apoi restaurare.
+# Comparația cu Q5 vd_P (P 7a5dce04, produsul = E Q5 în afara ?v=):
+Închidere lună F1      ........ / ........   Q5: ...de... / .b.de...   (C235: literele d, e, b dispar)
+Registru jurnal F1     ..c...g. / .bc...g.   = Q5
+Istoric facturi F1     .b...... / .b......   = Q5
+Casă F1                ..c...g. / ..c...g.   = Q5
+Bancă F1               ..c..... / ..c.....   = Q5
+Emite factură F1       ........ / ........   = Q5
+Balanță F1, De validat, Parteneri F1, Declarații pasul 1: fără rând Q5 de comparat; schimbările lotului la aceste ferestre lucrează numai sub 700 px (tabelul stivuit, DS-814) sau pe lista permanentă (Declarații, fără litere).
+Litere noi roșii față de Q5: 0.

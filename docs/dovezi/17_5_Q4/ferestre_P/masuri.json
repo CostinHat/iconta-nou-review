@@ -1,0 +1,129 @@
+{
+  "e.1": {
+    "viewport": [
+      1366,
+      768
+    ],
+    "latime": 1334,
+    "scroll_x": 1334,
+    "inaltime": 680,
+    "scroll_y": 680,
+    "sus": 72,
+    "jos": 752,
+    "actiuni": [
+      {
+        "id": "",
+        "text": "←"
+      },
+      {
+        "id": "",
+        "text": "✕"
+      },
+      {
+        "id": "il-prev",
+        "text": "← luna"
+      },
+      {
+        "id": "il-next",
+        "text": "luna →"
+      },
+      {
+        "id": "",
+        "text": "încă 2 ▾"
+      },
+      {
+        "id": "",
+        "text": "arată ▾"
+      },
+      {
+        "id": "il-tva-regularizare",
+        "text": "Propune regularizarea TVA"
+      },
+      {
+        "id": "il-reevaluare",
+        "text": "Reevaluare valută"
+      },
+      {
+        "id": "il-amort",
+        "text": "Generează amortizarea"
+      },
+      {
+        "id": "il-jurnal",
+        "text": "Registru jurnal"
+      },
+      {
+        "id": "il-fac-inchide",
+        "text": "Închide evidența facturilor"
+      },
+      {
+        "id": "il-lock",
+        "text": "Blochează luna"
+      }
+    ],
+    "depasiri": [],
+    "text": "Închidere lună\n\nLuna 10/2026\n← luna\nluna →\n\nPerioada contabilă\n\nLuna e deschisă. Blocarea verifică întâi controalele de mai jos.\n\nCe oprește închiderea (3)\n52 de note rămân în ciornă în perioadă; validează-le sau șterge-le din Jurnal, altfel rămân închise înăuntru și nu mai apar nicăieri\nîncă 2 ▾\nSemnale (9)\narată ▾\n\nPropune regularizarea TVA\n\nReevaluare valută\n\nGenerează amortizarea Registru jurnal\n\nEvidența facturilor\nEvidența facturilor e deschisă — informativă până la închidere.\nÎnchide evidența facturilor\nSe citesc controalele lunii…\nBlochează luna"
+  },
+  "e.2": {
+    "viewport": [
+      603,
+      590
+    ],
+    "latime": 571,
+    "scroll_x": 571,
+    "inaltime": 502,
+    "scroll_y": 502,
+    "sus": 72,
+    "jos": 574,
+    "actiuni": [
+      {
+        "id": "",
+        "text": "←"
+      },
+      {
+        "id": "",
+        "text": "✕"
+      },
+      {
+        "id": "b-prev",
+        "text": "← luna"
+      },
+      {
+        "id": "b-next",
+        "text": "luna →"
+      },
+      {
+        "id": "",
+        "text": "De unde vin cifrele"
+      },
+      {
+        "id": "",
+        "text": "52 de ciorne nevalidate nu intră în balanță"
+      },
+      {
+        "id": "",
+        "text": "Rulajele de la 01.01.2026 până la 31.07.2026 lipsesc"
+      },
+      {
+        "id": "",
+        "text": "Balanța se închide pe toate cinci ✓ (25 de conturi)"
+      },
+      {
+        "id": "b-pdf",
+        "text": "Descarcă PDF"
+      }
+    ],
+    "depasiri": [],
+    "text": "Balanță de verificare\n\nLuna 10/2026 · 25 de conturi · 32 de note validate în luna asta\n← luna\nluna →\n\nDe unde vin cifrele\n52 de ciorne nevalidate nu intră în balanță\nRulajele de la 01.01.2026 până la 31.07.2026 lipsesc\nBalanța se închide pe toate cinci ✓ (25 de conturi)\n1012\nCapital subscris vărsat\n0,00\n200,00\n0,00\n0,00\n0,00\n0,00\n0,00\n200,00\n0,00\n200,00\n117\nRezultatul reportat\n0,00\n13.800,00\n13.800,00\n0,00\n0,00\n0,00\n13.800,00\n13.800,00\n0,00\n0,00\n1171\nRezultatul reportat - profit nerepartizat / pierdere neacoperită\n0,00\n0,00\n0,00\n13.800,00\n0,00\n0,00\n0,00\n13.800,00\n0,00\n13.800,00\n371\nMărfuri\n5.000,00\n0,00\n1.000,00\n500,00\n1.150,00\n377,62\n7.150,00\n877,62\n6.272,38\n0,00\n401\nFurnizori\n0,00\n3.000,00\n1.210,00\n1.210,00\n0,00\n0,00\n1.210,00\n4.210,00\n0,00\n3.000,00\n408\nFurnizori - facturi nesosite\n0,00\n0,00\n0,00\n0,00\n0,00\n1.391,50\n0,00\n1.391,50\n0,00\n1.391,50\n4111\nClienți\n2.000,00\n0,00\n1.210,00\n1.210,00\n9.890,24\n7.422,00\n13.100,24\n8.632,00\n4.468,24\n0,00\n421\nPersonal - salarii datorate\n0,00\n0,00\n5.553,00\n13.900,00\n0,00\n0,00\n5.553,00\n13.900,00\n0,00\n8.347,00\n4315\nContribuția de asigurări sociale\n0,00\n0,00\n0,00\n3.475,00\n0,00\n0,00\n0,00\n3.475,00\n0,00\n3.475,00\n4316\nContribuția de asigurări sociale de sănătate\n0,00\n0,00\n0,00\n1.390,00\n0,00\n0,00\n0,00\n1.390,00\n0,00\n1.390,00\n436\nContribuția asiguratorie pentru muncă\n0,00\n0,00\n0,00\n313,00\n0,00\n0,00\n0,00\n313,00\n0,00\n313,00\n4426\nTVA deductibilă\n0,00\n0,00\n210,00\n210,00\n0,00\n0,00\n210,00\n210,00\n0,00\n0,00\n4427\nTVA colectată\n0,00\n0,00\n210,00\n210,00\n0,00\n1.486,18\n210,00\n1.696,18\n0,00\n1.486,18\n4428.01\nTVA neexigibilă — achiziții fără factură (NIR)\n0,00\n0,00\n0,00\n0,00\n241,50\n0,00\n241,50\n0,00\n241,50\n0,00\n444\nImpozitul pe venituri de natura salariilor\n0,00\n0,00\n0,00\n688,00\n0,00\n0,00\n0,00\n688,00\n0,00\n688,00\n5121\nConturi la bănci în lei\n10.000,00\n0,00\n1.210,00\n1.210,00\n7.180,00\n15,00\n18.390,00\n1.225,00\n17.165,00\n0,00\n5125\nSume în curs de decontare\n0,00\n0,00\n0,00\n0,00\n152,00\n0,00\n152,00\n0,00\n152,00\n0,00\n5311\nCasa în lei\n0,00\n0,00\n0,00\n0,00\n442,00\n0,00\n442,00\n0,00\n442,00\n0,00\n607\nCheltuieli privind mărfurile\n0,00\n0,00\n500,00\n0,00\n377,62\n0,00\n877,62\n0,00\n877,62\n0,00\n627\nCheltuieli cu serviciile bancare și asimilate\n0,00\n0,00\n0,00\n0,00\n15,00\n0,00\n15,00\n0,00\n15,00\n0,00\n635\nCheltuieli cu alte impozite, taxe și vărsăminte asimilate\n0,00\n0,00\n0,00\n0,00\n43,24\n0,00\n43,24\n0,00\n43,24\n0,00\n641\nCheltuieli cu salariile personalului\n0,00\n0,00\n13.900,00\n0,00\n0,00\n0,00\n13.900,00\n0,00\n13.900,00\n0,00\n646\nCheltuieli privind contribuția asiguratorie pentru muncă\n0,00\n0,00\n313,00\n0,00\n0,00\n0,00\n313,00\n0,00\n313,00\n0,00\n704\nVenituri din servicii prestate\n0,00\n0,00\n0,00\n0,00\n0,00\n1.500,00\n0,00\n1.500,00\n0,00\n1.500,00\n707\nVenituri din vânzarea mărfurilor\n0,00\n0,00\n0,00\n1.000,00\n52,90\n7.352,20\n52,90\n8.352,20\n0,00\n8.299,30\nTotal\n17.000,00\n17.000,00\n39.116,00\n39.116,00\n19.544,50\n19.544,50\n75.660,50\n75.660,50\n43.889,98\n43.889,98\nDescarcă PDF",
+    "martor": {
+      "cont": "1012",
+      "denumire": "Capital subscris vărsat",
+      "randuri": 25
+    },
+    "acces_denumire": {
+      "sursa": "rand",
+      "cont": "1012",
+      "rand": "1012\nCapital subscris vărsat\n0,00\n200,00\n0,00\n0,00\n0,00\n0,00\n0,00\n200,00\n0,00\n200,00",
+      "detaliu": ""
+    }
+  }
+}

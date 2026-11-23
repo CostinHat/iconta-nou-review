@@ -1,0 +1,4 @@
+rc_calibrare=0
+rc_matrice=1
+rc_calibrare2=0
+rc_matrice=0
