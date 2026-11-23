@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=18c84ba990";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=03f816740e";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
 import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=7396e03327";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=7396e03327";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
@@ -6163,10 +6163,18 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
           (c2) => ecranReevaluareValuta(c2, nav, t, an, luna, { jurnal: (o) => nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, t, o), { lat: "tabel" }) }),
           { lat: "tabel" });
         // [15.1-E4, 736] semnalul care spune „deschide „X”” are butonul S care deschide X (ACTIUNI_BLOCAJ_ECRAN: codul blocajului → butonul; același ecran ca butonul fix de mai jos)
-        const ACTIUNI_BLOCAJ_ECRAN = { REEVALUARE_VALUTA: { eticheta: "Reevaluare valută", faraActiune: "navigare la Reevaluare valută; reevaluarea de acolo poartă acțiunea", laClic: () => deschideReevaluare() } };
+        const ACTIUNI_BLOCAJ_ECRAN = { REEVALUARE_VALUTA: { eticheta: "Reevaluare valută", id: "il-reevaluare", clasa: "buton-primar", faraActiune: "navigare la Reevaluare valută; reevaluarea de acolo poartă acțiunea", laClic: () => deschideReevaluare() } };
         // [17.5-Q4, C235 — DS-C235] la 768 px înălțime corpul încape fără derulare: din blocaje se vede primul (restul sub „încă n ▾”), semnalele stau pliate sub titlul lor cu numărul (o deschidere)
+        // [17.5-Q6, F025-S — decizia Costin r2] un singur buton «Reevaluare valută» (#il-reevaluare): pe rândul blocajului când reevaluarea oprește închiderea (rândul se vede
+        // de la deschidere, lângă primul blocaj), în zona fixă de mai jos când nu o oprește; o singură dată, oricâte rânduri ar purta codul
         const compact = window.innerHeight < 800;
-        if (ctl.blocaje.length) semnaleDS(zc.querySelector("#il-sem-blocaje"), ctl.blocaje.map((x) => ({ mesaj: x.mesaj, actiune: ACTIUNI_BLOCAJ_ECRAN[x.cod] })), { titlu: "Ce oprește închiderea", ton: "eroare", limita: compact ? 1 : 6 });
+        let cuActiune = false;
+        const randBlocaj = (x) => {
+          const actiune = !cuActiune && ACTIUNI_BLOCAJ_ECRAN[x.cod];
+          if (actiune) cuActiune = true;
+          return actiune ? { mesaj: x.mesaj, actiune, vizibil: true } : { mesaj: x.mesaj };
+        };
+        if (ctl.blocaje.length) semnaleDS(zc.querySelector("#il-sem-blocaje"), ctl.blocaje.map(randBlocaj), { titlu: "Ce oprește închiderea", ton: "eroare", limita: compact ? 1 : 6 });
         else if (!blocata) zc.querySelector("#il-sem-blocaje").innerHTML = `<div class="ds-semnal ds-semnal-ok"><span class="ds-semnal-text">Nimic nu oprește închiderea lunii.</span></div>`;
         if (ctl.semnale.length) semnaleDS(zc.querySelector("#il-sem-semnale"), ctl.semnale.map((x) => x.mesaj), { titlu: "Semnale", ton: "avertisment", limita: compact ? 0 : 6 });
         // [deficiența 281, comanda Costin 16.10.2026] amortizarea restantă dintr-o singură acțiune (o notă pe lună); iar când NUMAI ea
@@ -6217,9 +6225,9 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
         // [lotul 10, deficiența 429] reevaluarea în valută propusă de aplicație (OMFP 1802/2014 pct.325). [lotul 11, 429] Butonul e MEREU
         // aici (primar când reevaluarea oprește închiderea): e singurul drum spre reevaluare — formularul manual din Operațiuni a fost scos,
         // iar o lună fără blocaj (luna în curs, facturile cu contarea în ciornă) trebuie să se poată verifica și ea.
-        {
-          const opreste = ctl.blocaje.some((b) => b.cod === "REEVALUARE_VALUTA");
-          const cls = opreste ? "buton-primar" : "buton-secundar";   // clasa DS cap.1 aleasă înainte (regula BUTOANE citește clasa din atribut)
+        // [17.5-Q6, F025-S] când reevaluarea oprește închiderea, butonul (principal, 429) stă pe rândul blocajului (`randBlocaj` de mai sus); aici numai când nu o oprește
+        if (!cuActiune) {
+          const cls = "buton-secundar";   // clasa DS cap.1 aleasă înainte (regula BUTOANE citește clasa din atribut)
           zc.insertAdjacentHTML("beforeend", `<p class="ds-actiuni-rand"><button class="${cls}" id="il-reevaluare" data-actiune="GET /tenants/{tenant_id}/reevaluare-valuta">Reevaluare valută</button></p>`);
           zc.querySelector("#il-reevaluare").addEventListener("click", deschideReevaluare);
         }

@@ -1,0 +1,50 @@
+{
+ "caz": "fara_blocaj",
+ "commit": "aca6f8287825f9e4352e8feb14f93b8d28ba198d",
+ "extrageri": {
+  "blocaj": {
+   "cale": [
+    "controale",
+    "blocaje"
+   ],
+   "format": "are_reevaluare"
+  },
+  "coduri_blocaje_sursa": {
+   "cale": [
+    "controale",
+    "blocaje"
+   ],
+   "format": "coduri_blocaje"
+  },
+  "firma_luna_intrare": {
+   "cale": [
+    "intrare"
+   ],
+   "format": "json",
+   "original": "martori/E/context_f025s_fara_blocaj_1366x768.json",
+   "sha256_original": "11c65c21f44d0af1aa31608fcacae20a84ffae94fdac82aa7422a51d62ce2c16"
+  },
+  "suma_sursa": {
+   "cale": [
+    "suma"
+   ],
+   "format": "json",
+   "original": "martori/E/context_f025s_fara_blocaj_1366x768.json",
+   "sha256_original": "11c65c21f44d0af1aa31608fcacae20a84ffae94fdac82aa7422a51d62ce2c16"
+  }
+ },
+ "localizare": "Închidere lună, Achizitii IC Neplatitor SRL 08/2026; originalul primar = corpul GET /tenants/4841/perioade-blocate?an=2026&luna=8",
+ "original": "martori/E/brut_f025s_fara_blocaj_1366x768.json",
+ "rezolutie": "1366x768",
+ "scenariu": "f025s",
+ "sha256_original": "7012673a76e2bbe405158622386a0420a8d4a11483205d2e65ae492adfecc698",
+ "valori": {
+  "blocaj": false,
+  "coduri_blocaje_sursa": [],
+  "firma_luna_intrare": {
+   "luna": "08/2026",
+   "tenant_id": 4841
+  },
+  "suma_sursa": null
+ }
+}

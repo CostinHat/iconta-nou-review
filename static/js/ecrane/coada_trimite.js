@@ -138,7 +138,7 @@ export function mesajLangaNote(cuNote, langa, intreg) {
 // luna notei, cu nota evidențiată (același drum ca legătura „jurnal:” din notificări). Ecranul declarației rămâne dedesubt.
 export async function deschideInCoada(coadaId, dinRefuz = false) {
   if (!window._navGlobal) return;
-  const { randeazaValidat } = await import("./validat.js?v=61a7f1ce28");
+  const { randeazaValidat } = await import("./validat.js?v=5b9a292dc7");
   // [lotul 11, 445] deschisă dintr-un refuz („Deschide declarația existentă”): declarația de dedesubt se păstrează, X / „← Înapoi” întorc la ea
   if (dinRefuz && window._navGlobal.dinRefuz) window._navGlobal.dinRefuz();
   window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, { evidentiaza: coadaId }), { nivel: "cabinet" });
@@ -164,7 +164,7 @@ export function legaturiNote(zona, tenantId, note) {
   lista.querySelectorAll("[data-nota]").forEach((b) => b.addEventListener("click", async () => {
     const n = note[parseInt(b.dataset.nota, 10)];
     const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=aea8654f70");
+    const { ecranJurnal } = await import("./firme.js?v=35ad459baa");
     const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
     if (!t || !window._navGlobal) return;
     // [lotul 11, 445] nota se deschide dintr-un refuz: formularul / declarația de dedesubt se păstrează, săgeata și X întorc acolo

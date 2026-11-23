@@ -1,0 +1,31 @@
+{
+ "caz": "F1",
+ "commit": "aca6f8287825f9e4352e8feb14f93b8d28ba198d",
+ "extrageri": {
+  "id_ultim_sursa": {
+   "cale": [
+    "datorate_active",
+    47,
+    "id"
+   ],
+   "format": "json"
+  },
+  "perioada_sursa": {
+   "cale": [
+    "datorate_active",
+    47,
+    "perioada"
+   ],
+   "format": "json"
+  }
+ },
+ "localizare": "Declarații pasul 1, F1 Comert Stoc SRL, select #dec-tip; destinația: #dec-tip/#dec-an/#dec-luna după clic",
+ "original": "martori/E/original_datorate_F1_603x590.json",
+ "rezolutie": "603x590",
+ "scenariu": "datorate",
+ "sha256_original": "a041c8b6406a4bd450db39c3d366ac19475affe5e9ab47f62083f88ed457603f",
+ "valori": {
+  "id_ultim_sursa": "d406:2026-7",
+  "perioada_sursa": "07/2026"
+ }
+}

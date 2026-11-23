@@ -1,0 +1,44 @@
+{
+ "caz": "filtru",
+ "commit": "aca6f8287825f9e4352e8feb14f93b8d28ba198d",
+ "extrageri": {
+  "filtru_asteptat": {
+   "cale": [
+    "filtru_asteptat"
+   ],
+   "format": "json",
+   "original": "martori/E/context_pagini_lista_1366x768.json",
+   "sha256_original": "64b96ffc65ed347284ca564b0cb050eff40492fdef765efbdc172080ef902ffb"
+  },
+  "id_sursa": {
+   "cale": [
+    "ids"
+   ],
+   "format": "json"
+  }
+ },
+ "localizare": "De validat (cardul de pe pagina principală), «Note de validat»; GET /coada redat local cu 11 note fictive (forma _note_fictive, 17.5-G)",
+ "original": "martori/E/ids_pagini_lista_1366x768.json",
+ "rezolutie": "1366x768",
+ "scenariu": "pagini",
+ "sha256_original": "70f5c8b3e46b56a6ed082efc4d5f43d42e0f9039887661df2e0469158a0fbae9",
+ "valori": {
+  "filtru_asteptat": [
+   "991010",
+   "991011"
+  ],
+  "id_sursa": [
+   "991001",
+   "991002",
+   "991003",
+   "991004",
+   "991005",
+   "991006",
+   "991007",
+   "991008",
+   "991009",
+   "991010",
+   "991011"
+  ]
+ }
+}

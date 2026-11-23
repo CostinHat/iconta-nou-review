@@ -10,7 +10,7 @@
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
 import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";
-import { panouConectareSPV } from "./setari.js?v=37902f6231";
+import { panouConectareSPV } from "./setari.js?v=b2454ca531";
 import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";
 import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=2e5615906c";   // [lotul 11, decizia 10.3] fișa partenerului
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
@@ -59,7 +59,7 @@ export const ECRANE = {
   // [15.1-E3, 728.1 / 735] „Contabilizează statul de plată” (constatarea de control fiscal) deschide Salariați, unde se face contarea statului
   salarii: {
     titlu: "Salariați",
-    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=aea8654f70"); await deschideSalariati(nav, tenantId); },
+    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=35ad459baa"); await deschideSalariati(nav, tenantId); },
   },
   conectare_spv: {
     titlu: "Conectare SPV",

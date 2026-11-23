@@ -1,0 +1,18 @@
+[
+ {
+  "factura_id": 1,
+  "firma": "E2E Probă 8255099 SRL",
+  "nota_validata": 1,
+  "tenant_id": 370965
+ },
+ {
+  "factura_id": 1,
+  "firma": "E2E Probă 8261509 SRL",
+  "nota_validata": 1,
+  "note_regularizare_validate": {
+   "2": 200
+  },
+  "regularizare_status": 200,
+  "tenant_id": 370966
+ }
+]

@@ -11,12 +11,12 @@ import { semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asisten
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaControl } from "./control.js?v=c027ce0ad1";
 import { randeazaTermene } from "./termene.js?v=713a2df54e";
-import { randeazaValidat } from "./validat.js?v=61a7f1ce28";
-import { randeazaListaFirme } from "./firme.js?v=aea8654f70";
+import { randeazaValidat } from "./validat.js?v=5b9a292dc7";
+import { randeazaListaFirme } from "./firme.js?v=35ad459baa";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js?v=4343fbfbc2"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=37902f6231"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { randeazaSetari } from "./setari.js?v=b2454ca531"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;

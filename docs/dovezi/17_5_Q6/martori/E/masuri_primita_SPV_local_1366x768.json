@@ -1,0 +1,22 @@
+{
+ "factura_detaliu": {
+  "furnizor": "FURNIZOR E2E SRL",
+  "id": "Q6-e5efeebaba",
+  "moneda": "RON",
+  "total": "121.00"
+ },
+ "factura_sursa": {
+  "furnizor": "FURNIZOR E2E SRL",
+  "id": "Q6-e5efeebaba",
+  "moneda": "RON",
+  "total": "121.00"
+ },
+ "id_lista": "Q6-e5efeebaba",
+ "id_revenire": "Q6-e5efeebaba",
+ "provenienta": "SPV simulat",
+ "text_lista": "FURNIZOR E2E SRL · Q6-e5efeebaba\n10.10.2026\n121,00 RON",
+ "viewport": [
+  1366,
+  768
+ ]
+}

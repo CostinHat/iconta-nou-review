@@ -1,0 +1,868 @@
+{
+ "datorate_active": [
+  {
+   "eticheta": "D112 · 08/2026 · termen 25.09.2026",
+   "id": "d112:2026-8",
+   "perioada": "08/2026"
+  },
+  {
+   "eticheta": "D300 · 08/2026 · termen 25.09.2026",
+   "id": "d300:2026-8",
+   "perioada": "08/2026"
+  },
+  {
+   "eticheta": "D394 · 08/2026 · termen 30.09.2026",
+   "id": "d394:2026-8",
+   "perioada": "08/2026"
+  },
+  {
+   "eticheta": "D406 · 08/2026 · termen 30.09.2026",
+   "id": "d406:2026-8",
+   "perioada": "08/2026"
+  },
+  {
+   "eticheta": "D100 · T3/2026 · termen 26.10.2026",
+   "id": "d100:2026-9",
+   "perioada": "09/2026"
+  },
+  {
+   "eticheta": "D112 · 09/2026 · termen 26.10.2026",
+   "id": "d112:2026-9",
+   "perioada": "09/2026"
+  },
+  {
+   "eticheta": "D300 · 09/2026 · termen 26.10.2026",
+   "id": "d300:2026-9",
+   "perioada": "09/2026"
+  },
+  {
+   "eticheta": "D394 · 09/2026 · termen 30.10.2026",
+   "id": "d394:2026-9",
+   "perioada": "09/2026"
+  },
+  {
+   "eticheta": "D406 · 09/2026 · termen 02.11.2026",
+   "id": "d406:2026-9",
+   "perioada": "09/2026"
+  },
+  {
+   "eticheta": "D112 · 10/2026 · termen 25.11.2026",
+   "id": "d112:2026-10",
+   "perioada": "10/2026"
+  },
+  {
+   "eticheta": "D300 · 10/2026 · termen 25.11.2026",
+   "id": "d300:2026-10",
+   "perioada": "10/2026"
+  },
+  {
+   "eticheta": "D390 · 10/2026 · termen 25.11.2026",
+   "id": "d390:2026-10",
+   "perioada": "10/2026"
+  },
+  {
+   "eticheta": "D394 · 10/2026 · termen 02.12.2026",
+   "id": "d394:2026-10",
+   "perioada": "10/2026"
+  },
+  {
+   "eticheta": "D406 · 10/2026 · termen 02.12.2026",
+   "id": "d406:2026-10",
+   "perioada": "10/2026"
+  },
+  {
+   "eticheta": "D112 · 11/2026 · termen 21.12.2026",
+   "id": "d112:2026-11",
+   "perioada": "11/2026"
+  },
+  {
+   "eticheta": "D300 · 11/2026 · termen 21.12.2026",
+   "id": "d300:2026-11",
+   "perioada": "11/2026"
+  },
+  {
+   "eticheta": "D394 · 11/2026 · termen 30.12.2026",
+   "id": "d394:2026-11",
+   "perioada": "11/2026"
+  },
+  {
+   "eticheta": "D406 · 11/2026 · termen 31.12.2026",
+   "id": "d406:2026-11",
+   "perioada": "11/2026"
+  },
+  {
+   "eticheta": "D100 · T4/2025 · termen 26.01.2026",
+   "id": "d100:2025-12",
+   "perioada": "12/2025"
+  },
+  {
+   "eticheta": "D112 · 01/2026 · termen 25.02.2026",
+   "id": "d112:2026-1",
+   "perioada": "01/2026"
+  },
+  {
+   "eticheta": "D300 · 01/2026 · termen 25.02.2026",
+   "id": "d300:2026-1",
+   "perioada": "01/2026"
+  },
+  {
+   "eticheta": "D394 · 01/2026 · termen 02.03.2026",
+   "id": "d394:2026-1",
+   "perioada": "01/2026"
+  },
+  {
+   "eticheta": "D112 · 02/2026 · termen 25.03.2026",
+   "id": "d112:2026-2",
+   "perioada": "02/2026"
+  },
+  {
+   "eticheta": "D300 · 02/2026 · termen 25.03.2026",
+   "id": "d300:2026-2",
+   "perioada": "02/2026"
+  },
+  {
+   "eticheta": "D394 · 02/2026 · termen 30.03.2026",
+   "id": "d394:2026-2",
+   "perioada": "02/2026"
+  },
+  {
+   "eticheta": "D406 · 02/2026 · termen 31.03.2026",
+   "id": "d406:2026-2",
+   "perioada": "02/2026"
+  },
+  {
+   "eticheta": "D100 · T1/2026 · termen 27.04.2026",
+   "id": "d100:2026-3",
+   "perioada": "03/2026"
+  },
+  {
+   "eticheta": "D112 · 03/2026 · termen 27.04.2026",
+   "id": "d112:2026-3",
+   "perioada": "03/2026"
+  },
+  {
+   "eticheta": "D300 · 03/2026 · termen 27.04.2026",
+   "id": "d300:2026-3",
+   "perioada": "03/2026"
+  },
+  {
+   "eticheta": "D394 · 03/2026 · termen 30.04.2026",
+   "id": "d394:2026-3",
+   "perioada": "03/2026"
+  },
+  {
+   "eticheta": "D406 · 03/2026 · termen 30.04.2026",
+   "id": "d406:2026-3",
+   "perioada": "03/2026"
+  },
+  {
+   "eticheta": "D112 · 04/2026 · termen 25.05.2026",
+   "id": "d112:2026-4",
+   "perioada": "04/2026"
+  },
+  {
+   "eticheta": "D300 · 04/2026 · termen 25.05.2026",
+   "id": "d300:2026-4",
+   "perioada": "04/2026"
+  },
+  {
+   "eticheta": "D394 · 04/2026 · termen 02.06.2026",
+   "id": "d394:2026-4",
+   "perioada": "04/2026"
+  },
+  {
+   "eticheta": "D406 · 04/2026 · termen 02.06.2026",
+   "id": "d406:2026-4",
+   "perioada": "04/2026"
+  },
+  {
+   "eticheta": "D112 · 05/2026 · termen 25.06.2026",
+   "id": "d112:2026-5",
+   "perioada": "05/2026"
+  },
+  {
+   "eticheta": "D300 · 05/2026 · termen 25.06.2026",
+   "id": "d300:2026-5",
+   "perioada": "05/2026"
+  },
+  {
+   "eticheta": "D394 · 05/2026 · termen 30.06.2026",
+   "id": "d394:2026-5",
+   "perioada": "05/2026"
+  },
+  {
+   "eticheta": "D406 · 05/2026 · termen 30.06.2026",
+   "id": "d406:2026-5",
+   "perioada": "05/2026"
+  },
+  {
+   "eticheta": "D100 · T2/2026 · termen 27.07.2026",
+   "id": "d100:2026-6",
+   "perioada": "06/2026"
+  },
+  {
+   "eticheta": "D112 · 06/2026 · termen 27.07.2026",
+   "id": "d112:2026-6",
+   "perioada": "06/2026"
+  },
+  {
+   "eticheta": "D300 · 06/2026 · termen 27.07.2026",
+   "id": "d300:2026-6",
+   "perioada": "06/2026"
+  },
+  {
+   "eticheta": "D394 · 06/2026 · termen 30.07.2026",
+   "id": "d394:2026-6",
+   "perioada": "06/2026"
+  },
+  {
+   "eticheta": "D406 · 06/2026 · termen 31.07.2026",
+   "id": "d406:2026-6",
+   "perioada": "06/2026"
+  },
+  {
+   "eticheta": "D112 · 07/2026 · termen 25.08.2026",
+   "id": "d112:2026-7",
+   "perioada": "07/2026"
+  },
+  {
+   "eticheta": "D300 · 07/2026 · termen 25.08.2026",
+   "id": "d300:2026-7",
+   "perioada": "07/2026"
+  },
+  {
+   "eticheta": "D394 · 07/2026 · termen 31.08.2026",
+   "id": "d394:2026-7",
+   "perioada": "07/2026"
+  },
+  {
+   "eticheta": "D406 · 07/2026 · termen 31.08.2026",
+   "id": "d406:2026-7",
+   "perioada": "07/2026"
+  }
+ ],
+ "localizare": "select #dec-tip (opțiunile-sursă), citit înainte de orice derulare sau clic",
+ "optiuni": [
+  {
+   "an": null,
+   "eticheta": "— alege tipul —",
+   "grup": "",
+   "inactiv": false,
+   "index": 0,
+   "luna": null,
+   "value": ""
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 08/2026 · termen 25.09.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 1,
+   "luna": "8",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 08/2026 · termen 25.09.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 2,
+   "luna": "8",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 08/2026 · termen 30.09.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 3,
+   "luna": "8",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 08/2026 · termen 30.09.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 4,
+   "luna": "8",
+   "value": "d406"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D100 · T3/2026 · termen 26.10.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 5,
+   "luna": "9",
+   "value": "d100"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 09/2026 · termen 26.10.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 6,
+   "luna": "9",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 09/2026 · termen 26.10.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 7,
+   "luna": "9",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 09/2026 · termen 30.10.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 8,
+   "luna": "9",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 09/2026 · termen 02.11.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 9,
+   "luna": "9",
+   "value": "d406"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 10/2026 · termen 25.11.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 10,
+   "luna": "10",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 10/2026 · termen 25.11.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 11,
+   "luna": "10",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D390 · 10/2026 · termen 25.11.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 12,
+   "luna": "10",
+   "value": "d390"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 10/2026 · termen 02.12.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 13,
+   "luna": "10",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 10/2026 · termen 02.12.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 14,
+   "luna": "10",
+   "value": "d406"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 11/2026 · termen 21.12.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 15,
+   "luna": "11",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 11/2026 · termen 21.12.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 16,
+   "luna": "11",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 11/2026 · termen 30.12.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 17,
+   "luna": "11",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 11/2026 · termen 31.12.2026",
+   "grup": "Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)",
+   "inactiv": false,
+   "index": 18,
+   "luna": "11",
+   "value": "d406"
+  },
+  {
+   "an": "2025",
+   "eticheta": "D100 · T4/2025 · termen 26.01.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 19,
+   "luna": "12",
+   "value": "d100"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 01/2026 · termen 25.02.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 20,
+   "luna": "1",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 01/2026 · termen 25.02.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 21,
+   "luna": "1",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 01/2026 · termen 02.03.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 22,
+   "luna": "1",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 02/2026 · termen 25.03.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 23,
+   "luna": "2",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 02/2026 · termen 25.03.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 24,
+   "luna": "2",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 02/2026 · termen 30.03.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 25,
+   "luna": "2",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 02/2026 · termen 31.03.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 26,
+   "luna": "2",
+   "value": "d406"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D100 · T1/2026 · termen 27.04.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 27,
+   "luna": "3",
+   "value": "d100"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 03/2026 · termen 27.04.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 28,
+   "luna": "3",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 03/2026 · termen 27.04.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 29,
+   "luna": "3",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 03/2026 · termen 30.04.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 30,
+   "luna": "3",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 03/2026 · termen 30.04.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 31,
+   "luna": "3",
+   "value": "d406"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 04/2026 · termen 25.05.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 32,
+   "luna": "4",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 04/2026 · termen 25.05.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 33,
+   "luna": "4",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 04/2026 · termen 02.06.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 34,
+   "luna": "4",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 04/2026 · termen 02.06.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 35,
+   "luna": "4",
+   "value": "d406"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 05/2026 · termen 25.06.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 36,
+   "luna": "5",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 05/2026 · termen 25.06.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 37,
+   "luna": "5",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 05/2026 · termen 30.06.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 38,
+   "luna": "5",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 05/2026 · termen 30.06.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 39,
+   "luna": "5",
+   "value": "d406"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D100 · T2/2026 · termen 27.07.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 40,
+   "luna": "6",
+   "value": "d100"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 06/2026 · termen 27.07.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 41,
+   "luna": "6",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 06/2026 · termen 27.07.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 42,
+   "luna": "6",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 06/2026 · termen 30.07.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 43,
+   "luna": "6",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 06/2026 · termen 31.07.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 44,
+   "luna": "6",
+   "value": "d406"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D112 · 07/2026 · termen 25.08.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 45,
+   "luna": "7",
+   "value": "d112"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D300 · 07/2026 · termen 25.08.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 46,
+   "luna": "7",
+   "value": "d300"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D394 · 07/2026 · termen 31.08.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 47,
+   "luna": "7",
+   "value": "d394"
+  },
+  {
+   "an": "2026",
+   "eticheta": "D406 · 07/2026 · termen 31.08.2026",
+   "grup": "Datorate de firmă — înainte de preluare în iConta.eu",
+   "inactiv": false,
+   "index": 48,
+   "luna": "7",
+   "value": "d406"
+  },
+  {
+   "an": null,
+   "eticheta": "D100 · trimestrial",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 49,
+   "luna": null,
+   "value": "d100"
+  },
+  {
+   "an": null,
+   "eticheta": "D101",
+   "grup": "Alte declarații",
+   "inactiv": true,
+   "index": 50,
+   "luna": null,
+   "value": "d101"
+  },
+  {
+   "an": null,
+   "eticheta": "D104 · trimestrial",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 51,
+   "luna": null,
+   "value": "d104"
+  },
+  {
+   "an": null,
+   "eticheta": "D107 · anual",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 52,
+   "luna": null,
+   "value": "d107"
+  },
+  {
+   "an": null,
+   "eticheta": "D110 · lunar",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 53,
+   "luna": null,
+   "value": "d110"
+  },
+  {
+   "an": null,
+   "eticheta": "D112 · lunar",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 54,
+   "luna": null,
+   "value": "d112"
+  },
+  {
+   "an": null,
+   "eticheta": "D114 · lunar",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 55,
+   "luna": null,
+   "value": "d114"
+  },
+  {
+   "an": null,
+   "eticheta": "D177",
+   "grup": "Alte declarații",
+   "inactiv": true,
+   "index": 56,
+   "luna": null,
+   "value": "d177"
+  },
+  {
+   "an": null,
+   "eticheta": "D205 · anual",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 57,
+   "luna": null,
+   "value": "d205"
+  },
+  {
+   "an": null,
+   "eticheta": "D207 · anual",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 58,
+   "luna": null,
+   "value": "d207"
+  },
+  {
+   "an": null,
+   "eticheta": "D300 · lunar",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 59,
+   "luna": null,
+   "value": "d300"
+  },
+  {
+   "an": null,
+   "eticheta": "D301",
+   "grup": "Alte declarații",
+   "inactiv": true,
+   "index": 60,
+   "luna": null,
+   "value": "d301"
+  },
+  {
+   "an": null,
+   "eticheta": "D307 · lunar",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 61,
+   "luna": null,
+   "value": "d307"
+  },
+  {
+   "an": null,
+   "eticheta": "D311",
+   "grup": "Alte declarații",
+   "inactiv": true,
+   "index": 62,
+   "luna": null,
+   "value": "d311"
+  },
+  {
+   "an": null,
+   "eticheta": "D318 · anual",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 63,
+   "luna": null,
+   "value": "d318"
+  },
+  {
+   "an": null,
+   "eticheta": "D390 · lunar",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 64,
+   "luna": null,
+   "value": "d390"
+  },
+  {
+   "an": null,
+   "eticheta": "D394 · lunar",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 65,
+   "luna": null,
+   "value": "d394"
+  },
+  {
+   "an": null,
+   "eticheta": "D398 · trimestrial",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 66,
+   "luna": null,
+   "value": "d398"
+  },
+  {
+   "an": null,
+   "eticheta": "D406 · lunar",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 67,
+   "luna": null,
+   "value": "d406"
+  },
+  {
+   "an": null,
+   "eticheta": "D710 · la cerere — corectează un D100 (pe trimestrul lui)",
+   "grup": "Alte declarații",
+   "inactiv": false,
+   "index": 68,
+   "luna": null,
+   "value": "d710"
+  }
+ ]
+}

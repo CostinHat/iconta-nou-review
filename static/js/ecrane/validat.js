@@ -31,9 +31,9 @@
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=7396e03327";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 622] tabelul comun de note
 import { randA as randConstatare } from "./control_verdict.js?v=0caee663ad";
-import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=18c84ba990";   // [15.1-E3] pliarea semnalelor constatărilor
+import { legaSemnale, meniuActiuni, paginareDS } from "../ds_piese.js?v=03f816740e";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=aea8654f70";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=35ad459baa";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -319,6 +319,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   siraCarduri(corp.querySelector("#val-carduri"), [{ id: "val-card-intro", ton: "info", text: "Cine validează și cine depune", titlu: "Cine validează și cine depune",
     deschide: (c) => { c.innerHTML = `<p class="mig-intro" id="val-intro">${intro}</p>`; } }], nav);
   const tabele = [];
+  let pagNote = null;
   if (noteDeValidat.length) {
     tabele.push({ titlu: corp.querySelector("#val-note-titlu"), nume: "Note de validat", note: true, zona: corp.querySelector("#val-note"), t: legaTabelNote(corp.querySelector("#val-note"),
       { pre: "val-n", randuri: randuriCoada, firma: true, deschise: corp._val.deschise, incarcaLinii: liniiElementCoada }) });
@@ -327,6 +328,9 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
       if (c) legaActiuniNota(tb, c, corp, nav, corp.querySelector("#val-eroare"));
     });
     barMaiMulte(corp.querySelector("#val-note"), corp, nav);
+    // [17.5-Q6, F019 — DS-F019] «Note de validat»: 8 documente pe pagină, cu pagina curentă și totalul sub tabel; filtrul nou duce lista la
+    // prima pagină, detaliul și acțiunile pe rând o lasă pe aceeași pagină (`corp._val.pagina`)
+    pagNote = paginareDS(corp.querySelector("#val-n-tabel"), () => [...corp.querySelectorAll("#val-note tbody.tn-nota")], { pre: "val-n", stare: corp._val });
   }
   if (ciorneMele.length) {
     const zc = corp.querySelector("#val-ciorne");
@@ -349,6 +353,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     const el = [...corp.querySelectorAll("[data-coada-ids]")].find((x) => x.dataset.coadaIds.split(",").map(Number).includes(evid));
     if (el) {
       el.classList.add("val-evidentiat"); el.hidden = false;
+      if (pagNote && el.matches("tbody.tn-nota")) pagNote.arata(el);   // [17.5-Q6, F019] rândul din notificare: lista trece pe pagina lui
       // [lotul 12, găsită la integrare] ca în Registrul jurnal (situații identice, soluții identice): rândul notei din notificare, cu
       // detaliul deschis (liniile ei) — pe drumul clicului pe rând (`deschide` al tabelului care îl conține)
       tabele.forEach(({ zona, t }) => { if (el.dataset.tn && zona.contains(el)) t.deschide(el.dataset.tn); });
@@ -366,7 +371,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   // [622] căutarea, în pagină (coada e citită întreagă): notele (după ce arată rândul și liniile lor — încărcate la prima căutare) și
   // declarațiile (după textul cardului); numărul fiecărei secțiuni spune câte se văd din câte are
   const campC = corp.querySelector("#val-cauta"), elVazute = corp.querySelector("#val-numar");
-  const filtreaza = () => {
+  const filtreaza = (laInceput = false) => {
     const text = corp._val.text;
     let vazute = 0, total = 0;
     tabele.forEach(({ titlu: el, nume, t, zona: z, note }) => {
@@ -386,10 +391,11 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     if (td) td.textContent = `Declarații (${text ? `${vd} din ${carduri.length}` : nDecl})`;
     vazute += vd; total += carduri.length;
     if (elVazute) elVazute.textContent = text ? `se văd: ${vazute} din ${total}` : "";
+    if (pagNote) pagNote.aplica(laInceput);   // [17.5-Q6, F019] paginile se refac după filtru; un filtru nou începe de la prima pagină
   };
   if (campC) campC.addEventListener("input", () => {
     corp._val.text = campC.value;
-    filtreaza();
+    filtreaza(true);
     // contul se caută în liniile notelor: se încarcă o dată, la prima căutare, apoi filtrul se reface
     if (campC.value.trim()) Promise.all(tabele.map(({ t }) => t.incarcaToateLiniile())).then(() => { if (corp.isConnected) filtreaza(); });
   });

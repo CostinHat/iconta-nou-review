@@ -126,7 +126,7 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
     cutie.classList.toggle("ds-lista-permanenta", permanenta);
     cutie.innerHTML = `${permanenta ? "" : `<button type="button" class="ds-lista-titlu buton-secundar" aria-expanded="${deschisa}" data-fara-actiune="deschide lista; alegerea din ea poartă acțiunea formularului"><span class="ds-lista-ales">${esc(alesTitlu())}</span><span aria-hidden="true">▾</span></button>`}
       ${deschisa ? `<div class="ds-lista-panou"><input type="search" class="camp-input ds-lista-cauta" placeholder="${esc(cautare)}" aria-label="${esc(cautare)}" value="${esc(filtru)}">
-        <ul class="ds-lista-randuri" role="listbox">${potrivite.map((r, i) => r.grup
+        <ul class="ds-lista-randuri" role="listbox"${permanenta ? " data-fara-zona" : ""}>${potrivite.map((r, i) => r.grup
           ? `<li class="ds-lista-grup" role="presentation">${esc(r.grup)}</li>`
           : `<li class="ds-lista-rand${r.o.disabled ? " ds-lista-inactiv" : ""}${r.o.selected && r.o.value ? " ds-lista-ales-rand" : ""}" role="option" aria-selected="${!!(r.o.selected && r.o.value)}" data-i="${i}">
               <span class="ds-lista-nume" title="${esc(r.o.dataset.detalii || text(r.o))}">${esc(text(r.o))}</span>
@@ -194,7 +194,7 @@ export function semnaleDS(zona, items, { titlu = "Semnale", ton = "avertisment",
     const text = String(x.mesaj), s = scurt(text), are = text.trim() !== s.trim();
     const li = document.createElement("li");
     li.className = "ds-semnal-cutie";
-    if (i >= limita) li.hidden = true;
+    if (i >= limita && !x.vizibil) li.hidden = true;   // [17.5-Q6, F025-S] `vizibil`: rândul care poartă unica acțiune a ferestrei se vede de la deschidere, oricare i-ar fi locul
     const rand = document.createElement("div");
     rand.className = "ds-semnal ds-semnal-" + ton;
     const sp = document.createElement("span");
@@ -220,19 +220,74 @@ export function semnaleDS(zona, items, { titlu = "Semnale", ton = "avertisment",
     if (x.actiune) {   // [15.1-E3, 732] acțiunea semnalului: buton S lângă rând, nu casetă în mijlocul textului
       const a = buton("buton-s ds-semnal-actiune", x.actiune.eticheta, x.actiune.laClic);
       a.dataset.faraActiune = x.actiune.faraActiune || "navigare în fereastra curentă";
+      // [17.5-Q6, F025-S] acțiunea unică a ferestrei mutată pe rândul semnalului își păstrează id-ul și clasa (ex. #il-reevaluare, principal cât oprește închiderea — 429)
+      if (x.actiune.id) a.id = x.actiune.id;
+      if (x.actiune.clasa) a.className = x.actiune.clasa + " buton-s ds-semnal-actiune";
       li.insertBefore(a, li.children[1] || null);
     }
     ul.appendChild(li);
   });
-  if (lista.length > limita) {
+  const ascunse = ul.querySelectorAll(".ds-semnal-cutie[hidden]").length;
+  if (ascunse) {
     // [17.5-Q4, DS-C235] `limita: 0` = grupa pliată: titlul cu numărul și „arată ▾” pe același rând; o singură deschidere arată toate rândurile
     const sectiune = zona.querySelector(".ds-semnale");
     if (!limita) sectiune.classList.add("ds-semnale-pliate");
-    const inca = buton("ds-semnale-inca", limita ? `încă ${lista.length - limita} ▾` : "arată ▾", () => { ul.querySelectorAll(".ds-semnal-cutie[hidden]").forEach((e) => { e.hidden = false; }); sectiune.classList.remove("ds-semnale-pliate"); inca.remove(); });
+    const inca = buton("ds-semnale-inca", limita ? `încă ${ascunse} ▾` : "arată ▾", () => { ul.querySelectorAll(".ds-semnal-cutie[hidden]").forEach((e) => { e.hidden = false; }); sectiune.classList.remove("ds-semnale-pliate"); inca.remove(); });
     inca.setAttribute("aria-expanded", "false");
     sectiune.appendChild(inca);
   }
   return zona;
+}
+
+/** [17.5-Q6, F019 — DS-F019, DS v2.130] Paginarea unei liste lungi de documente: `pePagina` elemente pe pagină (8), sub listă bara
+ *  «‹ Anterioare · Pagina p din n · t documente · Următoarele ›». Se numără numai elementele lăsate la vedere de filtru (`hidden` = ascuns de
+ *  căutare); cele de pe alte pagini poartă `data-alta-pagina` (stil.css le ascunde) și rămân în pagină, cu id-urile lor. Pagina stă în
+ *  `stare.pagina` (ecranul o ține între redesenări: după detaliu sau după o acțiune pe rând lista rămâne pe aceeași pagină și cu același
+ *  filtru). `aplica(laInceput)` reface paginile; ecranul o cheamă cu `true` când filtrul se schimbă (lista revine la prima pagină).
+ *  Bara nu se arată cât toate elementele încap pe o pagină. Întoarce { aplica, bara }. */
+export function paginareDS(dupa, elemente, { pre, pePagina = 8, stare, unitate = ["document", "documente"] }) {
+  const bara = document.createElement("nav");
+  bara.className = "ds-paginare";
+  bara.id = `${pre}-pagini`;
+  bara.setAttribute("aria-label", "Paginile listei");
+  bara.innerHTML = `<button type="button" class="buton-secundar buton-s" id="${pre}-pag-ant" data-fara-actiune="pagina anterioară a listei, în fereastra curentă">‹ Anterioare</button>`
+    + `<span class="ds-paginare-text" id="${pre}-pag-text" aria-live="polite"></span>`
+    + `<button type="button" class="buton-secundar buton-s" id="${pre}-pag-urm" data-fara-actiune="pagina următoare a listei, în fereastra curentă">Următoarele ›</button>`;
+  dupa.after(bara);
+  const ant = bara.querySelector(`#${pre}-pag-ant`), urm = bara.querySelector(`#${pre}-pag-urm`), txt = bara.querySelector(`#${pre}-pag-text`);
+  const comuta = (b, oprit, motiv) => {
+    if (oprit) { b.setAttribute("aria-disabled", "true"); b.setAttribute("data-motiv-inactiv", motiv); b.title = motiv; }
+    else { b.removeAttribute("aria-disabled"); b.removeAttribute("data-motiv-inactiv"); b.removeAttribute("title"); }
+  };
+  const aplica = (laInceput = false) => {
+    const toate = elemente();
+    const vazute = toate.filter((e) => !e.hidden);
+    const n = Math.max(1, Math.ceil(vazute.length / pePagina));
+    stare.pagina = laInceput ? 1 : Math.min(Math.max(1, Number(stare.pagina) || 1), n);
+    toate.forEach((e) => e.removeAttribute("data-alta-pagina"));
+    vazute.forEach((e, i) => { if (Math.floor(i / pePagina) + 1 !== stare.pagina) e.setAttribute("data-alta-pagina", ""); });
+    bara.hidden = vazute.length <= pePagina;
+    txt.textContent = `Pagina ${stare.pagina} din ${n} · ${cate(vazute.length, unitate[0], unitate[1])}`;
+    comuta(ant, stare.pagina <= 1, "Ești pe prima pagină.");
+    comuta(urm, stare.pagina >= n, "Ești pe ultima pagină.");
+  };
+  const mergi = (pas) => () => {
+    const b = pas < 0 ? ant : urm;
+    if (b.getAttribute("aria-disabled") === "true") return;
+    stare.pagina = (Number(stare.pagina) || 1) + pas;
+    aplica();
+    const primul = elemente().find((e) => !e.hidden && !e.hasAttribute("data-alta-pagina"));
+    if (primul) primul.scrollIntoView({ block: "nearest" });
+  };
+  ant.addEventListener("click", mergi(-1));
+  urm.addEventListener("click", mergi(1));
+  // elementul cerut de altcineva (rândul din notificare): lista trece pe pagina lui
+  const arata = (el) => {
+    const i = elemente().filter((e) => !e.hidden).indexOf(el);
+    if (i >= 0) { stare.pagina = Math.floor(i / pePagina) + 1; aplica(); }
+  };
+  aplica();
+  return { aplica, arata, bara };
 }
 
 

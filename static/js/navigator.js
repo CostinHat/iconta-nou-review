@@ -773,7 +773,7 @@ async function _clopotActualizeazaBadge(container) {  // [p66_badge_ref]
     // [17.5-S, 563] insigna numără și notele de validat (aceeași N ca cifra cardului); coada care nu se poate citi nu ascunde nimic: insigna arată necititele
     let deValidat = 0;
     try {
-      const { noteDeValidatInCoada } = await import("./ecrane/validat.js?v=61a7f1ce28");
+      const { noteDeValidatInCoada } = await import("./ecrane/validat.js?v=5b9a292dc7");
       deValidat = noteDeValidatInCoada(((await api.get("/coada")) || {}).coada || []);
     } catch { deValidat = 0; }
     badge.__noteDeValidat = deValidat;
@@ -824,7 +824,7 @@ export function urmaresteClopotul(bara) {   // exportată pentru gard (o folose�
 
 async function _clopotDeschideDeValidat(optiuni) {
   try {
-    const { randeazaValidat } = await import("./ecrane/validat.js?v=61a7f1ce28");
+    const { randeazaValidat } = await import("./ecrane/validat.js?v=5b9a292dc7");
     window._navGlobal.acasa();
     window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, optiuni), { nivel: "cabinet" });
   } catch (e) { console.warn("[clopot] nu s-a putut deschide De validat:", e); }
@@ -899,7 +899,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=7396e03327");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=aea8654f70");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=35ad459baa");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

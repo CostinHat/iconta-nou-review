@@ -1,0 +1,54 @@
+{
+ "filtru_asteptat": [
+  "991010",
+  "991011"
+ ],
+ "filtru_dupa_revenire": "",
+ "filtru_fara_rezultat": [],
+ "filtru_initial": "",
+ "filtru_observat": [
+  "991010",
+  "991011"
+ ],
+ "filtru_vizibil": true,
+ "id_sursa": [
+  "991001",
+  "991002",
+  "991003",
+  "991004",
+  "991005",
+  "991006",
+  "991007",
+  "991008",
+  "991009",
+  "991010",
+  "991011"
+ ],
+ "pagina_dinainte": 1,
+ "pagina_dupa_filtru": 1,
+ "pagina_dupa_revenire": 1,
+ "pagini": [
+  [
+   "991001",
+   "991002",
+   "991003",
+   "991004",
+   "991005",
+   "991006",
+   "991007",
+   "991008",
+   "991009",
+   "991010",
+   "991011"
+  ]
+ ],
+ "scrolluri_verticale": 1,
+ "sumar_vizibil": true,
+ "titlu_sumar": "NOTE DE VALIDAT (11)",
+ "total_sumar": 11,
+ "ultim_deschis": "991011",
+ "viewport": [
+  603,
+  590
+ ]
+}

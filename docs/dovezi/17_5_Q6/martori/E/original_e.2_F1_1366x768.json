@@ -1,0 +1,498 @@
+{
+ "asteptate_filtru": [
+  "D300 · 08/2026 · termen 25.09.2026",
+  "D300 · 09/2026 · termen 26.10.2026",
+  "D300 · 10/2026 · termen 25.11.2026",
+  "D300 · 11/2026 · termen 21.12.2026",
+  "D300 · 01/2026 · termen 25.02.2026",
+  "D300 · 02/2026 · termen 25.03.2026",
+  "D300 · 03/2026 · termen 27.04.2026",
+  "D300 · 04/2026 · termen 25.05.2026",
+  "D300 · 05/2026 · termen 25.06.2026",
+  "D300 · 06/2026 · termen 27.07.2026",
+  "D300 · 07/2026 · termen 25.08.2026",
+  "D300 · lunar"
+ ],
+ "labels": [
+  "D112 · 08/2026 · termen 25.09.2026",
+  "D300 · 08/2026 · termen 25.09.2026",
+  "D394 · 08/2026 · termen 30.09.2026",
+  "D406 · 08/2026 · termen 30.09.2026",
+  "D100 · T3/2026 · termen 26.10.2026",
+  "D112 · 09/2026 · termen 26.10.2026",
+  "D300 · 09/2026 · termen 26.10.2026",
+  "D394 · 09/2026 · termen 30.10.2026",
+  "D406 · 09/2026 · termen 02.11.2026",
+  "D112 · 10/2026 · termen 25.11.2026",
+  "D300 · 10/2026 · termen 25.11.2026",
+  "D390 · 10/2026 · termen 25.11.2026",
+  "D394 · 10/2026 · termen 02.12.2026",
+  "D406 · 10/2026 · termen 02.12.2026",
+  "D112 · 11/2026 · termen 21.12.2026",
+  "D300 · 11/2026 · termen 21.12.2026",
+  "D394 · 11/2026 · termen 30.12.2026",
+  "D406 · 11/2026 · termen 31.12.2026",
+  "D100 · T4/2025 · termen 26.01.2026",
+  "D112 · 01/2026 · termen 25.02.2026",
+  "D300 · 01/2026 · termen 25.02.2026",
+  "D394 · 01/2026 · termen 02.03.2026",
+  "D112 · 02/2026 · termen 25.03.2026",
+  "D300 · 02/2026 · termen 25.03.2026",
+  "D394 · 02/2026 · termen 30.03.2026",
+  "D406 · 02/2026 · termen 31.03.2026",
+  "D100 · T1/2026 · termen 27.04.2026",
+  "D112 · 03/2026 · termen 27.04.2026",
+  "D300 · 03/2026 · termen 27.04.2026",
+  "D394 · 03/2026 · termen 30.04.2026",
+  "D406 · 03/2026 · termen 30.04.2026",
+  "D112 · 04/2026 · termen 25.05.2026",
+  "D300 · 04/2026 · termen 25.05.2026",
+  "D394 · 04/2026 · termen 02.06.2026",
+  "D406 · 04/2026 · termen 02.06.2026",
+  "D112 · 05/2026 · termen 25.06.2026",
+  "D300 · 05/2026 · termen 25.06.2026",
+  "D394 · 05/2026 · termen 30.06.2026",
+  "D406 · 05/2026 · termen 30.06.2026",
+  "D100 · T2/2026 · termen 27.07.2026",
+  "D112 · 06/2026 · termen 27.07.2026",
+  "D300 · 06/2026 · termen 27.07.2026",
+  "D394 · 06/2026 · termen 30.07.2026",
+  "D406 · 06/2026 · termen 31.07.2026",
+  "D112 · 07/2026 · termen 25.08.2026",
+  "D300 · 07/2026 · termen 25.08.2026",
+  "D394 · 07/2026 · termen 31.08.2026",
+  "D406 · 07/2026 · termen 31.08.2026",
+  "D100 · trimestrial",
+  "D101",
+  "D104 · trimestrial",
+  "D107 · anual",
+  "D110 · lunar",
+  "D112 · lunar",
+  "D114 · lunar",
+  "D177",
+  "D205 · anual",
+  "D207 · anual",
+  "D300 · lunar",
+  "D301",
+  "D307 · lunar",
+  "D311",
+  "D318 · anual",
+  "D390 · lunar",
+  "D394 · lunar",
+  "D398 · trimestrial",
+  "D406 · lunar",
+  "D710 · la cerere — corectează un D100 (pe trimestrul lui)"
+ ],
+ "localizare": "select #dec-tip al ferestrei Declarații (F1), opțiunile native în ordine, înainte de orice interacțiune",
+ "optiuni": [
+  {
+   "eticheta": "D112 · 08/2026 · termen 25.09.2026",
+   "inactiv": false,
+   "motiv": "restanță",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 08/2026 · termen 25.09.2026",
+   "inactiv": false,
+   "motiv": "restanță",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 08/2026 · termen 30.09.2026",
+   "inactiv": false,
+   "motiv": "restanță",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 08/2026 · termen 30.09.2026",
+   "inactiv": false,
+   "motiv": "restanță",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D100 · T3/2026 · termen 26.10.2026",
+   "inactiv": false,
+   "motiv": "restanță",
+   "value": "d100"
+  },
+  {
+   "eticheta": "D112 · 09/2026 · termen 26.10.2026",
+   "inactiv": false,
+   "motiv": "restanță",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 09/2026 · termen 26.10.2026",
+   "inactiv": false,
+   "motiv": "restanță",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 09/2026 · termen 30.10.2026",
+   "inactiv": false,
+   "motiv": "restanță",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 09/2026 · termen 02.11.2026",
+   "inactiv": false,
+   "motiv": "restanță",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D112 · 10/2026 · termen 25.11.2026",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 10/2026 · termen 25.11.2026",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D390 · 10/2026 · termen 25.11.2026",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d390"
+  },
+  {
+   "eticheta": "D394 · 10/2026 · termen 02.12.2026",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 10/2026 · termen 02.12.2026",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D112 · 11/2026 · termen 21.12.2026",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 11/2026 · termen 21.12.2026",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 11/2026 · termen 30.12.2026",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 11/2026 · termen 31.12.2026",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D100 · T4/2025 · termen 26.01.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d100"
+  },
+  {
+   "eticheta": "D112 · 01/2026 · termen 25.02.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 01/2026 · termen 25.02.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 01/2026 · termen 02.03.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D112 · 02/2026 · termen 25.03.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 02/2026 · termen 25.03.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 02/2026 · termen 30.03.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 02/2026 · termen 31.03.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D100 · T1/2026 · termen 27.04.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d100"
+  },
+  {
+   "eticheta": "D112 · 03/2026 · termen 27.04.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 03/2026 · termen 27.04.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 03/2026 · termen 30.04.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 03/2026 · termen 30.04.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D112 · 04/2026 · termen 25.05.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 04/2026 · termen 25.05.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 04/2026 · termen 02.06.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 04/2026 · termen 02.06.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D112 · 05/2026 · termen 25.06.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 05/2026 · termen 25.06.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 05/2026 · termen 30.06.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 05/2026 · termen 30.06.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D100 · T2/2026 · termen 27.07.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d100"
+  },
+  {
+   "eticheta": "D112 · 06/2026 · termen 27.07.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 06/2026 · termen 27.07.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 06/2026 · termen 30.07.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 06/2026 · termen 31.07.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D112 · 07/2026 · termen 25.08.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D300 · 07/2026 · termen 25.08.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D394 · 07/2026 · termen 31.08.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D406 · 07/2026 · termen 31.08.2026",
+   "inactiv": false,
+   "motiv": "înainte de preluare",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D100 · trimestrial",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d100"
+  },
+  {
+   "eticheta": "D101",
+   "inactiv": true,
+   "motiv": "nu se poate genera",
+   "value": "d101"
+  },
+  {
+   "eticheta": "D104 · trimestrial",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d104"
+  },
+  {
+   "eticheta": "D107 · anual",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d107"
+  },
+  {
+   "eticheta": "D110 · lunar",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d110"
+  },
+  {
+   "eticheta": "D112 · lunar",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d112"
+  },
+  {
+   "eticheta": "D114 · lunar",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d114"
+  },
+  {
+   "eticheta": "D177",
+   "inactiv": true,
+   "motiv": "nu se poate genera",
+   "value": "d177"
+  },
+  {
+   "eticheta": "D205 · anual",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d205"
+  },
+  {
+   "eticheta": "D207 · anual",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d207"
+  },
+  {
+   "eticheta": "D300 · lunar",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d300"
+  },
+  {
+   "eticheta": "D301",
+   "inactiv": true,
+   "motiv": "nu se poate genera",
+   "value": "d301"
+  },
+  {
+   "eticheta": "D307 · lunar",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d307"
+  },
+  {
+   "eticheta": "D311",
+   "inactiv": true,
+   "motiv": "nu se poate genera",
+   "value": "d311"
+  },
+  {
+   "eticheta": "D318 · anual",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d318"
+  },
+  {
+   "eticheta": "D390 · lunar",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d390"
+  },
+  {
+   "eticheta": "D394 · lunar",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d394"
+  },
+  {
+   "eticheta": "D398 · trimestrial",
+   "inactiv": false,
+   "motiv": "de lămurit",
+   "value": "d398"
+  },
+  {
+   "eticheta": "D406 · lunar",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d406"
+  },
+  {
+   "eticheta": "D710 · la cerere — corectează un D100 (pe trimestrul lui)",
+   "inactiv": false,
+   "motiv": "",
+   "value": "d710"
+  }
+ ],
+ "ultim_sursa": "d710"
+}

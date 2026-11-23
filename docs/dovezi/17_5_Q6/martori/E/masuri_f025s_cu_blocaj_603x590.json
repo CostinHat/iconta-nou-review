@@ -1,0 +1,33 @@
+{
+ "actionabil": false,
+ "blocaj": true,
+ "butoane_fixe": 1,
+ "butoane_rand": 1,
+ "butoane_total": 2,
+ "buton_vizibil_initial": false,
+ "clicuri_deschidere": 0,
+ "clicuri_desfasurare": 0,
+ "coduri_blocaje_sursa": [
+  "REEVALUARE_VALUTA"
+ ],
+ "destinatie": "",
+ "destinatie_detalii": {},
+ "explicatie_ui": "",
+ "firma_luna_destinatie": {
+  "luna": "",
+  "tenant_id": 370966
+ },
+ "firma_luna_intrare": {
+  "luna": "08/2026",
+  "tenant_id": 370966
+ },
+ "id_unic": false,
+ "primul_blocaj_vizibil_initial": true,
+ "rand_reevaluare_vizibil_initial": true,
+ "suma_sursa": null,
+ "suma_ui": null,
+ "viewport": [
+  603,
+  590
+ ]
+}

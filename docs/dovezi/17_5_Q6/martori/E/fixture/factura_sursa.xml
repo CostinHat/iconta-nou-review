@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+         xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
+  <cbc:ID>Q6-e5efeebaba</cbc:ID><cbc:IssueDate>2026-10-10</cbc:IssueDate><cbc:DocumentCurrencyCode>RON</cbc:DocumentCurrencyCode>
+  <cac:AccountingSupplierParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>FURNIZOR E2E SRL</cbc:RegistrationName></cac:PartyLegalEntity>
+    <cac:PartyTaxScheme><cbc:CompanyID>RO40372003</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme></cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>Q6 e5efeebaba SRL</cbc:RegistrationName></cac:PartyLegalEntity>
+    <cac:PartyTaxScheme><cbc:CompanyID>RO929107781</cbc:CompanyID></cac:PartyTaxScheme></cac:Party></cac:AccountingCustomerParty>
+  <cac:TaxTotal><cbc:TaxAmount>21.00</cbc:TaxAmount></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:TaxInclusiveAmount>121.00</cbc:TaxInclusiveAmount></cac:LegalMonetaryTotal>
+  <cac:InvoiceLine><cbc:InvoicedQuantity>1</cbc:InvoicedQuantity><cbc:LineExtensionAmount>100</cbc:LineExtensionAmount>
+    <cac:Price><cbc:PriceAmount>100</cbc:PriceAmount></cac:Price>
+    <cac:Item><cbc:Name>Servicii E2E 273</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent></cac:ClassifiedTaxCategory></cac:Item>
+  </cac:InvoiceLine>
+</Invoice>

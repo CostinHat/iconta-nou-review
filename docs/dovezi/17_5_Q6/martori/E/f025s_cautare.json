@@ -1,0 +1,599 @@
+{
+ "cautate": [
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "Achizitii IC Neplatitor SRL",
+   "tenant_id": 4841
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Achizitii IC Neplatitor SRL",
+   "tenant_id": 4841
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Achizitii IC Neplatitor SRL",
+   "tenant_id": 4841
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Achizitii IC Neplatitor SRL",
+   "tenant_id": 4841
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "CIORNE"
+   ],
+   "luna": 8,
+   "nume": "Agentie Turism Marja SRL",
+   "tenant_id": 4842
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Agentie Turism Marja SRL",
+   "tenant_id": 4842
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Agentie Turism Marja SRL",
+   "tenant_id": 4842
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Agentie Turism Marja SRL",
+   "tenant_id": 4842
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "Antibiotice Iasi",
+   "tenant_id": 33394
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Antibiotice Iasi",
+   "tenant_id": 33394
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Antibiotice Iasi",
+   "tenant_id": 33394
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Antibiotice Iasi",
+   "tenant_id": 33394
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "CIORNE"
+   ],
+   "luna": 8,
+   "nume": "Coafor Micro Neplatitor SRL",
+   "tenant_id": 4837
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Coafor Micro Neplatitor SRL",
+   "tenant_id": 4837
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Coafor Micro Neplatitor SRL",
+   "tenant_id": 4837
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Coafor Micro Neplatitor SRL",
+   "tenant_id": 4837
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "CIORNE"
+   ],
+   "luna": 8,
+   "nume": "Comert Micro TVA SRL",
+   "tenant_id": 4838
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "CIORNE",
+    "TVA_NEREGULARIZAT"
+   ],
+   "luna": 9,
+   "nume": "Comert Micro TVA SRL",
+   "tenant_id": 4838
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Comert Micro TVA SRL",
+   "tenant_id": 4838
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Comert Micro TVA SRL",
+   "tenant_id": 4838
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "CIORNE"
+   ],
+   "luna": 8,
+   "nume": "Constructii Profit Trim SRL",
+   "tenant_id": 4840
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Constructii Profit Trim SRL",
+   "tenant_id": 4840
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Constructii Profit Trim SRL",
+   "tenant_id": 4840
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Constructii Profit Trim SRL",
+   "tenant_id": 4840
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "CIORNE"
+   ],
+   "luna": 8,
+   "nume": "Distributie Profit IC SRL",
+   "tenant_id": 4839
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Distributie Profit IC SRL",
+   "tenant_id": 4839
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Distributie Profit IC SRL",
+   "tenant_id": 4839
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Distributie Profit IC SRL",
+   "tenant_id": 4839
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "E2E Probă 6789627 SRL",
+   "tenant_id": 370963
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "E2E Probă 6789627 SRL",
+   "tenant_id": 370963
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "E2E Probă 6789627 SRL",
+   "tenant_id": 370963
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "E2E Probă 6789627 SRL",
+   "tenant_id": 370963
+  },
+  {
+   "caz": "cu_blocaj_anterior",
+   "coduri": [
+    "TVA_NEREGULARIZAT",
+    "REEVALUARE_VALUTA"
+   ],
+   "luna": 8,
+   "nume": "E2E Probă 8255099 SRL",
+   "tenant_id": 370965
+  },
+  {
+   "caz": "cu_blocaj_anterior",
+   "coduri": [
+    "TVA_NEREGULARIZAT",
+    "REEVALUARE_VALUTA"
+   ],
+   "luna": 9,
+   "nume": "E2E Probă 8255099 SRL",
+   "tenant_id": 370965
+  },
+  {
+   "caz": "cu_blocaj_anterior",
+   "coduri": [
+    "TVA_NEREGULARIZAT",
+    "REEVALUARE_VALUTA"
+   ],
+   "luna": 10,
+   "nume": "E2E Probă 8255099 SRL",
+   "tenant_id": 370965
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "E2E Probă 8255099 SRL",
+   "tenant_id": 370965
+  },
+  {
+   "caz": "cu_blocaj",
+   "coduri": [
+    "REEVALUARE_VALUTA"
+   ],
+   "luna": 8,
+   "nume": "E2E Probă 8261509 SRL",
+   "tenant_id": 370966
+  },
+  {
+   "caz": "cu_blocaj",
+   "coduri": [
+    "REEVALUARE_VALUTA"
+   ],
+   "luna": 9,
+   "nume": "E2E Probă 8261509 SRL",
+   "tenant_id": 370966
+  },
+  {
+   "caz": "cu_blocaj",
+   "coduri": [
+    "REEVALUARE_VALUTA"
+   ],
+   "luna": 10,
+   "nume": "E2E Probă 8261509 SRL",
+   "tenant_id": 370966
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "E2E Probă 8261509 SRL",
+   "tenant_id": 370966
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "Ferma Agricultor Forfetar SRL",
+   "tenant_id": 4844
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Ferma Agricultor Forfetar SRL",
+   "tenant_id": 4844
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Ferma Agricultor Forfetar SRL",
+   "tenant_id": 4844
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Ferma Agricultor Forfetar SRL",
+   "tenant_id": 4844
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "CIORNE"
+   ],
+   "luna": 8,
+   "nume": "Firma Grea Audit SRL",
+   "tenant_id": 14769
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "CIORNE"
+   ],
+   "luna": 9,
+   "nume": "Firma Grea Audit SRL",
+   "tenant_id": 14769
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "CIORNE"
+   ],
+   "luna": 10,
+   "nume": "Firma Grea Audit SRL",
+   "tenant_id": 14769
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS",
+    "CIORNE"
+   ],
+   "luna": 11,
+   "nume": "Firma Grea Audit SRL",
+   "tenant_id": 14769
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "IT Servicii Nerezidenti SRL",
+   "tenant_id": 4845
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "IT Servicii Nerezidenti SRL",
+   "tenant_id": 4845
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "IT Servicii Nerezidenti SRL",
+   "tenant_id": 4845
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "IT Servicii Nerezidenti SRL",
+   "tenant_id": 4845
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "Panificatie Salarii Speciale SRL",
+   "tenant_id": 4784
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Panificatie Salarii Speciale SRL",
+   "tenant_id": 4784
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Panificatie Salarii Speciale SRL",
+   "tenant_id": 4784
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Panificatie Salarii Speciale SRL",
+   "tenant_id": 4784
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "Q6 e5efeebaba SRL",
+   "tenant_id": 370964
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Q6 e5efeebaba SRL",
+   "tenant_id": 370964
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Q6 e5efeebaba SRL",
+   "tenant_id": 370964
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Q6 e5efeebaba SRL",
+   "tenant_id": 370964
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "Second Hand Marja SRL",
+   "tenant_id": 4843
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Second Hand Marja SRL",
+   "tenant_id": 4843
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Second Hand Marja SRL",
+   "tenant_id": 4843
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Second Hand Marja SRL",
+   "tenant_id": 4843
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "Startup Partial 2026 SRL",
+   "tenant_id": 4846
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Startup Partial 2026 SRL",
+   "tenant_id": 4846
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Startup Partial 2026 SRL",
+   "tenant_id": 4846
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Startup Partial 2026 SRL",
+   "tenant_id": 4846
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 8,
+   "nume": "Trecere Micro Profit SRL",
+   "tenant_id": 4847
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 9,
+   "nume": "Trecere Micro Profit SRL",
+   "tenant_id": 4847
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [],
+   "luna": 10,
+   "nume": "Trecere Micro Profit SRL",
+   "tenant_id": 4847
+  },
+  {
+   "caz": "fara_blocaj",
+   "coduri": [
+    "LUNA_IN_CURS"
+   ],
+   "luna": 11,
+   "nume": "Trecere Micro Profit SRL",
+   "tenant_id": 4847
+  }
+ ],
+ "gasite": {
+  "cu_blocaj": {
+   "an": 2026,
+   "luna": 8,
+   "nume": "E2E Probă 8261509 SRL",
+   "tenant_id": 370966
+  },
+  "cu_blocaj_anterior": {
+   "an": 2026,
+   "luna": 8,
+   "nume": "E2E Probă 8255099 SRL",
+   "tenant_id": 370965
+  },
+  "fara_blocaj": {
+   "an": 2026,
+   "luna": 8,
+   "nume": "Achizitii IC Neplatitor SRL",
+   "tenant_id": 4841
+  }
+ }
+}

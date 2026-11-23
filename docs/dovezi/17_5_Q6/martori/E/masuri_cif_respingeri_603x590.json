@@ -1,0 +1,19 @@
+{
+ "clicuri_deschidere": 0,
+ "detalii_deschise": [],
+ "initial_siruri_motiv": 0,
+ "motive_dupa_pliere": 0,
+ "numar_sumar": null,
+ "respingeri_sursa": [
+  "Certificatul de probă nu acoperă firma A.",
+  "Împuternicirea de probă pentru firma B a expirat."
+ ],
+ "sumare_initiale": 1,
+ "text_sumar": [
+  "Două firme necesită verificarea accesului."
+ ],
+ "viewport": [
+  603,
+  590
+ ]
+}

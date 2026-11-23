@@ -1,0 +1,31 @@
+{
+ "caz": "SPV_local",
+ "commit": "aca6f8287825f9e4352e8feb14f93b8d28ba198d",
+ "extrageri": {
+  "factura_sursa": {
+   "format": "ubl_factura",
+   "original": "martori/E/fixture/factura_sursa.xml",
+   "sha256_original": "bd550514e859a8226098cb5a24d7331fa01c9bb8b82536de8dbfd233dddc493f"
+  },
+  "provenienta": {
+   "cale": [
+    "provenienta"
+   ],
+   "format": "json"
+  }
+ },
+ "localizare": "Facturi → Facturi primite pe Q6 e5efeebaba SRL; factura UBL importată prin spv_receive.importa_mesaj (transport local)",
+ "original": "martori/E/original_primita_SPV_local_603x590.json",
+ "rezolutie": "603x590",
+ "scenariu": "primita",
+ "sha256_original": "b36d8bcbe15ec7dbf488823409bd20fd11ea4d9296be265b7e0c8dea5c7f456e",
+ "valori": {
+  "factura_sursa": {
+   "furnizor": "FURNIZOR E2E SRL",
+   "id": "Q6-e5efeebaba",
+   "moneda": "RON",
+   "total": "121.00"
+  },
+  "provenienta": "SPV simulat"
+ }
+}

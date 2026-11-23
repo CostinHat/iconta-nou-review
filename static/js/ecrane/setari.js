@@ -1,6 +1,7 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
 import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=7396e03327";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { cardRezumat } from "../ds_piese.js?v=03f816740e";   // [17.5-Q6, 867] sumarul firmelor fără drept în SPV
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";   // [lotul 11, decizia 10.3] întocmitorul bilanțului, sub Date cabinet
 
 export async function randeazaSetari(corp, nav) {
@@ -520,12 +521,23 @@ export async function panouConectareSPV(zona) {
       z.id = "spv-cuiuri";
       // [deficiența 315, comanda Costin 17.10.2026 7.2] explicația (OMFP 660/2017) o dată, deasupra; pe fiecare firmă un rând:
       // „<firmă> · fără drept în SPV · verificat <data, ora>”
+      // [17.5-Q6, 867] fiecare firmă fără drept își are motivul ANAF întreg pe rândul ei; de la două firme fără drept în sus, rândurile stau sub un
+      // singur sumar («N firme fără drept în SPV», card-rezumat DS), deschis și închis la clic pe «▾ detalii»
+      const respinse = cuiuri.filter((c) => c.are_drept === false).length;
       z.innerHTML = `<div class="cap-titlu" style="margin-top:12px">Firme verificate în SPV cu acest certificat</div>`
-        + (st.explicatie_fara_drept ? `<div class="caseta-atentie" id="spv-explicatie"><span class="ca-mesaj">${esc(st.explicatie_fara_drept)}</span></div>` : "")
-        + `<ul class="spv-cuiuri-lista">` + cuiuri.map((c) =>
+        + (st.explicatie_fara_drept && respinse < 2 ? `<div class="caseta-atentie" id="spv-explicatie"><span class="ca-mesaj">${esc(st.explicatie_fara_drept)}</span></div>` : "");
+      const ul = document.createElement("ul");
+      ul.className = "spv-cuiuri-lista";
+      ul.innerHTML = cuiuri.map((c) =>
         `<li class="spv-cui${c.are_drept === false ? " spv-cui-fara" : ""}" data-cui="${esc(c.cui)}">`
         + `<b>${esc(c.nume || "CUI " + c.cui)}</b> · ${c.are_drept === false ? "fără drept în SPV" : (c.are_drept ? "cu drept în SPV" : "nedeterminat: " + esc(c.eroare || ""))}`
-        + `${c.verificat_la ? " · verificat " + esc(dataRo(c.verificat_la, "cu_ora")) : ""}</li>`).join("") + `</ul>`;
+        + `${c.verificat_la ? " · verificat " + esc(dataRo(c.verificat_la, "cu_ora")) : ""}`
+        + `${c.are_drept === false && c.eroare ? ` — ANAF: „${esc(c.eroare)}”` : ""}</li>`).join("");
+      if (respinse >= 2) {   // sumarul unic poartă și explicația (o dată), iar rândurile firmelor, cu motivul fiecăreia, stau în detaliile lui
+        const card = cardRezumat({ text: `${cate(respinse, "firmă fără drept în SPV", "firme fără drept în SPV")} cu acest certificat.${st.explicatie_fara_drept ? " " + st.explicatie_fara_drept : ""}`, ton: "avertisment", detalii: ul, intreg: true });
+        card.id = "spv-cuiuri-sumar";
+        z.appendChild(card);
+      } else z.appendChild(ul);
       msg.after(z);
     }
     if (btn) { btn.textContent = "Reconectează SPV"; btn.className = "buton-secundar"; }

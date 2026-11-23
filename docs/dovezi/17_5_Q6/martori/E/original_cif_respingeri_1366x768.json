@@ -1,0 +1,10 @@
+{
+ "brut": "raspuns_spv_stare_1366x768.json",
+ "provenienta": "Răspuns local controlat cu două refuzuri distingibile; redare numai pe copia de test.",
+ "respingeri": [
+  "Certificatul de probă nu acoperă firma A.",
+  "Împuternicirea de probă pentru firma B a expirat."
+ ],
+ "ruta": "/spv/stare",
+ "sha256_brut": "f1bfbbcdecae26a43847442fe6488a62e392a87afd0843d3bbc852827139433a"
+}

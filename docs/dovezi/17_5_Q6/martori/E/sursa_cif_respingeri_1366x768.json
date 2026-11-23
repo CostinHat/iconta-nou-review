@@ -1,0 +1,23 @@
+{
+ "caz": "respingeri",
+ "commit": "aca6f8287825f9e4352e8feb14f93b8d28ba198d",
+ "extrageri": {
+  "respingeri_sursa": {
+   "cale": [
+    "respingeri"
+   ],
+   "format": "json"
+  }
+ },
+ "localizare": "Setări cont → Conectare SPV, #spv-cuiuri; răspunsul GET /spv/stare redat local din fixture_867_17_5_Q6.json",
+ "original": "martori/E/original_cif_respingeri_1366x768.json",
+ "rezolutie": "1366x768",
+ "scenariu": "cif",
+ "sha256_original": "2046db3f72de77ce0b870cc92fbabd2b83657c52c6e514b44dd6ed45f98c4553",
+ "valori": {
+  "respingeri_sursa": [
+   "Certificatul de probă nu acoperă firma A.",
+   "Împuternicirea de probă pentru firma B a expirat."
+  ]
+ }
+}

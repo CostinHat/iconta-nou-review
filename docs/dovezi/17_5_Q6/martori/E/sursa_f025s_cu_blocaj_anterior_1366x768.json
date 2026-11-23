@@ -1,0 +1,53 @@
+{
+ "caz": "cu_blocaj_anterior",
+ "commit": "aca6f8287825f9e4352e8feb14f93b8d28ba198d",
+ "extrageri": {
+  "blocaj": {
+   "cale": [
+    "controale",
+    "blocaje"
+   ],
+   "format": "are_reevaluare"
+  },
+  "coduri_blocaje_sursa": {
+   "cale": [
+    "controale",
+    "blocaje"
+   ],
+   "format": "coduri_blocaje"
+  },
+  "firma_luna_intrare": {
+   "cale": [
+    "intrare"
+   ],
+   "format": "json",
+   "original": "martori/E/context_f025s_cu_blocaj_anterior_1366x768.json",
+   "sha256_original": "3aff0aac3f57977e6353c473a7ef16a31858052ebb7892ceb3d09734c7247e9d"
+  },
+  "suma_sursa": {
+   "cale": [
+    "suma"
+   ],
+   "format": "json",
+   "original": "martori/E/context_f025s_cu_blocaj_anterior_1366x768.json",
+   "sha256_original": "3aff0aac3f57977e6353c473a7ef16a31858052ebb7892ceb3d09734c7247e9d"
+  }
+ },
+ "localizare": "Închidere lună, E2E Probă 8255099 SRL 08/2026; originalul primar = corpul GET /tenants/370965/perioade-blocate?an=2026&luna=8",
+ "original": "martori/E/brut_f025s_cu_blocaj_anterior_1366x768.json",
+ "rezolutie": "1366x768",
+ "scenariu": "f025s",
+ "sha256_original": "454fca655c4d3eee0c3fbb26bdb81c9d83e385855dcc151ee363f0e83f3c4057",
+ "valori": {
+  "blocaj": true,
+  "coduri_blocaje_sursa": [
+   "TVA_NEREGULARIZAT",
+   "REEVALUARE_VALUTA"
+  ],
+  "firma_luna_intrare": {
+   "luna": "08/2026",
+   "tenant_id": 370965
+  },
+  "suma_sursa": null
+ }
+}

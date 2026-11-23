@@ -12,7 +12,7 @@ RAD=$(git rev-parse --show-toplevel)
 cd "$RAD" || exit 92
 PY=./venv/bin/python
 $PY scripts/lacat_test.py ia $$ rulare_8019_17_5_Q6 || exit 90
-export LACAT_TEST_PID=$$
+export LACAT_TEST_PID="${LACAT_TEST_PID:-$$}"
 mkdir -p "$IES"
 { echo "# inceput $(date -Iseconds) commit $(git rev-parse HEAD) index $(git write-tree)"; } > "$IES/rulare.meta"
 $PY scripts/verificator_design.py opreste > "$IES/opreste_inainte.out" 2>&1

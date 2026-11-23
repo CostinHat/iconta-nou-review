@@ -1,0 +1,4 @@
+{
+ "poarta_1366x768": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.",
+ "poarta_603x590": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded."
+}

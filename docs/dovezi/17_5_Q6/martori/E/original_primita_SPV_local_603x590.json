@@ -1,0 +1,7 @@
+{
+ "factura_sursa_xml": "martori/E/fixture/factura_sursa.xml",
+ "id_intern": 1,
+ "id_mesaj": "e5efeebaba",
+ "provenienta": "SPV simulat",
+ "sha256_xml": "bd550514e859a8226098cb5a24d7331fa01c9bb8b82536de8dbfd233dddc493f"
+}

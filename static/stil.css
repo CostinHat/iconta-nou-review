@@ -3552,11 +3552,16 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 /* butoanele ecranului trecute în bară pierd așezarea lor locală (lățime întreagă, margini de sus / stânga puse pe clasă sau pe stil) */
 .fj-butoane > button { white-space: nowrap; width: auto !important; max-width: none !important; margin: 0 !important; flex: 0 0 auto; }
 
-/* [15.1-E3, 722] lista cu căutare permanentă (Declarații, pasul 1): căutarea de 44 px și rândurile de 44 px la vedere; derulează numai lista, nu fereastra */
+/* [15.1-E3, 722] lista cu căutare permanentă (Declarații, pasul 1): căutarea de 44 px și rândurile de 44 px la vedere; [17.5-Q6] derulează fereastra, nu lista (o singură derulare) */
 .ds-lista-permanenta .ds-lista-panou { margin-top: 0; padding: 8px; }
-.ds-lista-permanenta .ds-lista-randuri { max-height: max(352px, calc(100vh - 420px)); margin-top: 8px; }   /* [15.1-E5, 742] umple fereastra: minimum 8 rânduri la 1366×768, mai multe pe ecran mai înalt; derulare internă numai peste */
+.ds-lista-permanenta .ds-lista-randuri { max-height: none; overflow: visible; margin-top: 8px; }   /* [17.5-Q6, 865 / 726 / 742 — DS-865/726/742] lista permanentă (Declarații, pasul 1) nu are limită verticală proprie: un singur loc de derulare, corpul ferestrei, de la primul la ultimul rând (datoratele incluse); la 1366×768 se văd întregi cel puțin 8 rânduri. Înlocuiește [15.1-E5, 742] max(352px, 100vh − 420px), care dădea două derulări la 603×590 și 7 rânduri la 1366×768. */
 .fereastra-corp .ds-lista input.ds-lista-cauta:not([type=checkbox]):not([type=radio]):not([type=file]) { height: 44px; }   /* câmpul de căutare al listei: 44 px (DS), peste regula generală a câmpurilor din fereastră */
 .ds-lista-permanenta .ds-lista-grup { padding: 8px 12px 4px; }
+/* [17.5-Q6, F019 — DS-F019] paginarea unei liste lungi (`paginareDS`, ds_piese.js): elementele altor pagini rămân în pagină, nevăzute; bara de sub listă cu pagina curentă și totalul */
+[data-alta-pagina] { display: none !important; }
+.ds-paginare { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 8px 0; }
+.ds-paginare[hidden] { display: none; }
+.ds-paginare-text { font-size: 14px; color: var(--gri); }
 .dec-existente-lista { list-style: none; margin: 0; padding: 0; max-height: 132px; overflow-y: auto; }
 .dec-existente-lista li { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; }
 

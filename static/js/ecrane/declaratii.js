@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=18c84ba990";   // [15.1, 722] lista cu căutare
+import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=03f816740e";   // [15.1, 722] lista cu căutare
 import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=7396e03327";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=b26ef32cac";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [lotul 10, 431] refuzul care trimite la ce lipsește

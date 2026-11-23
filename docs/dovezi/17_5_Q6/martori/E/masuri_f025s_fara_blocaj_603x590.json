@@ -1,0 +1,36 @@
+{
+ "actionabil": true,
+ "blocaj": false,
+ "butoane_fixe": 1,
+ "butoane_rand": 0,
+ "butoane_total": 1,
+ "buton_vizibil_initial": true,
+ "clicuri_deschidere": 1,
+ "clicuri_desfasurare": 0,
+ "coduri_blocaje_sursa": [],
+ "destinatie": "Reevaluare valută",
+ "destinatie_detalii": {
+  "destinatie": "Reevaluare valută",
+  "intro": "La sfârșitul lunii, creanțele și datoriile în valută (pe partener: facturi minus plăți, legate de factură sau nu) și disponibilitățile în valută se evaluează la cursul BNR din ultima zi bancară a lunii (OMFP 1802/2014 pct.325); diferența merge pe 765 (favorabilă) sau 665 (nefavorabilă). Avansurile (409, 419) nu se reevaluează (pct.316 alin.(2)). Verifică propunerea, completează ce lipsește și generează nota.",
+  "text": "Reevaluare valută — 08/2026\n\nLa sfârșitul lunii, creanțele și datoriile în valută (pe partener: facturi minus plăți, legate de factură sau nu) și disponibilitățile în valută se evaluează la cursul BNR din ultima zi bancară a lunii (OMFP 1802/2014 pct.325); diferența merge pe 765 (favorabilă) sau 665 (nefavorabilă). Avansurile (409, 419) nu se reevaluează (pct.316 alin.(2)). Verifică propunerea, completează ce lipsește și generează nota.\n\nVenituri: 0,00 lei · Cheltuieli: 0,00 lei · Net: 0,00 lei\n\nNicio creanță, datorie sau disponibilitate în valută la sfârșitul lunii.\nAjustare manuală\n\nUn cont în valută pe care aplicația nu-l propune (un împrumut, un depozit, o creanță în lei cu clauză valutară): scrii contul, moneda și soldul în valută din document; soldul în lei îl ia aplicația din evidență. Luna următoare contul revine singur aici.\n\nAdaugă un cont\n\nCompletează datele cerute în fereastră, ca să poți continua.\nGenerează nota",
+  "titlu": "Reevaluare valută — 08/2026"
+ },
+ "explicatie_ui": "La sfârșitul lunii, creanțele și datoriile în valută (pe partener: facturi minus plăți, legate de factură sau nu) și disponibilitățile în valută se evaluează la cursul BNR din ultima zi bancară a lunii (OMFP 1802/2014 pct.325); diferența merge pe 765 (favorabilă) sau 665 (nefavorabilă). Avansurile (409, 419) nu se reevaluează (pct.316 alin.(2)). Verifică propunerea, completează ce lipsește și generează nota.",
+ "firma_luna_destinatie": {
+  "luna": "02/2014",
+  "tenant_id": 4841
+ },
+ "firma_luna_intrare": {
+  "luna": "08/2026",
+  "tenant_id": 4841
+ },
+ "id_unic": true,
+ "primul_blocaj_vizibil_initial": false,
+ "rand_reevaluare_vizibil_initial": false,
+ "suma_sursa": null,
+ "suma_ui": null,
+ "viewport": [
+  603,
+  590
+ ]
+}

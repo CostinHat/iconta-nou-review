@@ -236,6 +236,7 @@ def test_fixture(browser):
     from conftest import Ecran, sql
     IES.mkdir(parents=True, exist_ok=True)
     out = IES / "fixture"
+    os.makedirs(os.environ["ICONTA_EMAIL_CUTIE"], exist_ok=True)   # cutia de poștă a probei (o creează primul email; protocolul o cere încărcată înainte)
     r = subprocess.run([sys.executable, str(Path(__file__).with_name("pregateste_fixture_17_5_Q6.py")), str(out)], cwd=_ARB, env=os.environ,
                        capture_output=True, text=True)
     (IES / "fixture_stdout.txt").write_text(r.stdout, encoding="utf-8")
@@ -253,9 +254,15 @@ def test_fixture(browser):
     _scrie("fixture_confirmare.json", {"P-F172": {"ciorne_factura": ciorne}, "P-F179": {"randuri": [list(x) for x in primite]},
                                        "P-X02": invitati, "firma": firma["nume"]})
     assert ciorne >= 1 and len(primite) == 1 and all(invitati.values())
+    esecuri = {}
     for rez in ("1366x768", "603x590"):
-        _poarta(browser, fx, rez, sql, Ecran)
-        _primita(browser, fx, rez, out)
+        for nume, fn in (("poarta", lambda: _poarta(browser, fx, rez, sql, Ecran)), ("primita", lambda: _primita(browser, fx, rez, out))):
+            try:
+                fn()
+            except Exception as e:  # noqa: BLE001 — martorul care nu se poate lua se consemnează, celelalte continuă
+                esecuri[f"{nume}_{rez}"] = f"{type(e).__name__}: {str(e).splitlines()[0] if str(e) else ''}"
+    _scrie("fixture_esecuri.json", esecuri)
+    assert not esecuri, esecuri
 
 
 def _poarta(browser, fx, rez, sql, Ecran):
@@ -277,8 +284,13 @@ def _poarta(browser, fx, rez, sql, Ecran):
             corp_r = resp.json()
         except Exception:  # noqa: BLE001
             corp_r = {"text": resp.text()}
-        pg.wait_for_selector(TOP + ".caseta-poarta", timeout=20000)
         k = f"poarta_stoc_{rez}"
+        _scrie(f"diagnostic_{k}.json", {"status": resp.status, "corp": corp_r})   # răspunsul, înainte de orice așteptare (diagnostic)
+        try:
+            pg.wait_for_selector(TOP + ".caseta-poarta", timeout=20000)
+        except Exception:  # noqa: BLE001
+            pg.screenshot(path=str(IES / f"diagnostic_{k}.png"))
+            raise
         pg.screenshot(path=str(IES / f"captura_{k}.png"))
         alegeri = pg.evaluate("""() => [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .caseta-poarta button')]
           .filter((b) => !b.disabled && b.getAttribute('aria-disabled') !== 'true' && (b.offsetWidth || b.offsetHeight)).map((b) => b.innerText.trim())""")
@@ -372,6 +384,39 @@ def test_f025s(browser):
         return
     from conftest import Ecran, la_luna_ceruta
     IES.mkdir(parents=True, exist_ok=True)
+    # 0. starea cu blocajul de reevaluare (pe drumul testului 429, e2e_lot10_valuta.py): firmă nouă a probei, factură EUR din 26.08.2026 emisă din
+    #    ecran, nota ei de contare validată; firma intră în căutarea de mai jos ca oricare alta (iese din bază la curățenia rulatorului)
+    from conftest import firma_noua, sql
+    from e2e_bloc_a import pregateste_firma, _api, _ok
+    from e2e_lot10_valuta import _emite_eur_din_ecran
+    gen = firma_noua()
+    fv = next(gen)
+    ctxp = _context(browser, CONT_ADMIN, "1366x768")
+    try:
+        pg = ctxp.new_page()
+        pg.goto(BAZA + "/", wait_until="domcontentloaded")
+        ec = Ecran(pg, "colector_q6_f025")
+        pregateste_firma(ec, fv)
+        fid = _emite_eur_din_ecran(ec, fv)
+        (nid, _st), = sql('SELECT id, status FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = \'facturi\'' % fv["schema"], (fid,))
+        _ok(_api(ec, "POST", "/tenants/%d/jurnal/%d/valideaza" % (fv["tenant_id"], nid), {}), "validarea contării")
+        pregatire = [{"firma": fv["nume"], "tenant_id": fv["tenant_id"], "factura_id": fid, "nota_validata": nid}]
+        # a doua firmă: aceeași factură, apoi regularizarea TVA propusă de aplicație (ruta butonului «Propune regularizarea TVA») și notele ei
+        # validate (ruta «Validează» din Registrul jurnal), ca în luna lui august să rămână numai blocajul de reevaluare
+        gen2 = firma_noua()
+        fw = next(gen2)
+        pregateste_firma(ec, fw)
+        fid2 = _emite_eur_din_ecran(ec, fw)
+        (nid2, _st), = sql('SELECT id, status FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = \'facturi\'' % fw["schema"], (fid2,))
+        _ok(_api(ec, "POST", "/tenants/%d/jurnal/%d/valideaza" % (fw["tenant_id"], nid2), {}), "validarea contării")
+        reg = _api(ec, "POST", "/tenants/%d/inchidere/regularizare-tva?an=2026&luna=8" % fw["tenant_id"], {})
+        ciorne = [x[0] for x in sql('SELECT id FROM "%s".inregistrari WHERE status = \'ciorna\' ORDER BY id' % fw["schema"])]
+        val = [_api(ec, "POST", "/tenants/%d/jurnal/%d/valideaza" % (fw["tenant_id"], n), {})["status"] for n in ciorne]
+        pregatire.append({"firma": fw["nume"], "tenant_id": fw["tenant_id"], "factura_id": fid2, "nota_validata": nid2,
+                          "regularizare_status": reg["status"], "note_regularizare_validate": dict(zip(map(str, ciorne), val))})
+        _scrie("f025s_pregatire.json", pregatire)
+    finally:
+        ctxp.close()
     # 1. căutarea cazurilor (răspunsul brut al controalelor lunii, pe firmele cabinetului de test, lunile 08–11/2026)
     ctx = _context(browser, CONT_ADMIN, "1366x768")
     gasite, cautare = {}, []
@@ -432,7 +477,7 @@ def test_f025s(browser):
                                intro: (q('.pf-intro') || {innerText: ''}).innerText.trim(), text: (q('.fereastra-corp') || {innerText: ''}).innerText.trim().slice(0, 2000) }; }""")
                     pg.screenshot(path=str(IES / f"captura_{k}_destinatie.png"))
                 import re
-                lunad = re.search(r"(\d{2})/(\d{4})", (dest.get("intro") or "") + " " + (dest.get("titlu") or ""))
+                lunad = re.search(r"(\d{2})/(\d{4})", dest.get("titlu") or "")   # luna destinației: titlul «Reevaluare valută — LL/AAAA» (h2.pf-titlu)
                 # contextul intrării (firma și luna alese de colector) și suma (răspunsul controalelor nu poartă o sumă: null), într-un original separat, cu SHA
                 pctx = IES / f"context_{k}.json"
                 pctx.write_text(json.dumps({"intrare": intrare, "suma": None, "ruta": f"/tenants/{g['tenant_id']}/perioade-blocate?an={g['an']}&luna={g['luna']}"},
