@@ -1,0 +1,74 @@
+# dovada pe baza — lot 17_5_Q4 — test e2e_ferestre_17_5_Q4.py — 2026-11-23T05:17:01+02:00 — main 566226fa3f2b053ce4262dd4772967e5921e28d8
+sha_test=cee65c031e6e0f08 e2e_ferestre_17_5_Q4.py
+id-uri rosii obligatorii: e.1,e.2
+contract ancorat: sha256 8785696053ff38d8e4270ec57247b01f7b8680c978c4a4b547510543935b336a (***/ghid_incoming/pornire_17_5_Q4.txt)
+lacat: liber
+[lacat_test] lacăt preluat de la pid 1175800 (mort sau refolosit)
+probe cititor: ***/ghid_incoming/probe_cititor_17_5_Q4.Gxesfpd9
+REST inainte: snapshot 054cd769c34408ac8bd2a90ba5dc03f5c323a1879dbc81a2081d4521a8ccb0ba
+REST inainte: 8019 liber; lacat pid=1363741
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (***:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 79s
+REST inainte: rc=0
+pornesc 8019 din main (scripts/porneste_8019.sh)
+[verificator design] serverul de lucru pe 8019, commit 566226fa
+8019 identitate verificata (pid start boot_id main): 1364973 310057079 feb89df4-7da7-421b-a22c-25b0702483e0 566226fa3f2b053ce4262dd4772967e5921e28d8
+rulez testul pe baza: e2e_ferestre_17_5_Q4.py
+            try:
+                ctx.clock.set_fixed_time(MOMENT_REF)
+                ctx.add_init_script(init)
+                pg = ctx.new_page()
+                pg.goto(origine + "/", wait_until="domcontentloaded")
+                martor = route(pg)
+                pg.evaluate("document.fonts.ready")
+                pg.evaluate("() => new Promise(ok => requestAnimationFrame(() => requestAnimationFrame(ok)))")
+                m = masoara(pg, ident)
+                if martor is not None:
+                    m["martor"] = martor
+                pg.screenshot(path=str(dest / (ident + ".png")))
+                if ident == "e.2":
+                    m["acces_denumire"] = nume_cont(pg, martor, dest)
+                masuri[ident] = m
+                verdicte[ident] = rezultat(ident, m)
+            except Exception as exc:
+                erori[ident] = type(exc).__name__ + ": " + str(exc).splitlines()[0]
+            finally:
+                ctx.close()
+        (dest / "masuri.json").write_text(json.dumps(masuri, ensure_ascii=False, indent=2), encoding="utf-8")
+        (dest / "erori.json").write_text(json.dumps(erori, ensure_ascii=False), encoding="utf-8")
+        with capsys.disabled():
+            for ident, trecut in verdicte.items():
+                print(f"VERDICT {ident} {'trece' if trecut else 'pica'}", flush=True)
+        if erori:
+            raise RuntimeError(f"NEEXECUTAT: {erori}")
+>       assert set(verdicte) == {"e.1", "e.2"} and all(verdicte.values()), verdicte
+E       AssertionError: {'e.1': False, 'e.2': False}
+E       assert ({'e.1', 'e.2'} == {'e.1', 'e.2'}
+E         
+E         Use -v to get more diff and False)
+E        +  where False = all(dict_values([False, False]))
+E        +    where dict_values([False, False]) = <built-in method values of dict object at 0x7bc6b83ab7c0>()
+E        +      where <built-in method values of dict object at 0x7bc6b83ab7c0> = {'e.1': False, 'e.2': False}.values
+
+frontend_test/e2e/e2e_ferestre_17_5_Q4.py:204: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_ferestre_17_5_Q4.py::test_ferestre_17_5_Q4 - Ass...
+1 failed in 7.86s
+randuri VERDICT/MASURA in iesirea completa (***/ghid_incoming/dovada_baza_17_5_Q4.pytest.txt, 61 randuri): 2
+  VERDICT e.1 pica
+  VERDICT e.2 pica
+pytest rc=1 durata=8 s
+rezumat pytest: 1 failed in 7.86s; randuri FAILED ale testului: 1
+id e.1: pica=1 trece=0
+id e.2: pica=1 trece=0
+oprire 8019 (verificator_design.py opreste, Z): rc=0; [verificator design] oprit; portul 8019 liber
+REST dupa: snapshot 054cd769c34408ac8bd2a90ba5dc03f5c323a1879dbc81a2081d4521a8ccb0ba
+REST dupa: 8019 liber; lacat pid=1363741
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (***:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 77s
+REST dupa: rc=0
+arbore main: curat, HEAD = refs/heads/main = 566226fa3f2b053ce4262dd4772967e5921e28d8
+VERDICT: ROSU PE BAZA (rc=1) — dovada valabila
+# sfarsit 2026-11-23T05:20:07+02:00

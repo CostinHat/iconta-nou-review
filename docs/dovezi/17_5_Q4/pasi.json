@@ -1,0 +1,84 @@
+{
+  "asertiuni": [
+    {
+      "id": "f.1",
+      "pas": "implicit",
+      "operator": "text_contine",
+      "valoare": "Control fiscal",
+      "cheie": "dom:main button.cab-card .cab-card-titlu|text",
+      "ac": null,
+      "martor": "Cabinet",
+      "de_ce": "Acces la controlul fiscal din cabinet."
+    },
+    {
+      "id": "f.2",
+      "pas": "inchidere",
+      "operator": "text_contine",
+      "valoare": "Luna",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #il-stare-perioada|text",
+      "ac": null,
+      "martor": "Închidere lună F1",
+      "de_ce": "Starea perioadei este încărcată din copia de test."
+    },
+    {
+      "id": "f.3",
+      "pas": "inchidere",
+      "operator": "text_contine",
+      "valoare": "Evidența facturilor",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #il-facturi|text",
+      "ac": null,
+      "martor": "Închidere lună F1",
+      "de_ce": "Starea evidenței facturilor este accesibilă."
+    },
+    {
+      "id": "a.1",
+      "pas": "inchidere",
+      "operator": "text_vizibil",
+      "valoare": "Evidența facturilor",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #il-facturi|text",
+      "ac": "C235",
+      "martor": "Închidere lună F1",
+      "de_ce": "Starea evidenței facturilor este lizibilă în vederea inițială fără derulare."
+    },
+    {
+      "id": "f.4",
+      "pas": "balanta",
+      "operator": "text_contine",
+      "valoare": "Balanță de verificare",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) .pf-titlu|text",
+      "ac": null,
+      "martor": "Balanță F1",
+      "de_ce": "Titlul identifică vederea reală a balanței."
+    },
+    {
+      "id": "f.5",
+      "pas": "balanta",
+      "operator": "text_contine",
+      "valoare": "cont",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #b-intro|text",
+      "ac": null,
+      "martor": "Balanță F1",
+      "de_ce": "Rezumatul indică numărul de conturi al perioadei."
+    },
+    {
+      "id": "f.6",
+      "pas": "balanta",
+      "operator": "text_contine",
+      "valoare": "Descarcă PDF",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #b-pdf|text",
+      "ac": null,
+      "martor": "Balanță F1",
+      "de_ce": "Acțiunea de export rămâne disponibilă."
+    },
+    {
+      "id": "a.2",
+      "pas": "balanta",
+      "operator": "text_vizibil",
+      "valoare": "Descarcă PDF",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #b-pdf|text",
+      "ac": "854",
+      "martor": "Balanță F1",
+      "de_ce": "Garda de regresie verifică vizibilitatea acțiunii de export la 603 fără deplasare orizontală."
+    }
+  ]
+}

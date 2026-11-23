@@ -30,3 +30,4 @@ frontend_test/e2e/e2e_ferestre_firma_17_5_N.py	68993e74e87f8e934f893f745d0f90a7f
 frontend_test/e2e/e2e_bon_cui_17_5_P2.py	18997a54d893d542b62244777ec56e9908b9f33ff59d2e9e4f5553d716263bcd	1	python -m pytest -q frontend_test/e2e/e2e_bon_cui_17_5_P2.py
 frontend_test/e2e/e2e_ferestre_17_5_Q2.py	21faa2a07cc196fee957675b80250235fd5bd5960b0918a6fc6f00a5766c67b1	3	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_Q2.py
 frontend_test/e2e/e2e_ferestre_17_5_Q5.py	29cc944d0a8bffc2bd21f76c4cd2f4daaad12d2acbe3625e8946d178ce4a354c	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_Q5.py
+frontend_test/e2e/e2e_ferestre_17_5_Q4.py	cee65c031e6e0f0841517c8be9375cd48d45a637b9e6c152dae7005925323bc3	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_Q4.py

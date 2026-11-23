@@ -1,0 +1,11 @@
+8,13c8,9
+< sursa pragurilor 17.5-Q4: generate de scripts/praguri_automate.py la 2026-11-23T05:53:56+02:00 din .lot_jurnal.log; loturi folosite: 17.5-P2, 17.5-Q2, 17.5-Q5 (3)
+<   hook: maxim 110 s (lotul 17.5-Q2, rularea 2484307-1795323554415) din 14 rulari complete, 0 rulari «intrerupt» ignorate, prag 132 s
+<   poarta_verificator: maxim 94 s (lotul 17.5-P2, rularea 438494-1795276810615) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 113 s
+<   poarta_pytest: maxim 605 s (lotul 17.5-P2, rularea 438494-1795276904851) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 726 s
+<   poarta_plasa: maxim 2979 s (lotul 17.5-Q5, rularea 482839-1795379236690) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 3575 s
+< limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+---
+> Sursa PRE-P0: ultimele trei loturi publicate P2, Q2, Q5. Extrasele cronologice și SHA-urile jurnalelor sunt în repere. Maxime 110/94/605/2979 s. Rotunjire în sus după înmulțire cu 1,2. Maxime confruntate cu jurnalul oficial prin recipisa r1. Ajustarea plasei se stabilește numai din REAL Q4 și .gata. Acest fișier prezintă pragurile de bază.
+> sursa pragurilor 17.5-Q4: maxime din .lot_jurnal.log (SHA-256 a1f4928ecf4a7216568fa13c861a8dc25aeea0f07c02540df3cac3a16bac78b4, citit 23.11.2026); loturi folosite: 17.5-P2, 17.5-Q2, 17.5-Q5 (3)
+rc_diff=1

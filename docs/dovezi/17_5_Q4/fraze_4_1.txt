@@ -1,0 +1,24 @@
+17.5-Q4 — frazele §4 pct.1 (scrise înainte de orice modificare de produs, 23.11.2026 06:0x; neschimbate în raport)
+854 | Tabelele cu multe coloane (Balanță, Registru jurnal, Bancă, Casă, Cartea mare, Salariați, Parteneri) derulează pe orizontală la 603×590; urmăresc ca sub 700 px orice tabel care nu încape să devină rânduri cu eticheta coloanei lângă fiecare valoare, fără derulare laterală, cu contul și denumirea în același rând (e.2 pe Balanță).
+848 | Istoric facturi derulează pe orizontală la 1366×768 pe ambele drumuri; urmăresc ca tabelul să încapă pe lățime pe ambele căi, cu numărul, suma, statutul și acțiunea accesibile.
+853 | Mesajul ciornei din Emite factură («Factura începută (ultima modificare: …)») e tăiat cu „…” la 90 de caractere; urmăresc ca data și ora ultimei modificări să se citească întregi, fără hover.
+800 | La 643×590 butonul categoriei «Livrare intracomunitară» e mai îngust decât textul lui; urmăresc ca butonul să nu se strângă sub text și să treacă întreg pe rândul următor.
+814 | Antetele listei De validat se rup în mijlocul cuvântului la 603×590; urmăresc ca sub 700 px etichetele să rămână cuvinte întregi, asociate valorilor (excepția DS-814 numai pentru această listă).
+856 | Butonul-dată din rândul De validat (19.10.2026) e mai îngust decât data la 603×590; urmăresc ca data să încapă în buton și să deschidă același document.
+866 | Linia de stare SPV a firmei se taie cu „…” («verificat ul…»); urmăresc ca starea și momentul ultimei verificări să se citească întregi.
+AC187 | În Conectare SPV la 680 px titlul ferestrei are 0 px, mâncat de «← Înapoi la Facturi primite»; urmăresc ca titlul și întoarcerea să aibă arii nenule și distincte.
+867 | Caseta roșie din Conectare SPV repetă răspunsul ANAF pentru fiecare CIF respins; urmăresc un singur sumar inițial și motivul fiecărui CIF în detalii.
+864 | Detaliul firmei din Control fiscal are la 1366×768 3–5 mii de px într-o zonă de 472 px; urmăresc ca vederea inițială să încapă (firma, perioada, numărul semnalelor, primul semnal), cu celelalte grupe pliate.
+865 | Declarații pasul 1 are la 603×590 două zone de derulare (corp și listă); urmăresc o singură derulare, a corpului, până la ultimul element al listei.
+726 | Datoratele din Declarații stau într-o casetă cu derulare proprie; urmăresc ca ele să intre în derularea unică a corpului (închisă cu 865).
+742 | Lista cu căutare din Declarații arată 6 rânduri întregi la 1366×768, regula cere 8; urmăresc cel puțin 8 rânduri întregi vizibile simultan.
+737 | Motivarea cotei propuse în Produse vine fără diacritice și ca descriere lungă; urmăresc motivarea cu diacritice, separată de descriere, cu descrierea utilizatorului neschimbată.
+C235 | Închidere lună derulează la 1366×768 (corpul 1.018 px în 680); urmăresc ca vederea inițială să încapă în corp (perioada, starea, sumarul blocajelor și semnalelor, evidența facturilor, acțiunea), cu detaliile la o deschidere (e.1).
+P-F019-S | Lista De validat are la 603×590 13.535 px într-o zonă de 290 px; urmăresc modelul DS-F019 (8 documente pe pagină, o singură zonă, navigare cu pagina curentă și totalul).
+r61-F025-A-S | Reevaluare valută: antete rupte (A) și butonul «Reevaluare valută» de două ori în Închidere lună (S); urmăresc antete întregi asociate valorilor și un singur drum spre reevaluare, judecate separat.
+r61-F043-A-S | Fișa de validare a facturii primite e deasă (A, S); urmăresc să reconfirm întâi pe E elementul vizual și pasul redundant, apoi să judec A și S separat.
+r61-F078-F080-S | Salariați / Stat de plată: ~24 de câmpuri deodată (F078) și ~8 acțiuni în fișă (F080); urmăresc reconfirmarea pe E și judecata separată F078 / F080.
+r61-F085-S | Import date (F7, parteneri): același mesaj de refuz de trei ori și paragraful TVA la încasare; urmăresc reconfirmarea pe E cu aceeași precondiție.
+P-F172 | Poarta «Pleacă marfa acum?» cu trei butoane; urmăresc proba fără emitere pe copie (două alegeri active, «Emite factură» inactiv cu motiv, inventarul facturilor neschimbat).
+P-F179 | Citirea unei facturi de furnizor din SPV simulat în Facturi primite; urmăresc numărul, furnizorul, totalul și moneda identice cu sursa simulată.
+P-X02 | Prima intrare reală a unui asistent invitat; urmăresc cele șase criterii pe ambele rezoluții, pe copie.

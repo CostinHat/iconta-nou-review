@@ -1,0 +1,63 @@
+produs
+lot: 17.5-Q4
+max hook 132
+max poarta_verificator 113
+max poarta_pytest 726
+max poarta_plasa 3575
+runde_verificator_max: 2
+sursa pragurilor 17.5-Q4: generate de scripts/praguri_automate.py la 2026-11-23T05:53:56+02:00 din .lot_jurnal.log; loturi folosite: 17.5-P2, 17.5-Q2, 17.5-Q5 (3)
+  hook: maxim 110 s (lotul 17.5-Q2, rularea 2484307-1795323554415) din 14 rulari complete, 0 rulari «intrerupt» ignorate, prag 132 s
+  poarta_verificator: maxim 94 s (lotul 17.5-P2, rularea 438494-1795276810615) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 113 s
+  poarta_pytest: maxim 605 s (lotul 17.5-P2, rularea 438494-1795276904851) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 726 s
+  poarta_plasa: maxim 2979 s (lotul 17.5-Q5, rularea 482839-1795379236690) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 3575 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_Q4.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_ferestre_17_5_Q4.py)
+  frontend_test/e2e/e2e_ferestre_17_5_Q4.py (nou)
+  docs/dovezi/17_5_Q4/
+  DESIGN_SYSTEM.md
+  DEFICIENTE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  static/stil.css
+  static/js/ds_piese.js
+  static/js/ecrane/firme.js
+  static/js/ecrane/emitere_ecran.js
+  static/js/ecrane/facturi_ecran.js
+  static/js/ecrane/validat.js
+  static/js/ecrane/control.js
+  static/js/ecrane/declaratii.js
+  static/js/ecrane/migrare.js
+  static/js/ecrane/asistent.js
+  static/js/ecrane/inceput.js
+  static/js/ecrane/cabinet.js
+  static/js/ecrane/clienti_ecran.js
+  core/repo_control_incrucisat.py (694.1, sub regula 484)
+  static/index.html (numai versiuni de active)
+  static/spv_callback.html (numai versiuni de active)
+  static/js/ecrane/tabel_note.js (854, 814, 856 și P-F019-S, tabelul comun)
+  static/js/ecrane/produse_ecran.js (737, afișarea denumirii și a motivării)
+  static/js/ecrane/reevaluare_ecran.js (numai criteriile F025 reproduse pe E)
+  static/js/ecrane/spv_stare.js (866, textul vizibil al stării SPV)
+  static/js/navigator.js (AC187 dacă se reproduce și CSS nu ajunge, sau numai cascada ?v=)
+  core/cote_tva.py (737, numai formularea motivării, păstrează regula și cotele)
+  core/control_incrucisat.py (694.1, prezentarea diferenței, păstrează decizia 484)
+  core/test_pilot_17_5_X.py (694.1, probe țintite suplimentare, păstrează aserțiunile 484)
+  core/test_ciorne_decont_17_5_W.py (694.1, comparație ciornă/validată, păstrează garanțiile existente)
+  core/test_granite_cota.py (737, regresie de produs numai asupra rezultatelor și motivării, păstrează testele cotelor)
+  static/js/app.js (numai cascada ?v=)
+  static/js/cadru.js (numai cascada ?v=)
+  static/js/cautare.js (numai cascada ?v=)
+  static/js/ecrane/ansamblu.js (numai cascada ?v=)
+  static/js/ecrane/borderou_ecran.js (numai cascada ?v=)
+  static/js/ecrane/capacitate.js (numai cascada ?v=)
+  static/js/ecrane/coada_trimite.js (numai cascada ?v=)
+  static/js/ecrane/control_verdict.js (numai cascada ?v=)
+  static/js/ecrane/ecran_destinatie.js (numai cascada ?v=)
+  static/js/ecrane/etransport_ecran.js (numai cascada ?v=)
+  static/js/ecrane/operatiuni_ecran.js (numai cascada ?v=)
+  static/js/ecrane/portal.js (numai cascada ?v=)
+  static/js/ecrane/salut.js (numai cascada ?v=)
+  static/js/ecrane/supervizor.js (numai cascada ?v=)
+  static/js/ecrane/termene.js (numai cascada ?v=)

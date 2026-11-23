@@ -1,0 +1,19 @@
+# K1/K2: garda_predare_python.py 17_5_Q4 --baza 566226fa3f2b053ce4262dd4772967e5921e28d8, 23.11.2026 06:56
+K1/K2: dovadă reutilizată pentru 17_5_Q4 pe 566226fa3f2b053ce4262dd4772967e5921e28d8: /home/costin/ghid_incoming/k12_17_5_Q4.json
+rc garda=0
+Ruff pe cele 4 destinații:
+All checks passed!
+rc ruff=0
+garda_unelte_inghetate:
+UNELTE OK 17_5_Q4: 4 unelte
+rc=0
+sha256 la destinații:
+cee65c031e6e0f0841517c8be9375cd48d45a637b9e6c152dae7005925323bc3  frontend_test/e2e/e2e_ferestre_17_5_Q4.py
+62f00b767720d7d92931be3d81baa808f9a28bc18379c5d635bc9f804d878eb2  docs/dovezi/17_5_Q4/parcurs_17_5_Q4.py
+143252562a4861c37a1a782d07a34d045bd3a88deba085f4ec2dab82566e6671  docs/dovezi/17_5_Q4/bilant_17_5_Q4.py
+1622a7c68eec8616d8fec1fdfc588fb1c815b962266cb33a5951e847f5c0dac8  docs/dovezi/17_5_Q4/citeste_rezultat_Q4.py
+e296d1d97dfb3db7691cf69beb466c1b8577aed655dc941a5a35a616e8dd9eec  docs/dovezi/17_5_Q4/pasi.json
+9e10514c6583505b244f7c4f8943c6fbb48ed5728cffecef1a02c0e91e1f1de7  scripts/praguri_17_5_Q4.txt
+teste descoperite în e2e_ferestre_17_5_Q4.py:
+
+1 test collected in 0.19s

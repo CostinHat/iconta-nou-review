@@ -1,0 +1,6 @@
+[lacat_test] lacăt preluat de la pid 1613318 (mort sau refolosit)
+[parcurs] implicit trece [('f.1', 'trece', '')]
+[parcurs] inchidere pica [('f.2', 'trece', ''), ('f.3', 'trece', ''), ('a.1', 'pica', "'Evidența facturilor' nu apare în textul vizibil din fereastră: ''")]
+[parcurs] balanta trece [('f.4', 'trece', ''), ('f.5', 'trece', ''), ('f.6', 'trece', ''), ('a.2', 'trece', '')]
+
+rc=0

@@ -1,0 +1,44 @@
+# importatorii reali pe E 566226fa ai fișierelor de produs atinse (grep pe import ... from ...)
+## ds_piese.js
+static/js/cadru.js:19:import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_p
+static/js/ecrane/capacitate.js:7:import { tabelDSHtml } from "../ds_piese.js?v=ab8a4ad1c3";
+static/js/ecrane/clienti_ecran.js:21:import { meniuActiuni } from "../ds_piese.js?v=ab8a4ad1c3";
+static/js/ecrane/control.js:5:import { tabelDS } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-D] lista firmelor pe tabelul DS
+static/js/ecrane/control_verdict.js:10:import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] semnale p
+static/js/ecrane/declaratii.js:9:import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1, 722] lista cu căutare
+static/js/ecrane/emitere_ecran.js:10:import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1, F-A.1] caseta SPV de după emitere
+static/js/ecrane/firme.js:4:import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1, 687.1] semnalele ferestrei, pe piesa
+static/js/ecrane/operatiuni_ecran.js:5:import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1] piesele formula
+static/js/ecrane/produse_ecran.js:7:import { meniuActiuni } from "../ds_piese.js?v=ab8a4ad1c3";
+static/js/ecrane/spv_stare.js:6:import { cardRezumat } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1, 687.1-SPV]
+static/js/ecrane/supervizor.js:22:import { semnalHtml, legaSemnale } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] semnale pe rând
+static/js/ecrane/termene.js:5:import { tabelDS } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] lista scadențelor pe tabelul DS
+static/js/ecrane/validat.js:34:import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] pliarea semnalelor constatărilor
+## firme.js
+static/js/ecrane/asistent.js:15:import { randeazaListaFirme } from "./firme.js?v=956057387b";
+static/js/ecrane/cabinet.js:9:import { randeazaListaFirme } from "./firme.js?v=956057387b";
+static/js/ecrane/termene.js:6:import { deschideFirma } from "./firme.js?v=956057387b";
+static/js/ecrane/validat.js:36:import { deschideFirma, ecranJurnal } from "./firme.js?v=956057387b";
+## emitere_ecran.js
+static/js/ecrane/borderou_ecran.js:14:import { cautaInLista } from "./emitere_ecran.js?v=4cd799989f";   /* [lotul 12, 488] */
+static/js/ecrane/facturi_ecran.js:12:import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTva
+static/js/ecrane/firme.js:44:import { cautaInLista } from "./emitere_ecran.js?v=4cd799989f";   /* [lotul 12, 488] căutarea în listele lungi de articole */
+## spv_stare.js
+static/js/ecrane/control_verdict.js:13:import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [deficiența 463] starea SPV a firmei, aceeași ca î
+static/js/ecrane/emitere_ecran.js:14:import { textStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6, 275c] */
+static/js/ecrane/etransport_ecran.js:5:import { textStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [17.5-N, AC041] acoperirea SPV a firmei, cu regula implic
+static/js/ecrane/facturi_ecran.js:9:import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275] */
+static/js/ecrane/firme.js:42:import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
+## tabel_note.js
+static/js/ecrane/firme.js:64:import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=74b676ef63";  // 
+static/js/ecrane/validat.js:32:import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=74b676ef63";  // [lotul 
+## validat.js
+static/js/ecrane/asistent.js:14:import { randeazaValidat } from "./validat.js?v=a2db2ca802";
+static/js/ecrane/cabinet.js:18:import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=a2db2ca802";
+## apelanții carduriDSAplica / tabeleDSAplica pe E
+static/js/cadru.js:19:import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_p
+static/js/cadru.js:301:    tabeleDSAplica(corp);   // [15.1-E4] tabelul DS, o singură dată pentru toate ecranele
+static/js/cadru.js:304:    carduriDSAplica(corp);   // [15.1-E4] cardul-rezumat, o singură dată pentru toate ecranele
+static/js/ds_piese.js:423:export function tabeleDSAplica(corp) {
+static/js/ds_piese.js:495:export function carduriDSAplica(corp) {
+static/stil.css:3665:/* [15.1-E4] cardul-rezumat aplicat notelor existente (`carduriDSAplica`, ds_piese.js): aceeași piesă, peste clasele vechi ale notelor */
