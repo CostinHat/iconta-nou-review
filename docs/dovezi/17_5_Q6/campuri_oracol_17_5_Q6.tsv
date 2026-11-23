@@ -1,0 +1,17 @@
+scenariu	chei_JSON
+datorate	id_selectat, id_ultim_sursa, perioada_destinatie, perioada_sursa, scrolluri_lista, scrolluri_traseu
+control	context_intrare, context_revenire, firma_sursa, firma_ui, grupe, id_initial, id_sursa, inaltime_corp_initial, perioada_sursa, perioada_ui, scroll_corp_initial, total_sumar, viewport, firma_caz
+pagini	filtru_asteptat, filtru_dupa_revenire, filtru_fara_rezultat, filtru_initial, filtru_observat, filtru_vizibil, id_sursa, pagina_dinainte, pagina_dupa_filtru, pagina_dupa_revenire, pagini, scrolluri_verticale, sumar_vizibil, total_sumar, ultim_deschis
+cif	clicuri_deschidere, detalii_deschise, initial_siruri_motiv, motive_dupa_pliere, numar_sumar, respingeri_sursa, sumare_initiale
+f025a	campuri_accesibile, campuri_sursa, id_detaliu, id_sursa, latime_corp, scroll_corp, total_coloane
+f025s	actionabil, butoane_total, id_unic, clicuri_deschidere, clicuri_desfasurare, viewport, buton_vizibil_initial, rand_reevaluare_vizibil_initial, primul_blocaj_vizibil_initial, coduri_blocaje_sursa, blocaj, butoane_fixe, butoane_rand, destinatie, explicatie_ui, firma_luna_destinatie, firma_luna_intrare, suma_sursa, suma_ui
+f043a	clasificari_ui, id_document_dupa, id_document_initial, latime_corp, linii_xml, numar_suprapuneri, scroll_corp
+f043s	control_activ, grupe_taxare_initiale_pe_aceeasi_linie, motiv_vizibil, permis_sursa, valori_dupa, valori_inainte
+f078	campuri_E_reprodus, campuri_accesibile, campuri_initiale, campuri_necesare, motiv_cnp_invalid, scrolluri_banda_erori
+f080	actiuni_E_reprodus, actiuni_initiale, clicuri_compozitie, fluturas_sursa, fluturas_ui
+f085	afisari_refuz, clicuri_detalii_tva, cont, detaliu_tva, motiv_sursa, motiv_ui, solduri_dupa, solduri_inainte
+istoric	actiune_accesibila, cale, date_detaliu, date_sursa, id_revenire, latime_corp, latime_lista, scroll_corp, scroll_lista
+cota	cota_dupa_acceptare, cota_fixture, descriere_dupa, descriere_initiala, motiv_asteptat, motiv_vizibil
+poarta	alegeri_active, cod_raspuns, emite_activ, facturi_finale, facturi_initiale, motiv_vizibil
+primita	factura_detaliu, factura_sursa, id_lista, id_revenire, provenienta
+invitat	acces_firma_neatribuita, actiuni_principale, ajutor_vizibil, clicuri_pas_urmator, context_final, context_initial, context_reload, context_revenire, drepturi_atribuite, drepturi_efective, firma_aleasa, firme_atribuite, firme_vizibile, folosiri_initiale, rol, suprapuneri

@@ -1,0 +1,13 @@
+produs
+lot: 17.5-Q6
+max hook 137
+max poarta_verificator 105
+max poarta_pytest 712
+max poarta_plasa 3580
+runde_verificator_max: 2
+sursa pragurilor 17.5-Q6: generate de scripts/praguri_automate.py la 2026-11-23T18:54:51+02:00 din .lot_jurnal.log; loturi folosite: 17.5-Q2, 17.5-Q5, 17.5-Q4 (3)
+  hook: maxim 114 s (lotul 17.5-Q4, rularea 1821347-1795413875967) din 15 rulari complete, 0 rulari «intrerupt» ignorate, prag 137 s
+  poarta_verificator: maxim 87 s (lotul 17.5-Q4, rularea 2042398-1795418539586) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 105 s
+  poarta_pytest: maxim 593 s (lotul 17.5-Q4, rularea 1833046-1795414109447) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 712 s
+  poarta_plasa: maxim 2983 s (lotul 17.5-Q4, rularea 1833046-1795414702153) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 3580 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.

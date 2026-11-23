@@ -1,0 +1,103 @@
+cale	sha256_pe_E	in_plasa	ecran	linie_si_martor	modificabil_Q6
+frontend_test/e2e/e2e_bloc_a.py	a3db38ed5687a6ded379689d1354d386322f75f4c73a3a58b6f6135385fb262a	NU	De validat, Declarații	872: data-cheie='validat; 1056: data-cheie='declaratii	NU
+frontend_test/e2e/e2e_bloc_b.py	659da8722c5bdb0392e78c6cf7d5daf87e2551af291a6a2becb6e5d2915540b9	NU	De validat, Declarații	263: data-cheie='validat; 786: declarații	NU
+frontend_test/e2e/e2e_bloc_c.py	fdfebc770885331f9ad055c1c384ecaf7be069fe4dad021a2379843d451936ae	NU	De validat, Declarații	596: data-cheie='validat; 967: #dec-tip	NU
+frontend_test/e2e/e2e_bloc_d.py	20f2d06a5f42267faad9db296821a024f4d957d4128a95dbfc245ea4bef69382	NU	De validat, Control fiscal, Declarații	89: data-cheie='validat; 729: data-cheie='control; 1077: #fa-declaratii	NU
+frontend_test/e2e/e2e_bloc_e.py	204c4c89dd26811a5d93629509f0f23cbc31b5fa35acd605bad6e34ca259bbd2	NU	Declarații, De validat, Control fiscal	1241: declarații; 609: data-cheie='validat; 947: control fiscal	NU
+frontend_test/e2e/e2e_bloc_f.py	a385eab069a82af8d38ba7b68fa2f5e44896f5a7f71cb6ab32e960266fdcdcc1	NU	Control fiscal, De validat	51: data-cheie='control; 258: data-cheie='validat	NU
+frontend_test/e2e/e2e_cabinet_17_5_M.py	1c0a3b5461e3c5719ccd63a0b60e8615d37907a5d1bf2f1c56fff3346cc8ece7	DA	Declarații, Control fiscal	250: #dec-tip; 400: #cf-perioade	DA
+frontend_test/e2e/e2e_casa.py	102849cc73297a1f681a9e43375c1446eba1068a35501ce421f1ef58ea02dd84	NU	Control fiscal	58: data-cheie='control	NU
+frontend_test/e2e/e2e_comanda_1010.py	62b8ab56d35a4354c7f5899e0dbf1052d246d8740dd8f7e3c75006a6732eaca3	NU	Control fiscal	38: data-cheie='control	NU
+frontend_test/e2e/e2e_comanda_1210.py	1415cdde7e308230c42d13fc991a73c138ad7224d3a823a301006fff22be4dc9	NU	Control fiscal	"20: data-cheie=""control"	NU
+frontend_test/e2e/e2e_comanda_1310.py	ec1d26965c1168d6cc371173b89c33298a1ee89bf1691eaabbf2c214b8354fff	NU	Declarații	163: #fa-declaratii	NU
+frontend_test/e2e/e2e_comanda_1410.py	c04f9d952225670437bee8da92d82ac23da68659ea6c0caff94958dbd54ec188	NU	De validat	160: de validat	NU
+frontend_test/e2e/e2e_cursa_luna_17_5_X2.py	9828104468af9ba1369da4f4111f2b26e93d68a07782ad811c872e59be5d0a9f	DA	Control fiscal	120: Control fiscal	DA
+frontend_test/e2e/e2e_d300_ciorne_17_5_W.py	f9fb8aa0077ce71da3e424f3b532264a1359784549aff3802f7982cb43c08c0f	DA	Declarații, Control fiscal	86: #fa-declaratii; 178: #cf-incrucisat	DA
+frontend_test/e2e/e2e_d406_perioada.py	8218a8a99022c7e59fb0fca72635a1ac7ba3cb9545e5b6281b619aef48ffd43a	NU	Declarații	51: #fa-declaratii	NU
+frontend_test/e2e/e2e_de_validat_17_5_G.py	6dcc78fe03a95e9039bc974e2d3ebf5362237f267eb7f89bdc0cbbc07fe15ca1	DA	Control fiscal, De validat	279: Control fiscal; 279: De validat	DA
+frontend_test/e2e/e2e_declaratii_17_5_J.py	dba22536fa8d84d17eab6e360c8ef99fdc3b450c9c6ae5fd20e7ae10217bcd05	DA	Declarații	57: #dec-an	DA
+frontend_test/e2e/e2e_ferestre_17_5_K.py	334b76e4281c8552622368e0ce172693337bdedc7e3123579d0652861d49382e	DA	Declarații, Control fiscal	427: #fa-declaratii; 330: Control fiscal	DA
+frontend_test/e2e/e2e_ferestre_17_5_Q2.py	21faa2a07cc196fee957675b80250235fd5bd5960b0918a6fc6f00a5766c67b1	DA	Control fiscal, Declarații	87: #cf-audit-run; 138: #fa-declaratii	DA
+frontend_test/e2e/e2e_ferestre_17_5_Q4.py	cee65c031e6e0f0841517c8be9375cd48d45a637b9e6c152dae7005925323bc3	DA	Închidere lună	38: #il-	NU
+frontend_test/e2e/e2e_ferestre_firma_17_5_N.py	68993e74e87f8e934f893f745d0f90a7fa0d1e07bc8f828c64b3c3fdac29fecf	DA	Control fiscal	223: Control fiscal	DA
+frontend_test/e2e/e2e_import_saga.py	0bc934a84359a02830bdb86f2f18806b497252746e4429c0d89f9b78551ada15	NU	Declarații	244: declarații	NU
+frontend_test/e2e/e2e_lot10_balanta.py	3f442c76fdbc704e159146e6e09deeeb67d0bdccf26c08026ff674742308941f	NU	Declarații	95: #dec-trimite	NU
+frontend_test/e2e/e2e_lot10_c69.py	9d24edfbf9113130f26da9364ad4c62d92acbfd87a902989a02288babb98314c	NU	Declarații	54: #dec-tip	NU
+frontend_test/e2e/e2e_lot10_c73_public.py	d34c02184f32432e6125b1a8f91b52bc04efbeabcb158418b2e9cd68016379e7	NU	Setări / Conectare SPV	27: #set-	NU
+frontend_test/e2e/e2e_lot10_d406.py	1a678cd9c0b74300d4ce2242c891a107127c4fae931695f1c158a31342d29928	NU	Declarații	34: #dec-tip	NU
+frontend_test/e2e/e2e_lot10_dividende.py	afc2a227fa8399d76e09a46155ed07148c8073544019c55efce74c29929723dc	NU	Declarații	122: #fa-declaratii	NU
+frontend_test/e2e/e2e_lot10_inlocuire.py	e4528872a58359d2b6e9cefcf39f05c3568b5c74347bfc64e7f88d49217f25e0	NU	Declarații	121: declarații	NU
+frontend_test/e2e/e2e_lot10_principal.py	7ba3146efff70dc0d6118260bb961fd3631834cb8e3a64e484d445428f9668ba	NU	Declarații, De validat	"36: #dec-tip; 84: data-cheie=""validat"	NU
+frontend_test/e2e/e2e_lot10_valuta.py	9b48297aa80172f0fed65c3e68b2f7ac1b8c8273f2ffa6b2cca6051871c6a860	NU	Închidere lună	79: #il-reevaluare	NU
+frontend_test/e2e/e2e_lot10b_declaratii.py	0b81f920f97e0e803c28068b3e0520bdd3b9ec6bd34169a5aa07d1b686bfd295	NU	Declarații	27: #dec-tip	NU
+frontend_test/e2e/e2e_lot11_a457.py	c7b6eaca4ddcd0d7bbe64ff798ba02684ee3fe88ef06426b1ee7249215c85201	NU	De validat	24: data-cheie='validat	NU
+frontend_test/e2e/e2e_lot11_c85_c100.py	2029b0cd6e7a280a763b5e6711b4e161057edeb8c29044b84d21271812a5038e	NU	Control fiscal	222: #cf-audit-istoric	NU
+frontend_test/e2e/e2e_lot11_d.py	aa29f7cc522c805a4fd3815f5470ba482ee8d7f78767bedbc73f74aee009acba	NU	Declarații	46: #dec-tip	NU
+frontend_test/e2e/e2e_lot11_g.py	8ca55aab7e5ab1e742803d7b241faee8740295fb11740fa473774ee8daa4fb4f	NU	Declarații	64: #dec-coada-mesaj	NU
+frontend_test/e2e/e2e_lot11_j.py	157963c6ec8281d2c99c10ed82d44a0ad07f761038164e7eb0d793c3c95b4656	NU	De validat	134: data-cheie='validat	NU
+frontend_test/e2e/e2e_lot11_r.py	5c9a66c5793ad2ad2eed1fb1259c553866f883de8e1075b16d973246e798c5f9	NU	Declarații	74: #dec-rectificativa	NU
+frontend_test/e2e/e2e_lot11_s.py	ae3655e44028196f82db8c111f9cb910acc71ae45793bdc9cf02a4df7589a517	NU	De validat	128: #val-eroare	NU
+frontend_test/e2e/e2e_lot11_v.py	8ddd14b0176946e1291d874632400dde73538ff9fee085f5c00481b7d47a021a	NU	Închidere lună	70: #il-reevaluare	NU
+frontend_test/e2e/e2e_lot11_w5.py	25e9dca57d2720fa6c6e6001150a44322e0cf96e7f9a32c43591a910aaf45d72	NU	Declarații	45: #dec-tip	NU
+frontend_test/e2e/e2e_lot12_bilant.py	7ca81aeb4d9e4fe0f8bf6dba812356657b64bf6ce362bef6d9eb8c119d1dee68	NU	De validat	121: data-cheie='validat	NU
+frontend_test/e2e/e2e_lot12_coada.py	11f20faa6a7f5d16a375cf6ee7b6cfad84060ffdda4eb51fdc2cdb670a4f53b4	NU	De validat	239: de validat	NU
+frontend_test/e2e/e2e_lot12_ctrl.py	09f7580bfaecfcc21929c0945bf12ebf00abc440fd030ea7e9078a0157b117e6	NU	Control fiscal	68: #cf-incrucisat	NU
+frontend_test/e2e/e2e_lot12_cx1.py	ce91dcb8d846f86ffbc22922d589d862083cea2fa82bd5fdc3fd5b161f1a2228	NU	Declarații, Control fiscal	574: #dec-tip; 215: #cf-zona	NU
+frontend_test/e2e/e2e_lot12_cx2.py	7d896afb3ad92a3d16bdfad637a985eb6ae0341c2e98bee6ac2c469e5eed742e	NU	De validat, Control fiscal	138: data-cheie='validat; 457: Control fiscal	NU
+frontend_test/e2e/e2e_lot12_cx5.py	cf3acd0a392ea742162ffcb3ec0ab20555c3602c2480dfb228d61a83151b7c8a	NU	Declarații, Control fiscal	81: #dec-tip; 111: Control fiscal	NU
+frontend_test/e2e/e2e_lot12_cx6.py	92d4c4aeca7fb28e992aa8fe5f299e377bca9041e72ec03246a806ecdf243139	NU	Declarații	41: #dec-tip	NU
+frontend_test/e2e/e2e_lot12_cx7.py	0521f05bc8ddf8235524e8975484cbb6eba67887760add8452258794526307e4	NU	De validat	309: #val-note	NU
+frontend_test/e2e/e2e_lot12_decl.py	aa7bf5791d0dfcefe4e2f578beb9d05421f856e6df92b879028fd93a0a877667	NU	Declarații, De validat	56: #dec-tip; 185: data-cheie='validat	NU
+frontend_test/e2e/e2e_lot12_decl3.py	0fedbf5a43232d9914d944704546a9c6b756f4765db5f7215b29de3c4988a6a2	NU	Declarații	39: #dec-tip	NU
+frontend_test/e2e/e2e_lot12_firme1.py	f9ddbe7b012a37699ff378cf799af6f09831c343c7ce93018949808d90c5f83c	NU	Închidere lună	257: #il-	NU
+frontend_test/e2e/e2e_lot12_fisc3.py	fe7cea6b8be19626a51ee86efd42911703cf119fe59700238dd9e5965293158b	NU	Control fiscal, Declarații	155: Control fiscal; 156: #dec-tip	NU
+frontend_test/e2e/e2e_lot12_int3.py	a8284ad84020a8319ce5b53f359611cf7b923752e03811985df83d23b60a589b	NU	De validat	67: #val-depasite	NU
+frontend_test/e2e/e2e_lot12_migr.py	0da91e95cf9b19cb66e0065f50896990aeb16c9a5bd923b6439e8a6b35e14553	NU	Declarații	343: #fa-declaratii	NU
+frontend_test/e2e/e2e_lot12_notif.py	8e6b973bec0b8b714cf0c3befe41d43a4e56b749443881d6ceb0b17d6ed3034a	NU	Declarații	287: declarații	NU
+frontend_test/e2e/e2e_lot12_p252.py	2e6925b32ecbf65fdb7a6dbbc10ecea930da0694c84d134f409e9580b690c81d	NU	Declarații	159: declarații	NU
+frontend_test/e2e/e2e_lot12_reev2.py	dc5421d83dd9569021208cbdd6bbb26c2e90b7953fd94dee7c88c34c2b03af5e	NU	Declarații	125: #dec-tip	NU
+frontend_test/e2e/e2e_lot12_start.py	fa99f9acaa6f0410f18ae71279dbe7c16dd0db7bf38dbdf749a41dfc987a56b4	NU	Control fiscal	464: #cf-audit-run	NU
+frontend_test/e2e/e2e_lot12_stoc2.py	c26e5b7adab75c9aec035f5e631ffd3f915e35b569e1c5cf9a5a77a90286d309	NU	De validat	108: #val-note	NU
+frontend_test/e2e/e2e_lot12_texte.py	eb19a3ab2c48a078d31cf16ba44e5075d470d8a856619a495283188cef7dd9c3	NU	Setări / Conectare SPV	110: data-cheie='setari	NU
+frontend_test/e2e/e2e_lot12_ui2.py	8a261e48d8f0780ab6d16db5fa1e708a5bdacd0d3d36999729c75fd3e6b3b0de	NU	De validat	139: #val-cauta	NU
+frontend_test/e2e/e2e_lot12_verif.py	ea5dd13306e84f7a0065746a12387339deb9e6b85efcc8a773aa31f97050c353	DA	Declarații	189: xml = _pas2	NU
+frontend_test/e2e/e2e_lot13_admin2.py	128c9a4da6dcaf254b6c5d9a9f31063c78dafcc2a9a6ad593cf23bff4b494a8e	NU	De validat, Control fiscal	102: de validat; 161: #cf-incrucisat	NU
+frontend_test/e2e/e2e_lot13_decl.py	59202632546d35df56fa82b44c0f78f9972dcdd350d66457944f724c316e5b4d	NU	Declarații	54: #dec-tip	NU
+frontend_test/e2e/e2e_lot13_ds.py	0f413a646c65eac162aa4bdc08c5522e95f6d9ee8cf30761b8cc0996efb3e8a5	NU	Declarații	82: #dec-tip	NU
+frontend_test/e2e/e2e_lot13_firme2.py	f90bede3020d4aa273c7ff6382f9c29c52c0e58a1fc7b7b98c9333f3ee86fb85	NU	Declarații	414: #fa-declaratii	NU
+frontend_test/e2e/e2e_lot13_infra.py	8dfeb9d9d05c81bb04e1e8468d7a258478cd1bc554445dd97b3c44f2aa7ba4fc	NU	Declarații, Control fiscal	66: declarații; 50: #cf-lista	NU
+frontend_test/e2e/e2e_lot13_migr.py	d27a45b3f5df042cbf7f4eda3db026e6fd910e0000aa7ac59955741888f0069e	NU	Control fiscal	553: #cf-audit-istoric	NU
+frontend_test/e2e/e2e_lot13_ops.py	98b61cfef922cdd517c5f05ec77e990a285b2f487d8f9c4b12fe7c8dce65afc2	NU	De validat	415: de validat	NU
+frontend_test/e2e/e2e_lot13_oss.py	99b0204fb4bfc59f406eae639bea6573ae9323aaf002a0df72df2d48f477053e	NU	Declarații	70: #dec-tip	NU
+frontend_test/e2e/e2e_lot13_portal_p1.py	fbe249e1f07efbc25c8d16ce09b19f97c4c6d37c41e7bef1bdd4dff23cfaaa70	NU	Control fiscal	128: #cf-rezultat	NU
+frontend_test/e2e/e2e_lot13_portal_p2.py	37d28c88607e2a661a70b6c6594e9b9b1756b34113edaca46c5365807b705105	NU	Setări / Conectare SPV	52: #set-	NU
+frontend_test/e2e/e2e_lot14.py	3e102b61b310103c7cb478df9e20ab4eaf272e8c3f8e7eb68ef7ca86082c3871	NU	Declarații, Închidere lună	128: #dec-trimite; 58: #il-	NU
+frontend_test/e2e/e2e_lot14_2.py	5ed8c5988824072b2f3a4bff35cbac86b3576a77680ea90c106bb37dfb1cd149	NU	Control fiscal, Declarații	166: Control fiscal; 355: #dec-tip	NU
+frontend_test/e2e/e2e_lot14_3.py	54002a64c1e9d295c6f91479df7a6b6b1a6545c6207c95fa0c2e391b5450f8bf	NU	Declarații	78: #dec-tip	NU
+frontend_test/e2e/e2e_lot15_1.py	33b466757e3c824554fe865012b2f8e8143d4b966e48ded6d9bfa94130e089a4	NU	Declarații, Control fiscal	158: declarații; 521: data-cheie='control	NU
+frontend_test/e2e/e2e_lot15_e3.py	67b6b41c45baf04c161f3d7210b5fd9f223b3e948d3bf5927f4637a08e2051c9	NU	Declarații	25: #fa-declaratii	NU
+frontend_test/e2e/e2e_lot15_e4.py	2edb6a14cc19e00c090d0d9427bd1382fd2c58e4bad5a1efadc584eeacb0a68b	NU	Control fiscal	73: #cf-audit-zona	NU
+frontend_test/e2e/e2e_lot15_e5.py	08b90617149d50dae86a9735ee5114483b2dc9b7392d7f930698ea633c0d8544	NU	Declarații	25: #fa-declaratii	NU
+frontend_test/e2e/e2e_lot5_migrare.py	4bf45b36ef7e314f1801e0e8d49443c4c8f6af670cb1ff6f91b3094ff66a2c00	NU	Declarații	35: declarații	NU
+frontend_test/e2e/e2e_lot5_plural.py	1f2414e649b7428aefc68dabdf7ededcfb5fae3e222706c61215837a18d4ef19	NU	Declarații	107: declarații	NU
+frontend_test/e2e/e2e_lot5_roluri.py	5edc89e021478b480818676ebf8b17e63aacf6f5510d471629e87e78bc5958e1	NU	De validat	83: data-cheie='validat	NU
+frontend_test/e2e/e2e_lot6.py	5f701ce6cd2ffb52076b386bf1a67e595b8a0da55f62fa305869b3443fd8eb21	NU	De validat, Declarații	379: data-cheie='validat; 417: #dec-tip	NU
+frontend_test/e2e/e2e_lot7.py	52665736322358f6057c17499e95a873ebe703aaaedd2b03390e35c27587fb9d	NU	De validat	92: de validat	NU
+frontend_test/e2e/e2e_lot72_cont.py	126d0e390915a7bd57c2a22d39b6cfda2a7f683ed46b707f220227bcca7a1d58	NU	Declarații	167: declarații	NU
+frontend_test/e2e/e2e_lot72_contab.py	5e529737f8e7df1c5f62effd42fccf8ca84a447b1c1e6d92bffbe170b4c4e467	NU	De validat	239: de validat	NU
+frontend_test/e2e/e2e_lot72_declaratii.py	e6a0fde5e08cf804308acaa725dd2a41408f67502db11395088d99b2a82cb331	NU	De validat, Declarații	48: data-cheie='validat; 191: #dec-tip	NU
+frontend_test/e2e/e2e_lot81.py	16d61d8bc2b2bab34ae6e0ffebcd7bbe041db2ad7050ed04f18e7b414b70e8fa	NU	Declarații, De validat	177: #dec-tip; 535: de validat	NU
+frontend_test/e2e/e2e_lot82.py	06369ebc641ce178d30d97a6d7fe5b44d793bb8bc94381fb0f76f4d16d0943f5	NU	Declarații, Control fiscal	631: #dec-tip; 587: #cf-audit-run	NU
+frontend_test/e2e/e2e_lot91.py	f26f50ba8dae53efb0b10f5bd9fd8e44a0340175253373608f3380fa5e75ddcb	NU	De validat	166: #val-intro	NU
+frontend_test/e2e/e2e_lot92.py	2d48720758d1132f0f0472907cad5fcc96a2431ccc3755551f1b0d731c5fee58	NU	Setări / Conectare SPV	821: Conectare SPV	NU
+frontend_test/e2e/e2e_lot93d.py	b2f98e8742e95de748725012bb5131a9650516141bc471ead0dd17bbbe89cbb5	NU	Declarații	194: #dec-tip	NU
+frontend_test/e2e/e2e_piese_17_5_H2.py	10f326f2fb8d19f113ea4d7ec200702b5cb3e46edda1065c5ba5f8128ac5bbcc	DA	Declarații	280: #fa-declaratii	DA
+frontend_test/e2e/e2e_pilot_17_5_S.py	bb8262d109cf85a80f9987620f25e90f3e8eeebc5031209f76693d58e033f777	DA	De validat, Control fiscal	149: data-cheie='validat; 245: #cf-incrucisat	DA
+frontend_test/e2e/e2e_pilot_17_5_X.py	0a75f5a53893488cac249ac29a9c4806409cf39d5b76ed376adf62fb0b0db8bb	DA	Control fiscal, Declarații	179: #cf-incrucisat; 113: #fa-declaratii	DA
+frontend_test/e2e/e2e_pilot_luna.py	6da296d150c336d2c367b3481afe05b34387cea5da69eaa6e923edc7b31d2c59	DA	De validat, Declarații, Control fiscal	392: de validat; 423: #fa-declaratii; 640: #cf-audit-istoric	DA
+frontend_test/e2e/e2e_pilot_x05.py	6a328da7c56f60694bf085412bb9c28bc7899939b0e8267fb6d65d2e0296b2f6	DA	Declarații	113: #fa-declaratii	DA
+frontend_test/e2e/e2e_pilot_x06.py	f87b2ddfb4e2c0cb8b206d2d6a305993c2251faa746170e698a72f36e58bc966	DA	Declarații	241: #fa-declaratii	DA
+frontend_test/e2e/e2e_pilot_x07.py	f885c83339f9ccfbed0f0b398e3871064dcf7154e6706e2e60ba8fa022b68915	DA	Setări / Conectare SPV	32: Conectare SPV	NU
+frontend_test/e2e/e2e_portal_17_5_L.py	8d2c967fb2c6c467a17d8ddc7aec2df2d5bef9617c68afc3211825e529aa795d	DA	Control fiscal, De validat	49: #cf-zona; 532: de validat	DA
+frontend_test/e2e/e2e_pozitii_validate.py	b70755efb08aa4d474f595dac68e3671ca556d490fc78746aa779c91c173d087	DA	Control fiscal, Declarații, De validat	625: #cf-audit-istoric; 712: #fa-declaratii; 322: data-cheie='validat	DA
+frontend_test/e2e/e2e_texte_17_5_I.py	ac917ca6907e3778b267b9609a16deb5fe6c77ade1e946f4f9d532c16df3d089	DA	Declarații, De validat	302: #fa-declaratii; 187: de validat	DA

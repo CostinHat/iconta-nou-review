@@ -1,0 +1,105 @@
+8,13c8,103
+< sursa pragurilor 17.5-Q6: generate de scripts/praguri_automate.py la 2026-11-23T18:54:51+02:00 din .lot_jurnal.log; loturi folosite: 17.5-Q2, 17.5-Q5, 17.5-Q4 (3)
+<   hook: maxim 114 s (lotul 17.5-Q4, rularea 1821347-1795413875967) din 15 rulari complete, 0 rulari «intrerupt» ignorate, prag 137 s
+<   poarta_verificator: maxim 87 s (lotul 17.5-Q4, rularea 2042398-1795418539586) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 105 s
+<   poarta_pytest: maxim 593 s (lotul 17.5-Q4, rularea 1833046-1795414109447) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 712 s
+<   poarta_plasa: maxim 2983 s (lotul 17.5-Q4, rularea 1833046-1795414702153) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 3580 s
+< limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+---
+> sursa pragurilor 17.5-Q6: generate de scripts/praguri_automate.py la 2026-11-23T11:33:35+02:00 din .lot_jurnal.log; loturi folosite: 17.5-Q2, 17.5-Q5, 17.5-Q4 (3)
+> plasa_modificabile frontend_test/e2e/e2e_cabinet_17_5_M.py frontend_test/e2e/e2e_cursa_luna_17_5_X2.py frontend_test/e2e/e2e_d300_ciorne_17_5_W.py frontend_test/e2e/e2e_de_validat_17_5_G.py frontend_test/e2e/e2e_declaratii_17_5_J.py frontend_test/e2e/e2e_ferestre_17_5_K.py frontend_test/e2e/e2e_ferestre_17_5_Q2.py frontend_test/e2e/e2e_ferestre_firma_17_5_N.py frontend_test/e2e/e2e_piese_17_5_H2.py frontend_test/e2e/e2e_pilot_17_5_S.py frontend_test/e2e/e2e_pilot_17_5_X.py frontend_test/e2e/e2e_pilot_luna.py frontend_test/e2e/e2e_pilot_x05.py frontend_test/e2e/e2e_pilot_x06.py frontend_test/e2e/e2e_portal_17_5_L.py frontend_test/e2e/e2e_pozitii_validate.py frontend_test/e2e/e2e_texte_17_5_I.py
+> fisiere_permise:
+>   scripts/praguri_17_5_Q6.txt (nou)
+>   scripts/plasa_16_2.manifest (rândul nou al lui e2e_ferestre_17_5_Q6.py și numai SHA-urile cititorilor vechi nominalizați în plasa_modificabile)
+>   frontend_test/e2e/e2e_ferestre_17_5_Q6.py (nou)
+>   docs/dovezi/17_5_Q6/ (nou)
+>   DECIZII.md
+>   DEFICIENTE.md
+>   DESIGN_SYSTEM.md
+>   PREDARE_LANT.md
+>   static/stil.css
+>   static/js/ds_piese.js
+>   static/js/ecrane/firme.js
+>   static/js/ecrane/declaratii.js
+>   static/js/ecrane/validat.js
+>   static/js/ecrane/tabel_note.js
+>   static/js/ecrane/control.js
+>   static/js/ecrane/control_verdict.js
+>   static/js/ecrane/setari.js
+>   static/js/ecrane/produse_ecran.js
+>   static/js/ecrane/reevaluare_ecran.js
+>   static/js/ecrane/facturi_ecran.js
+>   static/js/ecrane/emitere_ecran.js
+>   static/js/ecrane/spv_stare.js
+>   static/js/ecrane/asistent.js
+>   static/js/ecrane/asistenti.js
+>   static/js/ecrane/migrare.js
+>   static/js/ecrane/sal_sume.js
+>   core/cote_tva.py
+>   core/test_granite_cota.py
+>   static/index.html (numai cascada ?v=)
+>   static/js/api.js (numai cascada ?v=)
+>   static/js/app.js (numai cascada ?v=)
+>   static/js/cadru.js (numai cascada ?v=)
+>   static/js/carduri.js (numai cascada ?v=)
+>   static/js/cautare.js (numai cascada ?v=)
+>   static/js/ciorna_formular.js (numai cascada ?v=)
+>   static/js/drepturi.js (numai cascada ?v=)
+>   static/js/ecrane/activitate_cabinet.js (numai cascada ?v=)
+>   static/js/ecrane/admin.js (numai cascada ?v=)
+>   static/js/ecrane/admin_activitate.js (numai cascada ?v=)
+>   static/js/ecrane/admin_analytics.js (numai cascada ?v=)
+>   static/js/ecrane/admin_raportari.js (numai cascada ?v=)
+>   static/js/ecrane/admin_sanatate.js (numai cascada ?v=)
+>   static/js/ecrane/ansamblu.js (numai cascada ?v=)
+>   static/js/ecrane/borderou_ecran.js (numai cascada ?v=)
+>   static/js/ecrane/cabinet.js (numai cascada ?v=)
+>   static/js/ecrane/capacitate.js (numai cascada ?v=)
+>   static/js/ecrane/centre_cost_linie.js (numai cascada ?v=)
+>   static/js/ecrane/clienti_ecran.js (numai cascada ?v=)
+>   static/js/ecrane/coada_trimite.js (numai cascada ?v=)
+>   static/js/ecrane/compensari_ecran.js (numai cascada ?v=)
+>   static/js/ecrane/date_firma.js (numai cascada ?v=)
+>   static/js/ecrane/ecran_destinatie.js (numai cascada ?v=)
+>   static/js/ecrane/etransport_ecran.js (numai cascada ?v=)
+>   static/js/ecrane/flux_concediu.js (numai cascada ?v=)
+>   static/js/ecrane/inceput.js (numai cascada ?v=)
+>   static/js/ecrane/intocmitor_bilant.js (numai cascada ?v=)
+>   static/js/ecrane/login.js (numai cascada ?v=)
+>   static/js/ecrane/mf_din_factura.js (numai cascada ?v=)
+>   static/js/ecrane/mijloace_ecran.js (numai cascada ?v=)
+>   static/js/ecrane/nir_legare.js (numai cascada ?v=)
+>   static/js/ecrane/nume_anaf.js (numai cascada ?v=)
+>   static/js/ecrane/operatiuni_ecran.js (numai cascada ?v=)
+>   static/js/ecrane/pachete.js (numai cascada ?v=)
+>   static/js/ecrane/portal.js (numai cascada ?v=)
+>   static/js/ecrane/raporteaza.js (numai cascada ?v=)
+>   static/js/ecrane/recomanda.js (numai cascada ?v=)
+>   static/js/ecrane/rip_ecran.js (numai cascada ?v=)
+>   static/js/ecrane/salut.js (numai cascada ?v=)
+>   static/js/ecrane/supervizor.js (numai cascada ?v=)
+>   static/js/ecrane/tari_partener.js (numai cascada ?v=)
+>   static/js/ecrane/termene.js (numai cascada ?v=)
+>   static/js/ecrane/tipare.js (numai cascada ?v=)
+>   static/js/ecrane/woo_ecran.js (numai cascada ?v=)
+>   static/js/luna_lucru.js (numai cascada ?v=)
+>   static/js/navigator.js (numai cascada ?v=)
+>   static/spv_callback.html (numai cascada ?v=)
+>   frontend_test/e2e/e2e_cabinet_17_5_M.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_cursa_luna_17_5_X2.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_d300_ciorne_17_5_W.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_de_validat_17_5_G.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_declaratii_17_5_J.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_ferestre_17_5_K.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_ferestre_17_5_Q2.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_ferestre_firma_17_5_N.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_piese_17_5_H2.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_pilot_17_5_S.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_pilot_17_5_X.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_pilot_luna.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_pilot_x05.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_pilot_x06.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_portal_17_5_L.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_pozitii_validate.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+>   frontend_test/e2e/e2e_texte_17_5_I.py (numai adaptarea navigării la contractul păstrat; referința din teste_vechi_17_5_Q6.tsv)
+rc_diff=1

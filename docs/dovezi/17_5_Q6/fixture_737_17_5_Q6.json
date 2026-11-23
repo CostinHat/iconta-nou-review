@@ -1,0 +1,15 @@
+{
+  "provenienta": "fixture controlat, exemplu pentru redare locală; fără afirmație fiscală",
+  "nume": "Pâine albă",
+  "descrieri": [
+    "",
+    "Descrierea contabilului"
+  ],
+  "raspuns_transport": {
+    "ok": true,
+    "cota": 11,
+    "categorie_tva": null,
+    "justificare": "Painea alba se incadreaza in categoria produsului."
+  },
+  "motiv_asteptat": "Pâinea albă se încadrează în categoria produsului."
+}

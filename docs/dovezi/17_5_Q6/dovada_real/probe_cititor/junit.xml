@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="9.990" timestamp="2026-11-23T18:23:21.796990+02:00" hostname="iconta-prod"><testcase classname="frontend_test.e2e.e2e_ferestre_17_5_Q6" name="test_ferestre_17_5_Q6" time="9.470"><failure message="AssertionError: {'e.1': False, 'e.2': False}&#10;assert ({'e.1', 'e.2'} == {'e.1', 'e.2'}&#10;  &#10;  Use -v to get more diff and False)&#10; +  where False = all(dict_values([False, False]))&#10; +    where dict_values([False, False]) = &lt;built-in method values of dict object at 0x7148816c0180&gt;()&#10; +      where &lt;built-in method values of dict object at 0x7148816c0180&gt; = {'e.1': False, 'e.2': False}.values">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x714880510080&gt;
+
+    def test_ferestre_17_5_Q6(browser,capsys):
+        from conftest import BAZA, CAPTURI, sesiune
+        from core.ceas_proba import MOMENT_REF
+        origine=origine_proba(BAZA)
+        init=sesiune("dovada.71507@sesiuneab.test")
+        dest=Path(CAPTURI)/"17_5_Q6"
+        dest.mkdir(parents=True,exist_ok=True)
+        masuri, verdicte, erori, partiale = {}, {}, {}, {}
+        for ident in ("e.1","e.2"):
+            m = {}
+            ctx=browser.new_context()
+            try:
+                ctx.clock.set_fixed_time(MOMENT_REF)
+                ctx.add_init_script(init)
+                pg=ctx.new_page()
+                pg.goto(origine+"/",wait_until="domcontentloaded")
+                # Capture initial geometry before search/selection can scroll the pane.
+                panel=declaratii(pg,603 if ident=="e.1" else 1366)
+                pg.screenshot(path=str(dest/(ident+".png")))
+                observa_din_panou(pg, ident, panel, m)
+                verdicte[ident]=rezultat(ident,m)
+                masuri[ident]=m
+            except Exception as exc:
+                partiale[ident] = m
+                erori[ident]=type(exc).__name__+": "+str(exc).splitlines()[0]
+            finally:
+                ctx.close()
+        for nume,obj in [("erori",erori),("masuri",masuri),("partiale",partiale)]:
+            (dest/(nume+".json")).write_text(json.dumps(obj,ensure_ascii=False,indent=2),encoding="utf-8")
+        with capsys.disabled():
+            for ident,ok in verdicte.items():print(f"VERDICT {ident} {'trece' if ok else 'pica'}",flush=True)
+        if erori:raise RuntimeError(f"NEEXECUTAT: {erori}")
+&gt;       assert set(verdicte)=={"e.1","e.2"} and all(verdicte.values()),verdicte
+E       AssertionError: {'e.1': False, 'e.2': False}
+E       assert ({'e.1', 'e.2'} == {'e.1', 'e.2'}
+E         
+E         Use -v to get more diff and False)
+E        +  where False = all(dict_values([False, False]))
+E        +    where dict_values([False, False]) = &lt;built-in method values of dict object at 0x7148816c0180&gt;()
+E        +      where &lt;built-in method values of dict object at 0x7148816c0180&gt; = {'e.1': False, 'e.2': False}.values
+
+frontend_test/e2e/e2e_ferestre_17_5_Q6.py:167: AssertionError</failure></testcase></testsuite></testsuites>

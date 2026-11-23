@@ -1,0 +1,46 @@
+﻿Cod,Funcțional,Aspect,Design,Simplitate,Conformitate,Stabilitate,Verdict,"Ce lipsește / observații (21.11.2026, producție 420b0f13, 603×590 și 1366×768)"
+F003,1,1,1,1,1,1,ok,"titluri Z uniforme, fără HoReCa; importul AMEF nerulat (lipsă fișier)"
+F011,1,0,0,1,1,1,nu merge,A: 603 derulare orizontală 824/539; D: «Contează» principal pe 18 rânduri (761)
+F012,1,0,0,1,1,1,nu merge,"același ecran Bancă (A, D ca F011); importul nerulat"
+F015,1,0,0,1,1,1,nu merge,semnalul −58 reparat; A: 603 derulare orizontală 748/539; D: «+ Chitanță fără factură» inactiv cu motiv numai în title
+F017,1,0,0,1,0,1,nu merge,"A, D ca F015; C preluat din 13.11 (PDF)"
+F018,1,0,0,1,1,1,nu merge,"F: adăugare, căutare și ștergere există în Clienți/Furnizori (corectat 13:50); A: 603 derulare orizontală 581/539; D: motivul refuzului la «Șterge» numai în title"
+F019,1,0,0,0,1,1,nu merge,"A: 603 antete rupte (Pregătit de 28<51 px), data-buton 45 px cu text de 80 px; D: «Generează din nou» de 2 ori principal în corp; S: listă 13.535 px în zonă de 290 px la 603"
+F022,1,1,1,0,1,1,nu merge,S: detaliul F2 3.335 px în zonă de 472 px; text «D301 — D301»
+F023,1,0,1,1,1,1,nu merge,A: «Factura începută (ultima modificare: 21.…» tăiat
+F025,1,0,0,0,1,1,nu merge,"D: «Propune regularizarea TVA» principal în corp (Închidere lună); A, S preluate din 13.11 (Reevaluare valută nemăsurată)"
+F026,1,1,1,0,1,1,nu merge,S: Declarații la 603 are două locuri de derulare (corp 502/630 + listă 352/3.193)
+F028,1,1,1,0,1,1,nu merge,"D112 10/2026 corect (830/3.252/1.301/293, DUK); S: două locuri de derulare la 603 — POSIBILĂ REGRESIE față de 13.11, neconfirmată"
+F031,0,1,1,0,0,1,nu merge,F/C: rezultatul nu se leagă de balanță (comun cu F169); S ca F026
+F034,1,1,1,0,1,1,nu merge,S ca F026
+F035,1,1,1,0,1,1,nu merge,S ca F026; F după 12.11 + selectorul reparat (negenerat azi)
+F043,1,0,1,0,1,1,nu merge,"«Verifică acum în SPV» inactiv cu motiv scris (verificat de două ori); A, S preluate din 13.11; importul nerulat"
+F045,1,0,0,1,0,1,nu merge,"A: Istoric facturi la 1366 derulare orizontală 728/623; D: «Arată încă 0 facturi ale lunii» inactiv, motiv numai în title (din lotul I, 13.11); C preluat"
+F046,0,0,0,1,1,1,nu merge,"F: explicația notei 30 ruptă, 619; A, D ca F045"
+F054,1,0,0,1,1,1,nu merge,"F: data goală pe lună necurentă e conform deciziei 602 (corectat 13:50); Registru jurnal: «Generează amortizarea» principal în corp, 603 derulare orizontală 1.034/539"
+F061,1,0,1,1,1,1,nu merge,A: Balanța la 603 derulare orizontală 1.102/539
+F070,1,1,1,0,1,1,nu merge,S preluat din 13.11 (motivarea ca descriere)
+F073,1,0,0,1,1,1,nu merge,"ecran Bancă (A, D ca F011)"
+F078,1,0,0,0,1,1,nu merge,D: Salariați cu două principale; A: 603 derulare orizontală 583/539; S preluat
+F080,1,0,0,0,0,1,nu merge,"ca F078; S, C preluate din 13.11"
+F081,1,1,0,1,1,1,nu merge,D: tabelul fără coloana «Grup» din scenariu; greșeala «inurmătoarele» reparată
+F084,1,1,0,1,1,1,nu merge,D preluat din 13.11 («Încarcă balanța» în corp și în bară); importul nerulat
+F085,1,1,1,0,1,1,nu merge,S preluat din 13.11; importul nerulat
+F087,1,0,0,1,1,1,nu merge,752 reparat; D: două principale; A: 603 derulare orizontală
+F089,1,1,0,1,1,1,nu merge,D: «Descarcă gestiunea lunii» principal în corp lângă «+ NIR nou»
+F118,1,0,0,1,1,1,nu merge,D: două «Deblochează luna» în corp; A: jurnal la 603 derulare orizontală
+F122,1,1,0,1,1,1,nu merge,"nemăsurat azi, preluat din 13.11"
+F126,1,0,0,1,1,1,nu merge,"trimiteri acceptate în SPV; A, D ca F045 (Istoric facturi)"
+F131,1,1,1,1,1,1,ok,contoare 10 = 10 rânduri
+F134,1,1,1,1,1,1,ok,"nemăsurat azi, preluat din 13.11"
+F139,1,1,1,1,1,1,ok,"număr NIR propus 902, formular curat"
+F162,1,1,1,0,1,1,nu merge,S: Control fiscal F5 2.726 px în zonă de 472 px
+F169,0,1,1,0,0,1,nu merge,F/C: diferențe neexplicate; S: 4.691 px în zonă de 472 px
+F172,-,0,0,1,1,1,neverificat,F: întrebarea apare numai la emitere; A: mesaj tăiat în Emite factură; D preluat
+F176,1,1,1,0,1,1,nu merge,S: caseta roșie repetă răspunsul ANAF pentru 8 CIF-uri (926 de caractere)
+F179,-,0,1,1,1,1,neverificat,F: nicio factură de furnizor în SPV; A: linia de stare tăiată «verificat ul…»
+F183,1,1,1,1,1,1,ok,609 reparat
+F252,1,0,0,1,1,1,nu merge,A: mesaj tăiat în Emite factură; D preluat din 13.11
+F254,1,0,0,1,1,1,nu merge,ca F252
+X02,-,-,-,-,-,-,neverificat,cere prima intrare a unui asistent
+X05,1,1,1,1,1,1,ok,← și ✕ pe toate ferestrele măsurate

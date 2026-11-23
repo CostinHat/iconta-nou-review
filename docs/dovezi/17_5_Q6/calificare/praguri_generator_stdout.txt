@@ -1,0 +1,8 @@
+loturi folosite: 17.5-Q2, 17.5-Q5, 17.5-Q4 (3)
+faza                   maxim lot         complete   intrerupte    prag
+hook                     114 17.5-Q4           15            0     137
+poarta_verificator        87 17.5-Q4            5            0     105
+poarta_pytest            593 17.5-Q4            5            0     712
+poarta_plasa            2983 17.5-Q4            5            0    3580
+scris /home/costin/praguri_Q6.AkgJLO1e/praguri_17_5_Q6.txt
+AVERTISMENT: lipsește fisiere_permise (scripts/publica_lot.py o cere la un lot «produs»; --adauga <fișier>)

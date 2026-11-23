@@ -1,0 +1,54 @@
+{
+  "asertiuni": [
+    {
+      "id": "f.1",
+      "pas": "implicit",
+      "operator": "text_contine",
+      "valoare": "Control fiscal",
+      "cheie": "dom:main button.cab-card .cab-card-titlu|text",
+      "ac": null,
+      "martor": "Cabinet",
+      "de_ce": "Accesul din Cabinet"
+    },
+    {
+      "id": "f.2",
+      "pas": "declaratii",
+      "operator": "text_contine",
+      "valoare": "D300",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #dec-tip + .ds-lista|text",
+      "ac": null,
+      "martor": "Declarații F1",
+      "de_ce": "Lista firmei conține D300"
+    },
+    {
+      "id": "a.1",
+      "pas": "declaratii",
+      "operator": "text_vizibil",
+      "valoare": "Continuă",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #dec-continua|text",
+      "ac": null,
+      "martor": "Declarații F1",
+      "de_ce": "Acțiunea din pasul întâi la 1366"
+    },
+    {
+      "id": "f.3",
+      "pas": "ingust",
+      "operator": "text_contine",
+      "valoare": "D300",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #dec-tip + .ds-lista|text",
+      "ac": null,
+      "martor": "Declarații F1",
+      "de_ce": "Același tip de declarație în lista îngustă"
+    },
+    {
+      "id": "a.2",
+      "pas": "ingust",
+      "operator": "text_vizibil",
+      "valoare": "Continuă",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #dec-continua|text",
+      "ac": null,
+      "martor": "Declarații F1",
+      "de_ce": "Acțiunea lizibilă la 603"
+    }
+  ]
+}

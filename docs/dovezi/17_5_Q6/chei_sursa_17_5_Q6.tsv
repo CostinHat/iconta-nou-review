@@ -1,0 +1,19 @@
+scenariu	chei_din_sursa
+e.1	labels ultim_sursa
+e.2	labels asteptate_filtru
+datorate	id_ultim_sursa perioada_sursa
+control	id_sursa firma_sursa perioada_sursa
+pagini	id_sursa filtru_asteptat
+cif	respingeri_sursa
+f025a	campuri_sursa id_sursa
+f025s	blocaj coduri_blocaje_sursa firma_luna_intrare suma_sursa
+f043a	linii_xml id_document_initial
+f043s	permis_sursa valori_inainte
+f078	campuri_E_reprodus campuri_necesare
+f080	actiuni_E_reprodus fluturas_sursa
+f085	motiv_sursa solduri_inainte
+istoric	date_sursa
+cota	cota_fixture motiv_asteptat descriere_initiala
+poarta	cod_raspuns facturi_initiale
+primita	factura_sursa provenienta
+invitat	folosiri_initiale firme_atribuite drepturi_atribuite
