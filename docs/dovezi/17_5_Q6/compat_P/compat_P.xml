@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="246" time="1889.925" timestamp="2026-11-23T20:36:51.869915+02:00" hostname="iconta-prod"><testcase classname="e2e_lot10b_declaratii" name="test_def_383_d300_pe_luna_in_curs_se_refuza_la_generare" time="5.642" /><testcase classname="e2e_lot10b_declaratii" name="test_def_436_d100_cu_note_nevalidate_nu_se_pune_in_de_depus" time="11.018" /><testcase classname="e2e_lot11_g" name="test_def_436_coada_refuzul_nu_repeta_notele_ciorna_din_perioada" time="6.573" /><testcase classname="e2e_lot11_g" name="test_def_436_coada_refuzul_nu_repeta_notele_nota_care_explica_diferenta" time="6.490" /><testcase classname="e2e_lot11_g" name="test_def_436_coada_refuzul_nu_repeta_notele_bilantul_din_evidenta" time="4.891" /><testcase classname="e2e_lot11_r" name="test_def_c77_d101_regenerata_dupa_depunere_iese_rectificativa" time="10.321" /><testcase classname="e2e_lot10_balanta" name="test_def_425_balanta_preluata_arata_sold_initial_an_si_sume_precedente" time="8.121" /><testcase classname="e2e_lot10_balanta" name="test_def_425_d101_cuprinde_cifra_de_afaceri_preluata" time="4.382" /><testcase classname="e2e_lot10_balanta" name="test_def_425_numai_solduri_finale_balanta_si_d101_spun_ce_lipseste" time="10.430" /><testcase classname="e2e_lot14" name="test_def_c206_inchiderea_lunii_cere_regularizarea_tva_si_o_propune" time="4.967" /><testcase classname="e2e_lot14" name="test_def_c204_bilantul_refuza_fara_rulajele_preluate_si_le_foloseste_dupa_import" time="6.587" /><testcase classname="e2e_lot14" name="test_def_c205_d100_pe_trimestrul_dinainte_de_preluare_se_refuza" time="3.795" /><testcase classname="e2e_lot14" name="test_def_c203_ferestrele_incap_pe_un_ecran_stocuri_inchidere_balanta[1920-1080]" time="12.080" /><testcase classname="e2e_lot14" name="test_def_c203_ferestrele_incap_pe_un_ecran_stocuri_inchidere_balanta[1366-768]" time="11.789" /><testcase classname="e2e_lot14" name="test_def_c208_stocuri_arata_stocul_validat_si_reconcilierea_in_carduri" time="4.106" /><testcase classname="e2e_lot13_decl" name="test_def_651_d207_formularul_gol_fara_eroare_rosie" time="5.181" /><testcase classname="e2e_lot13_decl" name="test_def_659_d311_la_deschidere_fara_erori" time="5.012" /><testcase classname="e2e_lot13_decl" name="test_def_656_d207_impozitul_peste_baza_e_oprit_la_adaugare" time="5.373" /><testcase classname="e2e_lot13_decl" name="test_def_656_d207_cota_dividendelor_verificata_inaintea_validatorului" time="5.248" /><testcase classname="e2e_lot13_decl" name="test_def_657_dupa_stergerea_beneficiarului_validarea_se_anuleaza" time="6.228" /><testcase classname="e2e_lot13_decl" name="test_def_658_d207_fara_harta_de_componente" time="6.634" /><testcase classname="e2e_lot13_decl" name="test_def_652_beneficiarul_completat_se_adauga_la_generare" time="6.576" /><testcase classname="e2e_lot13_decl" name="test_def_653_statul_de_rezidenta_lista_cu_cautare" time="5.281" /><testcase classname="e2e_lot13_decl" name="test_def_654_refuzul_vechi_dispare_la_urmatoarea_actiune" time="5.199" /><testcase classname="e2e_lot13_decl" name="test_def_650_d311_nu_se_datoreaza_la_platitor" time="4.774" /><testcase classname="e2e_lot13_decl" name="test_def_635_d318_inactiva_la_neplatitor" time="4.661" /><testcase classname="e2e_lot13_decl" name="test_def_594_d398_texte_si_date_din_date_firma" time="5.760" /><testcase classname="e2e_lot13_decl" name="test_def_636_d318_precompletat_din_date_firma" time="5.123" /><testcase classname="e2e_lot13_decl" name="test_def_637_d318_refuzul_numeste_numai_ce_lipseste" time="6.148" /><testcase classname="e2e_lot13_decl" name="test_def_638_d318_sub_pragul_minim_se_opreste" time="7.102" /><testcase classname="e2e_lot13_decl" name="test_def_538_d301_din_achizitia_intracomunitara_e_datorata" time="7.453" /><testcase classname="e2e_lot13_decl" name="test_def_591_d301_depusa_nu_mai_e_datorata" time="11.994" /><testcase classname="e2e_lot13_decl" name="test_def_592_d390_numai_pe_lunile_cu_operatiuni" time="7.557" /><testcase classname="e2e_lot13_decl" name="test_def_593_d390_din_noiembrie_are_termenul_dupa_sarbatori_nu_21_decembrie" time="8.028" /><testcase classname="e2e_lot13_decl" name="test_def_539_d301_furnizorul_fara_prefix_dublat" time="7.713" /><testcase classname="e2e_lot13_decl" name="test_def_540_sageata_din_pasul_2_intoarce_la_pasul_1_cu_firma" time="12.088" /><testcase classname="e2e_lot13_decl" name="test_def_660_formularele_inlocuite_nu_se_ofera_nici_la_pfa" time="4.950" /><testcase classname="e2e_lot13_decl" name="test_def_c19_rectificativa_d112_numai_la_cerere_dupa_diferente" time="10.336" /><testcase classname="e2e_lot12_decl3" name="test_def_c19_rectificativa_d394_numai_la_cerere_dupa_diferente" time="13.010" /><testcase classname="e2e_d406_perioada" name="test_def_c2_neplatitorul_alege_d406_pe_trimestru" time="3.996" /><testcase classname="e2e_d406_perioada" name="test_def_c1_fiecare_tranzactie_in_luna_ei" time="5.454" /><testcase classname="e2e_lot10_d406" name="test_def_c69_d406_cere_telefonul_si_nu_inventeaza_antetul" time="11.709" /><testcase classname="e2e_bloc_c" name="test_def_64_fila_pe_cod_vechi_nu_ramane_tacuta" time="1.940" /><testcase classname="e2e_bloc_c" name="test_def_70_reincarcare_la_autentificare_numai_fara_formular" time="6.402" /><testcase classname="e2e_bloc_c" name="test_def_68_scadenta_propusa_la_formularul_nou" time="3.300" /><testcase classname="e2e_bloc_c" name="test_def_66_pretul_neales_de_om_nu_ramane_pe_rand" time="5.867" /><testcase classname="e2e_bloc_c" name="test_def_65_ciorna_facturii_nu_trece_la_alta_firma_sau_alt_utilizator" time="10.689" /><testcase classname="e2e_bloc_c" name="test_def_88_platitor_tva_ramane_dupa_restaurarea_ciornei" time="5.864" /><testcase classname="e2e_bloc_c" name="test_def_67_randul_scris_de_mana_se_dezleaga_de_articol" time="3.230" /><testcase classname="e2e_bloc_c" name="test_def_89_linia_fara_articol_e_informare_nu_eroare" time="3.003" /><testcase classname="e2e_bloc_c" name="test_def_82_nir_la_cost_pe_cantitativ_valoric" time="6.038" /><testcase classname="e2e_bloc_c" name="test_def_85_articolul_nir_se_alege_din_lista" time="3.786" /><testcase classname="e2e_bloc_c" name="test_def_86_nir_salvat_se_deschide" time="4.069" /><testcase classname="e2e_bloc_c" name="test_def_87_stocul_arata_intrarea_nir_imediat" time="3.771" /><testcase classname="e2e_bloc_c" name="test_def_83_pretul_de_raft_gol_se_cere_langa_camp" time="3.597" /><testcase classname="e2e_bloc_c" name="test_def_84_furnizorul_nir_din_anaf" time="3.135" /><testcase classname="e2e_bloc_c" name="test_def_80_nir_un_singur_element_in_coada" time="1.563" /><testcase classname="e2e_bloc_c" name="test_def_92_butonul_respinge_din_dialog_e_rosu_plin" time="1.645" /><testcase classname="e2e_bloc_c" name="test_def_91_respingerea_e_confirmata_pe_ecran" time="2.698" /><testcase classname="e2e_bloc_c" name="test_def_94_metoda_de_stoc_nesuportata_refuzata_clar" time="3.367" /><testcase classname="e2e_bloc_c" name="test_def_71_mijlocul_fix_se_alege_din_registru" time="5.773" /><testcase classname="e2e_bloc_c" name="test_def_75_achizitia_de_la_agricultor_deschide_formularul_ei" time="2.732" /><testcase classname="e2e_bloc_c" name="test_def_78_conturile_pornesc_goale_cu_contul_uzual_in_explicatie" time="3.009" /><testcase classname="e2e_bloc_c" name="test_def_76_datele_citite_de_server_sunt_cerute_de_formular" time="3.283" /><testcase classname="e2e_bloc_c" name="test_def_76_fiecare_cheie_citita_de_server_are_campul_pe_ecran" time="83.803" /><testcase classname="e2e_bloc_c" name="test_def_77_preselectia_uzuala_si_dedusa_vizibila" time="3.672" /><testcase classname="e2e_bloc_c" name="test_def_72_bilantul_intra_in_coada" time="11.428" /><testcase classname="e2e_bloc_c" name="test_def_79_da_nu_din_schema_cerute_la_prima_folosire" time="7.961" /><testcase classname="e2e_bloc_c" name="test_def_97_api_cere_norma_functia_de_baza_si_scutirea" time="1.437" /><testcase classname="e2e_bloc_c" name="test_def_96_raportul_z_nu_se_valideaza_fara_descarcare" time="8.491" /><testcase classname="e2e_bloc_c" name="test_def_97_importul_cere_norma_functia_de_baza_si_scutirea" time="4.035" /><testcase classname="e2e_bloc_c" name="test_def_98_seria_chitantei_nu_vine_ch_din_oficiu" time="7.767" /><testcase classname="e2e_bloc_c" name="test_def_90_confirmarea_notei_la_validare_e_vizibila" time="4.436" /><testcase classname="e2e_bloc_c" name="test_def_81_nota_de_salarii_respinsa_se_reface_din_stat" time="4.397" /><testcase classname="e2e_bloc_c" name="test_def_93_cifra_clopotelului_nu_acopera_gliful" time="1.636" /><testcase classname="e2e_bloc_c" name="test_def_73_d390_intra_in_coada_fara_eroare_500" time="4.870" /><testcase classname="e2e_bloc_c" name="test_def_189_ecranul_cozii_nu_se_contrazice" time="4.694" /><testcase classname="e2e_bloc_c" name="test_def_74_declaratia_cu_formular_manual_intra_in_coada" time="6.169" /><testcase classname="e2e_bloc_c" name="test_def_190_eroarea_primei_generari_nu_ramane_dupa_trimitere" time="6.368" /><testcase classname="e2e_bloc_c" name="test_def_95_nir_legat_de_factura_scrie_doar_adaosul_si_tva_neexigibila" time="3.616" /><testcase classname="e2e_lot10_valuta" name="test_def_429_inchiderea_propune_reevaluarea_si_genereaza_nota" time="15.544" /><testcase classname="e2e_lot11_v" name="test_def_429_un_singur_formular_operatiunile_nu_il_mai_au_iar_inchiderea_il_deschide_mereu" time="7.999" /><testcase classname="e2e_lot11_v" name="test_def_429_plata_nelegata_scade_soldul_partenerului" time="5.407" /><testcase classname="e2e_lot11_v" name="test_def_429_ajustarea_manuala_e_in_acelasi_formular_marcata" time="6.200" /><testcase classname="e2e_lot11_v" name="test_def_c103_raspunsul_vechi_nu_acopera_ajustarea_scrisa" time="8.126" /><testcase classname="e2e_lot11_v" name="test_def_c103_campul_in_care_scrie_omul_ramane_cand_soseste_raspunsul" time="6.958" /><testcase classname="e2e_lot12_reev2" name="test_def_630_reevaluarea_lunii_in_curs_arata_diferenta_provizorie_stornarea_si_soldul_din_4111" time="65.381"><failure message="playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 60000ms exceeded.&#10;Call log:&#10;  - waiting for locator(&quot;.fereastra:last-of-type #rv-tabel&quot;) to be visible">patron = &lt;conftest.Ecran object at 0x79d95fe5e4b0&gt;
+firma_r = {'tenant_id': 371007, 'schema': 'tenant_9775', 'nume': 'E2E Probă 9621149 SRL', 'cabinet_id': 1968}
+
+    def test_def_630_reevaluarea_lunii_in_curs_arata_diferenta_provizorie_stornarea_si_soldul_din_4111(patron, firma_r):
+        """630. Pașii: factura EUR de azi, contată și validată; a doua factură EUR, contată, validată și stornată (stornarea rămâne cu nota în
+        ciornă) -&gt; Închidere lună (luna în curs) -&gt; „Reevaluare valută”: rândul DANTE are cursul BNR cu virgulă, „din &lt;ziua cursului&gt; —
+        provizoriu” și diferența „provizorie”; caseta spune simplu că cursul ultimei zile bancare nu e publicat încă (fără „flux întrerupt”);
+        „Sold în lei” = suma de pe 4111 a notelor validate; stornarea apare numită la „Facturi în valută care nu intră”; „Generează nota”
+        inactiv. MUTAȚIE (JS): marcajul „provizoriu” scos -&gt; pică."""
+        from core import curs_bnr as _cb
+        f = firma_r
+        pregateste_firma(patron, f, platitor=True, regim_fiscal="profit")
+        f1 = _factura_eur_azi(patron, f)
+        f2 = _factura_eur_azi(patron, f)
+        _ok(_api(patron, "POST", "/tenants/%d/facturi/%d/storno" % (f["tenant_id"], f2), {}), "stornarea")
+        from core.pdf_util import serie_nr
+        ((st_serie, st_numar),) = sql('SELECT serie, numar FROM "%s".facturi WHERE storno_din_id = %%s' % f["schema"], (f2,))
+        ((o_serie, o_numar),) = sql('SELECT serie, numar FROM "%s".facturi WHERE id = %%s' % f["schema"], (f2,))
+        eticheta_storno = "Factură %s din %s (stornarea %s)" % (serie_nr(st_serie, st_numar), AZI.strftime("%d.%m.%Y"), serie_nr(o_serie, o_numar))
+        (lei_4111,) = sql('SELECT COALESCE(SUM(l.suma), 0) FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
+                          'WHERE i.factura_id = ANY(%%s) AND i.status = \'validata\' AND l.cont_debit LIKE \'411%%%%\'' % (f["schema"], f["schema"]),
+                          ([f1, f2],))[0]
+        pg = patron.pg
+        patron.firma(f["nume"])
+        pg.click("#fa-inchidere")
+        pg.wait_for_selector(".fereastra:last-of-type #il-reevaluare", timeout=60000)
+        pg.click(".fereastra:last-of-type #il-reevaluare")
+&gt;       pg.wait_for_selector(".fereastra:last-of-type #rv-tabel", timeout=60000)
+
+frontend_test/e2e/e2e_lot12_reev2.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl._connection.Connection object at 0x79d96a0009e0&gt;
+cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x79d9647b49a0&gt;
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -&gt; Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+&gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 60000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fereastra:last-of-type #rv-tabel") to be visible
+
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError</failure></testcase><testcase classname="e2e_lot12_reev2" name="test_def_639_termenul_d390_din_noiembrie_nu_trece_pe_21_decembrie" time="5.523" /><testcase classname="e2e_lot12_reev2" name="test_def_268_1_alerta_de_test_n_are_dezabonare" time="8.310" /><testcase classname="e2e_lot13_ops" name="test_def_670_decontul_pe_salariat_cu_plafonul_diurnei_si_cota_fiecarei_cheltuieli" time="5.918" /><testcase classname="e2e_lot13_ops" name="test_def_524_plata_ratei_cu_creditul_numai_in_ciorna_se_refuza" time="8.062" /><testcase classname="e2e_lot13_ops" name="test_def_524_decontarea_in_valuta_pe_factura_de_origine" time="11.255" /><testcase classname="e2e_lot13_ops" name="test_def_524_contul_de_trezorerie_din_planul_firmei_si_casa_in_valuta" time="5.726" /><testcase classname="e2e_lot13_ops" name="test_def_522_inregistrat_pe_activ_nu_pe_cont" time="4.535" /><testcase classname="e2e_lot13_ops" name="test_def_518_casarea_cere_lunile_lipsa_si_trece_luna_ei_prin_6811" time="5.588" /><testcase classname="e2e_lot13_ops" name="test_def_519_activul_iese_din_registru_numai_la_validarea_casarii" time="10.295" /><testcase classname="e2e_lot13_ops" name="test_def_516_reevaluarea_citeste_amortizarea_pe_activ_cu_soldul_preluat" time="5.335" /><testcase classname="e2e_lot13_ops" name="test_def_517_lunile_lipsa_din_randul_activului" time="5.073" /><testcase classname="e2e_lot13_ops" name="test_def_521_519_plusul_de_mijloc_fix_cu_catalog_intra_in_registru_la_validare" time="11.698" /><testcase classname="e2e_lot13_ops" name="test_def_523_bunul_primit_in_leasing_intra_in_registru" time="5.734" /><testcase classname="e2e_lot13_ops" name="test_def_530_refacturarea_utilitatilor_fara_461" time="5.273" /><testcase classname="e2e_lot13_ops" name="test_def_531_chiria_unui_imobil_fara_optiune_e_scutita" time="5.258" /><testcase classname="e2e_lot13_ops" name="test_def_544_taxarea_inversa_cere_furnizorul_platitor_la_anaf" time="5.211" /><testcase classname="e2e_lot13_ops" name="test_def_550_vies_indisponibil_nu_e_cod_invalid" time="5.255" /><testcase classname="e2e_lot13_ops" name="test_def_504_niciun_camp_precompletat_sau_cu_text_gri" time="32.674" /><testcase classname="e2e_lot13_ops" name="test_def_511_ajustarea_creantei_ia_suma_si_zilele_din_factura" time="8.950" /><testcase classname="e2e_lot13_ops" name="test_def_512_ajustarea_spune_partea_nedeductibila_si_o_duce_in_d101" time="7.506" /><testcase classname="e2e_lot13_ops" name="test_def_513_provizioanele_1515_si_1517" time="5.573" /><testcase classname="e2e_lot13_ops" name="test_def_514_contul_ajustarii_stocurilor_e_lista_391_398_fara_nimic_ales" time="6.675" /><testcase classname="e2e_lot13_ops" name="test_def_505_valoarea_obiectului_de_inventar_e_fara_tva" time="5.195" /><testcase classname="e2e_lot13_ops" name="test_def_506_furnizorul_din_partenerii_firmei_pe_401_si_factura_ca_document" time="5.559" /><testcase classname="e2e_lot13_ops" name="test_def_633_verifica_aduce_denumirea_de_la_anaf" time="4.833" /><testcase classname="e2e_lot13_ops" name="test_def_507_darea_in_folosinta_tine_8035_in_afara_bilantului" time="4.936" /><testcase classname="e2e_lot13_ops" name="test_def_508_darea_si_scoaterea_aleg_obiectul_din_registru" time="10.026" /><testcase classname="e2e_lot13_ops" name="test_def_520_minusul_intreaba_daca_lipsa_e_dovedita_si_imputa_salariatul" time="5.668" /><testcase classname="e2e_lot13_ops" name="test_def_533_partajul_din_solduri_pe_fiecare_asociat" time="5.272" /><testcase classname="e2e_lot13_ops" name="test_def_527_dividendul_din_profitul_preluat_trece_prin_1171" time="4.975" /><testcase classname="e2e_lot13_ops" name="test_def_631_moneda_ajustarii_manuale_se_alege_din_lista" time="5.040" /><testcase classname="e2e_lot13_ops" name="test_def_601_mijlocul_fix_intra_in_registru_din_factura_primita" time="11.529" /><testcase classname="e2e_lot13_ops" name="test_def_528_subventia_pe_activ_se_reia_odata_cu_amortizarea" time="6.318" /><testcase classname="e2e_lot13_ops" name="test_def_529_mesajul_dispare_la_schimbarea_operatiei_si_numeste_nota" time="5.147" /><testcase classname="e2e_lot13_ops" name="test_def_532_sponsorizarea_duce_cheltuiala_in_d101" time="5.130" /><testcase classname="e2e_lot13_ops" name="test_def_537_achizitia_intracomunitara_in_moneda_facturii" time="5.081" /><testcase classname="e2e_lot13_ops" name="test_def_552_importul_cere_dvi_si_furnizorul" time="5.265" /><testcase classname="e2e_lot13_ops" name="test_def_541_nota_tva_la_incasare_nu_exigibilizeaza_peste_4428" time="4.876" /><testcase classname="e2e_lot13_ops" name="test_def_549_agricultorul_neinscris_achizitie_fara_compensatie" time="5.099" /><testcase classname="e2e_lot13_ops" name="test_def_510_productia_intra_in_stoc_si_se_vinde_pe_factura" time="8.571" /><testcase classname="e2e_lot13_ops" name="test_def_548_marja_si_aurul_ies_din_stoc_cu_clientul" time="9.226" /><testcase classname="e2e_lot13_ops" name="test_def_551_548_marja_fara_metoda_de_stoc_trimite_in_date_firma" time="5.365" /><testcase classname="e2e_lot12_firme1" name="test_def_489_ecranul_banca_spune_ca_accepta_mt940" time="4.559" /><testcase classname="e2e_lot12_firme1" name="test_def_479_extrasul_in_tabel_dupa_mt940_nu_dubleaza_linia_si_nu_propune_5121_5121" time="4.111" /><testcase classname="e2e_lot12_firme1" name="test_def_478_extrasul_xlsx_cu_date_excel_se_importa" time="4.342" /><testcase classname="e2e_lot12_firme1" name="test_def_480_incasarea_cu_cod_tva_strain_si_numarul_facturii_se_potriveste" time="4.061" /><testcase classname="e2e_lot12_firme1" name="test_def_481_numerarul_din_z_intra_in_registrul_de_casa" time="6.064" /><testcase classname="e2e_lot12_firme1" name="test_def_456_avansul_de_la_client_in_numerar_primeste_chitanta" time="5.668" /><testcase classname="e2e_lot12_firme1" name="test_def_483_deblocarea_lunii_cere_motivul_si_se_face" time="4.613" /><testcase classname="e2e_lot12_firme1" name="test_def_473_z_la_comert_cotele_neutre_chiar_cu_retete" time="7.264" /><testcase classname="e2e_lot12_firme1" name="test_def_474_z_descarcat_partial_cere_confirmarea_cu_cifrele" time="5.555" /><testcase classname="e2e_lot12_firme1" name="test_def_476_tva_transportului_facturat_e_pe_4426" time="5.275" /><testcase classname="e2e_lot12_firme1" name="test_def_c118_z_importat_din_amef_pe_luna_trecuta_se_descarca_din_ecran" time="4.271" /><testcase classname="e2e_lot12_firme1" name="test_def_251_extrasul_csv_windows_1250_pastreaza_diacriticele" time="4.161" /><testcase classname="e2e_lot12_firme1" name="test_def_c121_extrasul_altui_cont_cere_confirmarea_inainte_de_import" time="5.690" /><testcase classname="e2e_lot6" name="test_def_277_extrasul_nou_se_importa_iar_duplicatul_e_miscarea" time="4.902" /><testcase classname="e2e_lot6" name="test_def_276_banca_spune_formatele_si_compara_soldurile" time="4.623" /><testcase classname="e2e_lot6" name="test_def_278_dispozitia_leaga_factura_si_semnaleaza_avansul_si_plafonul" time="5.302" /><testcase classname="e2e_lot6" name="test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand" time="3.523"><failure message="AssertionError: Dispoziția a fost salvată. Nota 5311=4111 e ciornă. O validezi din Registrul jurnal. Chitanța E2ECH nr. 3 a fost emisă. 150,00 lei depășesc facturile deschise ale clientului: sunt avans de la client. Emite factura de avans până la 15.12.2026 (Codul fiscal art.319 alin.(16)); TVA e exigibilă la data încasării avansului (art.282 alin.(2) lit.b). Dacă suma e greșită, corecteaz-o. 1 avertisment de plafon (Legea 70/2015).&#10;assert ('e trimisă la validare în cabinet' in 'Dispoziția a fost salvată. Nota 5311=4111 e ciornă. O validezi din Registrul jurnal. Chitanța E2ECH nr. 3 a fost emis...casării avansului (art.282 alin.(2) lit.b). Dacă suma e greșită, corecteaz-o. 1 avertisment de plafon (Legea 70/2015).')">asistent = &lt;conftest.Ecran object at 0x79d9641de210&gt;
+firma_e2e = {'tenant_id': 371050, 'schema': 'tenant_9818', 'nume': 'E2E Probă 50920 SRL', 'cabinet_id': 1968}
+
+    def test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand(asistent, firma_e2e):
+        """279. Casă / validare: „creată ca ciornă”, dar nota plecase la validare; apoi „Șterge” oferit și refuzat.
+        Pașii asistentului (fără „Poate valida”): dispoziție de 150 lei, avans -&gt; mesajul spune „trimisă la validare în cabinet”; rândul
+        spune „notă la validare în cabinet” și nu oferă „Șterge”.
+        [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781, „[16.2-A, 729.1]”): „Adaugă” din Casă e inactiv până se completează partenerul (la încasare), deci testul îl completează."""
+        uid = sql("SELECT id FROM public.users WHERE email = 'asistent@prisma-cont.test'")[0][0]
+        era = sql("SELECT poate_valida FROM public.users WHERE id = %s", (uid,))[0][0]
+        sql("UPDATE public.users SET poate_valida = false WHERE id = %s", (uid,))
+        sql("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s) ON CONFLICT DO NOTHING", (uid, firma_e2e["tenant_id"]))
+        try:
+            asistent.firma(firma_e2e["nume"])
+            pg = asistent.pg
+            _card(asistent, "casa", "#c-toggle")
+            _dispozitie(asistent, 150, "")
+            pg.fill("#c-part", "Client E2E 279")        # [17.5-T] 729.1: la încasare „Adaugă” cere și partenerul
+            pg.fill("#c-doc", "DI-E2E-279")
+            pg.wait_for_selector("#c-avans", timeout=20000)
+            pg.check("#c-avans")
+            pg.click("#c-adauga")
+            pg.wait_for_function("() =&gt; document.body.innerText.includes('Dispoziția a fost salvată')", timeout=20000)
+            mesaj = pg.locator("p.pf-intro", has_text="Dispoziția a fost salvată").inner_text()
+            asistent.captura("salvata")
+&gt;           assert "e trimisă la validare în cabinet" in mesaj and "Cabinetul o validează" in mesaj and "ciornă" not in mesaj, mesaj
+E           AssertionError: Dispoziția a fost salvată. Nota 5311=4111 e ciornă. O validezi din Registrul jurnal. Chitanța E2ECH nr. 3 a fost emisă. 150,00 lei depășesc facturile deschise ale clientului: sunt avans de la client. Emite factura de avans până la 15.12.2026 (Codul fiscal art.319 alin.(16)); TVA e exigibilă la data încasării avansului (art.282 alin.(2) lit.b). Dacă suma e greșită, corecteaz-o. 1 avertisment de plafon (Legea 70/2015).
+E           assert ('e trimisă la validare în cabinet' in 'Dispoziția a fost salvată. Nota 5311=4111 e ciornă. O validezi din Registrul jurnal. Chitanța E2ECH nr. 3 a fost emis...casării avansului (art.282 alin.(2) lit.b). Dacă suma e greșită, corecteaz-o. 1 avertisment de plafon (Legea 70/2015).')
+
+frontend_test/e2e/e2e_lot6.py:179: AssertionError</failure></testcase><testcase classname="e2e_lot6" name="test_def_273_facturi_primite_spun_starea_spv_si_primesc_xml" time="4.858" /><testcase classname="e2e_lot6" name="test_def_275_factura_emisa_arata_starea_spv_si_drumul_spre_conectare" time="4.521" /><testcase classname="e2e_lot6" name="test_def_289_starea_spv_in_fereastra_firmei_setari_si_ghid" time="3.784" /><testcase classname="e2e_lot6" name="test_def_289_certificatul_fara_drept_pe_cui_e_spus_exact_peste_tot" time="7.011" /><testcase classname="e2e_lot6" name="test_def_287_fara_validare_in_doi_pasul_urmator_e_depunerea" time="6.290" /><testcase classname="e2e_lot6" name="test_def_286_contoarele_paginii_principale_urmeaza_scrierile" time="3.925" /><testcase classname="e2e_lot6" name="test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul" time="3.742" /><testcase classname="e2e_lot6" name="test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_singura" time="11.179" /><testcase classname="e2e_lot6" name="test_def_272_cui_nu_se_modifica_din_date_firma_ci_prin_corectura_administratorului" time="9.880" /><testcase classname="e2e_lot6" name="test_def_281_amortizarea_restanta_dintr_o_actiune_si_inchiderea_cu_confirmare" time="11.263" /><testcase classname="e2e_lot6" name="test_def_285_nicio_fereastra_cu_derulare_laterala_iar_actiunea_se_vede" time="183.425" /><testcase classname="e2e_lot6" name="test_def_c41_registrul_fiscal_pe_profit_nu_cade" time="2.733" /><testcase classname="e2e_lot6" name="test_def_290_eroarea_dispare_cand_campul_e_corectat" time="9.546" /><testcase classname="e2e_lot6" name="test_def_291_bulina_suport_numai_pentru_vestile_de_la_iconta" time="13.473" /><testcase classname="e2e_lot6" name="test_def_292_fereastra_cozii_poarta_titlul_cardului" time="9.903" /><testcase classname="e2e_lot6" name="test_def_293_pe_declaratia_altcuiva_fara_depunere_numai_vizualizare" time="7.637" /><testcase classname="e2e_lot6" name="test_def_294_perioada_implicita_e_cea_scadenta_si_nedepusa" time="2.758" /><testcase classname="e2e_lot6" name="test_def_295_d100_pasul_2_are_rezumatul_cu_baza" time="4.146" /><testcase classname="e2e_lot6" name="test_def_274_articolul_fara_cota_in_nomenclator_spune_si_trimite_la_produse" time="5.332" /><testcase classname="e2e_lot6" name="test_def_274_linia_cu_0_cere_categoria_de_tva" time="6.116" /><testcase classname="e2e_lot6" name="test_def_288_povestea_se_verifica_la_aprobare_si_spune_perioada" time="3.858" /><testcase classname="e2e_lot72_cont" name="test_def_319_cardurile_administratorului_cu_textul_aprobat_se_bifeaza_din_ecranele_reale" time="6.697" /><testcase classname="e2e_lot72_cont" name="test_def_320_prima_intrare_cere_telefonul_canalul_si_bifele_grupate_dupa_drepturi" time="1.335" /><testcase classname="e2e_lot72_cont" name="test_def_320_contul_existent_intra_direct_fara_prima_intrare" time="0.797" /><testcase classname="e2e_lot72_cont" name="test_def_315_conectare_spv_explicatia_o_data_si_un_rand_pe_firma" time="3.301" /><testcase classname="e2e_lot72_cont" name="test_def_notificari_titlul_o_singura_data" time="3.780" /><testcase classname="e2e_lot92" name="test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile" time="4.553" /><testcase classname="e2e_lot92" name="test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare" time="8.312" /><testcase classname="e2e_lot92" name="test_def_411_stat_cu_cm_arata_netul_de_plata_si_costul_cu_indemnizatia" time="6.838" /><testcase classname="e2e_lot92" name="test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa" time="7.241" /><testcase classname="e2e_lot92" name="test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_buc" time="5.740" /><testcase classname="e2e_lot92" name="test_def_416_factura_stornata_integral_e_stornata_nu_neincasata" time="5.112" /><testcase classname="e2e_lot92" name="test_def_399_nir_cere_factura_sosita_si_tva_transportului" time="6.452" /><testcase classname="e2e_lot92" name="test_def_398_toate_liniile_nir_pe_aceeasi_regula" time="7.591" /><testcase classname="e2e_lot92" name="test_def_400_detaliul_nir_arata_transportul_repartizat_si_costul_unitar" time="5.380" /><testcase classname="e2e_lot92" name="test_def_401_borderoul_de_achizitie_cere_vanzatorul_si_arata_nota" time="8.100" /><testcase classname="e2e_lot92" name="test_def_402_achizitia_pf_pe_stoc_cere_articolul_si_intra_in_gestiune" time="5.081" /><testcase classname="e2e_lot92" name="test_def_404_lipsa_la_inventar_se_incadreaza" time="5.131" /><testcase classname="e2e_lot92" name="test_def_407_avansul_platit_furnizorului_cere_destinatia_si_e_409x" time="5.262" /><testcase classname="e2e_lot92" name="test_def_412_adeverinta_precompleteaza_functia_din_fisa" time="4.411" /><testcase classname="e2e_lot92" name="test_def_413_orele_suplimentare_propun_suma_si_semnaleaza_sporul_sub_75" time="4.647" /><testcase classname="e2e_lot92" name="test_def_414_luna_in_curs_nu_ofera_butonul_care_scrie_nota" time="4.858" /><testcase classname="e2e_lot92" name="test_def_418_statutul_furnizorului_aflat_contul_pe_linie_si_confirmarea_ramane" time="6.205" /><testcase classname="e2e_lot92" name="test_def_415_articolul_nou_din_nir_are_cota_la_emitere" time="1.495" /><testcase classname="e2e_lot92" name="test_def_403_fisa_de_magazie_numeste_documentul_nu_id_ul" time="4.709" /><testcase classname="e2e_lot92" name="test_def_408_cardul_nir_din_coada_arata_rulajul_tuturor_notelor" time="2.778" /><testcase classname="e2e_lot92" name="test_def_417_pdf_ul_stornarii_numeste_factura_stornata" time="4.574" /><testcase classname="e2e_lot92" name="test_def_c58_primul_clic_pe_adauga_dupa_tastare_pleaca" time="5.554" /><testcase classname="e2e_lot92" name="test_def_c60_registrul_de_casa_porneste_de_la_soldul_casei" time="4.743" /><testcase classname="e2e_lot92" name="test_def_c59_stornarea_pastreaza_orasul_si_judetul_clientului_in_xml" time="5.753" /><testcase classname="e2e_lot92" name="test_def_c62_stornarea_se_trimite_in_spv_din_ecran" time="4.732" /><testcase classname="e2e_lot92" name="test_def_c63_factura_din_proforma_pastreaza_adresa_si_unitatea" time="4.548" /><testcase classname="e2e_lot92" name="test_def_c64_confirmarea_transformarii_ramane_peste_detaliu" time="4.842" /><testcase classname="e2e_lot13_portal_p2" name="test_def_564_cheia_api_se_copiaza_spune_folosirea_si_dispare_la_revocare" time="11.325" /><testcase classname="e2e_lot13_portal_p2" name="test_def_565_sinteza_zilnica_apare_in_notificari_si_se_poate_opri" time="1.787" /><testcase classname="e2e_lot13_portal_p2" name="test_def_566_solicitarea_clientului_bifata_si_la_bifele_salvate_inainte" time="2.769" /><testcase classname="e2e_lot13_portal_p2" name="test_def_567_emailul_notificarii_spune_elementul_si_firma" time="10.512" /><testcase classname="e2e_lot13_portal_p2" name="test_def_568_sinteza_zilei_numara_toata_coada" time="1.881" /><testcase classname="e2e_lot13_portal_p2" name="test_def_569_evenimentele_sintezei_numesc_elementul" time="1.879" /><testcase classname="e2e_lot13_portal_p2" name="test_def_647_whatsapp_neinregistrat_avertisment_fara_nu_s_a_salvat" time="2.397" /><testcase classname="e2e_lot10_c73_public" name="test_def_c73_cui_cabinet_al_altuia_refuzat_numit" time="8.596" /><testcase classname="e2e_lot12_coada" name="test_def_499_motivul_incheiat_de_om_nu_primeste_al_doilea_punct_pe_nota" time="8.293" /><testcase classname="e2e_lot12_coada" name="test_def_499_motivul_incheiat_de_om_nu_primeste_al_doilea_punct_pe_nir" time="4.495" /><testcase classname="e2e_lot12_coada" name="test_def_500_totalizarea_jurnalului_numeste_notele_fara_document_fara_derivabil" time="4.136" /><testcase classname="e2e_lot12_coada" name="test_def_92_respinge_ramane_rosu_plin_si_activ_cu_motivul_completat" time="5.494" /><testcase classname="e2e_lot12_coada" name="test_def_52_cardul_si_fereastra_numara_exact_notele_de_validat" time="13.402" /><testcase classname="e2e_lot12_coada" name="test_def_c107_validarea_contarii_din_jurnal_valideaza_si_iesirea_din_stoc" time="7.770" /><testcase classname="e2e_lot11_j" name="test_def_8c_dupa_generarea_notei_z_confirmarea_e_verde_cu_conturile_iar_butonul_inactiv" time="3.885" /><testcase classname="e2e_lot11_j" name="test_def_23_z_la_comert_cotele_sunt_neutre_fara_consum_pe_reteta" time="3.129" /><testcase classname="e2e_lot11_j" name="test_def_23_generarea_amortizarii_inactiva_pe_luna_amortizata_cu_nota_numita" time="6.169" /><testcase classname="e2e_lot11_j" name="test_def_422_contorul_de_validat_si_clopotelul_urmeaza_actiunile" time="7.199" /><testcase classname="e2e_lot11_s" name="test_def_451_ciorna_depasita_se_arata_pe_rand_se_reface_din_sursa_si_se_valideaza" time="26.881"><failure message="playwright._impl._errors.TimeoutError: Locator.wait_for: Timeout 20000ms exceeded.&#10;Call log:&#10;  - waiting for locator(&quot;tbody.tn-nota[data-nota-id='2']&quot;) to be visible">patron = &lt;conftest.Ecran object at 0x79d95940c500&gt;
+firma_cv = {'tenant_id': 371062, 'schema': 'tenant_9830', 'nume': 'E2E Probă 650434 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_451_ciorna_depasita_se_arata_pe_rand_se_reface_din_sursa_si_se_valideaza(patron, firma_cv):
+        """451. „ciornele generate înainte de o reparație rămân validabile cu regula veche. Cazuri: ieșirea Marfa A din Z 0042 cu «Bon de
+        consum nr 1», F1 […]”. Pașii: Raport Z nr. 4511 -&gt; „Generează notă” -&gt; Marfa A, 2 buc -&gt; „Ieșire pe articol” (ciorna, rescrisă cum
+        o scria codul vechi — antetul) -&gt; Registru jurnal: pe rândul ciornei, caseta „a fost generată … după o regulă care s-a schimbat … acum
+        raportul Z ar scrie documentul justificativ «Raport Z nr 4511 …»”, „Validează” inactiv -&gt; „Refă nota din mișcarea de stoc”: confirmarea
+        „Nota a fost refăcută din raportul Z”, nota nouă are documentul Z-ului și se validează (Validată)."""
+        f = firma_cv
+        nid, doc_z, zid = _iesire_z_veche(patron, f, "4511")
+        pg = _jurnal(patron, f)
+&gt;       _deschide_rand(patron, _nota_jn(patron, nid))                   # [617] caseta „depășită” stă în detaliul rândului: deschis întâi
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_lot11_s.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:297: in _deschide_rand
+    tb.wait_for(timeout=20000)
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:20539: in wait_for
+    self._sync(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_locator.py:748: in wait_for
+    await self._frame.wait_for_selector(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl._connection.Connection object at 0x79d96a0009e0&gt;
+cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x79d96485c860&gt;
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -&gt; Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+&gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Locator.wait_for: Timeout 20000ms exceeded.
+E           Call log:
+E             - waiting for locator("tbody.tn-nota[data-nota-id='2']") to be visible
+
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError</failure></testcase><testcase classname="e2e_lot11_s" name="test_def_451_de_validat_refuza_ciorna_depasita_si_ofera_refacerea" time="7.884" /><testcase classname="e2e_lot11_s" name="test_def_452_returul_din_stornare_se_valideaza_fara_motivul_fals" time="25.101"><failure message="playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 500ms exceeded.&#10;Call log:&#10;  - waiting for locator(&quot;[data-val='1']&quot;) to be visible">patron = &lt;conftest.Ecran object at 0x79d967b1b350&gt;
+firma_stoc = {'tenant_id': 371063, 'schema': 'tenant_9831', 'nume': 'E2E Probă 685331 SRL', 'cabinet_id': 1968}
+
+    def test_def_452_returul_din_stornare_se_valideaza_fara_motivul_fals(patron, firma_stoc):
+        """452. „nota «Retur în stoc Marfa B × 1 buc (stornare)» de pe F1 e refuzată la validare cu un motiv fals («documentul ei a fost
+        respins»).” Pașii: articol în stoc -&gt; factură cu 1 buc, „Pleacă marfa acum: Da” -&gt; stornare cu retur -&gt; Registru jurnal: nota „Retur
+        în stoc … (stornare)” și contarea facturii de stornare -&gt; „Validează” pe factura stornată, apoi pe retur (619: stornarea după documentul
+        stornat; returul și contarea stornării se validează împreună): Validată, fără „documentul ei a fost respins”."""
+        from e2e_bloc_a import ARTICOL, _api, _ok, articol_in_stoc, emite_api
+        f = firma_stoc
+        tid, s = f["tenant_id"], f["schema"]
+        aid = articol_in_stoc(patron, f, cantitate=22, pret=10)
+        fa = emite_api(patron, f, linii=[{"descriere": ARTICOL, "cantitate": 1, "um": "buc", "pret_unitar": 20.0, "cota_tva": 21,
+                                          "cota_propusa": 21, "articol_id": aid}], pleaca_marfa=True)
+        st = _ok(_api(patron, "POST", "/tenants/%d/facturi/%d/storno" % (tid, fa["factura_id"]), {"retur": True}), "storno cu retur")
+        (retur,), = sql('SELECT id FROM "%s".inregistrari WHERE descriere LIKE %%s ORDER BY id DESC LIMIT 1' % s, ("Retur în stoc %(stornare)",))
+        (contare_storno,), = sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = %%s' % s, (st["factura_id"], "facturi"))
+        (contare_orig,), = sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = %%s' % s, (fa["factura_id"], "facturi"))
+        pg = _jurnal(patron, f)
+        # [lotul 12, 619 / clasa 80] „Validează” validează DOCUMENTUL, cu toate notele lui, iar stornarea intră în evidență numai după documentul
+        # stornat (`coada_api.refuz_stornare_inaintea_documentului`): întâi factura (contarea + ieșirea din stoc), apoi returul — factura de
+        # stornare și returul ei sunt același document, deci „Validează” pe retur le validează pe amândouă
+        for nid in (contare_orig, retur):
+&gt;           pg.wait_for_selector("[data-val='%d']" % nid, timeout=20000)
+
+frontend_test/e2e/e2e_lot11_s.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:43: in mai
+    return __orig(sel, *a, **{**k, "timeout": 500})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl._connection.Connection object at 0x79d96a0009e0&gt;
+cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x79d964453f60&gt;
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -&gt; Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+&gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 500ms exceeded.
+E           Call log:
+E             - waiting for locator("[data-val='1']") to be visible
+
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError</failure></testcase><testcase classname="e2e_lot11_s" name="test_def_23_nota_borderoului_arata_sursa_borderoul_nu_facturile" time="25.567"><failure message="playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 500ms exceeded.&#10;Call log:&#10;  - waiting for locator(&quot;tbody.tn-nota[data-nota-id='5']&quot;) to be visible">patron = &lt;conftest.Ecran object at 0x79d964370fe0&gt;
+firma_stoc = {'tenant_id': 371063, 'schema': 'tenant_9831', 'nume': 'E2E Probă 685331 SRL', 'cabinet_id': 1968}
+
+    def test_def_23_nota_borderoului_arata_sursa_borderoul_nu_facturile(patron, firma_stoc):
+        """pct.23 („«sursa: facturile» pe nota borderoului”). Pașii: Stocuri -&gt; „Borderou de achiziție” (ruta formularului) -&gt; Registru
+        jurnal: rândul notei borderoului spune „sursa: borderoul de achiziție”, nu „sursa: facturile”."""
+        from e2e_lot10b_stoc import _borderou_api
+        f = firma_stoc
+        r = _borderou_api(patron, f, furnizor_nume="Ion Sursa", articol="porumb E2E", cantitate=50)
+        pg = _jurnal(patron, f)
+        nid = r["inregistrare_id"]
+&gt;       pg.wait_for_selector("tbody.tn-nota[data-nota-id='%d']" % nid, timeout=20000)
+
+frontend_test/e2e/e2e_lot11_s.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:43: in mai
+    return __orig(sel, *a, **{**k, "timeout": 500})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl._connection.Connection object at 0x79d96a0009e0&gt;
+cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x79d95942cea0&gt;
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -&gt; Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+&gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 500ms exceeded.
+E           Call log:
+E             - waiting for locator("tbody.tn-nota[data-nota-id='5']") to be visible
+
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError</failure></testcase><testcase classname="e2e_lot11_s" name="test_def_c75_borderoul_vechi_e_borderou_iar_urmatorul_primeste_numarul_urmator" time="24.599"><failure message="playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 500ms exceeded.&#10;Call log:&#10;  - waiting for locator(&quot;tbody.tn-nota[data-nota-id='6']&quot;) to be visible">patron = &lt;conftest.Ecran object at 0x79d964373fe0&gt;
+firma_stoc = {'tenant_id': 371063, 'schema': 'tenant_9831', 'nume': 'E2E Probă 685331 SRL', 'cabinet_id': 1968}
+
+    def test_def_c75_borderoul_vechi_e_borderou_iar_urmatorul_primeste_numarul_urmator(patron, firma_stoc):
+        """C75 („DA. Migrează borderourile vechi pe toate firmele”). Pașii: un borderou scris înainte de lotul 9 (BA-7, tipul „factura” —
+        antetul) -&gt; migrarea -&gt; Registru jurnal: nota lui spune „sursa: borderoul de achiziție” și „Borderou de achiziție BA-7 din …” -&gt; un
+        borderou nou din formular, fără număr: primește BA-8 (numerotarea îl vede pe cel vechi), nu un număr deja dat."""
+        from core import db, facturi_api, migrare_borderou_tip_vechi as m, repo_contabilitate as rc, tranzactie
+        from e2e_lot10b_stoc import _borderou_api
+        f = firma_stoc
+        s = f["schema"]
+        descr = "Achizitie de la neinregistrat - Ion Vechi"
+        with db.get_conn(s) as c:
+            with c.cursor() as cur:
+                tranzactie.fixeaza_schema(cur, s)
+            fid = facturi_api.creeaza_factura(c, numar="BA-7", data_emitere=AZI.isoformat(), directie="primita",
+                                              linii=[{"descriere": descr, "cantitate": 1, "pret_unitar": "120", "cota_tva": 0}],
+                                              tert_nume="Ion Vechi", tert_cui="", status="importata", tert_platitor_tva=False, tert_pf=True)["factura_id"]
+            with c.cursor() as cur:
+                nid = rc.nota_facturi_cu_factura(cur, s, AZI.isoformat(), fid, descr)[0]
+                rc.adauga_linie_furnizor(cur, s, nid, "371", 120)
+                # date-de-pornire: borderoul scris înainte de lotul 9 (creat_la în trecut — ora nu se poate produce pe drumul aplicației)
+                cur.execute('UPDATE "%s".facturi SET creat_la = %%s WHERE id = %%s' % s, ("2026-10-19 13:39+03", fid))
+            c.commit()
+        with db.get_conn() as c:
+            r = m.aplica(c, s)
+            c.commit()
+        assert [x["id"] for x in r["convertite"]] == [fid], r
+        pg = _jurnal(patron, f)
+&gt;       pg.wait_for_selector("tbody.tn-nota[data-nota-id='%d']" % nid, timeout=20000)
+
+frontend_test/e2e/e2e_lot11_s.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:43: in mai
+    return __orig(sel, *a, **{**k, "timeout": 500})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl._connection.Connection object at 0x79d96a0009e0&gt;
+cb = &lt;function Channel.send.&lt;locals&gt;.&lt;lambda&gt; at 0x79d964343ce0&gt;
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -&gt; Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+&gt;           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 500ms exceeded.
+E           Call log:
+E             - waiting for locator("tbody.tn-nota[data-nota-id='6']") to be visible
+
+/home/costin/iconta_lot17_5q6/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError</failure></testcase><testcase classname="e2e_lot11_a457" name="test_def_457_ciorna_contabilului_e_in_coada_lui_si_se_valideaza_de_acolo" time="4.252" /><testcase classname="e2e_lot11_a457" name="test_def_457_contarea_din_banca_spune_ciorna_nu_la_validare" time="8.037" /><testcase classname="e2e_lot12_cx7" name="test_def_c176_stergerea_ajustarii_fiscale_intreaba_si_sterge" time="4.599" /><testcase classname="e2e_lot12_cx7" name="test_def_c179_nir_denumirea_furnizorului_de_la_anaf_dispare_la_alt_cui" time="4.500" /><testcase classname="e2e_lot12_cx7" name="test_def_c179_casa_partenerul_de_la_anaf_dispare_la_alt_cui" time="4.049" /><testcase classname="e2e_lot12_cx7" name="test_def_c179_emiterea_datele_clientului_de_la_anaf_dispar_la_alt_cui" time="5.461" /><testcase classname="e2e_lot12_cx7" name="test_def_c179_factura_primita_furnizorul_de_la_anaf_dispare_la_alt_cui" time="3.277" /><testcase classname="e2e_lot12_cx7" name="test_def_c179_inregistrarea_denumirea_cabinetului_dispare_la_alt_cui" time="0.679" /><testcase classname="e2e_lot12_cx7" name="test_def_c180_dupa_dezactivarea_unui_centru_fereastra_ramane_unde_era" time="7.189" /><testcase classname="e2e_lot12_cx7" name="test_def_c181_facturile_candidate_ale_chitantei_au_seria_separat" time="4.139" /><testcase classname="e2e_lot12_cx7" name="test_def_c181_fisa_partenerului_arata_seria_separat" time="4.217" /><testcase classname="e2e_lot12_cx7" name="test_def_c185_confirmarea_salvarii_spune_ca_nota_a_plecat_la_validare" time="4.145" /><testcase classname="e2e_lot12_cx7" name="test_def_c182_validarea_notei_fara_document_arata_liniile_si_le_tine_la_redesenare" time="9.960" /><testcase classname="e2e_lot12_cx7" name="test_def_c183_detaliul_notei_de_validat_scrie_rulajul_o_data" time="5.688" /><testcase classname="e2e_lot12_cx7" name="test_def_c184_de_validat_din_notificare_deschide_detaliul_notei" time="5.797" /><testcase classname="e2e_lot12_cx7" name="test_def_c186_refuzul_numai_pe_campuri_nu_mai_vine_si_in_fereastra" time="7.057" /><testcase classname="e2e_lot12_ui2" name="test_def_617_registrul_jurnal_tabel_cautare_detaliu_si_validare_pe_loc" time="4.627" /><testcase classname="e2e_lot12_ui2" name="test_def_622_de_validat_trei_sectiuni_un_tabel_nota_o_data_si_cautare" time="7.864" /><testcase classname="e2e_lot12_ui2" name="test_def_621_balanta_rezumatul_nu_mananca_tabelul_si_importul_are_buton" time="9.539" /><testcase classname="e2e_lot12_ui2" name="test_def_459_1_denumirea_de_la_anaf_dispare_cand_se_schimba_cui_ul" time="4.487" /><testcase classname="e2e_comanda_1410" name="test_def_243_anul_neincheiat_nu_se_propune" time="5.013" /><testcase classname="e2e_comanda_1410" name="test_def_243_nota_care_nu_mai_corespunde_soldurilor_nu_se_valideaza" time="10.639" /><testcase classname="e2e_comanda_1410" name="test_def_244_dupa_propunere_legatura_spre_notele_de_validat" time="6.318" /><testcase classname="e2e_comanda_1410" name="test_def_245_sursa_notei_se_scrie_in_cuvinte" time="9.039" /></testsuite></testsuites>

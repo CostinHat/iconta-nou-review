@@ -1277,3 +1277,16 @@ Numerele 800–867 sunt ale lui Costin (auditul r62), AC187 al auditului, C235 �
 - r61-F043-A-S, r61-F078-F080-S, r61-F085-S — nejudecate în lot: reconfirmarea pe E cerută de pct.3 nu s-a făcut.
 - P-F172, P-F179, P-X02 — neexecutate (pasul 1 al fiecărei probe pe copie: fixture-ul nu a fost pregătit în lot); trec la retestul arhitectului după publicare.
 - Predarea Q5: 860, 694.1, r61-F122, r61-F254, 857 — neatinse în 17.5-Q4 (starea documentată în secțiunea 17.5-Q3/Q5 rămâne); 872, 630, R014 — necomparate; R021, R027 — roșii pe baza Q4 (baza.json), numerotate; R037 verde pe baza Q4.
+
+## Constatările lotului 17.5-Q6 (23.11.2026; Comanda 3 după Q: acceptare_17_5_Q6.tsv, 15 poziții, matrice_probe_17_5_Q6.tsv, 53 de combinații; copia iconta_test-20261104-171456 restaurată, E aca6f828)
+Frazele §4 pct.1: `docs/dovezi/17_5_Q6/fraze_4_1.txt`. Martorii E/C și indexul matricei: `docs/dovezi/17_5_Q6/martori/` și ZIP-ul lotului; judecata: `oracol_reparatii_17_5_Q6.py` / `verifica_matrice_17_5_Q6.py` (ale arhitectului).
+- 865, 726, 742 — reparat (P 9405de3f): lista permanentă din Declarații fără limită verticală proprie și fără zonă de derulare (`static/stil.css`, `static/js/ds_piese.js::listaCuCautare`, `data-fara-zona`). Dovada: e.1 și e.2 (testul înghețat `e2e_ferestre_17_5_Q6.py`) pică pe E (REAL r5), trec pe P; «datorate» pică pe E (doi proprietari de derulare). Verdictul pe C: în raport.
+- F025-S (r61-F025-A-S, criteriul S) — reparat: un singur #il-reevaluare (`static/js/ecrane/firme.js`, `static/js/ds_piese.js::semnaleDS`). Martorii E: cele trei cazuri (cu_blocaj, cu_blocaj_anterior, fara_blocaj) la 603×590 și 1366×768. Criteriul A: nejudecat în lot.
+- 867 — reparat: `static/js/ecrane/setari.js::panouConectareSPV` (motivul pe rând, sumarul unic de la două respingeri). Martorii E: fixture_867 redat local.
+- P-F019-S — reparat: `static/js/ds_piese.js::paginareDS`, `static/js/ecrane/validat.js`, `static/stil.css` (8 documente pe pagină). Martorii E: coada redată local cu 11 note fictive (forma lui _note_fictive din e2e_de_validat_17_5_G.py).
+- 864 — nerezolvată: plierea grupelor din detaliul Control fiscal ascunde rândurile citite și apăsate de testele vechi nemodificabile din afara plasei; cere decizia arhitectului asupra cititorilor.
+- 737 — nerezolvată: motivul așteptat («Pâinea albă …») cere diacritice pe care răspunsul brut controlat («Painea alba …») nu le are; refacerea diacriticelor nu e o regulă deterministă.
+- P-F172 — nerezolvată pe drumul real: C237 (emiterea ciornei fixture-ului: 422 înaintea porții).
+- P-F179 — trece pe E (martorii «primita» la ambele rezoluții); pe C: în raport.
+- 848, r61-F043, r61-F078/F080, r61-F085, P-X02 — nemăsurate în lot (motivul pe fiecare rând al matricei).
+- C237 — rândul din tabel.

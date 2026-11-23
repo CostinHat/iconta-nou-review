@@ -1,0 +1,10 @@
+[e2e] aplicația din index pornită pe 8019 în 18s
+ERROR    asyncio:base_events.py:1821 Task was destroyed but it is pending!
+ERROR    asyncio:base_events.py:1821 Task was destroyed but it is pending!
+FAILED frontend_test/e2e/e2e_lot12_reev2.py::test_def_630_reevaluarea_lunii_in_curs_arata_diferenta_provizorie_stornarea_si_soldul_din_4111
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand
+FAILED frontend_test/e2e/e2e_lot11_s.py::test_def_451_ciorna_depasita_se_arata_pe_rand_se_reface_din_sursa_si_se_valideaza
+FAILED frontend_test/e2e/e2e_lot11_s.py::test_def_452_returul_din_stornare_se_valideaza_fara_motivul_fals
+FAILED frontend_test/e2e/e2e_lot11_s.py::test_def_23_nota_borderoului_arata_sursa_borderoul_nu_facturile
+FAILED frontend_test/e2e/e2e_lot11_s.py::test_def_c75_borderoul_vechi_e_borderou_iar_urmatorul_primeste_numarul_urmator
+[e2e] 6 failed, 240 passed in 1889.90s (0:31:29) (1908s; capturi în /home/costin/jurnale_17_5_Q6/compat_P/capturi)
