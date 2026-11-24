@@ -1,0 +1,4 @@
+[e2e] aplicația din index pornită pe 8019 în 18s
+FAILED frontend_test/e2e/e2e_lot12_start.py::test_def_321_rotita_deruleaza_pagina_cabinetului_nou_la_rezolutiile_uzuale
+FAILED frontend_test/e2e/e2e_lot11_b.py::test_def_450_pct23_borderoul_sta_langa_nir_nu_in_operatiuni
+[e2e] 2 failed in 14.00s (33s; capturi în /home/costin/iconta_lot17_5r2/docs/dovezi/17_5_R2/probe_P/compat_E/capturi)

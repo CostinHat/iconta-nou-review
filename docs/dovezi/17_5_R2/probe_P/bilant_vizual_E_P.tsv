@@ -1,0 +1,27 @@
+ecran	semne_E	semne_P	titluri_P	suprapuneri_P	acoperite_P	in_afara_P	rânduri_titlu_P	derulare_oriz_P	deficiente_vizuale_E	deficiente_vizuale_P
+1366x768/operatiuni			{}	0	0	0	1	False	0	0
+1366x768/operatiuni_taxare_inversa		F091	{"Taxare inversă internă (art. 331)": ["F091"]}	0	0	0	1	False	0	0
+1366x768/import_date		F191	{"Import date": ["F191"]}	0	0	0	1	False	0	0
+1366x768/salariati	F080	F080	{"Salariați": ["F080"]}	0	0	0	1	False	0	0
+1366x768/setari_cont			{}	0	0	0	1	False	0	0
+1366x768/facturi	F126	F126	{"Facturi": ["F126"]}	0	0	0	1	False	0	0
+1366x768/facturi_emite		F025,F172,F252,F254	{"Emite factură": ["F025", "F172", "F252", "F254"]}	0	0	0	1	False	0	0
+1366x768/facturi_istoric		F171,F187	{"Istoric facturi": ["F171", "F187"]}	0	0	0	1	False	0	0
+1366x768/import_solduri		F084,F267	{"Solduri inițiale": ["F084", "F267"]}	0	0	0	1	False	0	0
+1366x768/setari_chei_api	F005	F005,F114	{"Chei API": ["F005", "F114"]}	0	0	0	1	False	0	0
+1366x768/setari_notificari		F257,F261	{"Notificări": ["F257", "F261"]}	0	0	0	1	False	0	0
+1366x768/setari_spv		F176	{"Conectare SPV": ["F176"]}	0	0	0	1	False	0	0
+603x590/operatiuni			{}	0	0	0	1	False	0	0
+603x590/operatiuni_taxare_inversa		F091	{"Taxare inversă internă (art. 331)": ["F091"]}	0	0	0	1	False	0	0
+603x590/import_date		F191	{"Import date": ["F191"]}	0	0	0	1	False	0	0
+603x590/salariati	F080	F080	{"Salariați": ["F080"]}	0	0	0	1	False	0	0
+603x590/setari_cont			{}	0	0	0	1	False	0	0
+603x590/facturi	F126	F126	{"Facturi": ["F126"]}	0	0	0	1	False	0	0
+603x590/facturi_emite		F025,F172,F252,F254	{"Emite factură": ["F025", "F172", "F252", "F254"]}	0	0	0	1	False	0	0
+603x590/facturi_istoric		F171,F187	{"Istoric facturi": ["F171", "F187"]}	0	0	0	1	False	0	0
+603x590/import_solduri		F084,F267	{"Solduri inițiale": ["F084", "F267"]}	0	0	0	1	False	0	0
+603x590/setari_chei_api	F005	F005,F114	{"Chei API": ["F005", "F114"]}	0	0	0	1	False	0	0
+603x590/setari_notificari		F257,F261	{"Notificări": ["F257", "F261"]}	0	0	0	1	False	0	0
+603x590/setari_spv		F176	{"Conectare SPV": ["F176"]}	0	0	0	1	False	0	0
+TOTAL									0	0
+erori_E {} erori_P {} erori_js_P 0 erori_js_E 0

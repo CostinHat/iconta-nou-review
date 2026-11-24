@@ -1,0 +1,490 @@
+{
+ "masuri": {
+  "1366x768/operatiuni": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Operațiuni speciale",
+   "randuri_titlu": 1,
+   "semne": [],
+   "titluri": {},
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/operatiuni_taxare_inversa": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Taxare inversă internă (art. 331)",
+   "randuri_titlu": 1,
+   "semne": [
+    "F091"
+   ],
+   "titluri": {
+    "Taxare inversă internă (art. 331)": [
+     "F091"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/import_date": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Import date",
+   "randuri_titlu": 1,
+   "semne": [
+    "F191"
+   ],
+   "titluri": {
+    "Import date": [
+     "F191"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/salariati": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Salariați",
+   "randuri_titlu": 1,
+   "semne": [
+    "F080"
+   ],
+   "titluri": {
+    "Salariați": [
+     "F080"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/setari_cont": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Setări cont",
+   "randuri_titlu": 1,
+   "semne": [],
+   "titluri": {},
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/facturi": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Facturi",
+   "randuri_titlu": 1,
+   "semne": [
+    "F126"
+   ],
+   "titluri": {
+    "Facturi": [
+     "F126"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/facturi_emite": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Emite factură",
+   "randuri_titlu": 1,
+   "semne": [
+    "F025",
+    "F172",
+    "F252",
+    "F254"
+   ],
+   "titluri": {
+    "Emite factură": [
+     "F025",
+     "F172",
+     "F252",
+     "F254"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/facturi_istoric": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Istoric facturi",
+   "randuri_titlu": 1,
+   "semne": [
+    "F171",
+    "F187"
+   ],
+   "titluri": {
+    "Istoric facturi": [
+     "F171",
+     "F187"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/import_solduri": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Solduri inițiale",
+   "randuri_titlu": 1,
+   "semne": [
+    "F084",
+    "F267"
+   ],
+   "titluri": {
+    "Solduri inițiale": [
+     "F084",
+     "F267"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/setari_chei_api": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Chei API",
+   "randuri_titlu": 1,
+   "semne": [
+    "F005",
+    "F114"
+   ],
+   "titluri": {
+    "Chei API": [
+     "F005",
+     "F114"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/setari_notificari": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Notificări",
+   "randuri_titlu": 1,
+   "semne": [
+    "F257",
+    "F261"
+   ],
+   "titluri": {
+    "Notificări": [
+     "F257",
+     "F261"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "1366x768/setari_spv": {
+   "viewport": [
+    1366,
+    768
+   ],
+   "titlu": "Conectare SPV",
+   "randuri_titlu": 1,
+   "semne": [
+    "F176"
+   ],
+   "titluri": {
+    "Conectare SPV": [
+     "F176"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/operatiuni": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Operațiuni speciale",
+   "randuri_titlu": 1,
+   "semne": [],
+   "titluri": {},
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/operatiuni_taxare_inversa": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Taxare inversă internă (art. 331)",
+   "randuri_titlu": 1,
+   "semne": [
+    "F091"
+   ],
+   "titluri": {
+    "Taxare inversă internă (art. 331)": [
+     "F091"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/import_date": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Import date",
+   "randuri_titlu": 1,
+   "semne": [
+    "F191"
+   ],
+   "titluri": {
+    "Import date": [
+     "F191"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/salariati": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Salariați",
+   "randuri_titlu": 1,
+   "semne": [
+    "F080"
+   ],
+   "titluri": {
+    "Salariați": [
+     "F080"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/setari_cont": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Setări cont",
+   "randuri_titlu": 1,
+   "semne": [],
+   "titluri": {},
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/facturi": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Facturi",
+   "randuri_titlu": 1,
+   "semne": [
+    "F126"
+   ],
+   "titluri": {
+    "Facturi": [
+     "F126"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/facturi_emite": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Emite factură",
+   "randuri_titlu": 1,
+   "semne": [
+    "F025",
+    "F172",
+    "F252",
+    "F254"
+   ],
+   "titluri": {
+    "Emite factură": [
+     "F025",
+     "F172",
+     "F252",
+     "F254"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/facturi_istoric": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Istoric facturi",
+   "randuri_titlu": 1,
+   "semne": [
+    "F171",
+    "F187"
+   ],
+   "titluri": {
+    "Istoric facturi": [
+     "F171",
+     "F187"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/import_solduri": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Solduri inițiale",
+   "randuri_titlu": 1,
+   "semne": [
+    "F084",
+    "F267"
+   ],
+   "titluri": {
+    "Solduri inițiale": [
+     "F084",
+     "F267"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/setari_chei_api": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Chei API",
+   "randuri_titlu": 1,
+   "semne": [
+    "F005",
+    "F114"
+   ],
+   "titluri": {
+    "Chei API": [
+     "F005",
+     "F114"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/setari_notificari": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Notificări",
+   "randuri_titlu": 1,
+   "semne": [
+    "F257",
+    "F261"
+   ],
+   "titluri": {
+    "Notificări": [
+     "F257",
+     "F261"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  },
+  "603x590/setari_spv": {
+   "viewport": [
+    603,
+    590
+   ],
+   "titlu": "Conectare SPV",
+   "randuri_titlu": 1,
+   "semne": [
+    "F176"
+   ],
+   "titluri": {
+    "Conectare SPV": [
+     "F176"
+    ]
+   },
+   "suprapuneri": 0,
+   "acoperite": [],
+   "in_afara": [],
+   "derulare_orizontala": false
+  }
+ },
+ "erori": {},
+ "erori_js": []
+}

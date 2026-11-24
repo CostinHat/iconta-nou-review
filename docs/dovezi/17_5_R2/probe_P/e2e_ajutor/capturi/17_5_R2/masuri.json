@@ -1,0 +1,268 @@
+{
+  "e.1": {
+    "verificate": [
+      "F149",
+      "F153",
+      "F154",
+      "F155",
+      "F156",
+      "F157",
+      "F158",
+      "F159",
+      "F160",
+      "F161",
+      "F185",
+      "F186",
+      "F194",
+      "F195",
+      "F196",
+      "F213",
+      "F214",
+      "F215",
+      "F221",
+      "F222",
+      "F227"
+    ],
+    "abateri": [],
+    "activ": 237,
+    "arhiva": 21,
+    "f160_retinut": false
+  },
+  "e.2": {
+    "verificate": 210,
+    "abateri": []
+  },
+  "e.3": {
+    "cu_loc": 185,
+    "mapate": 124,
+    "fara_semn": [],
+    "loc_gresit": [],
+    "excluse_cu_semn": []
+  },
+  "e.4": {
+    "semne": 185,
+    "fara_text": []
+  },
+  "e.5": {
+    "1366x768": {
+      "asistenti": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "ordine": [
+          "F006"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F006": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        },
+        "ajutor": {
+          "titlu": "Ce face",
+          "text_corect": true
+        }
+      },
+      "termene": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "ordine": [
+          "F081",
+          "F093"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F081": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          },
+          "F093": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        }
+      },
+      "capacitate": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "ordine": [
+          "F014"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F014": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        }
+      },
+      "pachete": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "ordine": [
+          "F065"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F065": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        }
+      },
+      "tipare": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "ordine": [
+          "F094",
+          "F120"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F094": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          },
+          "F120": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        }
+      }
+    },
+    "603x590": {
+      "asistenti": {
+        "viewport": [
+          603,
+          590
+        ],
+        "ordine": [
+          "F006"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F006": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        },
+        "ajutor": {
+          "titlu": "Ce face",
+          "text_corect": true
+        }
+      },
+      "termene": {
+        "viewport": [
+          603,
+          590
+        ],
+        "ordine": [
+          "F081",
+          "F093"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F081": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          },
+          "F093": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        }
+      },
+      "capacitate": {
+        "viewport": [
+          603,
+          590
+        ],
+        "ordine": [
+          "F014"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F014": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        }
+      },
+      "pachete": {
+        "viewport": [
+          603,
+          590
+        ],
+        "ordine": [
+          "F065"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F065": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        }
+      },
+      "tipare": {
+        "viewport": [
+          603,
+          590
+        ],
+        "ordine": [
+          "F094",
+          "F120"
+        ],
+        "suprapuneri": 0,
+        "butoane": {
+          "F094": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          },
+          "F120": {
+            "numar": 1,
+            "vizibil": true,
+            "incadrat": true,
+            "loc": true
+          }
+        }
+      }
+    }
+  }
+}

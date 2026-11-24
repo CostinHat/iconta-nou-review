@@ -1,0 +1,1 @@
+F109 | rândul 2 | menționează o funcție mutată în arhivă (cont gratuit / link de plată) | Permite administratorului aplicației să suspende sau să reactiveze un cabinet. Suspendarea se aplică imediat: toate sesiunile deschise primesc refuz la următoar

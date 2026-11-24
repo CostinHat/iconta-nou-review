@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="14.780" timestamp="2026-11-24T11:53:06.762054+02:00" hostname="iconta-prod"><testcase classname="e2e_ajutor_17_5_R2" name="test_ajutor_17_5_R2" time="14.562" /></testsuite></testsuites>

@@ -1,0 +1,18 @@
+[pre-commit] ruff (undefined-name F821/F822/F823)...
+[pre-commit] ruff OK.
+[pre-commit] inainte_de_commit.sh (sintaxa + registrul + verificatorul de design, sub 2 minute)...
+[liste exceptii] VERDE: 7 titluri în cadru.js, 14 intrări în EXCEPTII_B, 7 numai în EXCEPTII_B (DOAR_PY)
+[inainte de commit] sintaxa: 1 fisiere
+[inainte de commit] registrul: 10 passed in 8.99s
+[inainte de commit] verificator de design:   TOTAL scanat 444 = ACCEPTAT 436 + GRI 0 + ROSU 0 + EXCLUS 8
+  TOTAL rute 529 = ACCEPTAT 477 + GRI 11 + ROSU 0 + EXCLUS 41  (clichet GRI 11)
+TOTAL: 0 candidate
+[inainte de commit] VERDE in 113 s: sintaxa, registrul si verificatorul de design; pytest tintit si plasa e2e ruleaza in poarta.
+[lucru/lot17-5r2 787c9c36] Lotul 17.5-R2 (produs): corecția textelor — corectie_texte_17_5_R2.diff aplicat o singură dată după git apply --check (FUNCTIONALITATI.csv 00444bad… → 00ce8431…): numai celulele «ajutor» ale F043 și F011; antetul, ordinea rândurilor și celelalte celule neschimbate; verificarea registrului (activ 237, arhivă 21 egală cu E, F160 arhivat, F067 INTERN fără ajutor)
+ 7 files changed, 174 insertions(+), 5 deletions(-)
+ create mode 100644 docs/dovezi/17_5_R2/commit_P0.out.txt
+ create mode 100644 docs/dovezi/17_5_R2/commit_transfer.out.txt
+ create mode 100644 docs/dovezi/17_5_R2/registru_transfer.txt
+ create mode 100644 docs/dovezi/17_5_R2/registru_verificare.txt
+ create mode 100644 docs/dovezi/17_5_R2/transfer_staged.txt
+ create mode 100644 docs/dovezi/17_5_R2/verifica_registru_17_5_R2.py

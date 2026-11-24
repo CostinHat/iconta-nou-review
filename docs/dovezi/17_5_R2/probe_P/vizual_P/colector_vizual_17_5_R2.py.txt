@@ -1,0 +1,105 @@
+"""17.5-R2 pct.5 — ecranele dense la 1366×768 și 603×590: capturi + măsuri ale semnelor «?» (ordinea, suprapuneri, încadrare,
+titlul pe un rând sau mai multe, derulare orizontală). Același colector pe E și pe P; rulat cu scripts/e2e_poarta.py --doar=<cale>."""
+import json
+import os
+import sys
+import pytest
+from playwright.sync_api import sync_playwright
+
+sys.path.insert(0, os.path.join(os.environ["PYTHONPATH"].split(":")[0], "frontend_test", "e2e"))
+from conftest import BAZA, CAPTURI, sesiune  # noqa: E402
+from core.ceas_proba import MOMENT_REF  # noqa: E402
+
+TOP = ".fereastra-overlay:not(.fundal) "
+F1 = "F1 Comert Stoc SRL"
+REZ = ((1366, 768), (603, 590))
+MASOARA = """() => {
+ const f = [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra')].pop(); if (!f) return null;
+ const corp = f.querySelector('.fereastra-corp'); const fr = f.getBoundingClientRect();
+ const viz = (e) => { const r = e.getBoundingClientRect(), s = getComputedStyle(e); return r.width > 1 && r.height > 1 && s.visibility === 'visible' && s.display !== 'none'; };
+ const semne = [...f.querySelectorAll('button.ajutor-btn[data-ajutor]')].filter(viz);
+ const inter = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+ let supr = 0; for (const a of semne) for (const b of semne) if (a !== b && inter(a.getBoundingClientRect(), b.getBoundingClientRect())) supr++;
+ const acoperite = semne.filter((b) => { const r = b.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !(e && (e === b || b.contains(e))); }).map((b) => b.dataset.ajutor);
+ const inafara = semne.filter((b) => { const r = b.getBoundingClientRect(); return r.left < Math.max(0, fr.left) - 1 || r.right > Math.min(innerWidth, fr.right) + 1 || r.top < Math.max(0, fr.top) - 1 || r.bottom > Math.min(innerHeight, fr.bottom) + 1; }).map((b) => b.dataset.ajutor);
+ const h2 = corp && corp.querySelector('h2');
+ let randuriTitlu = null; if (h2) { const rg = document.createRange(); const t = [...h2.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim()); if (t) { rg.selectNodeContents(t); randuriTitlu = new Set([...rg.getClientRects()].map((r) => Math.round(r.top))).size; } }
+ const titluri = {}; for (const b of semne) { const t = b.closest('h1,h2,h3,h4,summary,.cap-titlu,.camp-eticheta,.login-tagline,.clopot-cap') || (b.parentElement && b.parentElement.previousElementSibling); const k = t ? (t.textContent || '').replace(/[?\\s]+/g, ' ').trim().slice(0, 60) : '-'; (titluri[k] = titluri[k] || []).push(b.dataset.ajutor); }
+ return {viewport: [innerWidth, innerHeight], titlu: h2 ? h2.textContent.replace(/[?\\s]+/g, ' ').trim() : null, randuri_titlu: randuriTitlu,
+         semne: semne.map((b) => b.dataset.ajutor), titluri, suprapuneri: supr, acoperite, in_afara: inafara,
+         derulare_orizontala: corp ? corp.scrollWidth > corp.clientWidth + 1 : null};
+}"""
+
+
+def _acasa(pg):
+    pg.goto(BAZA + "/", wait_until="domcontentloaded")
+    pg.evaluate("sessionStorage.removeItem('iconta_fereastra_deschisa')")
+    pg.reload(wait_until="domcontentloaded")
+    pg.locator("button.cab-card:has([data-cheie='firme'])").wait_for()
+
+
+def _firma(pg, control):
+    _acasa(pg)
+    pg.locator("button.cab-card:has([data-cheie='firme'])").click()
+    pg.locator(TOP + "#opt-existente").click()
+    pg.locator(TOP + "#firme-lista button.firme-rand", has_text=F1).first.click()
+    t = pg.locator(TOP + control); t.wait_for(state="attached")
+    g = t.locator("xpath=ancestor::*[contains(concat(' ',normalize-space(@class),' '),' firme-optiuni ')][1]")
+    if g.count() and not g.is_visible():
+        pg.locator(TOP + 'button[aria-controls="%s"]' % g.get_attribute("id")).click()
+    t.click()
+
+
+def _setari(pg):
+    _acasa(pg)
+    b = pg.locator("button.cab-card:has([data-cheie='setari'])")
+    if not b.is_visible():
+        pg.locator("button[aria-controls='fgc-sef'][aria-expanded='false']").click()
+    b.click()
+
+
+ECRANE = [
+    ("operatiuni", lambda pg: _firma(pg, "#fa-operatiuni"), "[data-op]"),
+    ("operatiuni_taxare_inversa", lambda pg: (_firma(pg, "#fa-operatiuni"), pg.locator(TOP + "[data-op]").first.wait_for(), pg.locator(TOP + 'button[data-op="taxare_inversa"]').click()), "h2"),
+    ("import_date", lambda pg: _firma(pg, "#fa-import"), ".mig-intro"),
+    ("salariati", lambda pg: _firma(pg, "#fa-salariati"), "h2"),
+    ("setari_cont", _setari, ".fereastra-corp"),
+    ("facturi", lambda pg: _firma(pg, "#fa-facturi"), "h2"),
+    ("facturi_emite", lambda pg: (_firma(pg, "#fa-facturi"), pg.locator(TOP + "#fac-emite").click()), "#em-numar"),
+    ("facturi_istoric", lambda pg: (_firma(pg, "#fa-facturi"), pg.locator(TOP + "#fac-istoric").click()), "#fac-prev"),
+    ("import_solduri", lambda pg: (_firma(pg, "#fa-import"), pg.locator(TOP + 'button.mig-frand[data-strat="solduri"]').click()), "#mig-carduri"),
+    ("setari_chei_api", lambda pg: (_setari(pg), pg.locator(TOP + "button.meniu-card", has_text="Chei API").click()), "#set-chei-lista"),
+    ("setari_notificari", lambda pg: (_setari(pg), pg.locator(TOP + "button.meniu-card", has_text="Notificări").click()), "#not-telefon"),
+    ("setari_spv", lambda pg: (_setari(pg), pg.locator(TOP + "button.meniu-card", has_text="Conectare SPV").click()), "h2"),
+]
+
+
+def test_vizual_17_5_R2():
+    dest = os.path.join(CAPTURI, "vizual_17_5_R2"); os.makedirs(dest, exist_ok=True)
+    rez, erori, erori_js = {}, {}, []
+    with sync_playwright() as p:
+        b = p.chromium.launch()
+        for w, h in REZ:
+            ctx = b.new_context(viewport={"width": w, "height": h}); ctx.clock.set_fixed_time(MOMENT_REF)
+            ctx.add_init_script(sesiune("dovada.71507@sesiuneab.test")); pg = ctx.new_page()
+            pg.on("requestfailed", lambda r, w=w: erori_js.append("%d FAILED %s %s" % (w, r.url[:200], r.failure)) if len(erori_js) < 400 else None)
+            pg.on("pageerror", lambda e, w=w: erori_js.append("%d: %s" % (w, str(e)[:300])))
+            pg.on("console", lambda m, w=w: erori_js.append("%d console.%s: %s" % (w, m.type, m.text[:300])) if m.type in ("error",) else None)
+            for nume, deschide, reper in ECRANE:
+                k = "%dx%d/%s" % (w, h, nume)
+                pg.close(); pg = ctx.new_page()   # o pagină nouă pe ecran: reîncărcările repetate în aceeași pagină epuizează resursele browserului
+                pg.on("requestfailed", lambda r, w=w: erori_js.append("%d FAILED %s %s" % (w, r.url[:200], r.failure)) if len(erori_js) < 400 else None)
+                pg.on("pageerror", lambda e, w=w: erori_js.append("%d: %s" % (w, str(e)[:300])))
+                try:
+                    deschide(pg)
+                    pg.locator(TOP + reper).first.wait_for(state="attached", timeout=20000)
+                    pg.wait_for_timeout(800)
+                    rez[k] = pg.evaluate(MASOARA)
+                    pg.screenshot(path=os.path.join(dest, "%dx%d_%s.png" % (w, h, nume)))
+                except Exception as e:  # noqa: BLE001 — se consemnează pe ecran, nu oprește restul
+                    erori[k] = "%s: %s" % (type(e).__name__, str(e).splitlines()[0] if str(e) else "")
+                    pg.screenshot(path=os.path.join(dest, "EROARE_%dx%d_%s.png" % (w, h, nume)))
+            ctx.close()
+        b.close()
+    json.dump({"masuri": rez, "erori": erori, "erori_js": erori_js}, open(os.path.join(dest, "masuri.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    assert not erori, erori

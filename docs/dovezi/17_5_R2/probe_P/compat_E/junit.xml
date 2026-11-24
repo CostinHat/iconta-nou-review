@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="14.038" timestamp="2026-11-24T12:09:19.387705+02:00" hostname="iconta-prod"><testcase classname="e2e_lot12_start" name="test_def_321_rotita_deruleaza_pagina_cabinetului_nou_la_rezolutiile_uzuale" time="8.934"><failure message="AssertionError: la 1920×1080 pagina nu s-a mișcat&#10;assert 0 &gt; 0&#10; +  where 0 = evaluate(&quot;() =&gt; document.querySelector('.desktop').scrollTop&quot;)&#10; +    where evaluate = &lt;Page url='http://127.0.0.1:8019/'&gt;.evaluate">cabinet_de_la_zero = &lt;function cabinet_de_la_zero.&lt;locals&gt;.fa at 0x701d2872d9e0&gt;
+
+    def test_def_321_rotita_deruleaza_pagina_cabinetului_nou_la_rezolutiile_uzuale(cabinet_de_la_zero):
+        """321 (grav). „Cardurile «Primii pași» blochează derularea: rotița nu derulează pagina, la «De depus» / «Firme» se ajunge doar cu Tab
+        sau micșorare.” Pe un cabinet NOU, creat de la zero (comanda 12.1 pct.3), cu cele trei carduri nefăcute.
+        Pașii: înregistrarea, prima intrare -&gt; pagina principală; la 1366×768, 1280×720, 1920×1080 și 393×851: rotița pe cardurile
+        „Primii pași” -&gt; pagina coboară până când cardul „Firme” e întreg în ecran (iar „De validat” / „De depus” a trecut pe sub antet sau e
+        în ecran)."""
+        cab = cabinet_de_la_zero()
+        pg, e = cab.pg, cab.e
+        treci_prima_intrare(pg)
+        firme = "button.cab-card:has([data-cheie='firme'])"
+        for lat, inalt in REZOLUTII:
+            pg.set_viewport_size({"width": lat, "height": inalt})
+            e.acasa()
+            pg.wait_for_selector(_CARD % "preluare", timeout=30000)
+            assert pg.locator("#inceput-carduri .inceput-card").count() == 3
+            assert pg.evaluate("() =&gt; document.querySelector('.desktop').scrollTop") == 0
+            bb = pg.locator(_CARD % "preluare").bounding_box()
+            pg.mouse.move(bb["x"] + bb["width"] / 2, min(bb["y"] + 40, inalt - 10))
+            for _ in range(25):
+                if _in_ecran(pg, firme):
+                    break
+                pg.mouse.wheel(0, 300)
+                pg.wait_for_timeout(120)
+            e.captura("%dx%d" % (lat, inalt))
+            assert _in_ecran(pg, firme), "la %d×%d rotița nu aduce „Firme” în ecran" % (lat, inalt)
+            if pg.evaluate("() =&gt; { const d = document.querySelector('.desktop'); return d.scrollHeight &gt; d.clientHeight; }"):
+&gt;               assert pg.evaluate("() =&gt; document.querySelector('.desktop').scrollTop") &gt; 0, "la %d×%d pagina nu s-a mișcat" % (lat, inalt)
+E               AssertionError: la 1920×1080 pagina nu s-a mișcat
+E               assert 0 &gt; 0
+E                +  where 0 = evaluate("() =&gt; document.querySelector('.desktop').scrollTop")
+E                +    where evaluate = &lt;Page url='http://127.0.0.1:8019/'&gt;.evaluate
+
+frontend_test/e2e/e2e_lot12_start.py:326: AssertionError</failure></testcase><testcase classname="e2e_lot11_b" name="test_def_450_pct23_borderoul_sta_langa_nir_nu_in_operatiuni" time="4.673"><failure message="AssertionError: + NIR nou&#10;assert ('+ NIR nou' in '+ NIR nou' and 'Borderou de achiziție' in '+ NIR nou')">patron = &lt;conftest.Ecran object at 0x701d25d6e5d0&gt;
+firma_b = {'tenant_id': 370964, 'schema': 'tenant_9732', 'nume': 'E2E Probă 4968748 SRL', 'cabinet_id': 1968}
+
+    def test_def_450_pct23_borderoul_sta_langa_nir_nu_in_operatiuni(patron, firma_b):
+        """Comanda 11.1 pct.23: „butonul borderoului stă în «TVA regimuri speciale» cu nume tehnic”. Pașii: Stocuri -&gt; „Borderou de achiziție”
+        lângă „+ NIR nou”; Operațiuni speciale -&gt; nu mai are „Achiziție de la neînregistrat (persoană fizică) — D394 op. N”.
+        MUTAȚIA: static/js/ecrane/firme.js, butonul `s-borderou` scos -&gt; ROȘU."""
+        from e2e_bloc_a import _card
+        patron.firma(firma_b["nume"])
+        _card(patron, "stocuri", "#s-borderou")
+        pg = patron.pg
+        rand = pg.eval_on_selector("#sn-toggle", "b =&gt; b.parentElement.innerText")
+&gt;       assert "+ NIR nou" in rand and "Borderou de achiziție" in rand, rand
+E       AssertionError: + NIR nou
+E       assert ('+ NIR nou' in '+ NIR nou' and 'Borderou de achiziție' in '+ NIR nou')
+
+frontend_test/e2e/e2e_lot11_b.py:197: AssertionError</failure></testcase></testsuite></testsuites>
