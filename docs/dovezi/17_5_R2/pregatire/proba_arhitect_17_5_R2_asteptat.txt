@@ -1,0 +1,8 @@
+a.1 | Pe E Q6 lipsește semnul F006; numărul observabil este zero. Pe candidat se cere verdictul integral.
+a.2 | Pe E Q6 lipsește semnul F006; ajutorul nu se poate deschide. Pe candidat se cere verdictul integral.
+a.3 | Pe E Q6 lipsește semnul F081; numărul observabil este zero. Pe candidat se cere verdictul integral.
+a.4 | Pe E Q6 lipsește semnul F093; numărul observabil este zero. Pe candidat se cere verdictul integral.
+a.5 | Pe E Q6 lipsește semnul F014; numărul observabil este zero. Pe candidat se cere verdictul integral.
+a.6 | Pe E Q6 lipsește semnul F065; numărul observabil este zero. Pe candidat se cere verdictul integral.
+a.7 | Pe E Q6 lipsește semnul F094; numărul observabil este zero. Pe candidat se cere verdictul integral.
+a.8 | Pe E Q6 lipsește semnul F120; numărul observabil este zero. Pe candidat se cere verdictul integral.

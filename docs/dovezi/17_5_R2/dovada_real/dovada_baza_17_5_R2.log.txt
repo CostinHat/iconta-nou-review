@@ -1,0 +1,79 @@
+# dovada pe baza — lot 17_5_R2 — test e2e_ajutor_17_5_R2.py — 2026-11-24T10:01:31+02:00 — main ac99aaec1adb883e7b3bfd8136b812dc0e95bf1b
+sha_test=2608920d04a6ae0b e2e_ajutor_17_5_R2.py
+id-uri rosii obligatorii: e.1,e.2,e.3,e.5
+contract ancorat: sha256 e1d8556daf0d8a633e2567e0d92e9d6745baa03b9a3859817de9292521e9406f (/home/costin/ghid_incoming/pornire_17_5_R2.txt)
+lacat: liber
+[lacat_test] lacăt preluat de la pid 2179212 (mort sau refolosit)
+probe cititor: /home/costin/ghid_incoming/probe_cititor_17_5_R2.okB53fRx
+REST inainte: snapshot 054cd769c34408ac8bd2a90ba5dc03f5c323a1879dbc81a2081d4521a8ccb0ba
+REST inainte: 8019 liber; lacat pid=2195707
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (***:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 79s
+REST inainte: rc=0
+pornesc 8019 din main (scripts/porneste_8019.sh)
+[verificator design] serverul de lucru pe 8019, commit ac99aaec
+8019 identitate verificata (pid start boot_id main): 2196992 320404190 feb89df4-7da7-421b-a22c-25b0702483e0 ac99aaec1adb883e7b3bfd8136b812dc0e95bf1b
+rulez testul pe baza: e2e_ajutor_17_5_R2.py
+                        scene[dim][card]=x
+                        pg.screenshot(path=str(dest/f"{dim}_{card}.png"))
+                        if card=="tipare" and w==603: pg.screenshot(path=str(dest/"e.5.png"))
+                        if card=="asistenti":
+                            pas=f"{dim} / ajutor F006"
+                            x["ajutor"]={"titlu":"","text_corect":False}
+                            b=fer.locator("button.ajutor-btn[data-ajutor='F006']")
+                            if b.count()==1 and b.is_visible():
+                                b.click()
+                                continut=pg.locator(TOP+" .aj-continut")
+                                continut.wait_for(state="visible")
+                                if continut.locator("h4").count() and continut.locator("p").count():
+                                    x["ajutor"]={"titlu":continut.locator("h4").first.inner_text().strip(),
+                                        "text_corect":continut.locator("p").first.inner_text().strip()==prima}
+                                pg.screenshot(path=str(dest/f"{dim}_ajutor_F006.png"))
+                finally:
+                    ctx.close()
+            masuri["e.5"]=scene
+        except Exception as exc:
+            erori[pas] = f"{type(exc).__name__}: {str(exc).splitlines()[0] if str(exc) else ''}"
+            partiale["e.5"]=locals().get("scene",{})
+        for nume,ob in (("masuri",masuri),("erori",erori),("partiale",partiale)):
+            (dest/f"{nume}.json").write_text(json.dumps(ob,ensure_ascii=False,indent=2),encoding="utf-8")
+        verdict = {i:rezultat(i,m) for i,m in masuri.items()}
+        with capsys.disabled():
+            for i,v in verdict.items(): print(f"VERDICT {i} {'trece' if v else 'pica'}",flush=True)
+        if erori: raise RuntimeError(f"NEEXECUTAT: {erori}")
+>       assert set(verdict)==set(IDS) and all(verdict.values()), f"R_PRODUS {verdict}"
+E       AssertionError: R_PRODUS {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': True, 'e.5': False}
+E       assert ({'e.1', 'e.2'... 'e.4', 'e.5'} == {'e.1', 'e.2'... 'e.4', 'e.5'}
+E         
+E         Use -v to get more diff and False)
+E        +  where False = all(dict_values([False, False, False, True, False]))
+E        +    where dict_values([False, False, False, True, False]) = <built-in method values of dict object at 0x768dd33f3400>()
+E        +      where <built-in method values of dict object at 0x768dd33f3400> = {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': True, ...}.values
+
+frontend_test/e2e/e2e_ajutor_17_5_R2.py:306: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_ajutor_17_5_R2.py::test_ajutor_17_5_R2 - Asserti...
+1 failed in 13.90s
+randuri VERDICT/MASURA in iesirea completa (/home/costin/ghid_incoming/dovada_baza_17_5_R2.pytest.txt, 94 randuri): 5
+  VERDICT e.1 pica
+  VERDICT e.2 pica
+  VERDICT e.3 pica
+  VERDICT e.4 trece
+  VERDICT e.5 pica
+pytest rc=1 durata=14 s
+rezumat pytest: 1 failed in 13.90s; randuri FAILED ale testului: 1
+id e.1: pica=1 trece=0
+id e.2: pica=1 trece=0
+id e.3: pica=1 trece=0
+id e.5: pica=1 trece=0
+oprire 8019 (verificator_design.py opreste, Z): rc=0; [verificator design] oprit; portul 8019 liber
+REST dupa: snapshot 054cd769c34408ac8bd2a90ba5dc03f5c323a1879dbc81a2081d4521a8ccb0ba
+REST dupa: 8019 liber; lacat pid=2195707
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (***:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 79s
+REST dupa: rc=0
+arbore main: curat, HEAD = refs/heads/main = ac99aaec1adb883e7b3bfd8136b812dc0e95bf1b
+VERDICT: ROSU PE BAZA (rc=1) — dovada valabila
+# sfarsit 2026-11-24T10:04:45+02:00

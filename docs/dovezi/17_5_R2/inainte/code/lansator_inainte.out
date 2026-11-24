@@ -1,0 +1,8 @@
+[parcurs] implicit: trece [('f.1', 'trece', '')]
+[parcurs] asistenti: pica [('a.1', 'pica', 'găsit 0, așteptat 1')]
+[parcurs] asistenti_ajutor: pica [('a.2', 'pica', "'Ce face' nu apare în ''")]
+[parcurs] termene: pica [('f.2', 'trece', ''), ('a.3', 'pica', 'găsit 0, așteptat 1'), ('a.4', 'pica', 'găsit 0, așteptat 1')]
+[parcurs] capacitate: pica [('a.5', 'pica', 'găsit 0, așteptat 1')]
+[parcurs] pachete: pica [('a.6', 'pica', 'găsit 0, așteptat 1')]
+[parcurs] tipare: pica [('a.7', 'pica', 'găsit 0, așteptat 1'), ('a.8', 'pica', 'găsit 0, așteptat 1')]
+

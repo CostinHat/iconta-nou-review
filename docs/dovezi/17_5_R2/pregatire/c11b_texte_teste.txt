@@ -1,0 +1,8 @@
+c11b_texte_teste                   rc=0  09:54:34
+    | texte_ajutor_revizuite_final_17_5_R2.txt: 210 texte, 10 aserțiuni pe ajutor din testele existente verificate
+    | TEXTE OK 17_5_R2: niciun text nou nu contrazice un test existent
+c12_K12                            rc=0  09:54:46
+c11b_texte_teste                   rc=0  09:56:42
+    | texte_ajutor_revizuite_final_17_5_R2.txt: 210 texte, 10 aserțiuni pe ajutor din testele existente verificate
+    | TEXTE OK 17_5_R2: niciun text nou nu contrazice un test existent
+c12_K12                            rc=0  09:56:55

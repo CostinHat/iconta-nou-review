@@ -1,0 +1,23 @@
+ID	functionalitate	actiune	stare_actuala	motiv_din_registru
+F067	Legătură de plată pe factură	CORECTEAZA STAREA	LIVE	butonul Link plata scos din ecran la 06.09.2026 (facturi_ecran.js:1142); registrul il da LIVE
+F149	Case de marcat / POS / imprimante (RESPINS 16.07.2026)	MUTA IN ARHIVA	RESPINS 16.07.2026	RESPINS 16.07.2026
+F153	Cont de facturare gratuită	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F154	Proforme și avize în contul gratuit	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F155	Facturi recurente în contul gratuit	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F156	Import WooCommerce în contul gratuit	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F157	Chitanțe în contul gratuit	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F158	Model factură în contul gratuit	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F159	Link de plată în contul gratuit	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F160	e-Factura SPV pentru contul gratuit	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F161	Vreau contabil (conversie cont gratuit -> cabinet) - RESPINS	MUTA IN ARHIVA	RESPINS 18.07.2026	RESPINS 18.07.2026
+F185	Gard coliziune CUI cabinet->gratuit (semnal invers F092)	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F194	Declarația D392 (informativă livrări sub plafon TVA) - RESPINS	MUTA IN ARHIVA	RESPINS 20.07.2026	RESPINS 20.07.2026
+F195	Declarația D094 (cifra afaceri trimestru) - RESPINS	MUTA IN ARHIVA	RESPINS 20.07.2026	RESPINS 20.07.2026
+F196	Declarația D700 (mențiuni vector fiscal) - RESPINS	MUTA IN ARHIVA	RESPINS 20.07.2026	RESPINS 20.07.2026
+F186	Raport coliziuni CUI active (superadmin)	MUTA IN ARHIVA	ELIMINAT 26.07.2026	ELIMINAT 26.07.2026
+F213	Declarația D220 (venit estimat / normă de venit)	MUTA IN ARHIVA	RESPINS 25.10.2026	RESPINS 25.10.2026 — formular înlocuit de Declarația unică (D212) și scos din aplicație: nu se mai oferă la nicio firmă (lotul 13 deficiența 660; CF art.120 abrogat de OUG 128/2024; textul în core/declaratii_api.py FORMULARE_INLOCUITE). Istoric: AMANAT - ACOPE
+F214	Declarația D223 (venituri estimate asocieri)	MUTA IN ARHIVA	RESPINS 25.10.2026	RESPINS 25.10.2026 — formular înlocuit de Declarația unică (D212) și scos din aplicație: nu se mai oferă la nicio firmă (lotul 13 deficiența 660; CF art.125 alin.(4); textul în core/declaratii_api.py FORMULARE_INLOCUITE). Istoric: LIVE 24.09.2026 (formular man
+F215	Declarația D221 (venituri agricole pe norme de venit)	MUTA IN ARHIVA	RESPINS 25.10.2026	RESPINS 25.10.2026 — formular înlocuit de Declarația unică (D212) și scos din aplicație: nu se mai oferă la nicio firmă (lotul 13 deficiența 660; CF art.107 alin.(2); textul în core/declaratii_api.py FORMULARE_INLOCUITE). Istoric: LIVE 24.09.2026 - DOAR pentru
+F221	Declarația D200 (venituri realizate din România - persoane fizice)	MUTA IN ARHIVA	RESPINS 25.10.2026	RESPINS 25.10.2026 — formular înlocuit de Declarația unică (D212) și scos din aplicație: nu se mai oferă la nicio firmă (lotul 13 deficiența 660; CF art.122 alin.(1); textul în core/declaratii_api.py FORMULARE_INLOCUITE). Istoric: LIVE 2026-09-23 (formular man
+F222	Declarația D201 (venituri realizate din străinătate - persoane fizice)	MUTA IN ARHIVA	RESPINS 25.10.2026	RESPINS 25.10.2026 — formular înlocuit de Declarația unică (D212) și scos din aplicație: nu se mai oferă la nicio firmă (lotul 13 deficiența 660; CF art.130 alin.(4); textul în core/declaratii_api.py FORMULARE_INLOCUITE). Istoric: LIVE 2026-09-23 (in selector:
+F227	Declarația D600 (baza CAS/CASS estimată - persoane fizice)	MUTA IN ARHIVA	RESPINS 25.10.2026	RESPINS 25.10.2026 — formular înlocuit de Declarația unică (D212) și scos din aplicație: nu se mai oferă la nicio firmă (lotul 13 deficiența 660; CF art.151 alin.(1); textul în core/declaratii_api.py FORMULARE_INLOCUITE). Istoric: LIVE 24.09.2026 (formular man

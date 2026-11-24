@@ -1,0 +1,4 @@
+test_pe_E	ID_nominal	blob_E
+core/test_fara_functii_noi.py	F214,F215,F221,F222,F227	35e1d5b44680fd53499b0a97f8834c10c9d6ef0b
+core/test_registru_functionalitati.py	F149,F186	13f7e708e69f09dd6139a5b7372d651e1886fa94
+core/test_spv_conector.py	F160	221db0d16957b3213c4ab72ad6e15e5a229fb0e5

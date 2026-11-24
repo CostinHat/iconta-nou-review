@@ -1,0 +1,12 @@
+PASI 17.5-R2 — așteptările mecanice pe pas (comanda 17.5-R2), cont administrator (dovada.71507), 1366x768, ceas înghețat (data zilei = data ceasului înghețat (ceas_proba.MOMENT_REF), nu data calendaristică a rulării), fără a salva nimic, cu răspunsurile reale ale serverului (fără interceptări). Convenția id-urilor: prefixul a. = ce se schimbă în lot (semnul «?» apare); prefixul f. = ce nu se schimbă (f.1 primul id, aserțiunea de pe baza lotului). Ordinea rândurilor = ordinea pașilor parcursului; primul rând (f.1) este aserțiunea probei contractului.
+Format: aserțiune | pas | ecran | operator | valoare | descriere | sursa valorii
+f.1 | implicit | Pagina principală a cabinetului | text_vizibil | Control fiscal | În rândul de carduri al paginii principale se vede titlul „Control fiscal” pe cardul cu pictograma scut. | static/js/ecrane/cabinet.js:44 și static/js/ecrane/cabinet.js:249
+a.1 | asistenti | Fereastra Asistenți (cardul Asistenți) | nr_randuri | 1 | semnul «?» al funcției F006 pe titlul ferestrei | harta_plasare_semne.tsv F006; static/js/ecrane/asistenti.js (ancore_E_17_5_R2.tsv F006)
+a.2 | asistenti_ajutor | Fereastra de ajutor deschisă din semnul F006 | contine | Ce face | textul ajutorului începe cu secțiunea «Ce face» | static/js/api.js:1781-1783 (.aj-continut), texte_ajutor_revizuite_final_17_5_R2.txt F006
+f.2 | termene | Fereastra Termene (cardul Termene) | contine | Termene | titlul ferestrei există și numește Termene | static/js/navigator.js (titlul ferestrei) (h2.pf-titlu)
+a.3 | termene | Aceeași fereastră Termene | nr_randuri | 1 | semnul F081 | harta_plasare_semne.tsv F081
+a.4 | termene | Aceeași fereastră Termene | nr_randuri | 1 | semnul F093, alăturat | harta_plasare_semne.tsv F093
+a.5 | capacitate | Fereastra Capacitate (cardul Capacitate) | nr_randuri | 1 | semnul F014 | harta_plasare_semne.tsv F014; static/js/ecrane/capacitate.js (ancore_E_17_5_R2.tsv F014)
+a.6 | pachete | Fereastra Pachete lunare (cardul Pachete lunare) | nr_randuri | 1 | semnul F065 | harta_plasare_semne.tsv F065; static/js/ecrane/pachete.js
+a.7 | tipare | Activitate › Tipare de erori | nr_randuri | 1 | semnul F094 | harta_plasare_semne.tsv F094
+a.8 | tipare | Tipare de erori, zona Analiză AI | nr_randuri | 1 | semnul F120 la analiza AI | harta_plasare_semne.tsv F120

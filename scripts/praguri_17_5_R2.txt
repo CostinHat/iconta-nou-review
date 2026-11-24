@@ -1,0 +1,80 @@
+produs
+lot: 17.5-R2
+max hook 140
+max poarta_verificator 105
+max poarta_pytest 712
+max poarta_plasa 3593
+runde_verificator_max: 2
+sursa pragurilor 17.5-R2: generate de scripts/praguri_automate.py la 2026-11-24T09:29:34+02:00 din .lot_jurnal.log; loturi folosite: 17.5-Q5, 17.5-Q4, 17.5-Q6 (3)
+  hook: maxim 116 s (lotul 17.5-Q6, rularea 3753331-1795461558367) din 17 rulari complete, 0 rulari «intrerupt» ignorate, prag 140 s
+  poarta_verificator: maxim 87 s (lotul 17.5-Q4, rularea 2042398-1795418539586) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 105 s
+  poarta_pytest: maxim 593 s (lotul 17.5-Q4, rularea 1833046-1795414109447) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 712 s
+  poarta_plasa: maxim 2994 s (lotul 17.5-Q6, rularea 3920302-1795465122747) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 3593 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_R2.txt (nou)
+  scripts/poarta_harta.txt (numai extinderea cerută de poarta_lot.sh --lista)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_ajutor_17_5_R2.py)
+  frontend_test/e2e/e2e_ajutor_17_5_R2.py (nou) (copiat octet cu octet din ~/ghid_incoming)
+  FUNCTIONALITATI.csv (numai mutarea celor 21 de rânduri, inclusiv F160, starea lui F067 și coloana «ajutor» a celor 210 de ID-uri)
+  FUNCTIONALITATI_ARHIVA.csv (nou)
+  genereaza_grupe_functii.py (numai citirea registrului după mutare)
+  verificator_conformitate.py (numai citirea registrului după mutare)
+  scripts/rute_inainte_de_pilot.txt (numai ieșirea ID-urilor mutate conform R1)
+  core/test_registru_arhiva_17_5_R2.py (nou)
+  core/test_ajutor_texte_17_5_R2.py (nou)
+  core/test_fara_functii_noi.py (numai ce cere mutarea din registru, fără aserțiuni mai slabe)
+  core/test_registru_functionalitati.py (numai ce cere mutarea din registru, fără aserțiuni mai slabe)
+  core/test_lot12_pilot_criterii.py (numai ce cere mutarea din registru, fără aserțiuni mai slabe)
+  core/test_ghid_poarta.py (numai ce cere mutarea din registru, fără aserțiuni mai slabe)
+  core/test_ghid_registru_sincron.py (numai ce cere mutarea din registru, fără aserțiuni mai slabe)
+  static/js/navigator.js (semnele clopoțelului F062, F115, F164 și, dacă un ecran fără h2 cere locul semnului, h2-ul)
+  static/stil.css (numai dacă pct.3(c) cere o clasă nouă)
+  DESIGN_SYSTEM.md (numai dacă pct.3(c) cere o clasă nouă)
+  static/js/ecrane/firme.js
+  static/js/ecrane/login.js
+  static/js/ecrane/asistenti.js
+  static/js/ecrane/migrare.js
+  static/js/ecrane/capacitate.js
+  static/js/ecrane/clienti_ecran.js
+  static/js/ecrane/validat.js
+  static/js/ecrane/produse_ecran.js
+  static/js/ecrane/emitere_ecran.js
+  static/js/ecrane/declaratii.js
+  static/js/ecrane/operatiuni_ecran.js
+  static/js/ecrane/portal.js
+  static/js/ecrane/facturi_ecran.js
+  static/js/ecrane/control_verdict.js
+  static/js/ecrane/pachete.js
+  static/js/ecrane/raporteaza.js
+  static/js/ecrane/termene.js
+  static/js/ecrane/cabinet.js
+  static/js/ecrane/tipare.js
+  static/js/ecrane/date_firma.js
+  static/js/ecrane/woo_ecran.js
+  static/js/ecrane/admin_activitate.js
+  static/js/ecrane/setari.js
+  static/js/ecrane/admin_sanatate.js
+  static/js/ecrane/etransport_ecran.js
+  static/js/ecrane/admin.js
+  static/js/ecrane/flux_concediu.js
+  static/js/ecrane/admin_raportari.js
+  static/js/ecrane/mijloace_ecran.js
+  static/js/ecrane/borderou_ecran.js
+  static/js/ecrane/inceput.js
+  static/js/ecrane/compensari_ecran.js
+  static/js/ecrane/reevaluare_ecran.js
+  docs/dovezi/17_5_R2/ (dovezile și registrele lotului)
+  DECIZII.md (dovezile și registrele lotului)
+  PREDARE_LANT.md (dovezile și registrele lotului)
+  static/index.html (numai tokenurile calculate de versioneaza_assets.py)
+  static/js/app.js (numai tokenurile ?v= ale importurilor efectiv modificate)
+  static/js/cautare.js (numai tokenurile ?v= ale importurilor efectiv modificate)
+  static/js/ecrane/ansamblu.js (numai tokenurile ?v= ale importurilor efectiv modificate)
+  static/js/ecrane/asistent.js (numai tokenurile ?v= ale importurilor efectiv modificate)
+  static/js/ecrane/coada_trimite.js (numai tokenurile ?v= ale importurilor efectiv modificate)
+  static/js/ecrane/control.js (numai tokenurile ?v= ale importurilor efectiv modificate)
+  static/js/ecrane/ecran_destinatie.js (numai tokenurile ?v= ale importurilor efectiv modificate)
+  static/js/ecrane/salut.js (numai tokenurile ?v= ale importurilor efectiv modificate)
+  static/js/ecrane/supervizor.js (numai tokenurile ?v= ale importurilor efectiv modificate)
+  static/spv_callback.html (numai tokenurile calculate de versioneaza_assets.py)

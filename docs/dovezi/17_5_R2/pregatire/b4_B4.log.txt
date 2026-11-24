@@ -1,0 +1,76 @@
+START 2026-11-24 09:57:02 +0200 pid 2179212
+jurnal oficial 17.5-R2: 0 randuri
+[lacat_test] lacăt preluat de la pid 2138548 (mort sau refolosit)
+ÎNCEPUT lacat 2026-11-24T09:57:02+02:00
+lacat rc=0
+ÎNCEPUT disponibil 2026-11-24T09:57:02+02:00
+disponibil rc=0
+ÎNCEPUT port_initial 2026-11-24T09:57:02+02:00
+port_initial rc=0
+ÎNCEPUT dump_initial 2026-11-24T09:57:02+02:00
+dump_initial rc=0
+ÎNCEPUT restaurare_pre 2026-11-24T09:57:02+02:00
+restaurare_pre rc=0
+ÎNCEPUT verificare_pre 2026-11-24T09:58:21+02:00
+verificare_pre rc=0
+ÎNCEPUT stare_pre 2026-11-24T09:58:21+02:00
+stare_pre rc=0
+ÎNCEPUT disponibil_inainte_de_server 2026-11-24T09:58:45+02:00
+disponibil_inainte_de_server rc=0
+ÎNCEPUT port_inainte_de_pornire 2026-11-24T09:58:45+02:00
+port_inainte_de_pornire rc=0
+ÎNCEPUT pornire 2026-11-24T09:58:45+02:00
+pornire rc=0
+[verificator design] serverul de lucru pe 8019, commit ac99aaec
+ÎNCEPUT proprietar 2026-11-24T09:58:59+02:00
+proprietar rc=0
+{"pid": 2180443, "start": "320379140", "pgid": 2180443, "sid": 2180443, "cwd": "/tmp/verificator_design/iconta_nou", "cmd": "/home/costin/arhiva/lant_17_5_R2_r1.4pEheRN7/E/venv/bin/python -m uvicorn main:app --port 8019", "boot_id": "feb89df4-7da7-421b-a22c-25b0702483e0", "sha": "ac99aaec1adb883e7b3bfd8136b812dc0e95bf1b", "arbore_murdar": false}
+ascultator [2180443]; pid 2180443; start /proc 320379140 vs stare 320379140; boot_id feb89df4-7da7-421b-a22c-25b0702483e0 vs feb89df4-7da7-421b-a22c-25b0702483e0; commit ac99aaec1adb883e7b3bfd8136b812dc0e95bf1b
+ÎNCEPUT servire 2026-11-24T09:58:59+02:00
+servire rc=0
+pid 2180443, cwd /tmp/verificator_design/iconta_nou
+arbore servit main.py: e696f134554255deef53fc53631b334551df8695130508072da6e53f71560a29; E:main.py e696f134554255deef53fc53631b334551df8695130508072da6e53f71560a29
+arbore servit core/firma_rezumat.py: 10067088d983aa41313045a50c11e6c858515f6c2fcdecdb2b8746ade74dda62; E:core/firma_rezumat.py 10067088d983aa41313045a50c11e6c858515f6c2fcdecdb2b8746ade74dda62
+arbore servit scripts/e2e_poarta.py: 501640b00615afadfe9a64e3688041839bc11364e31ceff03d79e86d7b66238c; E:scripts/e2e_poarta.py 501640b00615afadfe9a64e3688041839bc11364e31ceff03d79e86d7b66238c
+HTTP GET http://127.0.0.1:8019/ -> 200
+iconta_test, cod_aplicatie_viu: iconta_test | 4cffe5931a1c | 1795507137; restaurarea de dinainte s-a incheiat la 1795507101
+ÎNCEPUT haiku 2026-11-24T09:58:59+02:00
+lansator rc=0 durata 33 s
+[parcurs] implicit: trece [('f.1', 'trece', '')]
+[parcurs] asistenti: pica [('a.1', 'pica', 'găsit 0, așteptat 1')]
+[parcurs] asistenti_ajutor: pica [('a.2', 'pica', "'Ce face' nu apare în ''")]
+[parcurs] termene: pica [('f.2', 'trece', ''), ('a.3', 'pica', 'găsit 0, așteptat 1'), ('a.4', 'pica', 'găsit 0, așteptat 1')]
+[parcurs] capacitate: pica [('a.5', 'pica', 'găsit 0, așteptat 1')]
+[parcurs] pachete: pica [('a.6', 'pica', 'găsit 0, așteptat 1')]
+[parcurs] tipare: pica [('a.7', 'pica', 'găsit 0, așteptat 1'), ('a.8', 'pica', 'găsit 0, așteptat 1')]
+[haiku, instanța 1] cod 0
+Verificare pe capturi, fără modificări:
+
+- **f.1**: cardul „Control fiscal” cu pictograma scut apare în rândul de carduri.
+- **a.1**: pe titlul „Asistenți” nu se vede niciun semn «?».
+- **a.2**: captura arată fereastra Asistenți, nu fereastra de ajutor, deci nu se poate judeca dacă textul începe cu „Ce face”.
+- **f.2**: fereastra are titlul „Termene”.
+- **a.3, a.4, a.5, a.6, a.7**: descrierea cere doar un cod de semn (F081, F093, F014, F065, F094), iar pe capturi nu apare niciun semn cu aceste coduduri, deci nu se poate judeca.
+- **a.8**: butonul „Generează analiză AI” este dezactivat, dar codul F120 nu apare, deci nu se poate judeca.
+
+```json
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Pe pagina principală, în rândul de carduri, apare cardul cu pictograma scut și titlul „Control fiscal”."}, {"id": "a.1", "raspuns": "nu corespunde", "motiv": "Pe titlul ferestrei Asistenți nu se vede niciun semn «?»; în dreapta sus sunt doar câmpul de căutare și butonul de închidere."}, {"id": "a.2", "raspuns": "nejudecabil", "motiv
+```
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: f.1=corespunde; a.1=nu corespunde; a.2=nejudecabil; f.2=corespunde; a.3=nejudecabil; a.4=nejudecabil; a.5=nejudecabil; a.6=nejudecabil; a.7=nejudecabil; a.8=nejudecabil | nejudecabile: 7 din 10
+ÎNCEPUT proprietar_final 2026-11-24T09:59:32+02:00
+proprietar_final rc=0
+ÎNCEPUT oprire 2026-11-24T09:59:33+02:00
+oprire rc=0
+port la inchidere: liber
+lacat: ținut de pid 2179212 (lant_b4_proba.sh)
+ÎNCEPUT dump_final 2026-11-24T09:59:33+02:00
+dump_final rc=0
+ÎNCEPUT restaurare_post 2026-11-24T09:59:33+02:00
+restaurare_post rc=0
+ÎNCEPUT verificare_post 2026-11-24T10:01:01+02:00
+verificare_post rc=0
+ÎNCEPUT stare_post 2026-11-24T10:01:02+02:00
+stare_post rc=0
+jurnal oficial 17.5-R2 dupa: 0 (inainte 0)
+SFARSIT 2026-11-24 10:01:26 +0200 (lacatul se elibereaza la iesirea procesului 2179212)

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="13.909" timestamp="2026-11-24T10:03:10.909254+02:00" hostname="iconta-prod"><testcase classname="frontend_test.e2e.e2e_ajutor_17_5_R2" name="test_ajutor_17_5_R2" time="13.349"><failure message="AssertionError: R_PRODUS {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': True, 'e.5': False}&#10;assert ({'e.1', 'e.2'... 'e.4', 'e.5'} == {'e.1', 'e.2'... 'e.4', 'e.5'}&#10;  &#10;  Use -v to get more diff and False)&#10; +  where False = all(dict_values([False, False, False, True, False]))&#10; +    where dict_values([False, False, False, True, False]) = &lt;built-in method values of dict object at 0x768dd33f3400&gt;()&#10; +      where &lt;built-in method values of dict object at 0x768dd33f3400&gt; = {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': True, ...}.values">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x768dd41c98b0&gt;
+
+    def test_ajutor_17_5_R2(browser, capsys):
+        from conftest import BAZA, CAPTURI, sesiune
+        from core.ceas_proba import MOMENT_REF
+        repo = Path(__file__).resolve().parents[2]
+        dest = Path(CAPTURI) / "17_5_R2"
+        dest.mkdir(parents=True, exist_ok=True)
+        masuri, partiale, erori = {}, {}, {}
+        pas = "inițializarea"
+        try:
+            url = urlsplit(BAZA)
+            if (url.scheme, url.hostname, url.port) not in (("http","***",8019),("http","127.0.0.1",8019)):
+                raise ValueError("testul cere instanța locală de test pe 8019")
+            date = director_date(repo)
+            prima = citeste_texte(date / NORME[0])["F006"].splitlines()[1].strip()
+            init = sesiune("dovada.71507@sesiuneab.test")
+            statice = observa_static(repo,date)
+            scene = {}
+            for w,h in REZ:
+                ctx = browser.new_context(viewport={"width":w,"height":h})
+                try:
+                    ctx.clock.set_fixed_time(MOMENT_REF)
+                    ctx.add_init_script(init)
+                    pg = ctx.new_page()
+                    dim = f"{w}x{h}"
+                    scene[dim]={}
+                    for card,ids in FER.items():
+                        pas = f"{dim} / {card} / deschidere"
+                        fer = deschide(pg,BAZA,card)
+                        if card == "asistenti" and w == 1366:
+                            for i,m in statice.items():
+                                pg.screenshot(path=str(dest / f"{i}.png"))
+                                masuri[i]=m
+                        pas = f"{dim} / {card} / poziție și captură"
+                        # Semnele pot fi pe rândul de sub titlu. Adu zona funcției în fereastra vizibilă.
+                        grupa=fer.locator("h2").first
+                        grupa.scroll_into_view_if_needed()
+                        x=fer.evaluate(MASOARA,list(ids))
+                        if card=="tipare":
+                            tinta=fer.locator("button.ajutor-btn[data-ajutor='F120']")
+                            if tinta.count()==1:
+                                tinta.scroll_into_view_if_needed()
+                                x["butoane"]["F120"]=fer.evaluate(MASOARA,list(ids))["butoane"]["F120"]
+                        scene[dim][card]=x
+                        pg.screenshot(path=str(dest/f"{dim}_{card}.png"))
+                        if card=="tipare" and w==603: pg.screenshot(path=str(dest/"e.5.png"))
+                        if card=="asistenti":
+                            pas=f"{dim} / ajutor F006"
+                            x["ajutor"]={"titlu":"","text_corect":False}
+                            b=fer.locator("button.ajutor-btn[data-ajutor='F006']")
+                            if b.count()==1 and b.is_visible():
+                                b.click()
+                                continut=pg.locator(TOP+" .aj-continut")
+                                continut.wait_for(state="visible")
+                                if continut.locator("h4").count() and continut.locator("p").count():
+                                    x["ajutor"]={"titlu":continut.locator("h4").first.inner_text().strip(),
+                                        "text_corect":continut.locator("p").first.inner_text().strip()==prima}
+                                pg.screenshot(path=str(dest/f"{dim}_ajutor_F006.png"))
+                finally:
+                    ctx.close()
+            masuri["e.5"]=scene
+        except Exception as exc:
+            erori[pas] = f"{type(exc).__name__}: {str(exc).splitlines()[0] if str(exc) else ''}"
+            partiale["e.5"]=locals().get("scene",{})
+        for nume,ob in (("masuri",masuri),("erori",erori),("partiale",partiale)):
+            (dest/f"{nume}.json").write_text(json.dumps(ob,ensure_ascii=False,indent=2),encoding="utf-8")
+        verdict = {i:rezultat(i,m) for i,m in masuri.items()}
+        with capsys.disabled():
+            for i,v in verdict.items(): print(f"VERDICT {i} {'trece' if v else 'pica'}",flush=True)
+        if erori: raise RuntimeError(f"NEEXECUTAT: {erori}")
+&gt;       assert set(verdict)==set(IDS) and all(verdict.values()), f"R_PRODUS {verdict}"
+E       AssertionError: R_PRODUS {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': True, 'e.5': False}
+E       assert ({'e.1', 'e.2'... 'e.4', 'e.5'} == {'e.1', 'e.2'... 'e.4', 'e.5'}
+E         
+E         Use -v to get more diff and False)
+E        +  where False = all(dict_values([False, False, False, True, False]))
+E        +    where dict_values([False, False, False, True, False]) = &lt;built-in method values of dict object at 0x768dd33f3400&gt;()
+E        +      where &lt;built-in method values of dict object at 0x768dd33f3400&gt; = {'e.1': False, 'e.2': False, 'e.3': False, 'e.4': True, ...}.values
+
+frontend_test/e2e/e2e_ajutor_17_5_R2.py:306: AssertionError</failure></testcase></testsuite></testsuites>

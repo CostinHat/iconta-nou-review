@@ -1,0 +1,26 @@
+F002 | transversală (propuneri AI în Bancă și Bonuri și chitanțe), fără titlu propriu; nu e nicio fereastră a ei. Titlurile aproape: Bancă (firme.js:5029, are F011) și Bonuri și chitanțe (firme.js:7005, are F017)
+F067 | butonul «Link plata» a fost SCOS la 06.09.2026 (facturi_ecran.js:1142, comentariu); calea de plată online e închisă, nu mai există ecran
+F068 | API de numai citire pentru portal, fără ecran propriu; portalul întreg îl consumă. Titlurile portalului au semne pe funcționalitățile lor
+F092 | provisioning automat la «Adaugă firmă»; nu are ecran, doar efect
+F104 | navigatorul de ferestre e transversal (bara de sus și traseul); nu are titlu al lui
+F110 | cron fără interfață; cel mai apropiat titlu: «Facturi recurente» (facturi_ecran.js:1755, are F047)
+F111 | cron fără interfață; cel mai apropiat titlu: «Magazin online» (woo_ecran.js:16), unde textul spune deja «zilnic la 07:30»
+F112 | cron fără interfață; rezultatul se vede la «Propuneri de la monitorul fiscal» (admin.js:150), care primește F060
+F113 | aplicație instalabilă (PWA: manifest.json + sw.js în index.html:6,30); nu există buton, banner sau ecran «Instalează»; fără titlu
+F124 | campanie de testare, nu funcționalitate de ecran
+F170 | infrastructură (backup cron/systemd); fără ecran
+F177 | cron fără interfață; cel mai apropiat titlu: «Conectare SPV» (setari.js:501), care primește F176
+F178 | cron fără interfață (poll la 30 min); starea se vede doar ca etichetă pe factură (facturi_ecran.js:1146, fd-stare-spv), nu ca titlu
+F179 | cron fără interfață (primite din SPV la 30 min); cel mai apropiat titlu: «Facturi primite din SPV» (facturi_ecran.js:168, are F043)
+F165 | CLI (python3 -m core.audit_schema) și poartă de teste; fără ecran
+F198 | backend automat la depunere; fără ecran
+F200 | doar rute API (POST /gdpr/sterge-cabinet/{id}/previzualizare și /executa); în interfață există numai «Cerere de ștergere cont» (setari.js:179), care are deja F205
+F201 | cron 04:00; fără ecran
+F202 | cron */15; fără ecran
+F258 | emailuri automate (Postmark); fără ecran
+F259 | site public, adrese 410 și export Search Console; fără ecran
+F268 | câmpul «Caută o funcție» din bara ferestrei (navigator.js:298, puneCautarea) nu are titlu; un «?» lângă câmp ar cere schimbare în bara DS, nu un apel pe titlu
+F001 | fără acces din ecran (Acces UI «—» în registru): modul intern al aplicației; textul rămâne în registru și se vede pe pagina publică a funcționalităților
+F105 | fără acces din ecran (Acces UI «—» în registru): mecanism intern; textul rămâne în registru
+F106 | fără acces din ecran (Acces UI «—» în registru): unealtă internă de verificare; textul rămâne în registru
+F116 | fără acces din ecran (Acces UI «—» în registru): securitate de infrastructură; textul rămâne în registru

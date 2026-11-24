@@ -1,0 +1,6 @@
+e.1 pica
+e.2 pica
+e.3 pica
+e.4 trece
+e.5 pica
+rc=0

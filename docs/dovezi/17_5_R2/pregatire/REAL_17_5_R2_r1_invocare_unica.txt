@@ -1,0 +1,1 @@
+invocare unica dovada_baza.sh 17_5_R2 REAL r1: 2026-11-24 10:01:31 +0200; W=/home/costin/arhiva/lant_17_5_R2_r1.4pEheRN7

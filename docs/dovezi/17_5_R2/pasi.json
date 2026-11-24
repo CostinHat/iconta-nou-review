@@ -1,0 +1,74 @@
+{
+  "asertiuni": [
+    {
+      "id": "f.1",
+      "pas": "implicit",
+      "operator": "text_vizibil",
+      "valoare": "Control fiscal",
+      "cheie": "dom:button.cab-card:has([data-cheie=\"control\"]) .cab-card-titlu|text"
+    },
+    {
+      "id": "a.1",
+      "pas": "asistenti",
+      "operator": "nr_randuri",
+      "valoare": "1",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) button.ajutor-btn[data-ajutor=\"F006\"]|numar"
+    },
+    {
+      "id": "a.2",
+      "pas": "asistenti_ajutor",
+      "operator": "contine",
+      "valoare": "Ce face",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) .aj-continut|text"
+    },
+    {
+      "id": "f.2",
+      "pas": "termene",
+      "operator": "contine",
+      "valoare": "Termene",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) h2.pf-titlu|text"
+    },
+    {
+      "id": "a.3",
+      "pas": "termene",
+      "operator": "nr_randuri",
+      "valoare": "1",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) button.ajutor-btn[data-ajutor=\"F081\"]|numar"
+    },
+    {
+      "id": "a.4",
+      "pas": "termene",
+      "operator": "nr_randuri",
+      "valoare": "1",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) button.ajutor-btn[data-ajutor=\"F093\"]|numar"
+    },
+    {
+      "id": "a.5",
+      "pas": "capacitate",
+      "operator": "nr_randuri",
+      "valoare": "1",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) button.ajutor-btn[data-ajutor=\"F014\"]|numar"
+    },
+    {
+      "id": "a.6",
+      "pas": "pachete",
+      "operator": "nr_randuri",
+      "valoare": "1",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) button.ajutor-btn[data-ajutor=\"F065\"]|numar"
+    },
+    {
+      "id": "a.7",
+      "pas": "tipare",
+      "operator": "nr_randuri",
+      "valoare": "1",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) button.ajutor-btn[data-ajutor=\"F094\"]|numar"
+    },
+    {
+      "id": "a.8",
+      "pas": "tipare",
+      "operator": "nr_randuri",
+      "valoare": "1",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) button.ajutor-btn[data-ajutor=\"F120\"]|numar"
+    }
+  ]
+}
