@@ -1,0 +1,8 @@
+[parcurs] implicit: trece [('f.1', 'trece', '')]
+[parcurs] asistenti: trece [('a.1', 'trece', '')]
+[parcurs] asistenti_ajutor: trece [('a.2', 'trece', '')]
+[parcurs] termene: trece [('f.2', 'trece', ''), ('a.3', 'trece', ''), ('a.4', 'trece', '')]
+[parcurs] capacitate: trece [('a.5', 'trece', '')]
+[parcurs] pachete: trece [('a.6', 'trece', '')]
+[parcurs] tipare: trece [('a.7', 'trece', ''), ('a.8', 'trece', '')]
+
