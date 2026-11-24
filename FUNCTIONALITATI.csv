@@ -181,7 +181,7 @@ După ce ai încărcat un extras de cont în card Bancă.
 ## Ce trebuie pregătit înainte
 Extrasul bancar încărcat în aplicație.
 ## Pas cu pas
-1. Încarcă extrasul în card Bancă.
+1. Încarcă extrasul în card Bancă. Aplicația recunoaște singură formatul după conținutul fișierului.
 2. Verifică propunerile de contare, fiecare cu explicația lui.
 3. Corectează ce nu este în regulă.
 4. Confirmă notele contabile.
@@ -733,10 +733,10 @@ Când ai de înregistrat facturi primite de la furnizori prin sistemul e-Factura
 ## Ce trebuie pregătit înainte
 Fișierele XML ale facturilor sau accesul la facturile primite din SPV.
 ## Pas cu pas
-1. Deschide Facturi și alege importul.
-2. Încarcă fișierele sau preia facturile din SPV.
-3. Verifică datele citite și contul propus.
-4. Confirmă înregistrarea.
+1. Deschide Facturi, intră în Facturi primite din SPV și alege „Importă XML UBL”.
+2. Încarcă fișierul sau preia factura din SPV. Importul pune factura în lista de validat și nu scrie nicio notă.
+3. Verifică datele citite și contul propus. Pentru marfă, leagă factura de NIR când există o recepție aferentă.
+4. Urmează validarea în doi dacă firma lucrează astfel. La validare, pentru marfa înregistrată pe stoc, nota de achiziție folosește 371 = 401 pentru valoarea mărfii.
 ## Ce iese la capăt
 Facturile primite, înregistrate cu toate liniile.
 ## Greșeli frecvente

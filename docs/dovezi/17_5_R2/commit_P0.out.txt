@@ -1,0 +1,11 @@
+[pre-commit] ruff (undefined-name F821/F822/F823)...
+[pre-commit] ruff OK.
+[pre-commit] inainte_de_commit.sh (sintaxa + registrul + verificatorul de design, sub 2 minute)...
+[liste exceptii] VERDE: 7 titluri în cadru.js, 14 intrări în EXCEPTII_B, 7 numai în EXCEPTII_B (DOAR_PY)
+[inainte de commit] sintaxa: 5 fisiere
+[inainte de commit] registrul: 10 passed in 8.89s
+[inainte de commit] verificator de design:   TOTAL scanat 444 = ACCEPTAT 436 + GRI 0 + ROSU 0 + EXCLUS 8
+  TOTAL rute 529 = ACCEPTAT 477 + GRI 11 + ROSU 0 + EXCLUS 41  (clichet GRI 11)
+TOTAL: 0 candidate
+[inainte de commit] VERDE in 112 s: sintaxa, registrul si verificatorul de design; pytest tintit si plasa e2e ruleaza in poarta.
+[publica_lot --proba] verde: rândul pasului a) e pe commitul de bază, cu captură

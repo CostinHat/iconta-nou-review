@@ -1,0 +1,14 @@
+antet activ = E: True | antet arhivă = E: True | coloane: 11
+E: 258 activ: 237 arhivă: 21
+MUTA IN ARHIVA (lista): 21 F149 F153 F154 F155 F156 F157 F158 F159 F160 F161 F185 F186 F194 F195 F196 F213 F214 F215 F221 F222 F227
+alte acțiuni în listă: [('F067', 'CORECTEAZA STAREA')]
+arhiva = exact lista: True
+rânduri arhivate egale cu E (toate coloanele): True []
+ID comune activ ∩ arhivă: []
+activ ∪ arhivă = E: True
+F160 în arhivă: True | F160 în activ: False
+F067 activ: True | Stare: INTERN 24.11.2026 (componentă fără ecran; butonul «Link plata» a fost scos din ecran la 06.09.2026) | ajutor gol: True | celelalte coloane = E: True
+ordinea rândurilor active = ordinea lor pe E: True
+terminator de rând E: '\n' | arhivă același: True
+corecție — antet egal: True | ordinea rândurilor egală: True
+celule schimbate de corecție: [('F011', 'ajutor'), ('F043', 'ajutor')]

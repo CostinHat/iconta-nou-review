@@ -1,0 +1,13 @@
+[pre-commit] ruff (undefined-name F821/F822/F823)...
+[pre-commit] ruff OK.
+[pre-commit] inainte_de_commit.sh (sintaxa + registrul + verificatorul de design, sub 2 minute)...
+[liste exceptii] VERDE: 7 titluri în cadru.js, 14 intrări în EXCEPTII_B, 7 numai în EXCEPTII_B (DOAR_PY)
+[inainte de commit] sintaxa: 44 fisiere
+[inainte de commit] registrul: 10 passed in 9.06s
+[inainte de commit] verificator de design:   TOTAL scanat 444 = ACCEPTAT 436 + GRI 0 + ROSU 0 + EXCLUS 8
+  TOTAL rute 529 = ACCEPTAT 477 + GRI 11 + ROSU 0 + EXCLUS 41  (clichet GRI 11)
+TOTAL: 0 candidate
+[inainte de commit] VERDE in 98 s: sintaxa, registrul si verificatorul de design; pytest tintit si plasa e2e ruleaza in poarta.
+[lucru/lot17-5r2 d03db525] Lotul 17.5-R2 (produs): transferul produsului — exact cele 51 de căi din transfer_produs_17_5_R2.tsv aduse din C istoric 6ec13eebb28a1e7262074a77cacb02e563c2aa53 (registrul activ și arhiva, cele 124 de semne «?», DS v2.131, garda rutelor pilot, pagina publică, activele versionate); lista căilor staged = prima coloană, fiecare blob staged = coloana a treia
+ 51 files changed, 3134 insertions(+), 2018 deletions(-)
+ create mode 100644 FUNCTIONALITATI_ARHIVA.csv
