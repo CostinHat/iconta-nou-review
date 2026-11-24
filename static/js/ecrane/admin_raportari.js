@@ -7,8 +7,8 @@
 // [270d / C36, 15.10.2026] Cererile de import din alta aplicatie apar in „De la utilizatori”, cu aplicatia in titlu; fisierele
 // firului (capturi si exporturi) se arata si se descarca prin ruta autentificata, nu din /static.
 
-import { api, esc, refuzPeRand } from "../api.js?v=7396e03327";
-import { fisiereHTML, legaFisiere } from "./raporteaza.js?v=766651826e";
+import { api, semnAjutor, esc, refuzPeRand } from "../api.js?v=7396e03327";
+import { fisiereHTML, legaFisiere } from "./raporteaza.js?v=1c7aa06881";
 
 const LUNI = ["ian.","feb.","mar.","apr.","mai","iun.",
               "iul.","aug.","sep.","oct.","noi.","dec."];
@@ -58,6 +58,7 @@ export async function randeazaAdminRaportari(corp, nav) {
   _tab = "useri"; _activ = null;
 
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F152")}</h2>
     <p class="mig-intro">Sesizările de la utilizatori și cele care trebuie tratate de tine. Bulina roșie = fără răspuns.</p>
     <div class="rap-tabs">
       <button class="rap-tab rap-tab-activ" data-tab="useri">De la utilizatori <span class="rap-tab-nr" id="rap-nr-useri"></span></button>

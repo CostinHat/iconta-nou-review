@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, cate, esc, arataMesaj, arataRefuzul, bani, dataRo, dupaGenerare, noteGenerate, stareNota, pasNota, eroareCamp, curataEroriCamp } from "../api.js?v=7396e03327";
+import { api, semnAjutor, cate, esc, arataMesaj, arataRefuzul, bani, dataRo, dupaGenerare, noteGenerate, stareNota, pasNota, eroareCamp, curataEroriCamp } from "../api.js?v=7396e03327";
 
 // ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
 export function luniScurte(luni) {
@@ -109,7 +109,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
     // [lotul 10, deficiențele 421 / 424, DS cap.9 v2.96] „se derulează doar tabelul din mijloc, niciodată lateral”: tabelul stă direct în
     // corp (fără cutia lui cu derulare laterală), iar zona de mesaj a acțiunilor de pe rânduri e lipită sus (`.rezumat-fix`)
     corp.innerHTML = `
-      <h2 class="pf-titlu">Mijloace fixe</h2>
+      <h2 class="pf-titlu">Mijloace fixe ${semnAjutor("F247")}</h2>
       ${simpla ? `<p class="pf-intro" id="mf-intro-simpla">Registrul activelor firmei: amortizarea <b>calculată</b> până la ${esc(pana)} (metoda fiecărui activ, CF art.28); în partidă simplă amortizarea intră în cheltuielile deductibile ale anului, în D212.</p>` : `<p class="pf-intro">Registrul activelor firmei: amortizarea <b>calculată</b> până la ${esc(pana)} și cea <b>înregistrată</b> pe fiecare activ; un activ adus sau casat printr-o notă se schimbă în registru la validarea ei.</p>`}
       <div id="mf-mesaj" class="rezumat-fix"></div>
       ${lista.length ? `

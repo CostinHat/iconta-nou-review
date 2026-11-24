@@ -36,29 +36,29 @@ import { lunaDeLucru, uitaLunaDeLucru } from "../luna_lucru.js?v=04c41c46c1";   
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=a5c3501ac4";  /* cm_flux_v1 */
+import { fluxConcediu } from "./flux_concediu.js?v=ed753c72f9";  /* cm_flux_v1 */
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=7396e03327";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=a491746870";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=b4a93cf6ac";   // [lotul 13, 543] seria chitanțelor pe loc
-import { cautaInLista } from "./emitere_ecran.js?v=b35fa5b9ce";   /* [lotul 12, 488] căutarea în listele lungi de articole */
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=e537360b42";   // [lotul 13, 543] seria chitanțelor pe loc
+import { cautaInLista } from "./emitere_ecran.js?v=890ce70523";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=b26ef32cac";  /* [C11, 07.10.2026] bilanțul prin coadă */
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=41cf75f2de";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
-import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
-import { ecranEtransport } from "./etransport_ecran.js?v=67fef9d46d";
-import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=e6c4717166";  // [p96_import_firma] + [Q4] import in masa
+import { ecranBorderou } from "./borderou_ecran.js?v=49b400e0ca";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
+import { ecranEtransport } from "./etransport_ecran.js?v=8fea268f83";
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=652c2fa3e9";  // [p96_import_firma] + [Q4] import in masa
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [17.5-J, AC052] refuzul care trimite la ce lipsește
-import { declaratiiPerFirma } from "./declaratii.js?v=4343fbfbc2";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=0caee663ad";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";  // [produse_firma_v1]
-import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";  // [date_firma_v1]
-import { ecranMijloace } from "./mijloace_ecran.js?v=891835ddea";  // [ecran_mf_v1]
-import { ecranReevaluareValuta } from "./reevaluare_ecran.js?v=bf9065cbb3";  // [lotul 10, 429]
-import { ecranCompensari } from "./compensari_ecran.js?v=ed3e73a2f0";  // [lotul 10, 428 — decizia Costin „Construiesc acum”]
-import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=2e5615906c";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
+import { declaratiiPerFirma } from "./declaratii.js?v=4d4df4dd83";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=ceec1ccebf";  // renderer unic verdict control fiscal (DS cap.20)
+import { randeazaProduse } from "./produse_ecran.js?v=2dda085d37";  // [produse_firma_v1]
+import { ecranMagazin } from "./woo_ecran.js?v=b44ae564c9";  // [wc_extras_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=b4b224cb24";  // [date_firma_v1]
+import { ecranMijloace } from "./mijloace_ecran.js?v=6352708e1f";  // [ecran_mf_v1]
+import { ecranReevaluareValuta } from "./reevaluare_ecran.js?v=05ef5e9265";  // [lotul 10, 429]
+import { ecranCompensari } from "./compensari_ecran.js?v=30126917dc";  // [lotul 10, 428 — decizia Costin „Construiesc acum”]
+import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=105a4f8d3b";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";  // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
 import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
@@ -92,7 +92,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
           <input class="camp-input" id="fn-nume" placeholder="Se completează automat de la ANAF">
         </div>
         <div class="camp" style="margin-bottom:14px">
-          <label for="fn-tip" class="camp-eticheta">Tip firmă</label>
+          <label for="fn-tip" class="camp-eticheta">Tip firmă ${semnAjutor("F189")}</label>
           <select class="camp-input" id="fn-tip" data-butoane>${ALEGE}
             <option value="srl">SRL / SA (partidă dublă)</option>
             <option value="pfa">PFA / II / IF / profesii liberale (partidă simplă)</option>
@@ -1113,7 +1113,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : '<span class="oblig">*</span>'}</label><input type="${inputTip}"${mod} id="sn-${id}" class="camp-input"></div>`;
   };
   corp.innerHTML = `
-    <h2 class="pf-titlu">Salariat nou</h2>
+    <h2 class="pf-titlu">Salariat nou ${semnAjutor("F078")}</h2>
     <div class="grila-campuri">
       ${camp("nume", "Nume", "text", { obligatoriu: true })}
       ${camp("prenume", "Prenume", "text")}
@@ -1360,7 +1360,7 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
     const dataConf = pc.confirmat_la ? dataRo(String(pc.confirmat_la).slice(0, 10)) : "";
     corp.innerHTML = `
       <div class="rezumat-fix">
-        <h2 class="pf-titlu">Pontaj · ${_lunaTxt(an, luna)}</h2>
+        <h2 class="pf-titlu">Pontaj · ${_lunaTxt(an, luna)} ${semnAjutor("F135")}</h2>
         <p class="pf-intro"><button class="buton-secundar" id="pj-prev">← luna</button>
           <button class="buton-secundar" id="pj-next">luna →</button>
           ${pc.confirmat ? `<span class="cf-pastila" style="margin-left:12px"><span style="color:var(--verde)">●</span> confirmat${dataConf ? " la " + dataConf : ""}</span>`
@@ -1667,7 +1667,7 @@ async function ecranSalariat(corp, nav, t, sid) {
   delete CONFIRMARI_SALARIAT[sid];
   corp.innerHTML = `
     <div class="rezumat-fix">
-      <h2 class="pf-titlu">Fișa salariatului · ${_lunaTxt(an, luna)}</h2>
+      <h2 class="pf-titlu">Fișa salariatului · ${_lunaTxt(an, luna)} ${semnAjutor("F087")}</h2>
       <div class="cf-sumar">${(s.semne || []).map((x) => `<span class="cf-pastila" title="${esc(x.titlu || "")}"${x.cod === "verifica" ? ' style="color:var(--rosu);font-weight:600"' : ""}>${esc(x.text)}${x.titlu ? ": " + esc(x.titlu) : ""}</span>`).join("")}</div>
       <div id="ss-butoane" style="display:flex;flex-wrap:wrap;gap:6px">${butoaneSalariat(s, regesOk)}</div>
       <div id="ss-msg"></div>
@@ -1773,7 +1773,7 @@ function ecranSalariuBaza(corp, nav, t, s, an, luna, dupa) {
 // schimbă cifrele statului se poate corecta oricând.” Butonul „+ masă” (675, lângă „+ vacanță”): valoarea tichetului pe zi lucrată, salvată
 // pe fișa salariatului (PUT /salariati {tichet_masa_valoare}, același câmp ca la „Salariat nou”); plafonul legal îl verifică serverul.
 function ecranTichetMasa(corp, nav, t, s, dupa) {
-  corp.innerHTML = `<h2 class="pf-titlu">Tichet de masă</h2>
+  corp.innerHTML = `<h2 class="pf-titlu">Tichet de masă ${semnAjutor("F133")}</h2>
     <p class="pf-intro">Valoarea tichetului pe zi lucrată (0 = fără tichete); numărul tichetelor vine din zilele lucrate ale lunii (HG 1045/2018 art.10 alin.(3)).</p>
     <div class="grila-campuri">
       <label class="camp"><span class="camp-eticheta">Valoarea tichetului (lei pe zi)<span class="oblig">*</span></span><input type="text" inputmode="decimal" id="masa-input" class="camp-input" value="${esc(String(s.tichet_masa_valoare ?? ""))}"></label>
@@ -1805,7 +1805,7 @@ function ecranBeneficiu(corp, nav, t, s, an, luna, tip, dupa) {
     : tip === "cultural" ? `<div class="camp"><span class="camp-eticheta">Felul<span class="oblig">*</span></span>${selectScurt("ben-ev", [["lunar", "lunar"], ["ocazional", "ocazional (eveniment)"]], "", "Felul tichetelor culturale")}</div>`
     : tip === "cresa" ? `<label class="camp"><span class="camp-eticheta">Număr de copii la creșă<span class="oblig">*</span></span><input type="text" inputmode="numeric" id="ben-copii" class="camp-input"></label>` : "";
   const valInit = tip === "vacanta" ? String(s.tichete_vacanta ?? "") : "";
-  corp.innerHTML = `<h2 class="pf-titlu">${B.titlu} · ${_lunaTxt(an, luna)}</h2>
+  corp.innerHTML = `<h2 class="pf-titlu">${B.titlu} · ${_lunaTxt(an, luna)} ${semnAjutor("F133")}</h2>
     <p class="pf-intro">${esc(B.ajutor)}</p>
     <div class="grila-campuri">${extra}
       <label class="camp"><span class="camp-eticheta">Valoarea (lei)<span class="oblig">*</span></span><input type="text" inputmode="decimal" id="ben-input" class="camp-input" value="${esc(valInit)}"></label>
@@ -1852,7 +1852,7 @@ function ecranIbanSalariat(corp, nav, t, s, dupa) {
 
 // [F137] cod ocupatie COR: lookup din nomenclator (necesar REGES)
 function ecranCorSalariat(corp, nav, t, s, dupa) {
-  corp.innerHTML = `<h2 class="pf-titlu">Ocupație COR</h2>
+  corp.innerHTML = `<h2 class="pf-titlu">Ocupație COR</h2><div class="semne-ajutor">${semnAjutor("F137")}</div>
     <div style="max-width:520px">${campCorLookup("cor-edit")}</div>
     ${baraActiune(`<button class="buton-primar" id="cor-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>`, "cor-msg")}`;
   legaCorLookup(corp, "cor-edit", s.cor || "");
@@ -2341,7 +2341,7 @@ async function ecranPlataCard(corp, nav, t, an, luna) {
   const avert = (m.fara_iban && m.fara_iban.length)
     ? `<div class="caseta-atentie"><span class="ca-mesaj">${cate(m.fara_iban.length, "salariat fără IBAN, exclus", "salariați fără IBAN, excluși")} din fișier: ${m.fara_iban.map(esc).join(", ")}. IBAN-ul se completează din fereastra salariatului.</span></div>`
     : "";
-  corp.innerHTML = `<h2 class="pf-titlu">Plată salarii pe card · ${_lunaTxt(an, luna)}</h2>
+  corp.innerHTML = `<h2 class="pf-titlu">Plată salarii pe card · ${_lunaTxt(an, luna)} ${semnAjutor("F134")}</h2>
     <p class="pf-intro">${cate(m.nr_plati, "plată", "plăți")} · total ${bani(m.total)} lei · format SEPA pain.001</p>
     ${avert}
     <div class="bara-fixa"><p style="margin-top:8px"><button class="buton-primar" id="plata-descarca" data-actiune="POST /tenants/{tenant_id}/plata-salarii-fisier">Descarcă fișierul</button>
@@ -2357,7 +2357,7 @@ async function ecranPlataCard(corp, nav, t, an, luna) {
 }
 
 function ecranCheiReges(corp, nav, t) {
-  corp.innerHTML = `<h2 class="pf-titlu">Chei API REGES</h2>
+  corp.innerHTML = `<h2 class="pf-titlu">Chei API REGES ${semnAjutor("F075")}</h2>
     <p class="pf-intro">Din aplicația REGES Angajator.</p>
     <div class="grila-campuri">
       <label class="camp"><span class="camp-eticheta">Username</span><input type="text" id="rg-user" class="camp-input" autocomplete="off" data-bwignore="true"></label>
@@ -2623,7 +2623,7 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
       </div>
       <div id="cv-fisa-zona"></div>
       ${reteteVizibile ? `<div class="pf-card" style="margin-top:14px">
-        <h3 class="pf-subtitlu">Re\u021bete (HoReCa)</h3>
+        <h3 class="pf-subtitlu">Re\u021bete (HoReCa) ${semnAjutor("F076")}</h3>
         <div id="rt-lista"></div>
         <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end">
           <label class="camp"><span class="camp-eticheta">Denumire</span><input class="camp-input" id="rt-den" placeholder="ex. Meniu zilei"></label>
@@ -2819,7 +2819,7 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
   });
   zona.querySelector("#cv-transfer-t").addEventListener("click", () => fereastra("Transfer între locații", (c2) => {
     c2.innerHTML = `
-      <h2 class="pf-titlu">Transfer între locații</h2>
+      <h2 class="pf-titlu">Transfer între locații ${semnAjutor("F138")}</h2>
       <p class="pf-intro">Fără notă contabilă: costul (CMP) rămâne al firmei, se mută numai locul mărfii.</p>
       <div class="grila-campuri">
         <label class="camp"><span class="camp-eticheta">Articolul</span><select id="tr-art" aria-label="Articolul transferat" class="camp-input">${optArts}</select></label>
@@ -2883,7 +2883,7 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
     const dataInv = dataIso();
     const deseneaza = () => {
       fm.innerHTML = `
-        <h2 class="pf-titlu">Inventar pe mobil (numărare oarbă)</h2>
+        <h2 class="pf-titlu">Inventar pe mobil (numărare oarbă) ${semnAjutor("F142")}</h2>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
           <input type="text" id="im-scan" class="camp-input" placeholder="scanează codul sau caută denumirea" aria-label="Scanează cod sau caută" style="flex:1;min-width:180px">
           <input type="number" step="0.001" id="im-cant" class="camp-input" placeholder="cantitatea (1 dacă e gol)" aria-label="Cantitate numărată" style="width:190px">
@@ -3124,7 +3124,7 @@ async function ecranJurnalMarja(corp, nav, t) {
           <div class="fd-tot-rand fd-tot-final"><span>Total TVA colectat\u0103</span><span>${bani(d.total_tva_colectata)} lei</span></div>
         </div></div>`;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Jurnal regim marj\u0103</h2>
+      <h2 class="pf-titlu">Jurnal regim marj\u0103 ${semnAjutor("F248")}</h2>
       <p class="pf-intro">Jurnalul special cerut de normele Codului fiscal, pct. 86, pentru v\u00e2nz\u0103rile \u00een regim de marj\u0103.</p>
       <div class="rezumat-fix" style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px">   <!-- [lotul 10, 421 / 424, DS cap.9 v2.97 pct.5] regimul și luna rămân sus -->
         <label class="camp"><span class="camp-eticheta">Regim</span><select id="jm-tip" class="camp-input" data-butoane>
@@ -3831,7 +3831,7 @@ async function ecranBilant(corp, nav, t) {
             `<button class="btn-link bl-inchidere-jurnal" data-an="${esc(String(p.an))}" data-note="${esc(p.note.map((n) => n.id).join(","))}">`
             + `Deschide notele de închidere în Registrul jurnal — decembrie ${esc(String(p.an))}</button>`).join(" ")}${ani.map((a) =>
             `<button class="buton-secundar bl-inchidere-propune" data-an="${esc(String(a))}" data-actiune="POST /tenants/{tenant_id}/bilant-inchidere-propunere">`
-            + `${dinNou.has(a) ? "Propune din nou" : "Propune"} nota de închidere la 31.12.${esc(String(a))}</button>`).join(" ")}<div class="bl-inchidere-mesaj"></div></div>`);
+            + `${dinNou.has(a) ? "Propune din nou" : "Propune"} nota de închidere la 31.12.${esc(String(a))}</button>`).join(" ")}${ani.length ? " " + semnAjutor("F256") : ""}<div class="bl-inchidere-mesaj"></div></div>`);
           zonaPrec.querySelectorAll(".bl-inchidere-jurnal").forEach((b) => b.addEventListener("click", () => {
             if (nav.dinRefuz) nav.dinRefuz();   // [lotul 11, 445] din refuz: bilanțul de dedesubt se păstrează, X / „← Înapoi” întorc la el
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, { an: parseInt(b.dataset.an, 10), luna: 12,
@@ -4053,7 +4053,7 @@ export async function ecranStocuri(corp, nav, t) {
     // formularelor (decizia din 05.10.2026 pct.10). Totalul valorii stocului (`tfoot`) rămâne jos, în vedere (DS cap.9 v2.100).
     corp.innerHTML = `
       <div class="rezumat-fix" id="s-rezumat">
-      <h2 class="pf-titlu">Stocuri ${semnAjutor("F089")}</h2>
+      <h2 class="pf-titlu">Stocuri <span class="semne-ajutor">${semnAjutor("F089")}${semnAjutor("F088")}</span></h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="s-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="s-next">luna \u2192</button>
@@ -4145,7 +4145,7 @@ export async function ecranStocuri(corp, nav, t) {
 // confirmarea lor stă aici, în zona de mesaj a ferestrei
 function ecranMiscariStoc(corp, nav, t) {
   const cheie = "stocuri:" + t.id;
-  corp.innerHTML = `<div class="rezumat-fix"><h2 class="pf-titlu">Mișcări, fișe de magazie, coduri, nivel minim</h2><div id="s-mesaj"></div></div>
+  corp.innerHTML = `<div class="rezumat-fix"><h2 class="pf-titlu">Mișcări, fișe de magazie, coduri, nivel minim <span class="semne-ajutor">${semnAjutor("F140")}${semnAjutor("F141")}</span></h2><div id="s-mesaj"></div></div>
     <div id="cv-zona"></div>`;
   const zonaM = corp.querySelector("#s-mesaj");
   const arata = () => {
@@ -4190,7 +4190,7 @@ function ecranNirNou(corp, nav, t, ctx) {
     </div>`;
   }
   corp.innerHTML = `
-    <h2 class="pf-titlu">${refacere ? "Refaci NIR-ul " + esc(refacere.numar) : "NIR nou"}</h2>
+    <h2 class="pf-titlu">${refacere ? "Refaci NIR-ul " + esc(refacere.numar) : "NIR nou"} ${semnAjutor("F139")}</h2>
         ${refacere ? `<div class="caseta-info"><span class="ci-mesaj">Refaci NIR-ul ${esc(refacere.numar)}, respins la validare (${esc(refacere.motiv || "fără motiv")}). La salvare, ciornele lui respinse se scot; motivul rămâne în coadă.</span></div>` : ""}
         <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
@@ -5068,7 +5068,7 @@ async function ecranBanca(corp, nav, t) {
   const deschise = new Set();
   corp.innerHTML = `
     <div class="rezumat-fix" id="bk-rezumat">
-    <h2 class="pf-titlu">Bancă ${semnAjutor("F011")}</h2>
+    <h2 class="pf-titlu">Bancă <span class="semne-ajutor">${semnAjutor("F011")}${semnAjutor("F012")}${semnAjutor("F073")}</span></h2>
     <p><button type="button" class="buton-secundar" id="bk-alege" data-actiune-principala data-fara-actiune="deschide alegerea fișierului; importul îl face câmpul de fișier">Importă extras</button>
       <input type="file" id="bk-fisier" aria-label="Fișier extras bancar" accept=".xls,.xlsx,.csv,.sta,.940,.txt,.mt940" hidden>
       <span id="bk-cautare-loc" style="margin-left:12px"></span></p>
@@ -5078,7 +5078,7 @@ async function ecranBanca(corp, nav, t) {
     <div id="bk-lista"></div>`;
   // [lotul 14, 687] formatele acceptate (și ce face încărcarea) stau în cardul lor, nu sub titlu: tabelul liniilor rămâne sub filtre, în vedere
   const cardFormate = { id: "formate", ton: "info", text: "Formate acceptate: MT940, ING, altă bancă", titlu: "Formate acceptate", deschide: (c) => {
-    c.innerHTML = `<h2 class="pf-titlu">Formate acceptate</h2>
+    c.innerHTML = `<h2 class="pf-titlu">Formate acceptate ${semnAjutor("F166")}</h2>
       <p class="pf-intro">Încarcă extrasul de cont: liniile se potrivesc automat pe facturi după CUI, iar o linie care există deja (aceeași
         dată, sumă, sens, referință sau descriere și același cont) nu se adaugă a doua oară.</p>
       <ul class="pf-intro" id="bk-formate">
@@ -5617,7 +5617,7 @@ async function ecranRaportZ(corp, nav, t) {
   try { alimentatie = (await api.get(`/tenants/${t.id}/stocuri/articole`)).alimentatie_publica === true; } catch {}
   if (!corp.isConnected) return;
   corp.innerHTML = `
-    <h2 class="pf-titlu">Raport Z</h2>
+    <h2 class="pf-titlu">Raport Z ${semnAjutor("F003")}</h2>
     <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total. NUI-ul casei de marcat și numărul raportului sunt în antetul bonului Z tipărit — ele fac raportul unic, ca să nu se înregistreze de două ori. Numărul de bonuri fiscale e tot pe raportul Z și intră în D394.</p>
     <p><label class="buton-secundar" style="cursor:pointer">Import fi\u0219ier AMEF (p7b/XML)
       <input type="file" id="z-amef" data-actiune="POST /tenants/{tenant_id}/horeca/import-amef" accept=".p7b,.xml" style="display:none"></label></p>
@@ -6645,7 +6645,7 @@ function ecranEditorNota(corp, nav, t, n, centre, cheie) {
     <input type="text" class="camp-input je-pnume" placeholder="partener (la 401 / 4111)" aria-label="Partenerul (furnizor / client), cerut la 401 și 4111" value="${esc(l.partener_nume || "")}" style="width:200px">
     <button type="button" class="buton-secundar je-scoate" aria-label="Scoate linia">−</button>`;
   corp.innerHTML = `
-    <h2 class="pf-titlu" id="je-titlu">${nou ? "Notă nouă" : "Editare notă" + (n.nr_curent != null ? " nr. crt. " + n.nr_curent : "")}<span id="je-titlu-data">${n.data ? " · " + dataRo(n.data) : ""}</span></h2>
+    <h2 class="pf-titlu" id="je-titlu">${nou ? "Notă nouă" : "Editare notă" + (n.nr_curent != null ? " nr. crt. " + n.nr_curent : "")}<span id="je-titlu-data">${n.data ? " · " + dataRo(n.data) : ""}</span> ${semnAjutor("F054")}</h2>
     ${n.factura_id ? `<div class="caseta-atentie" style="margin-bottom:8px"><div class="ca-mesaj">Atenție: nota e legată de ${n.document ? esc(n.document) : "o factură"} — modificarea sumei schimbă soldul facturii.</div></div>` : ""}
     <div class="grila-campuri" id="je-antet">   <!-- [lotul 11, 394 la 1280×720 — decizia Costin 10.3: „totul încape într-un ecran, fără derulare”] data, descrierea și documentul pe un rând (se rup pe telefon) -->
     <label class="camp"><span class="camp-eticheta">Data notei<span class="oblig">*</span></span><input type="date" id="je-data" class="camp-input" value="${esc(String(n.data || "").slice(0, 10))}">${n.mesajData ? `<span class="camp-ajutor pe-randuri" id="je-data-motiv">${esc(n.mesajData)}</span>` : ""}</label>
@@ -6899,7 +6899,7 @@ async function ecranCentreCost(corp, nav, t) {
         <button class="buton-secundar" data-toggle="${c.id}" data-actiune="PUT /tenants/{tenant_id}/centre-cost/{centru_id}" data-activ="${c.activ ? 1 : 0}">${c.activ ? "Dezactivează" : "Reactivează"}</button>
       </div>`;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Centre de cost</h2>
+      <h2 class="pf-titlu">Centre de cost ${semnAjutor("F143")}</h2>
       <p class="pf-intro">Dimensiune de management pe rândurile de venituri și cheltuieli: se alege pe notele manuale (Registru jurnal) și pe liniile facturilor (emise și primite); salariații, mijloacele fixe și articolele de stoc își primesc centrul în „Salariați, mijloace fixe, articole”, iar nota salariilor, amortizarea și ieșirea din stoc îl preiau. Un centru scos din uz se dezactivează — rămâne pe notele vechi, nu se mai oferă la note noi.</p>
       <div style="display:flex;gap:8px;max-width:760px;margin-bottom:12px;flex-wrap:wrap">
         <input type="text" id="cc-nume" class="camp-input" placeholder="Nume centru (ex: Vânzări, Producție)" aria-label="Nume centru" style="flex:1">
@@ -7609,7 +7609,7 @@ async function ecranRapoarte(corp, nav, t) {
       </section>
 
       <section class="rc-vedere" data-vedere="variante"${vedere === "variante" ? "" : " hidden"}>
-      <h3 class="pf-subtitlu">Variantele firmei</h3>
+      <h3 class="pf-subtitlu">Variantele firmei ${semnAjutor("F145")}</h3>
       ${variante.length ? `<div class="pf-lista">${variante.map((vr) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
@@ -7693,7 +7693,7 @@ async function ecranRegistratura(corp, nav, t) {
         </div>
       </div>`;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Registratură</h2>
+      <h2 class="pf-titlu">Registratură ${semnAjutor("F146")}</h2>
       <p class="pf-intro">Anul ${an} · registru unic de intrare-ieșire
         <button class="buton-secundar" id="rg-prev" style="margin-left:12px">← an</button>
         <button class="buton-secundar" id="rg-next">an →</button></p>
@@ -7770,7 +7770,7 @@ async function ecranContracte(corp, nav, t) {
         </div>
       </div>`;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Contracte</h2>
+      <h2 class="pf-titlu">Contracte ${semnAjutor("F147")}</h2>
       <p class="pf-intro">Șabloane proprii cu marcaje {{...}}; generarea completează datele partenerului și scoate PDF.</p>
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 12px">' + mesajSucces + '</p>' : ""}
       <p><button class="buton-primar" id="c-nou" data-actiune="POST /tenants/{tenant_id}/contracte/sabloane">+ Șablon nou</button></p>
@@ -7874,7 +7874,7 @@ async function ecranAccesClient(corp, nav, t) {
     const actuala = cerereNoua();
     corp.innerHTML = `
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
-      <h3 style="margin:0 0 8px">Conturi client</h3>
+      <h3 style="margin:0 0 8px">Conturi client ${semnAjutor("F197")}</h3>
       <div id="ac-lista" style="margin-bottom:16px"><p class="ecran-nota">Se încarcă...</p></div>
       <button class="buton-secundar" id="ac-btn-invita" data-actiune="POST /tenants/{tenant_id}/client-acces">Invit\u0103 client nou</button>
       <button class="buton-secundar" id="ac-btn-preview" data-actiune="POST /tenants/{tenant_id}/acces-portal" style="margin-left:8px">Previzualizeaz\u0103 portalul</button>

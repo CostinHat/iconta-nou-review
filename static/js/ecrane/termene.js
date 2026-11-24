@@ -1,10 +1,10 @@
 // termene.js — restantele (termen trecut, nedepuse) si scadentele fiscale viitoare pe portofoliu (orizont 60 zile).
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
-import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=7396e03327";
+import { api, semnAjutor, cate, dupaNumar, dataRo, esc } from "../api.js?v=7396e03327";
 import { tabelDS } from "../ds_piese.js?v=03f816740e";   // [15.1-E3] lista scadențelor pe tabelul DS
-import { deschideFirma } from "./firme.js?v=35ad459baa";
-import { randeazaDeclaratii } from "./declaratii.js?v=4343fbfbc2";   // [17.5-M, AC014] „Deschide declarația” din Detaliu termen; declaratii.js nu importă termene.js (fără ciclu)   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { deschideFirma } from "./firme.js?v=f7b964095e";
+import { randeazaDeclaratii } from "./declaratii.js?v=4d4df4dd83";   // [17.5-M, AC014] „Deschide declarația” din Detaliu termen; declaratii.js nu importă termene.js (fără ciclu)   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();
@@ -34,6 +34,7 @@ export async function randeazaTermene(corp, nav) {
   const neeval = date.neevaluate || [];
 
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} <span class="semne-ajutor">${semnAjutor("F081")}${semnAjutor("F093")}</span></h2>
     <p class="mig-intro">Restanțele (termen depășit, nedepuse) și scadențele din următoarele 60 de zile, pe dată.</p>
     <div id="term-zona" data-zona-derulare><div id="term-lista"></div></div>
   `;   // [lotul 14, 687] lista scadențelor derulează în zona ei; introducerea rămâne fixă sus

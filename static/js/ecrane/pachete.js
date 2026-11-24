@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, ultimaCerere, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=7396e03327";
+import { api, semnAjutor, ultimaCerere, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=7396e03327";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
@@ -37,6 +37,7 @@ function pasAlegere(corp, nav) {
   if (nav && nav.setInapoi) nav.setInapoi(undefined);
   const f = corp.closest(".fereastra"); if (f) f.classList.remove("fer-larg");
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F065")}</h2>
     <p class="mig-intro">Trimite antreprenorului „povestea lunii” — un rezumat clar al lunii, scris de AI și aprobat de tine.</p>
     <div class="dec-form">
       <label class="camp">

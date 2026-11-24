@@ -13,7 +13,7 @@
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
 import { api, esc, semnAjutor, inchidereDialog, cate } from "../api.js?v=7396e03327";
-import { STRATURI } from "./migrare.js?v=e6c4717166";
+import { STRATURI } from "./migrare.js?v=652c2fa3e9";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";
@@ -96,7 +96,7 @@ async function _corpAnsamblu(corp) {
   carduri.push({ id: "ans-card-inceput", ton: "info", text: "Primii pași în aplicație", titlu: "Primii pași",
     deschide: (c) => {
       c.innerHTML = `<div class="ans-continut"><section class="ans-sec" id="ans-inceput"></section></div>`;
-      import("./inceput.js?v=9a8b26bf4b").then((m) => m.ghidulDeInceput(c.querySelector("#ans-inceput"))).catch(() => {});
+      import("./inceput.js?v=f1338e89f2").then((m) => m.ghidulDeInceput(c.querySelector("#ans-inceput"))).catch(() => {});
     } });
   corp.innerHTML =
     `<div class="ans-continut">` +

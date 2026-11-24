@@ -12,7 +12,11 @@ import { actiuniRefuz, scoateActiuniRefuz } from "./coada_trimite.js?v=b26ef32ca
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
   credit:"F024", chirie:"F020", decont:"F040", contract_special:"F021", reevaluare:"F074",
-  provizion:"F071", sponsorizare:"F086", subventie:"F090", obiect_inv:"F063", inventariere:"F052" };
+  provizion:"F071", sponsorizare:"F086", subventie:"F090", obiect_inv:"F063", inventariere:"F052",
+  // [17.5-R, R3] cheile noi din harta_plasare_semne.tsv
+  decont_valuta:"F041", import_ec:"F049", export_ec:"F049", achizitie_ic:"F050", vanzare_ic:"F050", lichidare:"F057", ong:"F064",
+  perisabilitati:"F066", productie:"F069", sgr:"F082", taxare_inversa:"F091", agricultor:"F095", agricultor_achizitie:"F095", aur:"F096",
+  tva_incasare:"F097", marja:"F098", marja_turism:"F099" };
 
 // tipuri de camp: data | numar | text | select(optiuni) | bool
 // conditie: {camp: "tip", val: "rata"} - campul apare doar cand alt camp are valoarea.
@@ -677,7 +681,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=35ad459baa");
+      const { ecranJurnal } = await import("./firme.js?v=f7b964095e");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };
@@ -735,7 +739,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     };
     const btnSpre = corp.querySelector("#op-spre-emitere-buton");
     if (btnSpre) btnSpre.addEventListener("click", async () => {   // [C84] peste formular: „←” readuce operațiunea
-      const { randeazaEmitere } = await import("./emitere_ecran.js?v=b35fa5b9ce");
+      const { randeazaEmitere } = await import("./emitere_ecran.js?v=890ce70523");
       nav.deschide("Emite factură", (c2) => randeazaEmitere(c2, nav, t.id, { inapoi: () => nav.inapoi() }));
     });
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
@@ -792,7 +796,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         zonaRefuz.innerHTML = "";
         zonaRefuz.appendChild(cardRezumat({ text: "Firma aplică TVA la încasare: factura furnizorului se înregistrează în Facturi primite.", ton: "eroare",
           detalii: r.refuz, actiune: { eticheta: "Deschide Facturi primite", laClic: async () => {
-            const { primiteSPV } = await import("./facturi_ecran.js?v=b4a93cf6ac");
+            const { primiteSPV } = await import("./facturi_ecran.js?v=e537360b42");
             nav.deschide("Facturi primite", (c2) => primiteSPV(c2, nav, t.id, {}));
           } } }));
         inactiv(btn, "Nota nu se poate genera: factura se înregistrează în Facturi primite.");

@@ -1,7 +1,7 @@
 // woo_ecran.js — ecranul WooCommerce (config + sincronizare), reutilizabil.  // wc_extras_v1
 // Extras din firme.js ca sa fie folosit si de cabinet (firme.js) si de contul gratuit
 // (facturi_ecran.js). O singura sursa (regula DS 0a). Semnatura pe tenantId, nu obiect firma.
-import { api, ultimaCerere, cate, arataMesaj, esc, atributeInactiv } from "../api.js?v=7396e03327";
+import { api, semnAjutor, ultimaCerere, cate, arataMesaj, esc, atributeInactiv } from "../api.js?v=7396e03327";
 
 export async function ecranMagazin(corp, nav, tenantId) {
   let mesajSucces = "";
@@ -13,7 +13,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
     let cfg = { configurat: false, url: null };
     try { cfg = await api.get(`/tenants/${tenantId}/woocommerce/config`); if (!actuala()) return; } catch (e) { if (!actuala()) return; corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca starea magazinului online.</p>`; return; }
     corp.innerHTML = `
-      <h2 class="pf-titlu">Magazin online</h2>
+      <h2 class="pf-titlu">Magazin online ${semnAjutor("F102")}</h2>
       <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "configurat pentru " + cfg.url : "neconfigurat"}</p>

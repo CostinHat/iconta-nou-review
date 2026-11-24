@@ -80,7 +80,9 @@ EXCEPTII = {
 #: sha256 al conținutului referinței (fără liniile de comentariu); se schimbă numai împreună cu referința (vezi docstring)
 #: [26.10.2026, lotul 13] referința s-a schimbat numai prin scoaterea din [live] a celor cinci formulare înlocuite de Declarația unică
 #: (660: F214, F215, F221, F222, F227, trecute în RESPINS) — exactă în ambele sensuri; amprenta veche: 4b107c8b…
-AMPRENTA_REFERINTA = "5d5b9b7a05749070b18e6d4e37d52cdbc54d90864a8ae7c6a9769e14f18dc228"
+#: [24.11.2026, lotul 17.5-R, R1] referința s-a schimbat numai prin scoaterea din [functionalitati] a celor 21 de ID-uri mutate în
+#: FUNCTIONALITATI_ARHIVA.csv (motivul fiecăruia în antetul referinței); [rute] și [live] neschimbate; amprenta veche: 5d5b9b7a…
+AMPRENTA_REFERINTA = "af1050887cb078d53e5e74edf6c34b2f413ef0b960d06ae3ddae26a20bde7fa9"
 DOMENII_PILOT = ("facturi", "bancă", "casă", "stoc", "salarii", "închidere", "D300", "D394", "D112", "D100", "balanță")
 STARI_PILOT = ("neprobat", "în probă", "probat")
 

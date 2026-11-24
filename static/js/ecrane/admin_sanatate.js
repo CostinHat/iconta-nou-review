@@ -1,6 +1,6 @@
 // admin_sanatate.js — Admin iConta: sanatate infrastructura (doar superadmin).
 // Server (CPU/RAM/disk), aplicatie (uptime), baza de date, erori recente (500+), grafice istoric.
-import { dataRo, api, arataMesaj, esc, cantitate, pct } from "../api.js?v=7396e03327";
+import { dataRo, api, semnAjutor, arataMesaj, esc, cantitate, pct } from "../api.js?v=7396e03327";
 
 // [lotul 13, deficiența 643 — „Load average afișat «1.53369140625» (11 zecimale, punct), fără pragul de alertă alături; graficele pe 24 h
 // fără scară verticală și fără linia pragului; «32.9» cu punct.”] Cifrele în format românesc (DS cap.4: virgula zecimală), încărcarea cu
@@ -118,7 +118,7 @@ export async function randeazaAdminSanatate(corp, nav) {
   const sectiune = (titlu, continut, id) => `<div${id ? ` id="${id}"` : ""}><h3 class="cap-titlu">${titlu}</h3>${continut}</div>`;
   corp.innerHTML = `
     <div class="rezumat-fix">
-      <h2 class="pf-titlu">Sănătate server</h2>
+      <h2 class="pf-titlu">Sănătate server ${semnAjutor("F117")}</h2>
       <div>
         <button class="buton-secundar" id="san-test-alerta">Trimite alert\u0103 de test</button>
         <span id="san-test-msg"></span>

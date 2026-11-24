@@ -53,12 +53,12 @@ window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reas
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { api, arataMesaj, esc } from "./api.js?v=7396e03327";
-import { ecranLogin } from "./ecrane/login.js?v=1046446310";
-import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=c5d6a39876";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=85fd161673";
+import { ecranLogin } from "./ecrane/login.js?v=147107c39f";
+import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=d24f40da34";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=b663db48e5";
 import { desktopAsistent } from "./ecrane/asistent.js?v=4d62696ccb";
-import { desktopPortal } from "./ecrane/portal.js?v=28528732e1";
-import { desktopAdmin } from "./ecrane/admin.js?v=6b8ca6e696"; // [p37_admin_desktop]
+import { desktopPortal } from "./ecrane/portal.js?v=343b1f065e";
+import { desktopAdmin } from "./ecrane/admin.js?v=93fe0c04fc"; // [p37_admin_desktop]
 import { restaureazaFereastra } from "./restaurare.js?v=2e679a8748";   // [15.1, 725]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=34d0fb0afd";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
@@ -199,7 +199,7 @@ async function randeaza() {
   // [deficiența 320, comanda Costin 17.10.2026 7.2] „La prima intrare, fiecare utilizator își pune obligatoriu telefonul, canalul (WhatsApp
   // sau email) și bifele de notificări înainte să ajungă în aplicație.” Nu în previzualizarea portalului (nu e omul însuși).
   if (!(sesiune.estePreview && sesiune.estePreview())) {
-    const pi = await import("./ecrane/inceput.js?v=9a8b26bf4b");
+    const pi = await import("./ecrane/inceput.js?v=f1338e89f2");
     if (await pi.primaIntrareDeFacut()) { pi.ecranPrimaIntrare(radacina, () => randeaza()); return; }
   }
 

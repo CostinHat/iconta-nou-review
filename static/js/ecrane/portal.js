@@ -2,7 +2,7 @@
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=b4a93cf6ac";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
+import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=e537360b42";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -60,7 +60,7 @@ export function desktopPortal(continut, nav) {
 
   const grila = continut.querySelector(".cab-grila");
   // [deficiența 320] clientul din portal: cardul lui de început (telefonul, canalul, ce primește); nu în previzualizare
-  if (!sesiune.estePreview()) import("./inceput.js?v=9a8b26bf4b").then((m) => m.cardurileDeInceput(continut.querySelector("#inceput-carduri"), nav)).catch(() => {});
+  if (!sesiune.estePreview()) import("./inceput.js?v=f1338e89f2").then((m) => m.cardurileDeInceput(continut.querySelector("#inceput-carduri"), nav)).catch(() => {});
   {
     const c = CARD_BON;
     const card = document.createElement("button");
@@ -483,7 +483,7 @@ async function ecranDocumente(corp, nav) {
         </div>`;
     }).join("");
   corp.innerHTML = `
-    <h2 class="pf-titlu">Documente</h2>
+    <h2 class="pf-titlu">Documente</h2><div class="semne-ajutor">${semnAjutor("F042")}</div>   <!-- [17.5-R, R5] grupul pe rândul de sub titlu: textul titlului rămâne «Documente» (AC177) -->
     <p class="pf-intro">Balanțele lunare, generate din contabilitate. O lună provizorie se poate schimba până o închide contabilul.</p>
     <div class="pf-lista zebra-lista">${corpuri}</div>`;
   corp.querySelectorAll("[data-bal]").forEach((b) => {
@@ -670,7 +670,7 @@ async function ecranCifre(corp, nav) {
     ? ` Luna ${dataRo(`${d.an}-${String(d.luna).padStart(2, "0")}`, "luna_an")} e încă deschisă: cifrele sunt provizorii${d.neverificate ? ` (${cate(d.neverificate, "înregistrare neverificată", "înregistrări neverificate")} de contabil nu sunt cuprinse)` : ""}.`
     : "";
   corp.innerHTML = `
-    <h2 class="pf-titlu">Cifrele firmei</h2>
+    <h2 class="pf-titlu">Cifrele firmei ${semnAjutor("F055")}</h2>
     <p class="pf-intro" id="cf-perioada">Cumulat de la \u00eenceputul anului p\u00e2n\u0103 la ${dataRo(`${d.an}-${String(d.luna).padStart(2,"0")}`, "luna_an")} inclusiv, din înregistrările verificate de contabil.${provizorie}</p>
     <div class="pf-lista" data-fara-piesa>
       ${rand("Venituri", lei(k.venituri))}

@@ -5,7 +5,7 @@
 // CF art.282 alin.(3), (8) — `core/compensari_api.py`.
 // DS: fereastra cu tabel (cap.9 v2.96): rezumatul lipit sus `.rezumat-fix` (partenerul, ordinul, totalul), tabelul `.fd-tabel` cu cifrele
 // în `.fd-td-num`, acțiunea și mesajul ei lipite jos `.bara-fixa`; confirmarea numește notele și trimite la ele (cap.27).
-import { api, ultimaCerere, arataMesaj, bani, curataEroriCamp, dataIso, dataRo, dupaGenerare, esc, eroareCamp, noteGenerate, ALEGE } from "../api.js?v=7396e03327";
+import { api, semnAjutor, ultimaCerere, arataMesaj, bani, curataEroriCamp, dataIso, dataRo, dupaGenerare, esc, eroareCamp, noteGenerate, ALEGE } from "../api.js?v=7396e03327";
 
 /** „CZ1 din 10.10.2026 · rest 1.210,00” — factura cum o citește omul. */
 function doc(f) {
@@ -61,7 +61,7 @@ export async function ecranCompensari(corp, nav, t, opt = {}) {
     const opriteDe = x ? [...x.emise, ...x.primite].filter((f) => f.afirmatie) : [];   // afirmația tipată a opririi (`motiv`)
     corp.innerHTML = `
       <div class="rezumat-fix" id="cz-rezumat">
-        <h2 class="pf-titlu">Compensări</h2>
+        <h2 class="pf-titlu">Compensări ${semnAjutor("F262")}</h2>
         <p class="pf-intro">Datoriile reciproce cu același partener se sting prin compensare până la cea mai mică dintre ele (Codul civil
           art.1616), la data ordinului de compensare (HG 685/1999). Fiecare pereche primește o notă 401 = 4111; pe o factură în sistemul TVA
           la încasare, partea compensată mută și TVA-ul, ca o încasare sau o plată.</p>

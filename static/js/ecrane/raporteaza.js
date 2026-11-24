@@ -5,7 +5,7 @@
 // exporturi (CSV, XLS/XLSX, ZIP). [C36] Fisierele firului stau in depozitul privat: se arata si se descarca numai prin ruta
 // autentificata `/raportari/fisiere/{id}` (echipa iConta si autorul), iar autorul le poate sterge.
 
-import { api, ultimaCerere, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";
+import { api, semnAjutor, ultimaCerere, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";
 
 function dataScurta(iso) {
   return dataRo(iso, "cu_ora");
@@ -53,6 +53,7 @@ export function legaFisiere(zona, dupaStergere) {
 
 export async function randeazaRaporteaza(corp, nav) {
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F072")}</h2>
     <p class="mig-intro">Ai observat ceva care nu merge, nu e corect sau nu se înțelege? Trimite-ne o sesizare. Îți răspundem aici.</p>
 
     <div class="rap-nou panou" style="max-width:640px">

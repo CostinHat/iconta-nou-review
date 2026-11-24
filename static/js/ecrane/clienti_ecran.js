@@ -19,7 +19,7 @@
 // existentă `verifica-cui`, cu propunerea numelui de la ANAF — 444), documentele lui și soldul din contabilitate, cu aceeași regulă ca balanța
 // (`clienti_api.sold_partener`: soldul de preluare + notele validate; ciornele separat). Nimic nu se recalculează în ecran.
 import { meniuActiuni } from "../ds_piese.js?v=03f816740e";
-import { api, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv } from "../api.js?v=7396e03327";
+import { api, semnAjutor, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv } from "../api.js?v=7396e03327";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 640] datele aduse de la ANAF țin de CUI-ul lor
 
 const FEL = {
@@ -124,7 +124,7 @@ async function ecranParteneri(corp, nav, t, fel, opt) {
     const cautare = (x) => norm([x.nume, x.cui, x.oras].join(" "));
     corp.innerHTML = `
       <div class="rezumat-fix" id="${P}-rezumat">
-        <h2 class="pf-titlu">${F.titlu}</h2>
+        <h2 class="pf-titlu">${F.titlu} ${semnAjutor("F263")}</h2>
         <p class="pf-intro">${F.intro}</p>
         <p><button type="button" class="buton-primar" id="${P}-nou" data-actiune="${F.actNou}">${F.nou}</button>
           ${randuri.length ? `<input id="${P}-cauta" class="camp-input" style="max-width:360px;margin-left:8px" placeholder="Caută după nume, cod fiscal sau localitate"
@@ -346,7 +346,7 @@ export async function ecranParteneriFirmei(corp, nav, t) {
     </tr>`;
   corp.innerHTML = `
     <div class="rezumat-fix" id="pt-rezumat">
-      <h2 class="pf-titlu">Parteneri</h2>
+      <h2 class="pf-titlu">Parteneri ${semnAjutor("F018")}</h2>
       <p class="pf-intro">Clienții și furnizorii firmei, din fișe și din toate documentele: facturi emise și primite, casă, bancă, note
         contabile, soldurile de preluare. Deschide fișa unui partener ca să-i vezi datele, documentele și soldul din contabilitate.</p>
       ${lista.length ? `<input id="pt-cauta" class="camp-input" style="max-width:420px" placeholder="Caută după nume sau cod fiscal"

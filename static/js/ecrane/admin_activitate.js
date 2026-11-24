@@ -1,6 +1,6 @@
 // admin_activitate.js — Admin iConta: activitate + business cabinete (doar superadmin).
 // Sumar + lista cu firme/utilizatori/recomandari/actiuni, suspenda/reactiveaza, „Fișa” -> fereastra cabinetului.
-import { api, dataRo, confirmaCaseta, esc, cate, arataMesaj, arataRefuzul } from "../api.js?v=7396e03327";  /* audit_cab_lot2_v1 + esc_nc27 */
+import { api, semnAjutor, dataRo, confirmaCaseta, esc, cate, arataMesaj, arataRefuzul } from "../api.js?v=7396e03327";  /* audit_cab_lot2_v1 + esc_nc27 */
 
 // [lotul 13, deficiența 645 — anexa comenzii 13.1, decizia Costin + arhitect 24.10.2026, verbatim: „motiv obligatoriu din listă fixă —
 // neplată, la cererea cabinetului, încălcarea termenilor, acces suspect / securitate, la cererea unei autorități — plus notă internă
@@ -145,7 +145,7 @@ async function randeaza(corp, nav, mesajOk) {
 function formularSuspendare(corp, c, dupa) {
   let motiv = null;
   corp.innerHTML = `
-    <h2 class="pf-titlu">Suspendă cabinetul</h2>
+    <h2 class="pf-titlu">Suspendă cabinetul ${semnAjutor("F109")}</h2>
     <p class="pf-intro"><b>${esc(c.nume || "")}</b> — cabinetul vede motivul la logare; administratorii lui primesc un email cu același motiv.</p>
     <fieldset class="camp" id="sus-motiv" style="border:0;padding:0;margin:0 0 12px">
       <legend class="camp-eticheta">Motivul suspendării<span class="oblig">*</span></legend>

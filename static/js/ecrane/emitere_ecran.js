@@ -66,7 +66,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null, tvaI
   const inapoi = opt.inapoi || (() => nav.inapoi());
   corp.innerHTML = `
 
-    <h2 class="pf-titlu">Configurare emitere ${semnAjutor("F048")}</h2>
+    <h2 class="pf-titlu">Configurare emitere <span class="semne-ajutor">${semnAjutor("F048")}${semnAjutor("F180")}</span></h2>
     <p class="pf-intro">Înainte de prima factură: numerotarea (ca să fie neîntreruptă) și regimul de TVA.</p>
     ${tvaProfil === null ? `<div class="em-config-camp" style="margin-bottom:12px">
       <label>Firma e plătitoare de TVA?<span class="oblig">*</span></label>
@@ -427,7 +427,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="em-ciorna" id="em-ciorna" role="note"></div>
     <div class="pr-cap">
-      <h2 class="pf-titlu">Emite factură</h2>
+      <h2 class="pf-titlu">Emite factură <span class="semne-ajutor">${semnAjutor("F025")}${semnAjutor("F172")}${semnAjutor("F252")}${semnAjutor("F254")}</span></h2>
       <span class="em-numar" id="em-numar">${num.serie ? `Seria <b>${esc(num.serie)}</b> · ` : ""}nr. <b>${esc(String(num.urmator_numar))}</b></span>
     </div>
     <div class="rap-tabs" style="align-items:center">

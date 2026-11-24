@@ -2,8 +2,8 @@
 // Trei sectiuni: 1) cabinet (cat e de facut vs ritm), 2) pe asistent
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
-import { api, esc, cate } from "../api.js?v=7396e03327";
-import { randeazaAsistenti } from "./asistenti.js?v=55670c24d1";
+import { api, semnAjutor, esc, cate } from "../api.js?v=7396e03327";
+import { randeazaAsistenti } from "./asistenti.js?v=f5149c4025";
 import { tabelDSHtml } from "../ds_piese.js?v=03f816740e";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
@@ -50,6 +50,7 @@ export async function randeazaCapacitate(corp, nav) {
     }).replace('<table class="ds-tabel">', '<table class="ds-tabel cap-tabel cap-tabel-echipa-mica">') : "";
     corp.innerHTML = `
       <div class="cap-ecran">
+        <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F014")}</h2>
         <div class="stare-goala">
           <p>Într-o echipă care crește, munca nu se împarte singură în mod egal.</p>
           <p>Unii duc trei firme, alții șapte — și afli abia când cineva cedează în perioada de declarații. Capacitate îți arată cine cât duce, unde e presiune și unde e loc, ca s-o echilibrezi din vreme, nu în criză.</p>
@@ -136,6 +137,6 @@ export async function randeazaCapacitate(corp, nav) {
     <p class="cap-nota">Durata = de la deschiderea ecranului până la generare. Pe ${cate(timp.total_mostre, "declarație", "declarații")}; devine mai precisă în timp.</p>
   `;
 
-  corp.innerHTML = `<div class="cap-ecran">${sectCabinet}${sectAsist}${sectTimp}<p>${butonAsistenti}</p></div>`;
+  corp.innerHTML = `<div class="cap-ecran"><h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F014")}</h2>${sectCabinet}${sectAsist}${sectTimp}<p>${butonAsistenti}</p></div>`;
   corp.querySelector("#cap-adauga-asistenti").addEventListener("click", deschideAsistenti);
 }

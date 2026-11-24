@@ -2796,6 +2796,10 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
      folosit ajutorul contextual, nu doar pe ecranul nou care l-a scos la iveala. */
   font-size:12px; line-height:1; cursor:pointer; padding:0; margin-left:6px; vertical-align:middle; }
 .ajutor-btn:hover { background:#2f6fa6; color:#fff; border-color:#2f6fa6; }
+/* [17.5-R, R4/R5, DS v2.131] semnele alăturate ale aceluiași titlu: un grup care nu se rupe; când nu încape pe rândul titlului trece întreg
+   pe rândul imediat următor, în același loc pe toate ecranele (fără suprapuneri, fără un semn rămas singur în urmă) */
+.semne-ajutor { display:inline-flex; align-items:center; gap:6px; margin-left:6px; white-space:nowrap; vertical-align:middle; }
+.semne-ajutor > .ajutor-btn { margin-left:0; }
 .aj-continut { max-width:640px; }
 .aj-sec { margin:14px 0 4px; color:#1a3a6b; font-size:var(--text-mic); font-weight:700; }
 .aj-sec:first-child { margin-top:0; }

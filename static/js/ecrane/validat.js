@@ -28,12 +28,12 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=7396e03327";
+import { api, semnAjutor, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=7396e03327";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=0caee663ad";
+import { randA as randConstatare } from "./control_verdict.js?v=ceec1ccebf";
 import { legaSemnale, meniuActiuni, paginareDS } from "../ds_piese.js?v=03f816740e";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=35ad459baa";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=f7b964095e";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -286,7 +286,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   const randuriCiorne = ciorneMele.map(({ f, n }) => randCiornaMea(f, n, valideaza));
   corp.innerHTML = `
     <div class="rezumat-fix" id="val-rezumat">
-      <h2 class="pf-titlu" id="val-titlu">${esc(titlu)}</h2>
+      <h2 class="pf-titlu" id="val-titlu">${esc(titlu)} ${semnAjutor("F019")}</h2>
       <p class="pf-intro" id="val-cautare">${htmlCautare("val", { valoare: corp._val.text, eticheta: "Caută: firmă, cont, document, partener, sumă, declarație", scurt: "Caută: firmă, cont, partener" })}</p>
       <div id="val-carduri"></div>
       <div id="val-confirmare"></div>
@@ -865,7 +865,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=4343fbfbc2");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=4d4df4dd83");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

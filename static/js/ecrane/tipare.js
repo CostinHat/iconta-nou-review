@@ -2,7 +2,7 @@
 // Trei sectiuni statistice: motive de respingere, tipuri cu rata, firme cu respingeri.
 // Plus [F120] buton "Genereaza analiza AI" care cere lui Claude explicatii + recomandari.
 // Doar patron (regula 4).
-import { api, esc, atributeInactiv } from "../api.js?v=7396e03327";
+import { api, semnAjutor, esc, atributeInactiv } from "../api.js?v=7396e03327";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
 // [574] cum se numește felul pregătirii (aceeași regulă ca `tipare_api.eticheta_tip`)
@@ -29,11 +29,13 @@ export async function randeazaTipare(corp, nav) {
   if (!d.are_date) {
     corp.innerHTML = `
       <div class="tip-ecran">
+        <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F094")}</h2>
         <div class="tip-gol-mare">
           <h3 class="tip-titlu">Încă nu sunt tipare de arătat</h3>
           <p class="cap-nota">Pe măsură ce echipa pregătește și validează declarații și note, aici apar
           motivele pentru care colegii le-au respins, felurile cu cea mai mare rată de respingere și firmele
           care cer mai multă atenție. Regenerările automate nu se numără. Datele se adună singure din munca de zi cu zi.</p>
+          <p class="cap-nota"><b>Analiză AI</b> ${semnAjutor("F120")}</p>   <!-- [17.5-R, R3] F120 după eticheta «Analiză AI» și în starea goală; F094 pe titlul ferestrei -->
           <!-- [17.5] acțiunea ferestrei stă în bară și fără date, inactivă, cu motivul (DS cap.1, 675): „Generează analiză AI” are ce analiza numai după prima respingere -->
           <button class="buton-primar" id="tip-ai" data-actiune="GET /tipare/ai"${atributeInactiv("Nu există încă nicio respingere de analizat: analiza AI se poate genera după prima.")}>Generează analiză AI</button>
         </div>
@@ -165,8 +167,9 @@ export async function randeazaTipare(corp, nav) {
   // da, reorganizezi ecranele”] „Generează analiză AI” stătea sub cele trei tabele, iar rezultatul lui la capătul lor: acum butonul e în
   // rezumatul lipit sus, iar rezultatul chiar sub el, deasupra tabelelor (DS cap.9 v2.100)
   corp.innerHTML = `<div class="tip-ecran">
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F094")}</h2>
     <div class="rezumat-fix tip-analiza">
-      <p class="cap-nota"><b>Analiză AI</b> — Claude citește exact tiparele de mai jos (numai respingerile făcute de colegi) și propune explicații și recomandări concrete.
+      <p class="cap-nota"><b>Analiză AI</b> ${semnAjutor("F120")} — Claude citește exact tiparele de mai jos (numai respingerile făcute de colegi) și propune explicații și recomandări concrete.
         <button class="buton-primar" id="tip-ai" data-actiune="GET /tipare/ai" style="margin-left:8px">Generează analiză AI</button></p>
     </div>
     <div id="tip-ai-rez"></div>

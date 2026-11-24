@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.130 · 23 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.131 · 24 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -1614,6 +1614,8 @@ verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
 
 ## Componenta: semnul "?" de ajutor contextual (v_ajutor, 11.08.2026)
 .ajutor-btn - buton mic circular (20px) cu "?", plasat langa titlul unei functionalitati DOAR unde exista ceva de spus dincolo de eticheta (reguli fiscale, preconditii, consecinte). Deschide un modal cu textul de folosire din coloana ajutor (FUNCTIONALITATI.csv), via api.js semnAjutor(fid) + handler global. NU se pune peste tot (Salveaza/Cauta/Inapoi/camp Denumire = zgomot).
+
+**(v2.131, lotul 17.5-R, R3–R5)** Mai multe funcționalități pe același titlu (sau un semn nou lângă unul existent): câte un semn «?» pe fiecare ID, alăturate în grupul `.semne-ajutor` (în ordinea din harta lotului, semnul existent primul, textele nu se unesc); grupul nu se rupe: dacă titlul cu semnele nu încape (titlul s-ar rupe sau semnele s-ar suprapune, de exemplu la 603×590), grupul trece întreg pe rândul imediat următor, în același loc pe toate ecranele; același rând de sub titlu îl primește grupul și când textul titlului e citit ca dată în altă parte (portal «Documente», detaliul facturii, «Ocupație COR», «Primii pași», «Notificări»). Un ecran al cărui titlu îl punea navigatorul (h2 automat) și care primește semn își scrie titlul explicit, cu exact textul navigatorului (`nav.titluCurent()`), plus semnul. Un grup de verdict (Control fiscal, `grup(titlu, corp, { ajutor })`) își poartă semnele pe titlul grupului. Semnul unei zone fără titlu propriu (filele din Date firmă) stă primul în zona ei. Un semn într-o etichetă de câmp: eticheta numește câmpul prin `for`, ca apăsarea pe text să ducă în câmp, nu în ajutor.
 
 **(v2.124, lotul 17.5-M, AC017 + AC034 + AC035)** Trei reguli ale ecranelor cabinetului: (1) o fereastră care promite priorități le arată — «Sinteza zilei» are prima secțiune «Priorități», cu restanțele și cele mai apropiate scadențe, din aceleași surse ca cardul Termene (`/termene`); (2) un total își numește populația — în «Tipare de erori» apar toate tipurile, nu numai cele cu respingeri, iar rândurile «Total (toate pregătirile)» și «Total (firmele cu respingeri)» spun ce numără; (3) cardul numără ce numără fereastra — cardul «Activitate» numără persoane («asistent necesită atenție»), nu tipare, iar fereastra «Tipare de erori» arată care sunt.
 

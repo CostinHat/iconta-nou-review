@@ -10,9 +10,9 @@
 // validarea pe server, erorile lângă câmp — toate deodată, `erori_campuri`).
 // DS: tabelul `.fd-tabel` cu cifrele în `.fd-td-num` (cap.9), rezumatul lipit sus `.rezumat-fix`, acțiunea și mesajul ei lipite jos
 // `.bara-fixa` (cap.6, v2.92), confirmarea care numește nota și consecința rămâne pe ecran (cap.27).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=7396e03327";
+import { api, semnAjutor, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=7396e03327";
 
-import { MONEDE } from "./operatiuni_ecran.js?v=4980b3a17f";   // [lotul 13, 631] aceeași listă de monede ca la factură
+import { MONEDE } from "./operatiuni_ecran.js?v=41cf75f2de";   // [lotul 13, 631] aceeași listă de monede ca la factură
 
 const FEL = { creanta: "Creanță", datorie: "Datorie", disponibil: "Disponibil" };
 // [lotul 13, deficiența 631] „Moneda se scrie de mână; trebuie aleasă din lista de coduri BNR, ca la factură”: select, nu text
@@ -108,7 +108,7 @@ export async function ecranReevaluareValuta(corp, nav, t, an, luna, opt = {}) {
     const neincluse = p.neincluse || [];
     corp.innerHTML = `
       <div class="rezumat-fix" id="rv-rezumat">
-        <h2 class="pf-titlu">Reevaluare valută — ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}</h2>
+        <h2 class="pf-titlu">Reevaluare valută — ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} ${semnAjutor("F264")}</h2>
         <p class="pf-intro">La sfârșitul lunii, creanțele și datoriile în valută (pe partener: facturi minus plăți, legate de factură sau nu)
           și disponibilitățile în valută se evaluează la cursul BNR din ultima zi bancară a lunii (OMFP 1802/2014 pct.325); diferența merge
           pe 765 (favorabilă) sau 665 (nefavorabilă). Avansurile (409, 419) nu se reevaluează (pct.316 alin.(2)). Verifică propunerea,

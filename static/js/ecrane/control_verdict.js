@@ -6,7 +6,7 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
-import { api, ultimaCerere, pastreazaCampulActiv, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";
+import { api, semnAjutor, ultimaCerere, pastreazaCampulActiv, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";
 import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=03f816740e";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=aab0f8253f";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
@@ -220,7 +220,7 @@ function randVerif(eticheta, ok, detaliu) {
 
 const RANG = { rosu: 3, galben: 2, gri: 1, verde: 0 };
 // [15.1-E3, 733] un grup al verdictului: titlu de grup DS (14 px, majuscule, gri) într-un chenar de 1 px cu colțuri de 12 px; culoarea stării stă în pastilă / banda semnalului, nu în titlu
-const grup = (titlu, corp, { id = "", cls = "", stare = "" } = {}) => `<section class="ds-grup cf-grup ${cls}"${id ? ` id="${id}"` : ""}><h3 class="ds-grup-titlu cf-grup-titlu ${stare} ${cls}">${titlu}</h3>${corp}</section>`;   // `stare` rămâne pe titlu ca marcaj (clasa de stare a grupului); culoarea o dă pastila, titlul de grup e gri
+const grup = (titlu, corp, { id = "", cls = "", stare = "", ajutor = "" } = {}) => `<section class="ds-grup cf-grup ${cls}"${id ? ` id="${id}"` : ""}><h3 class="ds-grup-titlu cf-grup-titlu ${stare} ${cls}">${titlu}${ajutor ? ` <span class="semne-ajutor">${ajutor}</span>` : ""}</h3>${corp}</section>`;   // [17.5-R, R4] `ajutor`: semnele «?» ale grupului, alăturate pe titlu   // `stare` rămâne pe titlu ca marcaj (clasa de stare a grupului); culoarea o dă pastila, titlul de grup e gri
 // etichetele constatarilor incrucisate care apar deja in «Declaratie vs contabilitate» -> filtrate din
 // «Verificari contabile» ca sa nu se dubleze (sumarul lor e in contabil, constatarea intreaga e in incrucisat).
 // [08.10, decizia Costin U2] și variantele „nedeclarat” (nimic depus pe perioadă) — oglinda lui uc_comun.ETICHETE_INCRUCISAT
@@ -307,14 +307,14 @@ export function randeazaCorpVerdict(d, opt = {}) {
     const dinConstatari = cuFinding.flatMap((v) => v.constatari || []);
     return grup("Declarație vs contabilitate", `<div class="cf-decl" id="cf-incrucisat">${antet}${constatariPeRanduri(dinConstatari)}${
       reconRand.length ? info("Declarațiile recalculate din documente") + constatariPeRanduri(reconRand.map(cuNume)) : ""}${
-      neaplic.map((t) => info(t)).join("")}${limite.map((t) => info(t)).join("")}</div>`);
+      neaplic.map((t) => info(t)).join("")}${limite.map((t) => info(t)).join("")}</div>`, { ajutor: semnAjutor("F169") + semnAjutor("F163") + semnAjutor("F162") });
   })();
 
   // «Conformitate facturi emise» — vc.cota_tva_conformitate.
   const sectCota = (() => {
     const cf = vc.cota_tva_conformitate;
     if (!cf || !(cf.constatari || []).length) return "";
-    return grup("Conformitate facturi emise", `<div class="cf-decl">${constatariPeRanduri(cf.constatari || [])}${cf.limita ? info(cf.limita) : ""}</div>`);
+    return grup("Conformitate facturi emise", `<div class="cf-decl">${constatariPeRanduri(cf.constatari || [])}${cf.limita ? info(cf.limita) : ""}</div>`, { ajutor: semnAjutor("F184") });
   })();
 
   // «Coerenta TVA (balanta)» — vc.tva (coerenta bruta 4427/4426; distincta de tva_incrucisat = D300 vs contab).
@@ -345,7 +345,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
     const items = (d.contabil || []).filter((c) => c && typeof c === "object" && !DEJA_IN_INCRUCISAT.includes(c.eticheta)
       && !DEJA_IN_EFACTURA.includes(c.eticheta));
     if (!items.length) return "";
-    return grup(`Verificări contabile (${items.length})`, `<div class="cf-decl">${constatariPeRanduri(items)}</div>`);
+    return grup(`Verificări contabile (${items.length})`, `<div class="cf-decl">${constatariPeRanduri(items)}</div>`, { ajutor: semnAjutor("F051") + semnAjutor("F101") });
   })();
 
   // «e-Factura — transmiterea în SPV» — d.efactura_spv. [deficiența 463, lotul 12: „Termene SPV absente din Control fiscal; lipsa
@@ -377,7 +377,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
       ${info("Coerența internă a pachetului preluat de la contabilul anterior.", `<p class="cf-incr-temei">Balanță, solduri parteneri, mijloace fixe, istoric declarații, registru PFA. Raport datat, repetabil pe măsură ce apar documentele; primul audit rămâne păstrat.</p>`)}
       <div id="cf-audit-istoric"></div>
       <button class="buton-primar" id="cf-audit-run" data-actiune-principala data-actiune="POST /control-fiscal/{tenant_id}/audit-preluare">Rulează auditul de preluare</button>
-    </div>`);
+    </div>`, { ajutor: semnAjutor("F183") });
 
   // [P4, DS cap.25.4] „Ce nu poate spune verificarea asta" — despre CAPACITATE, nu despre date.
   // PERMANENTĂ: dacă ar apărea doar câteodată, prezența ei ar deveni semnal și absența ei ar minți.
@@ -457,7 +457,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=35ad459baa");
+    const { deschideInchidereLuna } = await import("./firme.js?v=f7b964095e");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {

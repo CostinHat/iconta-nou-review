@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=7396e03327";
+import { api, semnAjutor, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=7396e03327";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -82,7 +82,7 @@ async function _existaPas(corp, firma, strat, nav = null) {
           an = z.getFullYear(); luna = z.getMonth() + 1;
         }
       } catch { /* fără dată citită: luna de lucru */ }
-      const { deschideBalanta } = await import("./firme.js?v=35ad459baa");
+      const { deschideBalanta } = await import("./firme.js?v=f7b964095e");
       await deschideBalanta(nav, firma.tenant_id, an, luna);
     });
     el.append(" ", b);
@@ -345,6 +345,7 @@ async function meniuMigrare(corp, nav) {
     } catch { if (!actuala()) return; }
   }
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F058")}</h2>
     <div id="mig-aplicatii"></div>
     ${stareFirma ? `<p class="mig-intro" id="mig-firma-lucru">Starea pașilor e a firmei în lucru, <b>${esc(stareFirma.nume)}</b>${stareFirma.urmatori.length
       ? ` — de făcut: ${esc(stareFirma.urmatori.map(_titluStrat).join(", "))}` : ""}. Pasul se deschide pe ea; din el poți alege altă firmă.</p>` : ""}
@@ -1077,6 +1078,7 @@ function _butonAlegeFisier(corp, text = null) {
 
 function importSolduriFirma(corp, nav, firma, app = null) {   // [270] `app` = aplicația aleasă în Migrare cabinet
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} <span class="semne-ajutor">${semnAjutor("F084")}${semnAjutor("F267")}</span></h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din programul vechi.</p>
     <div id="mig-carduri"></div>
     ${_exportHTML(app, "solduri") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
@@ -1343,6 +1345,7 @@ async function wizardParteneri(corp, nav) {
 
 function importParteneriFirma(corp, nav, firma, app = null) {
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F085")}</h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor) sau situația clienților / furnizorilor exportată din programul vechi (denumire · cod fiscal · neachitat final), pe parteneri sau pe facturi (nr. factură · data · scadență · sumă neachitată · TVA la încasare, opțional).</p>
     <label class="camp" style="max-width:420px;margin:10px 0"><span class="camp-eticheta">Contul partenerilor din fișier</span>
       <select id="mig-cont-part" class="camp-input" data-butoane="">${ALEGE}<option value="4111">4111 — Clienți</option><option value="401">401 — Furnizori</option></select>
@@ -1702,6 +1705,7 @@ async function wizardSalariati(corp, nav) {
 
 function importSalariatiFirma(corp, nav, firma, app = null) {
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F079")}</h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · Încarcă exportul de salariați (nume · CNP · salariu · date contract).</p>
     ${_exportHTML(app, "salariati") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
     <label class="mig-drop" id="mig-drop">
@@ -1920,6 +1924,7 @@ async function wizardAsociati(corp, nav) {
 
 function importAsociatiFirma(corp, nav, firma) {
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F007")}</h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă asociații (nume · CNP/CUI · cotă %).</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
@@ -2068,6 +2073,7 @@ async function wizardMijloace(corp, nav) {
 
 function importMijloaceFirma(corp, nav, firma, app = null) {
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F059")}</h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă registrul de mijloace fixe (cod · denumire · valoare de intrare · durată · PIF · metodă · cont imobilizare · cont amortizare · amortizarea cumulată · valoarea reziduală la sfârșitul duratei, de obicei 0 — nu valoarea rămasă). Un bun sub plafonul de mijloc fix la data intrării e obiect de inventar și nu intră.</p>
     ${_exportHTML(app, "mijloace_fixe") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
     <label class="mig-drop" id="mig-drop">
@@ -2238,6 +2244,7 @@ async function wizardIstoric(corp, nav) {
 
 function importIstoricFirma(corp, nav, firma) {
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F053")}</h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă declarațiile depuse (tip · an · lună · data depunerii · suma de plată). La o declarație trimestrială, luna e ultima a trimestrului (03 = T1). Suma de plată se cere la D100 pe impozitul pe profit: D100 de pe trimestrele următoare scade impozitul deja declarat.</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
@@ -2497,7 +2504,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=35ad459baa"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=f7b964095e"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat
@@ -2508,6 +2515,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
   const pasi = (stare && stare.pasi) || {};
   const urm = (stare && stare.urmatori) || [];
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F191")}</h2>
     <p class="mig-intro">Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.${stare && stare.incepe_preluarea
       ? " Firma nu are încă nimic adus: începe cu vectorul fiscal și soldurile inițiale (balanța de deschidere)." : ""}</p>
     ${urm.length ? `<p class="mig-intro mig-op-sub-alert" id="mig-urmatori">De făcut: ${esc(urm.map(_titluStrat).join(", "))}.</p>` : ""}
@@ -2545,6 +2553,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
 // [F150] Import retete HoReCa (pasul 11)
 function importReteteFirma(corp, nav, firma) {
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F150")}</h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 re\u021betarul: un r\u00e2nd per ingredient (re\u021bet\u0103 \u00b7 pre\u021b v\u00e2nzare \u00b7 ingredient \u00b7 cantitate/por\u021bie). Ingredientele se potrivesc pe articolele din stoc dup\u0103 denumire, deci <b>articolele se import\u0103 \u00eenaintea re\u021betelor</b> (pasul \u201eArticole \u0219i stoc ini\u021bial\u201d). Cantitatea pe por\u021bie e \u00een UM-ul articolului.</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
@@ -2643,6 +2652,7 @@ function _notaDeduse(randuri) {
 // [F151] Import articole + stoc initial CV (pasul 10)
 function importArticoleFirma(corp, nav, firma) {
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F151")}</h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 nomenclatorul de articole cu stocul ini\u021bial (denumire \u00b7 UM \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 cont stoc \u00b7 op\u021bional cont cheltuial\u0103, dedus altfel din contul de stoc).</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
@@ -2738,6 +2748,7 @@ function previzualizeazaArticole(corp, nav, firma, date) {
 // previzualizarea (fiecare rând cu starea lui) și apoi salvarea rândurilor bune.
 function importRipFirma(corp, nav, firma) {
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F190")}</h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 registrul de \u00eencas\u0103ri-pl\u0103\u021bi (istoric cronologic: dat\u0103 \u00b7 tip \u00b7 explica\u021bie \u00b7 sum\u0103 \u00b7 categorie \u00b7 metod\u0103). Partida simpl\u0103 nu are balan\u021b\u0103 de deschidere \u2014 soldul rezult\u0103 din opera\u021biuni.</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">

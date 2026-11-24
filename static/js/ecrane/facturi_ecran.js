@@ -9,7 +9,7 @@ import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?
 import { randeazaStareSpv } from "./spv_stare.js?v=a491746870";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=b35fa5b9ce";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=890ce70523";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
@@ -327,7 +327,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=35ad459baa");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=f7b964095e");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -718,7 +718,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       ? `Eviden\u021ba facturilor e \u00eenchis\u0103${dataInch ? " la " + dataInch : ""} \u2014 e complet\u0103; semaforul se poate sprijini pe ea.`
       : "Eviden\u021ba facturilor e deschis\u0103 \u2014 informativ\u0103 p\u00e2n\u0103 la \u00eenchidere."} Se \u00eenchide \u0219i se redeschide din cardul \u201e\u00cenchidere lun\u0103\u201d al firmei.</span></div>`;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Istoric facturi</h2>
+      <h2 class="pf-titlu">Istoric facturi <span class="semne-ajutor">${semnAjutor("F171")}${semnAjutor("F187")}</span></h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="fac-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="fac-next"${opt.client && (an > anCurent || (an === anCurent && luna >= lunaCurenta)) ? atributeInactiv("Aceasta e luna curentă.") : ""}>luna \u2192</button>
@@ -906,7 +906,7 @@ export async function scadentarEcran(corp, nav, tenantId, opt) {
     // arăta gri, ca un buton care nu merge, iar cealaltă părea cea activă
     const vb = (id, v, text) => `<button class="buton-secundar${vedere === v ? " buton-activ" : ""}" id="${id}" aria-pressed="${vedere === v}">${text}</button>`;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Scadențar</h2>
+      <h2 class="pf-titlu">Scadențar ${semnAjutor("F131")}</h2>
       <label class="set-bifa" style="margin:0 0 10px"><input type="checkbox" id="sc-optin" data-actiune="PUT /tenants/{tenant_id}/scadentar/opt-in"${d.optin ? " checked" : ""}> <span>Trimite automat notificări de plată clienților, în numele firmei</span></label>
       <div id="sc-msg"></div>
       <div class="cf-sumar">
@@ -1167,7 +1167,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     </div>
     <div class="fd-antet rezumat-fix">
       <div class="fd-antet-sus">
-        <h2 class="pf-titlu">Factur\u0103 ${f.numar ? esc(numarCuSerie(f.serie, f.numar)) : "\u2014"}</h2>
+        <h2 class="pf-titlu">Factur\u0103 ${f.numar ? esc(numarCuSerie(f.serie, f.numar)) : "\u2014"}</h2><span class="semne-ajutor">${semnAjutor("F045")}${semnAjutor("F046")}</span>
         ${statusTxt ? `<span class="fd-stare">${esc(statusTxt)}</span>` : ""}
         ${opt.client ? "" : `<button class="btn-link" id="fd-vezi-nota"${nc ? "" : atributeInactiv("Factura n-are încă notă contabilă: nota se propune la contare.")}>${nc ? "nota " + esc(nc.eticheta || "") : "nota contabilă"}</button>`}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
@@ -1456,7 +1456,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div id="fd-nota-linii" class="fd-nota-linii">${nota && nota.linii.length ? liniiNotaHtml(nota.linii) : "Nota n-are rânduri de afișat."}</div>
         <p style="margin-top:12px"><button type="button" class="buton-secundar" id="fd-nota-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Deschide în Registrul jurnal</button></p>`;
       c2.querySelector("#fd-nota-jurnal").addEventListener("click", async () => {
-        const { ecranJurnal } = await import("./firme.js?v=35ad459baa");   // dinamic: firme.js importă deja ecranul facturilor
+        const { ecranJurnal } = await import("./firme.js?v=f7b964095e");   // dinamic: firme.js importă deja ecranul facturilor
         const [an, luna] = String(nc.data).split("-").map(Number);
         nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
       });

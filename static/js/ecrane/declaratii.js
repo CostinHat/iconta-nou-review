@@ -14,7 +14,7 @@ import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [lotul
 const _campuriCu = (e, pre) => Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, pre + c.camp]));
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d212:"F030", d230:"F208", d204:"F223", d216:"F225", d208:"F224", d603:"F233", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
+  d301:"F032", d390:"F033", d394:"F034", d406:["F035", "F036", "F037"], d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d212:["F030", "F246"], d230:"F208", d204:"F223", d216:"F225", d208:"F224", d603:"F233", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -195,6 +195,7 @@ function pas1(corp, nav) {
   }
 
   corp.innerHTML = `
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} ${semnAjutor("F038")}</h2>
     <p class="mig-intro">Pasul 1 din 3 — ${S.firmaFixa ? "alege" : "alege firma,"} tipul declarației și perioada.</p>
     <div class="dec-form">
 ${S.firmaFixa ? "" : `      <label class="camp">
@@ -268,7 +269,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
       }
     }
     const _za = corp.querySelector("#dec-ajutor");  // [ajutor] "?" urmareste tipul ales
-    if (_za) _za.innerHTML = (S.tip && _DECL_AJUTOR[S.tip]) ? semnAjutor(_DECL_AJUTOR[S.tip]) : "";
+    if (_za) _za.innerHTML = (S.tip && _DECL_AJUTOR[S.tip]) ? [].concat(_DECL_AJUTOR[S.tip]).map((id) => semnAjutor(id)).join("") : "";   // [17.5-R, R4] o cheie poate avea mai multe ID-uri: semne alăturate
   }
   if (S.tenant_id) declaratiiExistente(corp.querySelector("#dec-existente"), S.tenant_id);
   if (selFirma) selFirma.addEventListener("change", refresh);
@@ -698,7 +699,7 @@ async function randeazaClasificareD390(corp, nav) {
   catch (e) { if (!actuala()) return; zona.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca clasificarea intracomunitară${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const auto = d.auto || [], manual = d.manual || [];
   const optSel = (dir, cur) => (_D390_TIP_DIR[dir] || []).map(([v, l]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${l}</option>`).join("");
-  zona.innerHTML = `<details class="dec-xml" open><summary>Clasificare intracomunitară (servicii / triangulație)</summary>
+  zona.innerHTML = `<details class="dec-xml" open><summary>Clasificare intracomunitară (servicii / triangulație) ${semnAjutor("F125")}</summary>
     ${auto.length ? `<div class="camp-eticheta" style="margin:6px 0">Operațiuni din facturi — verifică tipul:</div>
       ${auto.map((o) => `<div class="dec-recl-rand">
         <span class="dec-recl-desc">${o.directie === "emisa" ? "↗ emisă" : "↘ primită"} · ${esc(o.tara)}${esc(o.cod)} ${esc(o.den || "")}</span>
@@ -3312,7 +3313,7 @@ async function randeazaManualD300(corp, nav) {
         <button class="btn-link dec-d300-del" data-actiune="DELETE /tenants/{tenant_id}/d300-manual/{rid}" data-id="${o.id}">șterge</button></div>`).join("")
     : `<div class="stare-goala stare-goala--inline">Niciun rând manual pe ${etPerioada()}. Rândurile pe care generatorul le derivă din facturi apar automat în decont; aici introduci doar ce nu se derivă (scutiri, regularizări, ajustări).</div>`;
   const optiuni = disp.map((r) => `<option value="${esc(r.cod)}" data-cutva="${r.cu_tva ? 1 : 0}" data-cubaza="${r.cu_baza === false ? 0 : 1}">${esc(r.cod)} — ${esc(r.eticheta)}</option>`).join("");
-  zona.innerHTML = `<details class="dec-xml" open><summary>Rânduri manuale D300 — introducere (${randuri.length})</summary>
+  zona.innerHTML = `<details class="dec-xml" open><summary>Rânduri manuale D300 — introducere (${randuri.length}) ${semnAjutor("F251")}</summary>
     ${grila}
     ${disp.length ? `<div class="camp-eticheta" style="margin:10px 0 4px">Adaugă rând:</div>
     <div class="dec-man-form">

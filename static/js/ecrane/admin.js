@@ -3,13 +3,13 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api, ultimaCerere, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand, confirmaCaseta } from "../api.js?v=7396e03327";
-import { randeazaAdminRaportari } from "./admin_raportari.js?v=75ecec94e0";
-import { randeazaAdminActivitate } from "./admin_activitate.js?v=b52bf936b9";
-import { randeazaAdminSanatate } from "./admin_sanatate.js?v=165b0a348c";
+import { api, semnAjutor, ultimaCerere, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand, confirmaCaseta } from "../api.js?v=7396e03327";
+import { randeazaAdminRaportari } from "./admin_raportari.js?v=ac9c083ad5";
+import { randeazaAdminActivitate } from "./admin_activitate.js?v=4fa2160082";
+import { randeazaAdminSanatate } from "./admin_sanatate.js?v=5ca3b1cd8f";
 import { randeazaAdminAnalytics, marcheazaSesiuneInterna } from "./admin_analytics.js?v=e2cdc3d028";
 import { numeDeSalut } from "./salut.js?v=f5a3ed7133";
-import { panouNotificari } from "./setari.js?v=b2454ca531";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
+import { panouNotificari } from "./setari.js?v=467391a7bb";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {
@@ -112,7 +112,7 @@ async function randeazaAdminAnunturi(corp, nav) {
   const meniu = () => {
     if (nav.setInapoi) nav.setInapoi(undefined);
     corp.innerHTML = `
-      <h2 class="pf-titlu">Anun\u021buri</h2>
+      <h2 class="pf-titlu">Anun\u021buri ${semnAjutor("F103")}</h2>
       <p class="mig-intro">Mesajul apare la logare, p\u00e2n\u0103 la \u201eAm \u00een\u021beles\u201d. Alege destinatarii, apoi scrie mesajul.</p>
       <div class="firme-meniu">
         <button class="firme-optiune" id="an-op-cab">
@@ -147,7 +147,7 @@ async function randeazaAdminAnunturi(corp, nav) {
     if (!d.alerte || !d.alerte.length || !zona.isConnected) return;
     const zi = (v) => v ? dataRo(v) : "nu apare în sursă";
     zona.innerHTML = `
-      <h2 class="pf-titlu" style="margin-top:18px">Propuneri de la monitorul fiscal</h2>
+      <h2 class="pf-titlu" style="margin-top:18px">Propuneri de la monitorul fiscal ${semnAjutor("F060")}</h2>
       ${d.alerte.map((a) => `
         <div class="panou" style="margin-bottom:10px" data-alerta="${a.id}">
           <div><b>${esc(a.titlu)}</b>${a.relevanta === "mare" ? " \u00b7 relevan\u021b\u0103 mare" : ""}</div>

@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie, atributeInactiv, numarRo } from "../api.js?v=7396e03327";
+import { api, semnAjutor, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie, atributeInactiv, numarRo } from "../api.js?v=7396e03327";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
@@ -83,8 +83,8 @@ function _blocAmef(d) {
   const p = d.profil || {};
   const act = d.activitati_amef || [];
   return `
-      <label class="camp">
-        <span class="camp-eticheta">Activitate exceptată de la casa de marcat</span>
+      <label class="camp" for="df-activitate_exceptata_amef">
+        <span class="camp-eticheta">Activitate exceptată de la casa de marcat ${semnAjutor("F255")}</span>
         <span class="camp-ajutor">Firmele care încasează din activități exceptate de la casa de marcat (OUG 28/1999 art. 2) emit chitanțe fără factură; încasările lor se declară în D394, secțiunea Î2.</span>
         <!-- [lotul 07.10 B, comanda Costin A.3] neales (NULL) = „— alege —”; se cere o dată, la prima chitanță fără factură / D394 -->
         <select class="camp-input" id="df-activitate_exceptata_amef" data-butoane="">${alegeDacaLipseste(p.activitate_exceptata_amef)}
@@ -582,18 +582,18 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       `<button type="button" class="${cls}" role="tab" aria-selected="${k === fila}" data-fila="${k}" data-fara-actiune="alegerea secțiunii — nu scrie nimic"${k === "tva" ? ' title="Ce declarații datorează firma. Termenele și controlul fiscal pornesc de aici."' : ""}>${e}<span class="rap-tab-nr"></span></button>`).join("")}</div>
     ${panou("firma", `<div ${GRILA}>${_blocDenumire(t, d.profil)}${_cheiCampuri(d, ["cui", "reg_com", "caen"])}${pfa ? "" : _blocFormaJuridica(d)}${_cheiCampuri(d, ["adresa", "oras", "judet", "cod_postal"])}</div>`)}
     ${panou("contact", `<div ${GRILA}>${_cheiCampuri(d, CHEI_CONTACT)}</div>`)}
-    ${panou("tva", `<div ${GRILA}>${VECTOR.map((c) => campVector(c, v[c.k], v)).join("")}</div>`)}
-    ${panou("tva_incasare", `<div ${GRILA}>${_blocTvaIncasare(v)}${_cheiCampuri(d, ["inregistrat_oss"])}</div>`)}
+    ${panou("tva", `<span class="semne-ajutor">${semnAjutor("F100")}</span><div ${GRILA}>${VECTOR.map((c) => campVector(c, v[c.k], v)).join("")}</div>`)}
+    ${panou("tva_incasare", `<span class="semne-ajutor">${semnAjutor("F265")}</span><div ${GRILA}>${_blocTvaIncasare(v)}${_cheiCampuri(d, ["inregistrat_oss"])}</div>`)}
     ${bilant.trim() ? panou("bilant", `<div ${GRILA}>${bilant}</div>`) : ""}
     ${panou("evidenta", `<div ${GRILA}>
-      <label class="camp">
-        <span class="camp-eticheta">Cont venit implicit</span>
+      <label class="camp" for="df-cont_venit">
+        <span class="camp-eticheta">Cont venit implicit ${semnAjutor("F182")}</span>
         <span class="camp-ajutor">Contul de venit folosit implicit la emiterea facturilor; se poate schimba pe fiecare factur\u0103. Clasa 70 (cifra de afaceri): 707 m\u0103rfuri, 704 servicii, 701 produse.</span>
         <select class="camp-input" id="df-cont_venit">${Object.entries(d.conturi_venit || {}).map(([k, t]) =>
           `<option value="${esc(k)}"${String(k) === String(d.profil.cont_venit_implicit) ? " selected" : ""}>${esc(k)} \u2014 ${esc(t)}</option>`).join("")}</select>
       </label>
       ${_blocAmef(d)}${_blocChitante(d)}${_blocStoc(d)}${_blocPreluare(d)}</div>`)}
-    ${pfa ? "" : panou("asociati", _blocAsociati(a))}
+    ${pfa ? "" : panou("asociati", `<span class="semne-ajutor">${semnAjutor("F266")}</span>` + _blocAsociati(a))}
     ${panou("istoric", _blocJurnal(d))}
     <div class="bara-fixa"><div id="df-msg"></div>
     <div class="dec-bara">

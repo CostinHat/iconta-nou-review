@@ -52,7 +52,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=35ad459baa");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=f7b964095e");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }
@@ -109,7 +109,7 @@ export async function deschideRezultatul(x, nav) {
   }
   if (x.fel === "declaratie") {
     await _fereastraFirmei(nav, t);
-    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=4343fbfbc2");
+    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=4d4df4dd83");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, { tenant_id: t.id, nume: t.nume }, { tenant_id: t.id, tip: x.tip }),
       { lat: "tabel" });
     return;
@@ -183,7 +183,7 @@ export function puneCautarea(bara, nav, opt = {}) {
     }
     if (!actuala()) return;   // a sosit răspunsul unei căutări mai vechi
     // acțiunea unei operațiuni se compune ca la butoanele ei (`actiuneOp`); cele refuzate rolului nu apar
-    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=4980b3a17f");
+    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=41cf75f2de");
     if (!actuala()) return;
     rezultate = ((r && r.rezultate) || []).filter((x) => (x.ruta ? permis(actiuneOp(x)) : (!x.actiune || permis(x.actiune))));
     const deFirma = rezultate.some((x) => (x.fel !== "card" && x.fel !== "operatiune" && x.fel !== "ecran") || (x.fel === "ecran" && !x.firma)) || tid;

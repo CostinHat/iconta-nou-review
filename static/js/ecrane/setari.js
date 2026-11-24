@@ -143,7 +143,7 @@ export async function randeazaSetari(corp, nav) {
   function randeazaChei() {
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <h2 class="pf-titlu">Chei API ${semnAjutor("F005")}</h2>
+        <h2 class="pf-titlu">Chei API <span class="semne-ajutor">${semnAjutor("F005")}${semnAjutor("F114")}</span></h2>
         <p class="mig-intro">Pentru conectarea altor aplicații la datele cabinetului. Cheia se afișează o singură dată.</p>
         <div id="set-chei-lista" data-actiune="GET /cabinet/api-chei"><p class="ecran-nota">Se încarcă...</p></div>
         <label class="camp-eticheta" for="set-cheie-nume">Nume cheie</label>
@@ -169,7 +169,7 @@ export async function randeazaSetari(corp, nav) {
     const numeCab = ((cab && cab.nume) || "").trim();
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <div class="cap-titlu">Export date cabinet ${semnAjutor("F199")}</div>
+        <div class="cap-titlu">Export date cabinet <span class="semne-ajutor">${semnAjutor("F199")}${semnAjutor("F204")}</span></div>
         <p class="ecran-nota">Descarci o arhivă ZIP cu toate datele cabinetului: firmele, utilizatorii, facturile, documentele contabile, jurnalul de audit și fișierele atașate (poze bonuri, e-Factură). Format: fișiere JSON per tabelă + fișierele originale. Îți exerciți dreptul la portabilitate (GDPR art. 20), oricând, fără intervenția noastră.</p>
         <div class="caseta-atentie"><div class="ca-mesaj">Arhiva conține date personale (ale clienților, salariaților și partenerilor). Păstreaz-o în siguranță și nu o distribui.</div></div>
         <button class="buton-primar" id="gdpr-export" data-actiune="GET /gdpr/export-cabinet">Descarcă arhiva cabinetului</button>
@@ -395,7 +395,7 @@ export async function panouNotificari(zona, opt = {}) {
     : "WhatsApp: bifează acordul pentru mesaje.");
   zona.innerHTML = `
     <div class="panou" data-zona-derulare>
-      <h2 class="pf-titlu">Notificări</h2>
+      <h2 class="pf-titlu">Notificări</h2><div class="semne-ajutor">${semnAjutor("F257")}${semnAjutor("F261")}</div>
       <p class="ecran-nota">Notificările din clopoțel îți vin și pe canalul ales aici. Pe WhatsApp primești un mesaj scurt, fără date fiscale, cu linkul spre aplicație. Confirmarea contului, resetarea parolei și linkul de logare vin mereu pe email.</p>
       <label class="camp">
         <span class="camp-eticheta">Telefon</span>
@@ -499,7 +499,7 @@ export async function panouConectareSPV(zona) {
   try { const r = await api.get("/spv/stare"); if (r) st = r; } catch {}
   zona.innerHTML = `
     <div class="panou">
-      <h2 class="pf-titlu">Conectare SPV</h2>
+      <h2 class="pf-titlu">Conectare SPV ${semnAjutor("F176")}</h2>
       <p class="ecran-nota">Autorizezi iConta.eu să lucreze cu SPV/ANAF (e-Factura, e-Transport) folosind certificatul tău. Autorizarea se face o singură dată pentru tot cabinetul și acoperă firmele pentru care certificatul are împuternicire la ANAF.</p>
       <div class="caseta-info"><span class="ci-mesaj">După înrolarea certificatului în SPV, așteaptă 24 de ore înainte de prima conectare. Altfel ANAF răspunde cu eroare, deși totul e configurat corect.</span></div>
       <div id="spv-stare" style="margin:10px 0"></div>
