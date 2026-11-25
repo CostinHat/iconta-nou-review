@@ -1,0 +1,541 @@
+cod	criteriu	rezolutie	valoare	observatie
+F003	Funcțional	1366x768	1	formularul gol e refuzat fără salvare («NU s-a salvat.»); generarea notei din Z nu e refăcută (ar crea date): serverul e cel din v2 (R2 n-are fișiere .py de produs); în 11/2026 niciun Z (proba v2 0051 curățată)
+F003	Funcțional	603x590	1	formularul gol e refuzat fără salvare («NU s-a salvat.»); generarea notei din Z nu e refăcută (ar crea date): serverul e cel din v2 (R2 n-are fișiere .py de produs); în 11/2026 niciun Z (proba v2 0051 curățată)
+F003	Aspect	1366x768	1	fereastra 1334×736 încape, nimic tăiat, fără depășire orizontală; semnul «?» F003 lângă titlu, neacoperit
+F003	Aspect	603x590	1	fereastra 571×558 încape, o derulare în corp, nimic tăiat; la deschidere «Generează notă» e sub marginea ferestrei și se ajunge la ea prin derulare (notat ca la Declarații, unde «Continuă →» sub vedere e trecut la Simplitate)
+F003	Design	1366x768	0	caseta de eroare: textul e într-un buton alb (btn-link) în caseta roșie; codul servit (firme.js:5701, 5715) pune «Validează raportul Z» ca buton principal pe fiecare Z, lângă «Generează notă» — două acțiuni principale de îndată ce luna are un Z (azi luna 11/2026 n-are niciunul)
+F003	Design	603x590	0	aceeași casetă de eroare cu textul într-un buton alb în caseta roșie; «Validează raportul Z» principal pe fiecare Z, lângă «Generează notă» (firme.js:5701, 5715)
+F003	Simplitate	1366x768	0	formular gol: apare doar eroarea «Nr. bonuri fiscale»; celelalte câmpuri obligatorii goale (NUI, nr. Z, totaluri, încasare) nu sunt semnalate deodată
+F003	Simplitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): idem
+F003	Conformitate	1366x768	1	calculul TVA din totaluri e pe server, neschimbat de R2 (v2: TVA 11% 10,90, 21% 42,00 din 110/242); textul de pe ecran spune corect că nr. de bonuri intră în D394
+F003	Conformitate	603x590	1	calculul TVA din totaluri e pe server, neschimbat de R2 (v2: TVA 11% 10,90, 21% 42,00 din 110/242); textul de pe ecran spune corect că nr. de bonuri intră în D394
+F003	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F003	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F011	Funcțional	1366x768	0	import extras_proba_2411.csv (5 linii) în Bancă F2: mesajul spune «5 linii importate: 0 potrivite pe facturi, 5 fără potrivire», dar liniile sunt 4 fără potrivire + 1 comision cu notă propusă 627=5121, iar cipul le clasează corect («… 2 operațiuni ale băncii»); proba curățată (restaurare_F2_C4.sql)
+F011	Funcțional	603x590	0	același mesaj de import (textul nu depinde de rezoluție)
+F011	Aspect	1366x768	1	Bancă F1 1334×736 încape, o derulare, nicio coloană sub 40 px, nimic tăiat; trei semne «?» (F011, F012, F073) lângă titlu, neacoperite
+F011	Aspect	603x590	0	Bancă la 603×590: tabelul rămâne pe coloane strivite — CUI 21 px și 28 px, Potrivire 30 px și 28 px (măsurat în DOM)
+F011	Design	1366x768	1	o acțiune principală («Importă extras»), ✕ și ←; butoanele inactive de pe liniile contate au motiv
+F011	Design	603x590	1	o acțiune principală («Importă extras»), ✕ 40×40 și ←
+F011	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): cipul numără liniile pe stare; filtrele pe stare la vedere
+F011	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): cipul numără liniile pe stare; filtrele pe stare la vedere
+F011	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): 5121=4111, 401=5121, 627=5121 corecte
+F011	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): 5121=4111, 401=5121, 627=5121 corecte
+F011	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F011	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F012	Funcțional	1366x768	1	CSV (5 linii) importat în F2, apoi XLSX-ul cu aceleași linii: «Nicio linie nouă: nu s-a adăugat nimic. 5 linii găsite deja», cu cele 5 listate; tabelul rămâne cu 10 rânduri, fără «Nu s-au putut încărca liniile.» și fără 409 — defectul din v2 nu se mai reproduce pe E_R2 (o rulare)
+F012	Funcțional	603x590	1	CSV (5 linii) importat în F2, apoi XLSX-ul cu aceleași linii: «Nicio linie nouă: nu s-a adăugat nimic. 5 linii găsite deja», cu cele 5 listate; tabelul rămâne cu 10 rânduri, fără «Nu s-au putut încărca liniile.» și fără 409 — defectul din v2 nu se mai reproduce pe E_R2 (o rulare)
+F012	Aspect	1366x768	1	Bancă F1 1334×736 încape, o derulare, nicio coloană sub 40 px, nimic tăiat; trei semne «?» (F011, F012, F073) lângă titlu, neacoperite
+F012	Aspect	603x590	0	Bancă la 603×590: tabelul rămâne pe coloane strivite — CUI 21 px și 28 px, Potrivire 30 px și 28 px (măsurat în DOM)
+F012	Design	1366x768	1	o acțiune principală («Importă extras»), ✕ și ←
+F012	Design	603x590	1	o acțiune principală («Importă extras»), ✕ și ←
+F012	Simplitate	1366x768	1	un singur buton de import; mesajul spune ce s-a găsit deja
+F012	Simplitate	603x590	1	un singur buton de import; mesajul spune ce s-a găsit deja
+F012	Conformitate	1366x768	1	liniile citite identic din CSV și XLSX (dată, sumă, sens); soldurile neverificate spuse explicit (extrasul în tabel n-are sold inițial/final)
+F012	Conformitate	603x590	1	liniile citite identic din CSV și XLSX (dată, sumă, sens); soldurile neverificate spuse explicit (extrasul în tabel n-are sold inițial/final)
+F012	Stabilitate	1366x768	1	reîncărcarea aceluiași extras (XLSX) nu mai dă eroare și nu golește tabelul (măsurat o dată pe E_R2); consola: doar refuzurile de validare 400/422 provocate de probe, niciun 5xx
+F012	Stabilitate	603x590	1	reîncărcarea aceluiași extras (XLSX) nu mai dă eroare și nu golește tabelul (măsurat o dată pe E_R2); consola: doar refuzurile de validare 400/422 provocate de probe, niciun 5xx
+F015	Funcțional	1366x768	1	Casă 10/2026: soldul pe rând 242→142→6.142→142→−58→142→42→173→294→358,46→558,46 (identic v2); Dispoziție nouă cu plata de 100.000 lei: înainte de salvare spune că nu încape (sold 24.11.2026 3.038,46 → −96.961,54) și cum se corectează; nimic salvat
+F015	Funcțional	603x590	1	Casă 10/2026: soldul pe rând 242→142→6.142→142→−58→142→42→173→294→358,46→558,46 (identic v2); Dispoziție nouă cu plata de 100.000 lei: înainte de salvare spune că nu încape (sold 24.11.2026 3.038,46 → −96.961,54) și cum se corectează; nimic salvat
+F015	Aspect	1366x768	1	fereastra 1334×736 încape, o derulare, nimic tăiat; semnul F015 lângă titlu, neacoperit
+F015	Aspect	603x590	0	Casă la 603×590: nicio acțiune principală în fereastră («+ Dispoziție nouă» e secundar); o derulare
+F015	Design	1366x768	0	nicio acțiune principală în fereastră: «+ Dispoziție nouă» e buton secundar (firme.js:4585, același cod ca pe E Q6), fără bară de jos — v2 notase o acțiune principală în bara de jos, pe care n-o regăsesc; «+ Chitanță fără factură» inactiv cu motiv
+F015	Design	603x590	0	fără acțiune principală
+F015	Simplitate	1366x768	0	în Dispoziție nouă, după alegerea tipului «Plată furnizor», sub buton rămâne «Completează: tipul», iar ce lipsește de fapt (partenerul, suma, poziția din listă sau avansul) e numai în titlul butonului
+F015	Simplitate	603x590	0	în Dispoziție nouă, după alegerea tipului «Plată furnizor», sub buton rămâne «Completează: tipul», iar ce lipsește de fapt (partenerul, suma, poziția din listă sau avansul) e numai în titlul butonului
+F015	Conformitate	1366x768	1	Legea 70/2015 art. 3 alin. (1) lit. c): 5.000 lei/zi/persoană juridică și 10.000 lei/zi total, afișate în formular înainte de salvare; numerar negativ refuzat; fișa 5311 pe note validate 442,00 afișată separat de soldul cu ciorne
+F015	Conformitate	603x590	1	Legea 70/2015 art. 3 alin. (1) lit. c): 5.000 lei/zi/persoană juridică și 10.000 lei/zi total, afișate în formular înainte de salvare; numerar negativ refuzat; fișa 5311 pe note validate 442,00 afișată separat de soldul cu ciorne
+F015	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F015	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F017	Funcțional	1366x768	1	Încasare client după CUI 410001005: pozițiile deschise din evidența proprie (Sold la 31.08.2026 rămas 1.950,00; F1A nr. 25 și 26 din 24.11.2026 a câte 121,00); F1A 18/19 explicate ca încasate pe note în validare (din 05.11 și 13.11)
+F017	Funcțional	603x590	1	Încasare client după CUI 410001005: pozițiile deschise din evidența proprie (Sold la 31.08.2026 rămas 1.950,00; F1A nr. 25 și 26 din 24.11.2026 a câte 121,00); F1A 18/19 explicate ca încasate pe note în validare (din 05.11 și 13.11)
+F017	Aspect	1366x768	1	Dispoziție nouă 1334×736 încape, fără derulare, nimic tăiat
+F017	Aspect	603x590	1	Dispoziție nouă 571×558 încape, o derulare, «Adaugă» la vedere
+F017	Design	1366x768	1	o singură acțiune principală «Adaugă», ✕ 40×40 sus-dreapta și ←; tipul e grup de butoane DS (lista ascunsă 1×1 nu e al doilea control)
+F017	Design	603x590	1	o acțiune principală «Adaugă», ✕ și ←
+F017	Simplitate	1366x768	0	partenerul nu se găsește după nume: «Client Test» în câmpul Partener nu propune nimic și nu aduce pozițiile (numai CUI-ul le aduce); câmpul păstrează textul tastat «Client Test», nu numele din registru «Client Test SRL»; sub buton rămâne «Completează: tipul» după alegerea tipului
+F017	Simplitate	603x590	0	partenerul nu se găsește după nume: «Client Test» în câmpul Partener nu propune nimic și nu aduce pozițiile (numai CUI-ul le aduce); câmpul păstrează textul tastat «Client Test», nu numele din registru «Client Test SRL»; sub buton rămâne «Completează: tipul» după alegerea tipului
+F017	Conformitate	1366x768	0	textul chitanței pentru soldul preluat e generat de server (core/uc_tenants.py:2343, 2414: «contravaloare factura <serie nr> din <data>»), neschimbat de R2: chitanța pe «Sold la 31.08.2026» scrie «contravaloare factura Sold la 31.08.2026 din 31.08.2026» — soldul de migrare prezentat ca factură (v2, CHF1 nr. 4)
+F017	Conformitate	603x590	0	textul chitanței pentru soldul preluat e generat de server (core/uc_tenants.py:2343, 2414: «contravaloare factura <serie nr> din <data>»), neschimbat de R2: chitanța pe «Sold la 31.08.2026» scrie «contravaloare factura Sold la 31.08.2026 din 31.08.2026» — soldul de migrare prezentat ca factură (v2, CHF1 nr. 4)
+F017	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F017	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F018	Funcțional	1366x768	1	«Parteneri» F1: 10 parteneri, un singur rând pe partener (DANTE «client și furnizor», 24 de documente) cu «Fișa partenerului»; «Clienți» are «+ Client nou» și căutarea
+F018	Funcțional	603x590	1	«Parteneri» F1: 10 parteneri, un singur rând pe partener (DANTE «client și furnizor», 24 de documente) cu «Fișa partenerului»; «Clienți» are «+ Client nou» și căutarea
+F018	Aspect	1366x768	1	Parteneri și Clienți 1334×736 încap, fără depășire, nimic tăiat; semnele F018 (Parteneri) și F263 (Clienți) lângă titlu, neacoperite
+F018	Aspect	603x590	0	«Clienți» la 603×590: depășire orizontală (zona-derulare), coloana CUI de 16 px și «Facturi emise» de 21 px
+F018	Design	1366x768	0	«Salvează» inactiv pe fiecare rând din «Clienți» (3), fără motiv (fără titlu, fără text legat); «Parteneri» n-are nicio acțiune principală
+F018	Design	603x590	0	«Salvează» inactiv fără motiv pe fiecare rând din «Clienți»; «Parteneri» fără acțiune principală
+F018	Simplitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): registrul de parteneri e împărțit pe trei ecrane (Parteneri, Clienți, Furnizori): lista unică nu are adăugare, căutare sau ștergere; în «Clienți» fiecare rând e un formular de editat cu propriul «Salvează»
+F018	Simplitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): registrul de parteneri e împărțit pe trei ecrane (Parteneri, Clienți, Furnizori): lista unică nu are adăugare, căutare sau ștergere; în «Clienți» fiecare rând e un formular de editat cu propriul «Salvează»
+F018	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): denumiri, coduri fiscale și roluri corecte pe documentele firmei
+F018	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): denumiri, coduri fiscale și roluri corecte pe documentele firmei
+F018	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F018	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F019	Funcțional	1366x768	1	«7 note de validat» la fel pe card și în fereastră; «Selectează toate (5)» + «Validează selectate»; documentul cu mai multe note se validează pe un rând; ciornele contabilului numărate pe card («82 de note ale tale în ciornă»)
+F019	Funcțional	603x590	1	«7 note de validat» la fel pe card și în fereastră; «Selectează toate (5)» + «Validează selectate»; documentul cu mai multe note se validează pe un rând; ciornele contabilului numărate pe card («82 de note ale tale în ciornă»)
+F019	Aspect	1366x768	1	cardul «De validat» nu mai repetă textul («7 note de validat · 0 declarații de depus · 2 depășite, de generat din nou · 82 de note ale tale în ciornă» — o singură dată, măsurat pe E_R2; în v2 apărea dublat); fereastra 1334×736 încape, o derulare; semnul F019 lângă titlu
+F019	Aspect	603x590	0	De validat la 603×590: coloane strivite (Firma 38 px, Pregătit de 28 px, Stare 39 px)
+F019	Design	1366x768	0	«Validează» e buton principal pe fiecare rând (87), plus «Validează selectate» și «Generează din nou» ×2 — 90 de butoane principale în fereastră
+F019	Design	603x590	0	«Validează» principal pe fiecare rând (87) plus «Validează selectate» și «Generează din nou» ×2
+F019	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): documentul cu mai multe note e un singur rând cu o singură validare; secțiunile la vedere
+F019	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): idem
+F019	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): conturile notelor corecte (371=401, 4426=401, 607=371)
+F019	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): idem
+F019	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F019	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F022	Funcțional	1366x768	1	F2 › Control fiscal: restanțele încep cu T1/2026 (D300, D394, D406), RESTANȚE (10), DE URMĂRIT (1); 13 datorate · 2 depuse
+F022	Funcțional	603x590	1	F2 › Control fiscal: restanțele încep cu T1/2026 (D300, D394, D406), RESTANȚE (10), DE URMĂRIT (1); 13 datorate · 2 depuse
+F022	Aspect	1366x768	0	semnal tăiat la sursă: «Verificat: D390 bunuri IC (…) față de (1) … și (2) D300 depus (rândurile» se oprește în mijlocul parantezei (textul elementului se termină acolo, măsurat pe E_R2)
+F022	Aspect	603x590	0	semnalul tăiat la sursă «… (2) D300 depus (rândurile» rămâne (text independent de rezoluție); Control fiscal F2 571×558 încape, o derulare
+F022	Design	1366x768	1	o acțiune principală «Rerulează auditul», ✕ și ←; semnul F022 lângă titlu
+F022	Design	603x590	1	o acțiune principală «Rerulează auditul»
+F022	Simplitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): «Luna comparată» oferă 12/2025–02/2026, înainte de înființarea firmei (15.03.2026); aceeași diferență de TVA apare în două forme diferite (1.050,00 «neexplicată» și 945,00 «sold balanță»)
+F022	Simplitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): «Luna comparată» oferă 12/2025–02/2026, înainte de înființarea firmei (15.03.2026); aceeași diferență de TVA apare în două forme diferite (1.050,00 «neexplicată» și 945,00 «sold balanță»)
+F022	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): termenele mutate pe prima zi lucrătoare (D300 T1 27.04.2026, D406 T3 02.11.2026); D301 corect «nu se datorează»
+F022	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): termenele mutate pe prima zi lucrătoare (D300 T1 27.04.2026, D406 T3 02.11.2026); D301 corect «nu se datorează»
+F022	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F022	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F023	Funcțional	1366x768	1	Emite factură F1: Marfa A pe linie aduce UM «buc», prețul 100 din articol și cota 21% preselectată (nu «Fără TVA»)
+F023	Funcțional	603x590	1	Emite factură F1: Marfa A pe linie aduce UM «buc», prețul 100 din articol și cota 21% preselectată (nu «Fără TVA»)
+F023	Aspect	1366x768	0	prețul preluat din articol apare «100.00» cu punct, într-un câmp cu format românesc (data-numar=«ro»)
+F023	Aspect	603x590	0	prețul din articol apare «100.00» cu punct în câmpul cu format românesc (aceeași fereastră, rezoluție independentă); fereastra încape, o derulare
+F023	Design	1366x768	1	o acțiune principală «Emite factură», ✕ și ←; semnele F025, F172, F252, F254 lângă titlu, neacoperite
+F023	Design	603x590	1	o acțiune principală «Emite factură», la vedere
+F023	Simplitate	1366x768	0	căutarea articolului «Marfa A» pune în listă «Nimic din listă nu conține „Marfa A”» deasupra rândului «Marfa A · stoc 152 buc»
+F023	Simplitate	603x590	0	căutarea articolului «Marfa A» pune în listă «Nimic din listă nu conține „Marfa A”» deasupra rândului «Marfa A · stoc 152 buc»
+F023	Conformitate	1366x768	1	cotele 21% și 11% (fără 9%/5%) în lista de pe linie; cota articolului (21%) preluată din nomenclator; scadența propusă la 30 de zile, cu temeiul afișat de aplicație (Legea 72/2013 art.3 alin.(3) lit.a)
+F023	Conformitate	603x590	1	cotele 21% și 11% (fără 9%/5%) în lista de pe linie; cota articolului (21%) preluată din nomenclator; scadența propusă la 30 de zile, cu temeiul afișat de aplicație (Legea 72/2013 art.3 alin.(3) lit.a)
+F023	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F023	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F025	Funcțional	1366x768	1	Închidere lună 10/2026 F1 are un singur «Reevaluare valută» (#il-reevaluare); fereastra propune creanța DANTE în EUR (F1A nr. 8 și 14, 181,50 EUR, curs din evidență 5,3347) la cursul BNR 5,3426 din 30.10.2026, diferență 1,44 lei pe 765
+F025	Funcțional	603x590	1	Închidere lună 10/2026 F1 are un singur «Reevaluare valută» (#il-reevaluare); fereastra propune creanța DANTE în EUR (F1A nr. 8 și 14, 181,50 EUR, curs din evidență 5,3347) la cursul BNR 5,3426 din 30.10.2026, diferență 1,44 lei pe 765
+F025	Aspect	1366x768	1	Închidere lună și Reevaluare valută încap la 1366×768, nicio coloană sub 40 px; semnul F264 lângă titlu
+F025	Aspect	603x590	0	Reevaluare valută la 603×590: coloanele tabelului strivite (Cont 20 px, Moneda 28 px, Cont diferență 35 px)
+F025	Design	1366x768	0	Închidere lună are două butoane principale: «Reevaluare valută» și «Blochează luna» (inactiv) — aceeași regulă ca la D300 (două principale, unul inactiv)
+F025	Design	603x590	0	Închidere lună: două butoane principale («Reevaluare valută» și «Blochează luna» inactiv, sub vedere)
+F025	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): cursul și data lui la vedere, fără pas suplimentar
+F025	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): cursul și data lui la vedere, fără pas suplimentar
+F025	Conformitate	1366x768	1	Reevaluare valută: cursul BNR din ultima zi bancară a lunii (30.10.2026) și conturile 765/665, cu temeiul afișat pe ecran (OMFP 1802/2014 pct.325; avansurile 409/419 excluse, pct.316 alin.(2)); conversia TVA a facturii în valută: neschimbat față de v2
+F025	Conformitate	603x590	1	Reevaluare valută: cursul BNR din ultima zi bancară a lunii (30.10.2026) și conturile 765/665, cu temeiul afișat pe ecran (OMFP 1802/2014 pct.325; avansurile 409/419 excluse, pct.316 alin.(2)); conversia TVA a facturii în valută: neschimbat față de v2
+F025	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F025	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F026	Funcțional	1366x768	0	D100 T3/2026 la F1, pasul 2: «nu se poate genera: perioada începe înainte de preluarea firmei (evidența începe după 31.07.2026), iar rulajele 01.07–31.07.2026 lipsesc» — scenariul cere baza 1.000 din 707, cota 1%, cod 121 = 10 lei; confruntarea nu rulează
+F026	Funcțional	603x590	0	D100 T3/2026 la F1, pasul 2: «nu se poate genera: perioada începe înainte de preluarea firmei (evidența începe după 31.07.2026), iar rulajele 01.07–31.07.2026 lipsesc» — scenariul cere baza 1.000 din 707, cota 1%, cod 121 = 10 lei; confruntarea nu rulează
+F026	Aspect	1366x768	1	Declarații încape, mesajul de blocaj întreg
+F026	Aspect	603x590	1	Declarații pasul 1 și pasul 2 (blocajul D100) 571×558 încap, o derulare în corp, nimic tăiat
+F026	Design	1366x768	1	o acțiune pe pas («Continuă →»), ✕ și ←
+F026	Design	603x590	1	o acțiune pe pas («Continuă →»)
+F026	Simplitate	1366x768	0	lista de tip declarație are 30+ rânduri (restanțe, luna curentă, perioade dinainte de preluare); «Continuă →» rămâne sub vedere după alegere (măsurat: buton principal în afara ferestrei vizibile)
+F026	Simplitate	603x590	0	lista de tip declarație are 30+ rânduri (restanțe, luna curentă, perioade dinainte de preluare); «Continuă →» rămâne sub vedere după alegere (măsurat: buton principal în afara ferestrei vizibile)
+F026	Conformitate	1366x768	0	fără D100 generat nu se verifică impozitul pe veniturile microîntreprinderii (1% din 1.000 = 10 lei, cod 121); serverul e cel din v2 (R2 n-are fișiere .py de produs)
+F026	Conformitate	603x590	0	fără D100 generat nu se verifică impozitul pe veniturile microîntreprinderii (1% din 1.000 = 10 lei, cod 121); serverul e cel din v2 (R2 n-are fișiere .py de produs)
+F026	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F026	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F028	Funcțional	1366x768	1	D112 10/2026 F5, pasul 2: impozit 830,00, CAS 3.252,00, CASS 1.301,00, CAM 293,00 — exact ca în scenariu
+F028	Funcțional	603x590	1	D112 10/2026 F5, pasul 2: impozit 830,00, CAS 3.252,00, CASS 1.301,00, CAM 293,00 — exact ca în scenariu
+F028	Aspect	1366x768	1	pasul 2 încape, o derulare (XML-ul)
+F028	Aspect	603x590	1	D112 pasul 2 571×558 încape, o derulare
+F028	Design	1366x768	1	o acțiune principală pe pas («Pune în „De depus” →»)
+F028	Design	603x590	1	o acțiune principală pe pas
+F028	Simplitate	1366x768	0	lista de tip declarație are 31 de rânduri; «Continuă →» rămâne sub vedere după alegere (măsurat: buton principal în afara ferestrei vizibile la 1366×768)
+F028	Simplitate	603x590	0	lista de tip declarație are 31 de rânduri; «Continuă →» rămâne sub vedere după alegere (măsurat: buton principal în afara ferestrei vizibile la 1366×768)
+F028	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): DUK fără erori; contribuțiile rotunjite aritmetic (CASS Popescu 704,5 → 705)
+F028	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): DUK fără erori; contribuțiile rotunjite aritmetic (CASS Popescu 704,5 → 705)
+F028	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F028	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F031	Funcțional	1366x768	0	D300 10/2026 F1 (calculul aplicației pe producție, d300.pull + calcul_d300): colectată 1.972 (R17_2), deductibilă 464 (R27_2), după ajustare 421, de plată 1.551; avertismentele numesc doar cele 2 rapoarte Z în ciornă (52,90 lei), nu și achizițiile cu note în ciornă intrate în deductibil (ex. DNT-UBL-083)
+F031	Funcțional	603x590	0	D300 10/2026 F1 (calculul aplicației pe producție, d300.pull + calcul_d300): colectată 1.972 (R17_2), deductibilă 464 (R27_2), după ajustare 421, de plată 1.551; avertismentele numesc doar cele 2 rapoarte Z în ciornă (52,90 lei), nu și achizițiile cu note în ciornă intrate în deductibil (ex. DNT-UBL-083)
+F031	Aspect	1366x768	1	pasul 2 încape, o derulare, nimic tăiat; semnul F251 la «Rânduri manuale»
+F031	Aspect	603x590	0	la 603×590 pasul 2 al D300 are două zone de derulare: corpul (502/1613 px) și caseta de blocaj cu derulare proprie (207 px din 229)
+F031	Design	1366x768	0	două butoane principale pe pasul 2: «Regenerează D300» și «Pune în „De depus” →» (inactiv)
+F031	Design	603x590	0	două butoane principale pe pasul 2: «Regenerează D300» și «Pune în „De depus” →» (inactiv)
+F031	Simplitate	1366x768	0	blocajul spune doar Z-urile în ciornă; ce lipsește din decont față de jurnal (notele în ciornă ale achizițiilor) nu e numit, deci contabilul nu poate închide diferența de pe ecran
+F031	Simplitate	603x590	0	blocajul spune doar Z-urile în ciornă; ce lipsește din decont față de jurnal (notele în ciornă ale achizițiilor) nu e numit, deci contabilul nu poate închide diferența de pe ecran
+F031	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): XML validat cu DUKIntegrator fără erori; rânduri D300 numite ca în formular
+F031	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): XML validat cu DUKIntegrator fără erori; rânduri D300 numite ca în formular
+F031	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F031	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F034	Funcțional	1366x768	0	serverul e cel din v2 (R2 n-are fișiere .py de produs): D394 10/2026 F1 exclude două operațiuni N (cereale către Maria Ionescu și Vasile Test) pentru lipsa subcodului NC pe factură, deci nu cuprinde toate facturile lunii
+F034	Funcțional	603x590	0	serverul e cel din v2 (R2 n-are fișiere .py de produs): D394 10/2026 F1 exclude două operațiuni N (cereale către Maria Ionescu și Vasile Test) pentru lipsa subcodului NC pe factură, deci nu cuprinde toate facturile lunii
+F034	Aspect	1366x768	1	pasul 2 încape; a doua derulare e previzualizarea XML
+F034	Aspect	603x590	0	la 603×590 pasul 2 al D394 are trei zone de derulare: corpul (502/1407), XML-ul (360/1644) și caseta de blocaj cu derulare proprie (207 din 229); depășirea orizontală din v2 (719 px în 571) nu mai apare (corp 571/571)
+F034	Design	1366x768	0	textele de pe pasul 2 conțin încă «EXCLUSA», «RAMANE», «declarata», «FĂRĂ» cu majuscule și săgeata «->» (măsurat pe E_R2)
+F034	Design	603x590	0	textele «EXCLUSA», «RAMANE», «declarata», «FĂRĂ», «->» (același text, rezoluție independentă)
+F034	Simplitate	1366x768	0	o operațiune exclusă e spusă cu majuscule și fără calea de corectare pe factură (subcodul NC)
+F034	Simplitate	603x590	0	o operațiune exclusă e spusă cu majuscule și fără calea de corectare pe factură (subcodul NC)
+F034	Conformitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): DUK fără erori, dar declarația omite două operațiuni ale lunii ca să treacă validarea; codul produsului art. 331 nu e cerut la emiterea facturii
+F034	Conformitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): DUK fără erori, dar declarația omite două operațiuni ale lunii ca să treacă validarea; codul produsului art. 331 nu e cerut la emiterea facturii
+F034	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F034	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F035	Funcțional	1366x768	0	D406 10/2026 F1, pasul 2: validat DUK fără erori, dar «17 facturi … nu se potrivesc cu nota lor din jurnal» și intră în SAF-T fără notă validată; serverul e cel din v2 (R2 n-are fișiere .py de produs): nota 146 cu descrierea coruptă «Stornare: n (…)ota nr. crt. 8» și Raportul Z în jurnalul «Diverse» (v2)
+F035	Funcțional	603x590	0	D406 10/2026 F1, pasul 2: validat DUK fără erori, dar «17 facturi … nu se potrivesc cu nota lor din jurnal» și intră în SAF-T fără notă validată; serverul e cel din v2 (R2 n-are fișiere .py de produs): nota 146 cu descrierea coruptă «Stornare: n (…)ota nr. crt. 8» și Raportul Z în jurnalul «Diverse» (v2)
+F035	Aspect	1366x768	1	pasul 2 încape; a doua derulare e doar XML-ul
+F035	Aspect	603x590	1	la 603×590 pasul 2 al D406 are numai corpul și XML-ul ca zone de derulare; fără depășire orizontală (corp 571/571 — în v2 638 px în 571)
+F035	Design	1366x768	0	serverul e cel din v2 (R2 n-are fișiere .py de produs): descrierile din compoziție fără diacritice și cu cantitate greșită («Iesire stoc Marfa A x2.000» pentru 2 buc)
+F035	Design	603x590	0	descrierile din compoziție fără diacritice și cu cantitate greșită (același text)
+F035	Simplitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): avertismentul cu 17 facturi e un singur paragraf de ~20 de rânduri; lista de tip declarație de 77 de rânduri
+F035	Simplitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): avertismentul cu 17 facturi e un singur paragraf de ~20 de rânduri; lista de tip declarație de 77 de rânduri
+F035	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): SAF-T 2.4.9 validat cu DUKIntegrator fără erori; liniile 401/4111 fără partener semnalate cu nota numită
+F035	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): SAF-T 2.4.9 validat cu DUKIntegrator fără erori; liniile 401/4111 fără partener semnalate cu nota numită
+F035	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F035	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F043	Funcțional	1366x768	0	F1 › Facturi primite (SPV) › DNT-UBL-090 (827 lei, 21% + 11%), validarea: liniile fără UM («Marfa A · 5 × 100,00 · 21%»), fără scadență și fără cumpărător pe ecran; importul DNT-RT-1020 nu e refăcut (ar recrea factura, 3 articole, 3 produse, 4 mișcări de stoc — curățate după v2), serverul e identic: «Transport marfa» intră în stoc ca articol (v2)
+F043	Funcțional	603x590	0	F1 › Facturi primite (SPV) › DNT-UBL-090 (827 lei, 21% + 11%), validarea: liniile fără UM («Marfa A · 5 × 100,00 · 21%»), fără scadență și fără cumpărător pe ecran; importul DNT-RT-1020 nu e refăcut (ar recrea factura, 3 articole, 3 produse, 4 mișcări de stoc — curățate după v2), serverul e identic: «Transport marfa» intră în stoc ca articol (v2)
+F043	Aspect	1366x768	1	Facturi primite și validarea DNT-UBL-090 1334×736 încap, o derulare; semnul F043 lângă titlu
+F043	Aspect	603x590	1	Facturi primite și validarea 571×558 încap, o derulare, nicio coloană strivită
+F043	Design	1366x768	0	validarea facturii primite n-are acțiune principală («Validează (scrie nota pe contul ales)» e secundar lângă «Respinge»); costurile NIR scrise «600.00 lei» cu punct (v2, pas după validare, nerefăcut)
+F043	Design	603x590	0	aceeași validare fără acțiune principală
+F043	Simplitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): întrebarea «leagă de NIR» apare abia după confirmarea validării — a treia oprire, nu din prima
+F043	Simplitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): întrebarea «leagă de NIR» apare abia după confirmarea validării — a treia oprire, nu din prima
+F043	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): destinația TVA pe linie cu art. 297/300; furnizorul verificat în registrele ANAF la data facturii
+F043	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): destinația TVA pe linie cu art. 297/300; furnizorul verificat în registrele ANAF la data facturii
+F043	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F043	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F045	Funcțional	1366x768	0	fișa F1A nr. 20: «Către: F2 Profit Amortizare SRL · CUI 403000015», fără adresa beneficiarului (la fel PDF-ul din v2, generat de server neschimbat); PDF deschis ca blob fără nume de fișier (v2)
+F045	Funcțional	603x590	0	fișa F1A nr. 20: «Către: F2 Profit Amortizare SRL · CUI 403000015», fără adresa beneficiarului (la fel PDF-ul din v2, generat de server neschimbat); PDF deschis ca blob fără nume de fișier (v2)
+F045	Aspect	1366x768	1	fișa facturii 1334×736 încape, fără derulare; semnele F045 și F046 lângă titlu, neacoperite
+F045	Aspect	603x590	1	fișa facturii 571×558 încape, o derulare
+F045	Design	1366x768	0	pe factura emisă apar butoane inactive fără rost: «Transformă în factură» («Documentul e deja factură.»), «Șterge factura»; fișa n-are acțiune principală
+F045	Design	603x590	0	«Transformă în factură» și «Șterge factura» inactive fără rost pe factura emisă
+F045	Simplitate	1366x768	1	o fișă cu toate acțiunile facturii, motivul inactivelor în titlu
+F045	Simplitate	603x590	1	o fișă cu toate acțiunile facturii, motivul inactivelor în titlu
+F045	Conformitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): adresa cumpărătorului lipsește de pe factură (cerută de scenariu)
+F045	Conformitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): adresa cumpărătorului lipsește de pe factură (cerută de scenariu)
+F045	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F045	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F046	Funcțional	1366x768	0	serverul e cel din v2 (R2 n-are fișiere .py de produs; E_Q6→E_R2 schimbă doar semnele «?», registrul și stilul): nota de stornare a F1A nr. 20 prin F1A nr. 22 se numește «Contare factura F1A nr. 22», nu «Stornare factura F1A nr. 20 din 13.11.2026» (409.1); o singură notă de stornare și o singură intrare inversă în stoc
+F046	Funcțional	603x590	0	serverul e cel din v2 (R2 n-are fișiere .py de produs; E_Q6→E_R2 schimbă doar semnele «?», registrul și stilul): nota de stornare a F1A nr. 20 prin F1A nr. 22 se numește «Contare factura F1A nr. 22», nu «Stornare factura F1A nr. 20 din 13.11.2026» (409.1); o singură notă de stornare și o singură intrare inversă în stoc
+F046	Aspect	1366x768	1	Registru jurnal 10/2026 (83 de note) 1334×736 încape, o derulare, nimic tăiat; semnele F061 și F118 lângă titlu, neacoperite
+F046	Aspect	603x590	0	Registru jurnal la 603×590: zona tabelului de 220 px și coloane strivite — Data 17 px, Explicație 33 px, Document 24 px, Conturi 19 px, Stare 21 px
+F046	Design	1366x768	0	în Registru jurnal fiecare rând are «Validează» ca buton principal (83 de butoane principale, 33 inactive) și «Trimite la validare» inactiv pe 82 de rânduri
+F046	Design	603x590	0	«Validează» principal pe fiecare rând (83)
+F046	Simplitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): refuzul spune «validează întâi F1A nr. 20, apoi stornarea» — doi pași; scenariul (619) cere validarea împreună; refuzul începe cu «NU s-a salvat.»
+F046	Simplitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): refuzul spune «validează întâi F1A nr. 20, apoi stornarea» — doi pași; scenariul (619) cere validarea împreună; refuzul începe cu «NU s-a salvat.»
+F046	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): storno cu valori negative pe aceleași conturi și trimitere la factura inițială
+F046	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): storno cu valori negative pe aceleași conturi și trimitere la factura inițială
+F046	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F046	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F054	Funcțional	1366x768	1	«+ Notă nouă» deschide editorul cu «Salvează»; nota validată are acțiunile inactive; serverul e cel din v2 (R2 n-are fișiere .py de produs; E_Q6→E_R2 schimbă doar semnele «?», registrul și stilul) (data propusă, refuzul în luna blocată 610, 602.1 — verificate în v2)
+F054	Funcțional	603x590	1	«+ Notă nouă» deschide editorul cu «Salvează»; nota validată are acțiunile inactive; serverul e cel din v2 (R2 n-are fișiere .py de produs; E_Q6→E_R2 schimbă doar semnele «?», registrul și stilul) (data propusă, refuzul în luna blocată 610, 602.1 — verificate în v2)
+F054	Aspect	1366x768	1	«Notă nouă» 1334×736 încape, fără derulare, semnul F054 lângă titlu, neacoperit
+F054	Aspect	603x590	0	«Notă nouă» încape; Registru jurnal la 603×590: zona tabelului de 220 px și coloane strivite (Data 17 px, Explicație 33 px, Document 24 px, Conturi 19 px, Stare 21 px)
+F054	Design	1366x768	0	nota validată (nr. 7, 10/2026) afișează 5 butoane inactive: Validează, Trimite la validare, Refă din sursă, Editează, Șterge; «Refă din sursă» apare și pe notele manuale, fără sursă
+F054	Design	603x590	0	nota validată afișează 5 butoane inactive (Validează, Trimite la validare, Refă din sursă, Editează, Șterge)
+F054	Simplitate	1366x768	1	un formular, o acțiune («Salvează»)
+F054	Simplitate	603x590	1	un formular, o acțiune («Salvează»)
+F054	Conformitate	1366x768	1	partidă dublă și blocarea lunii impuse de server (neschimbat)
+F054	Conformitate	603x590	1	partidă dublă și blocarea lunii impuse de server (neschimbat)
+F054	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F054	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F061	Funcțional	1366x768	1	Balanța 10/2026 F1, 25 de conturi, se închide pe toate cinci ✓; 371 D 6.272,38, 4111 D 4.468,24, 408 C 1.391,50 (identic v2); 51 de ciorne nevalidate nu intră și se spune
+F061	Funcțional	603x590	1	Balanța 10/2026 F1, 25 de conturi, se închide pe toate cinci ✓; 371 D 6.272,38, 4111 D 4.468,24, 408 C 1.391,50 (identic v2); 51 de ciorne nevalidate nu intră și se spune
+F061	Aspect	1366x768	1	Balanță 1334×736 încape, o derulare, nicio coloană sub 40 px, nimic tăiat
+F061	Aspect	603x590	0	Balanță la 603×590: coloanele strivite (Cont 16 px, Denumire 20 px) și depășire orizontală
+F061	Design	1366x768	1	o acțiune principală («Descarcă PDF»); «De unde vin cifrele» ca semnale
+F061	Design	603x590	1	o acțiune principală («Descarcă PDF»)
+F061	Simplitate	1366x768	1	luna se schimbă cu ← luna / luna →; ce nu intră în balanță e spus deasupra
+F061	Simplitate	603x590	1	luna se schimbă cu ← luna / luna →; ce nu intră în balanță e spus deasupra
+F061	Conformitate	1366x768	1	balanța cu 12 coloane (solduri inițiale, precedente, rulaj, totaluri, finale) pe note validate; lipsa rulajelor 01.01–31.07.2026 spusă
+F061	Conformitate	603x590	1	balanța cu 12 coloane (solduri inițiale, precedente, rulaj, totaluri, finale) pe note validate; lipsa rulajelor 01.01–31.07.2026 spusă
+F061	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F061	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F070	Funcțional	1366x768	0	lista Produse F1: «Paine alba» cu temeiul fără diacritice («Painea alba este aliment … incadrandu-se la art. 291 (2) b) Cod fiscal, fara zahar adaugat …», 737) scris ca descriere pe rând; serverul e cel din v2 (R2 n-are fișiere .py de produs): «Salvează» pe «Pâine albă» nu adaugă și nu spune nimic (v2; neretestat ca să nu creez un produs)
+F070	Funcțional	603x590	0	lista Produse F1: «Paine alba» cu temeiul fără diacritice («Painea alba este aliment … incadrandu-se la art. 291 (2) b) Cod fiscal, fara zahar adaugat …», 737) scris ca descriere pe rând; serverul e cel din v2 (R2 n-are fișiere .py de produs): «Salvează» pe «Pâine albă» nu adaugă și nu spune nimic (v2; neretestat ca să nu creez un produs)
+F070	Aspect	1366x768	1	Produse și servicii 1334×736 încape, o derulare (lista), nimic tăiat; semnele F023 și F070 lângă titlu
+F070	Aspect	603x590	1	Produse 571×558 încape, o derulare, nimic tăiat
+F070	Design	1366x768	0	cu formularul deschis sunt două butoane principale: «Salvează» și «+ Adaugă produs»; temeiurile lungi stau ca descriere pe fiecare rând
+F070	Design	603x590	0	cu formularul deschis două butoane principale («Salvează» și «+ Adaugă produs»)
+F070	Simplitate	1366x768	0	salvarea unui produs care există deja (fără diacritice) nu spune nimic — contabilul nu află că există «Paine alba»
+F070	Simplitate	603x590	0	salvarea unui produs care există deja (fără diacritice) nu spune nimic — contabilul nu află că există «Paine alba»
+F070	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): cota redusă cu temeiul din Codul fiscal; produsele din facturi au temeiul «cota de pe factura …»
+F070	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): cota redusă cu temeiul din Codul fiscal; produsele din facturi au temeiul «cota de pe factura …»
+F070	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F070	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F073	Funcțional	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): alocarea parțială a încasării DANTE 1.500 propune «Stinge F1A nr. 13 · 110,00 lei», dar F1A nr. 13 e factura emisă pe bonul 0002/22.10.2026, deja «încasată» — încasare dublă dacă se contează. Ok: plata 1.694 «factura DNT-RT-1020» → potrivire exactă, notă propusă 401 = 5121; Google 500 → potrivire exactă pe F1A nr. 6 (500 lei, deschisă). Observație: 5 linii datate 01–05.02.2026 (înainte de preluare), una «Comision administrare cont noiembrie» — dată probabil citită greșit la un import anterior; cele 3 linii ale probei au rămas necontate
+F073	Funcțional	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): alocarea parțială a încasării DANTE 1.500 propune «Stinge F1A nr. 13 · 110,00 lei», dar F1A nr. 13 e factura emisă pe bonul 0002/22.10.2026, deja «încasată» — încasare dublă dacă se contează. Ok: plata 1.694 «factura DNT-RT-1020» → potrivire exactă, notă propusă 401 = 5121; Google 500 → potrivire exactă pe F1A nr. 6 (500 lei, deschisă). Observație: 5 linii datate 01–05.02.2026 (înainte de preluare), una «Comision administrare cont noiembrie» — dată probabil citită greșit la un import anterior; cele 3 linii ale probei au rămas necontate
+F073	Aspect	1366x768	1	Bancă F1 1334×736 încape, o derulare, nicio coloană sub 40 px, nimic tăiat; trei semne «?» (F011, F012, F073) lângă titlu, neacoperite
+F073	Aspect	603x590	0	Bancă la 603×590: tabelul rămâne pe coloane strivite — CUI 21 px și 28 px, Potrivire 30 px și 28 px (măsurat în DOM)
+F073	Design	1366x768	0	fiecare linie contată arată «Contează» și «Alege facturile» inactive plus două fraze de motiv («Linia e contată: nota ei e în Registrul jurnal.» / «… facturile ei sunt stinse.»), repetate pe fiecare rând
+F073	Design	603x590	0	«Contează» și «Alege facturile» inactive plus două fraze de motiv pe fiecare linie contată
+F073	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): mesajul de după import numără corect (3 potrivite, 0 fără potrivire); detaliul liniei arată facturile stinse și nota propusă
+F073	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): mesajul de după import numără corect (3 potrivite, 0 fără potrivire); detaliul liniei arată facturile stinse și nota propusă
+F073	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): 401 = 5121 la plată, 5121 = 4111 la încasare, alocare pe cele mai vechi facturi
+F073	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): 401 = 5121 la plată, 5121 = 4111 la încasare, alocare pe cele mai vechi facturi
+F073	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F073	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F078	Funcțional	1366x768	1	«+ Salariat nou» F5: CNP 1234567890123 refuzat «CNP invalid (13 cifre, cifră de control greșită)»; toate cele 7 erori apar deodată, în rezumatul «NU s-a salvat.» și lângă câmp; nimic salvat
+F078	Funcțional	603x590	1	«+ Salariat nou» F5: CNP 1234567890123 refuzat «CNP invalid (13 cifre, cifră de control greșită)»; toate cele 7 erori apar deodată, în rezumatul «NU s-a salvat.» și lângă câmp; nimic salvat
+F078	Aspect	1366x768	1	Salariat nou 1334×736 încape, o derulare, nimic tăiat; semnul F078 lângă titlu
+F078	Aspect	603x590	1	Salariat nou 571×558 încape, o derulare, «Salvează» la vedere
+F078	Design	1366x768	1	o acțiune principală «Salvează», ✕ și ←; grupurile de butoane au lista ascunsă 1×1 px (nu e al doilea control)
+F078	Design	603x590	1	o acțiune principală «Salvează»
+F078	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): o singură trecere cu toate erorile
+F078	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): o singură trecere cu toate erorile
+F078	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): CNP verificat cu cifra de control; condițiile deducerii (art. 77) cerute explicit
+F078	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): CNP verificat cu cifra de control; condițiile deducerii (art. 77) cerute explicit
+F078	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F078	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F080	Funcțional	1366x768	1	stat 11/2026 F5: 20 din 20 zile; Ionescu 5.000 → CAS 1.250, CASS 500, deducere personală 562, impozit 269, net 2.981, CAM 113, cost 5.113; Popescu 7.000 → CAS 1.750, CASS 700, fără deducere, impozit 455, net 4.095, CAM 157, cost 7.157; total brut 12.000, net 7.076, cost 12.270 (CAM 113 + 157 = 270)
+F080	Funcțional	603x590	1	stat 11/2026 F5: 20 din 20 zile; Ionescu 5.000 → CAS 1.250, CASS 500, deducere personală 562, impozit 269, net 2.981, CAM 113, cost 5.113; Popescu 7.000 → CAS 1.750, CASS 700, fără deducere, impozit 455, net 4.095, CAM 157, cost 7.157; total brut 12.000, net 7.076, cost 12.270 (CAM 113 + 157 = 270)
+F080	Aspect	1366x768	1	statul 1334×736 încape, fără derulare; semnul F080 lângă titlu
+F080	Aspect	603x590	1	statul 571×558 încape, fără derulare
+F080	Design	1366x768	0	statul n-are acțiune principală: «Contabilizează statul» e buton secundar între «+ Salariat nou», «Fișier plată card (SEPA)», «Chei REGES», «Răspunsuri REGES» (730)
+F080	Design	603x590	0	statul n-are acțiune principală («Contabilizează statul» secundar)
+F080	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): luna se schimbă din săgeți; fișa arată compoziția netului
+F080	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): luna se schimbă din săgeți; fișa arată compoziția netului
+F080	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): contribuții 25% / 10% / 2,25%, rotunjite la leu
+F080	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): contribuții 25% / 10% / 2,25%, rotunjite la leu
+F080	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F080	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F081	Funcțional	1366x768	1	cabinet › Termene: restanțele și scadențele pe dată, cu coloana «Termen» pe fiecare rând, «Deschide» pe rând; termenele mutate pe zi lucrătoare (ex. 26.10 pentru D100)
+F081	Funcțional	603x590	1	cabinet › Termene: restanțele și scadențele pe dată, cu coloana «Termen» pe fiecare rând, «Deschide» pe rând; termenele mutate pe zi lucrătoare (ex. 26.10 pentru D100)
+F081	Aspect	1366x768	1	încape, o derulare; semnele F081 și F093 lângă titlu, neacoperite
+F081	Aspect	603x590	1	Termene 571×558 încape, o derulare; semnele F081 și F093 neacoperite
+F081	Design	1366x768	1	tabel DS, o acțiune pe rând («Deschide»), fără buton principal în exces
+F081	Design	603x590	1	o acțiune pe rând
+F081	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): restanțele și scadențele pe dată, cu detaliul pe firme la un clic
+F081	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): restanțele și scadențele pe dată, cu detaliul pe firme la un clic
+F081	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): termenele mutate pe prima zi lucrătoare
+F081	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): termenele mutate pe prima zi lucrătoare
+F081	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F081	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F084	Funcțional	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): F7 › Import date › Solduri inițiale cu balanta_proba_preluare.xlsx (fișierul din iCONTA_2026, reîncărcat doar până la previzualizare, neînlocuit): 7 conturi, debit = credit 17.200, echilibrat, data 30.09.2026, 117 cu alegerea analiticului; stările pașilor sunt pe firmă (663); paragraful despre soldurile finale apare o dată (623.1). Lipsește 36: metoda de stoc nu e cerută nicăieri în import (nici la balanță, nici la «Articole și stoc inițial»), deși 371 are sold
+F084	Funcțional	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): F7 › Import date › Solduri inițiale cu balanta_proba_preluare.xlsx (fișierul din iCONTA_2026, reîncărcat doar până la previzualizare, neînlocuit): 7 conturi, debit = credit 17.200, echilibrat, data 30.09.2026, 117 cu alegerea analiticului; stările pașilor sunt pe firmă (663); paragraful despre soldurile finale apare o dată (623.1). Lipsește 36: metoda de stoc nu e cerută nicăieri în import (nici la balanță, nici la «Articole și stoc inițial»), deși 371 are sold
+F084	Aspect	1366x768	1	Import date și Solduri inițiale încap, fără derulare; în «Articole și stoc inițial» numele firmei e lipit de text («F7 Preluare Test SRLÎncarcă nomenclatorul…», măsurat pe E_R2), notat ca în v2
+F084	Aspect	603x590	1	Solduri inițiale 571×558 încape, o derulare; numele firmei lipit de text în «Articole și stoc inițial» (ca la 1366)
+F084	Design	1366x768	1	o acțiune principală pe pas («Încarcă balanța»); semnele F084 și F267 lângă titlu
+F084	Design	603x590	1	o acțiune principală («Încarcă balanța»)
+F084	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): previzualizarea arată rândurile, totalurile și ce înlocuiește
+F084	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): previzualizarea arată rândurile, totalurile și ce înlocuiește
+F084	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): rezultatul reportat cere analiticul 1171/1172/1174
+F084	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): rezultatul reportat cere analiticul 1171/1172/1174
+F084	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F084	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F085	Funcțional	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): parteneri_proba_preluare.xlsx (previzualizare, nesalvat): 4111 se potrivește și intră; 401 cu diferență 100 lei e refuzat cu motiv și se salvează numai rândurile bune; pasul rămâne «obligatoriu», nu «gata», cât 401 e nedefalcat (665). Lipsește 738: soldurile preluate (Client Alfa 1.500, Client Beta 1.000) apar în Scadențar «fără scadență în sistem», nu cu scadența = data preluării + termenul implicit. Neverificat: firma fără solduri (666.1)
+F085	Funcțional	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): parteneri_proba_preluare.xlsx (previzualizare, nesalvat): 4111 se potrivește și intră; 401 cu diferență 100 lei e refuzat cu motiv și se salvează numai rândurile bune; pasul rămâne «obligatoriu», nu «gata», cât 401 e nedefalcat (665). Lipsește 738: soldurile preluate (Client Alfa 1.500, Client Beta 1.000) apar în Scadențar «fără scadență în sistem», nu cu scadența = data preluării + termenul implicit. Neverificat: firma fără solduri (666.1)
+F085	Aspect	1366x768	1	Solduri parteneri încape, fără derulare
+F085	Aspect	603x590	1	Solduri parteneri 571×558 încape, o derulare
+F085	Design	1366x768	1	o acțiune principală («Încarcă partenerii»); grupul de butoane pentru cont are lista ascunsă 1×1 px (nu e al doilea control)
+F085	Design	603x590	1	o acțiune principală («Încarcă partenerii»)
+F085	Simplitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): motivul refuzului 401 e scris de trei ori (sus, în lista «Nu se potrivesc» și pe fiecare rând)
+F085	Simplitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): motivul refuzului 401 e scris de trei ori (sus, în lista «Nu se potrivesc» și pe fiecare rând)
+F085	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): soldurile pe parteneri trebuie să dea soldul contului
+F085	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): soldurile pe parteneri trebuie să dea soldul contului
+F085	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F085	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F087	Funcțional	1366x768	1	stat 10/2026 F5: Ionescu brut 4.815,34, diurnă peste plafon 885,00 în coloană separată, net 2.618,34, cost 5.211,34; fișa 11/2026 (Ionescu, Popescu) egală cu statul pe net, CAM și cost
+F087	Funcțional	603x590	1	stat 10/2026 F5: Ionescu brut 4.815,34, diurnă peste plafon 885,00 în coloană separată, net 2.618,34, cost 5.211,34; fișa 11/2026 (Ionescu, Popescu) egală cu statul pe net, CAM și cost
+F087	Aspect	1366x768	1	statul și fișa salariatului încap, fișa cu o derulare; semnul F087 pe fișă
+F087	Aspect	603x590	1	statul și fișa salariatului 571×558 încap
+F087	Design	1366x768	0	«Contabilizează statul» nu e acțiunea principală (730): niciun buton principal în fereastra statului
+F087	Design	603x590	0	«Contabilizează statul» nu e acțiunea principală
+F087	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): fișa cu fluturaș, compoziția netului și datele de calcul
+F087	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): fișa cu fluturaș, compoziția netului și datele de calcul
+F087	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): CM cu indemnizație și rețineri separate; CAS pe excedentul de diurnă
+F087	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): CM cu indemnizație și rețineri separate; CAS pe excedentul de diurnă
+F087	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F087	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F089	Funcțional	1366x768	0	Stocuri F1 se deschide: Marfa A 122 buc CMP 51,1875, total validat 6.272,38 = balanța 371 ✓; ieșirea de 1.000 buc Marfa A e refuzată «peste stocul de 152 buc» — stocul cu ciornele de azi (152), nu stocul validat (122) și nu stocul la data ieșirii; serverul e cel din v2 (R2 n-are fișiere .py de produs; E_Q6→E_R2 schimbă doar semnele «?», registrul și stilul), deci și ieșirea de 150 buc pe 01.08.2026 (stoc 0 atunci) care s-a salvat în v2
+F089	Funcțional	603x590	0	Stocuri F1 se deschide: Marfa A 122 buc CMP 51,1875, total validat 6.272,38 = balanța 371 ✓; ieșirea de 1.000 buc Marfa A e refuzată «peste stocul de 152 buc» — stocul cu ciornele de azi (152), nu stocul validat (122) și nu stocul la data ieșirii; serverul e cel din v2 (R2 n-are fișiere .py de produs; E_Q6→E_R2 schimbă doar semnele «?», registrul și stilul), deci și ieșirea de 150 buc pe 01.08.2026 (stoc 0 atunci) care s-a salvat în v2
+F089	Aspect	1366x768	1	Stocuri și «Mișcări, fișe de magazie» 1334×736 încap, fără derulare, nimic tăiat; semnele F089/F088 și F140/F141 lângă titlu, neacoperite
+F089	Aspect	603x590	1	Stocuri și Mișcări 571×558 încap, o derulare, nimic tăiat, nicio coloană sub 40 px
+F089	Design	1366x768	0	«Mișcări, fișe de magazie» are două butoane principale: «Intrare» și «Ieșire la CMP (nota ciornă)»; refuzul începe cu «NU s-a salvat.»; fereastra Stocuri n-are acțiune principală (+ NIR nou e secundar)
+F089	Design	603x590	0	«Mișcări, fișe de magazie» are două butoane principale («Intrare», «Ieșire la CMP (nota ciornă)»)
+F089	Simplitate	1366x768	0	refuzul spune «peste stocul de 152 buc» fără să spună că 30 buc din ele sunt în ciornă (stocul validat e 122), deci contabilul nu știe ce stoc i s-a opus
+F089	Simplitate	603x590	0	refuzul spune «peste stocul de 152 buc» fără să spună că 30 buc din ele sunt în ciornă (stocul validat e 122), deci contabilul nu știe ce stoc i s-a opus
+F089	Conformitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): CMP-ul permite stoc negativ la o dată din trecut
+F089	Conformitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): CMP-ul permite stoc negativ la o dată din trecut
+F089	Stabilitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): o singură ieșire datată în trecut blochează tot ecranul Stocuri al firmei (500) — calea cu eroarea 500 (ieșirea de 150 buc pe 01.08.2026) nu e refăcută: ar crea o ieșire de stoc
+F089	Stabilitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): o singură ieșire datată în trecut blochează tot ecranul Stocuri al firmei (500) — calea cu eroarea 500 (ieșirea de 150 buc pe 01.08.2026) nu e refăcută: ar crea o ieșire de stoc
+F118	Funcțional	1366x768	0	Registru jurnal 10/2026: «Blochează luna» inactiv; serverul e cel din v2 (R2 n-are fișiere .py de produs; E_Q6→E_R2 schimbă doar semnele «?», registrul și stilul): lipsește 483 — istoricul blocărilor/deblocărilor perioadei nu există (v2)
+F118	Funcțional	603x590	0	Registru jurnal 10/2026: «Blochează luna» inactiv; serverul e cel din v2 (R2 n-are fișiere .py de produs; E_Q6→E_R2 schimbă doar semnele «?», registrul și stilul): lipsește 483 — istoricul blocărilor/deblocărilor perioadei nu există (v2)
+F118	Aspect	1366x768	1	ferestrele încap; semnul F118 lângă titlul Registru jurnal, neacoperit
+F118	Aspect	603x590	0	Registru jurnal la 603×590: zona tabelului de 220 px și coloane strivite — Data 17 px, Explicație 33 px, Document 24 px, Conturi 19 px, Stare 21 px
+F118	Design	1366x768	0	Registru jurnal: un «Validează» principal pe fiecare rând (83) și «Trimite la validare» inactiv repetat (82)
+F118	Design	603x590	0	«Validează» principal pe fiecare rând (83) și «Trimite la validare» inactiv repetat
+F118	Simplitate	1366x768	1	«Deblochează luna» cere motiv, butonul inactiv cât motivul e gol (729.1, v2; cod neschimbat)
+F118	Simplitate	603x590	1	«Deblochează luna» cere motiv, butonul inactiv cât motivul e gol (729.1, v2; cod neschimbat)
+F118	Conformitate	1366x768	1	nota în lună blocată e refuzată de server (neschimbat)
+F118	Conformitate	603x590	1	nota în lună blocată e refuzată de server (neschimbat)
+F118	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F118	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F122	Funcțional	1366x768	1	Concedii medicale Ionescu: CCMAM nr. 1234567 cod 01, 13.10–15.10.2026, 3 zile, indemnizație brută 262,00, net 153,00; zilele lucrate 19 din 22 în statul 10/2026
+F122	Funcțional	603x590	1	Concedii medicale Ionescu: CCMAM nr. 1234567 cod 01, 13.10–15.10.2026, 3 zile, indemnizație brută 262,00, net 153,00; zilele lucrate 19 din 22 în statul 10/2026
+F122	Aspect	1366x768	1	fereastra Concedii medicale încape, fără derulare
+F122	Aspect	603x590	1	Concedii medicale 571×558 încape, fără derulare
+F122	Design	1366x768	1	o acțiune principală «+ Certificat nou», ✕ și ←
+F122	Design	603x590	1	o acțiune principală «+ Certificat nou»
+F122	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): certificatul pe un rând cu perioada, brut și net
+F122	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): certificatul pe un rând cu perioada, brut și net
+F122	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): prima zi neplătită cu temei (OUG 91/2025); contribuțiile din indemnizație separat
+F122	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): prima zi neplătită cu temei (OUG 91/2025); contribuțiile din indemnizație separat
+F122	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F122	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F126	Funcțional	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): nejudecabil fără o trimitere reală în SPV, pe care regula ta o interzice în probă: stările «netrimisă în SPV · termen de transmitere … (depășit)» și «nu e obligatorie (clientul nu e stabilit în România)» apar în Istoric și în fișă (275, parțial); refuzul fără conexiune (289) nu l-am provocat, ca să nu plece niciun XML spre ANAF. Precondiție: o factură B2B de test trimisă de tine din FISCALOS, apoi starea «trimisă / acceptată / respinsă» verificată
+F126	Funcțional	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): nejudecabil fără o trimitere reală în SPV, pe care regula ta o interzice în probă: stările «netrimisă în SPV · termen de transmitere … (depășit)» și «nu e obligatorie (clientul nu e stabilit în România)» apar în Istoric și în fișă (275, parțial); refuzul fără conexiune (289) nu l-am provocat, ca să nu plece niciun XML spre ANAF. Precondiție: o factură B2B de test trimisă de tine din FISCALOS, apoi starea «trimisă / acceptată / respinsă» verificată
+F126	Aspect	1366x768	1	istoricul FISCALOS și fișa FIC nr. 3 încap, fără derulare
+F126	Aspect	603x590	1	fișa FIC nr. 3 571×558 încape, o derulare
+F126	Design	1366x768	0	fișa FIC nr. 3 (acceptată în SPV) are «Trimite în SPV» inactiv fără motiv (titlu gol) și «Transformă în factură» inactiv fără rost («Documentul e deja factură.»)
+F126	Design	603x590	0	«Trimite în SPV» inactiv fără motiv și «Transformă în factură» inactiv fără rost
+F126	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): termenul de transmitere scris pe fiecare factură
+F126	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): termenul de transmitere scris pe fiecare factură
+F126	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): termenul de 5 zile lucrătoare (OUG 120/2021 art. 10 alin. (7)) aplicat; facturile către nestabiliți marcate neobligatorii
+F126	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): termenul de 5 zile lucrătoare (OUG 120/2021 art. 10 alin. (7)) aplicat; facturile către nestabiliți marcate neobligatorii
+F126	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F126	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F131	Funcțional	1366x768	1	Scadențar F1: contoarele 3 restante · 2 apropiate · 5 în termen · 2 fără scadență = cele 12 rânduri (2 rânduri noi față de v2: F1A nr. 25 și 26 din 24.11.2026); facturile încasate nu apar
+F131	Funcțional	603x590	1	Scadențar F1: contoarele 3 restante · 2 apropiate · 5 în termen · 2 fără scadență = cele 12 rânduri (2 rânduri noi față de v2: F1A nr. 25 și 26 din 24.11.2026); facturile încasate nu apar
+F131	Aspect	1366x768	1	încape, o derulare, nimic tăiat; semnul F131 lângă titlu
+F131	Aspect	603x590	1	Scadențar 571×558 încape, o derulare
+F131	Design	1366x768	1	listă fără butoane inutile, ✕ și ←
+F131	Design	603x590	1	listă fără butoane inutile
+F131	Simplitate	1366x768	1	contoarele și lista pe aceeași fereastră; «Fișă client» la vedere
+F131	Simplitate	603x590	1	contoarele și lista pe aceeași fereastră; «Fișă client» la vedere
+F131	Conformitate	1366x768	1	zilele de întârziere calculate de la scadență; sumele în valută rămân în EUR
+F131	Conformitate	603x590	1	zilele de întârziere calculate de la scadență; sumele în valută rămân în EUR
+F131	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F131	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F134	Funcțional	1366x768	1	stat 11/2026 F5 › Fișier plată card: «1 plată · total 2.981,00 lei · format SEPA pain.001»; Popescu fără IBAN exclusă cu avertisment și calea de completare
+F134	Funcțional	603x590	1	stat 11/2026 F5 › Fișier plată card: «1 plată · total 2.981,00 lei · format SEPA pain.001»; Popescu fără IBAN exclusă cu avertisment și calea de completare
+F134	Aspect	1366x768	1	fereastra încape, fără derulare
+F134	Aspect	603x590	1	Plată salarii pe card 571×558 încape, fără derulare
+F134	Design	1366x768	1	o acțiune principală («Descarcă fișierul»), «Închide» secundar
+F134	Design	603x590	1	o acțiune principală («Descarcă fișierul»)
+F134	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): rezumatul și excluderea într-un singur ecran
+F134	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): rezumatul și excluderea într-un singur ecran
+F134	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): format SEPA pain.001.001.03
+F134	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): format SEPA pain.001.001.03
+F134	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F134	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F139	Funcțional	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): măsurat 24.11 09:05 după repunerea stocului F1: NIR 3 din 19.10.2026 (Marfa A 10 × 50, Marfa B 20 × 25, transport 100) — transportul repartizat proporțional, cost unitar final 55,00 / 27,50; marfa pe 371 = 408 1.000 și 4428.01 = 408 210 (factură nesosită); transportul 371 = 401 100, iar la NIR 901 (13.11) și 4426 = 401 21 (398, 399); detaliul NIR arată coloana «Transport și taxe repartizate» (400); NIR nou propune numărul 902 (următorul liber); numărul 901 e refuzat pe loc: «Numărul 901 e deja al NIR-ului din 13.11.2026 (DANTE INTERNATIONAL SA)…» (739)
+F139	Funcțional	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): măsurat 24.11 09:05 după repunerea stocului F1: NIR 3 din 19.10.2026 (Marfa A 10 × 50, Marfa B 20 × 25, transport 100) — transportul repartizat proporțional, cost unitar final 55,00 / 27,50; marfa pe 371 = 408 1.000 și 4428.01 = 408 210 (factură nesosită); transportul 371 = 401 100, iar la NIR 901 (13.11) și 4426 = 401 21 (398, 399); detaliul NIR arată coloana «Transport și taxe repartizate» (400); NIR nou propune numărul 902 (următorul liber); numărul 901 e refuzat pe loc: «Numărul 901 e deja al NIR-ului din 13.11.2026 (DANTE INTERNATIONAL SA)…» (739)
+F139	Aspect	1366x768	1	NIR nou 1334×736 încape, fără derulare, nicio celulă strivită; semnul F139 lângă titlu
+F139	Aspect	603x590	1	NIR nou 571×558 încape, o derulare, nicio celulă strivită
+F139	Design	1366x768	1	o acțiune principală («Salvează NIR (note ciorne)»); grupurile de butoane au lista ascunsă 1×1 px (nu e dublă)
+F139	Design	603x590	1	o acțiune principală («Salvează NIR (note ciorne)»)
+F139	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): costul accesoriu și contul lui în același formular; refuzul numărului dublat spune ce să faci
+F139	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): costul accesoriu și contul lui în același formular; refuzul numărului dublat spune ce să faci
+F139	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): factura nesosită pe 408 cu TVA neexigibilă 4428.01
+F139	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): factura nesosită pe 408 cu TVA neexigibilă 4428.01
+F139	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F139	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F162	Funcțional	1366x768	0	F5 › Control fiscal › Declarație vs contabilitate, luna 09/2026: patru verdicte «D112 și contul 444/4315/4316/436 coincid.», fără cifrele celor două părți
+F162	Funcțional	603x590	0	F5 › Control fiscal › Declarație vs contabilitate, luna 09/2026: patru verdicte «D112 și contul 444/4315/4316/436 coincid.», fără cifrele celor două părți
+F162	Aspect	1366x768	1	Control fiscal F5 încape, o derulare; 7 semne «?», neacoperite
+F162	Aspect	603x590	1	Control fiscal F5 571×558 încape, o derulare; 7 semne, neacoperite
+F162	Design	1366x768	1	o acțiune principală («Rerulează auditul»)
+F162	Design	603x590	1	o acțiune principală («Rerulează auditul»)
+F162	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): verdictele pe rând, câte unul pe contribuție
+F162	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): verdictele pe rând, câte unul pe contribuție
+F162	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): toleranța de 1 leu explicată (D112 rotunjește la leu)
+F162	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): toleranța de 1 leu explicată (D112 rotunjește la leu)
+F162	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F162	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F169	Funcțional	1366x768	0	F1 › Control fiscal, 10/2026: «TVA colectată: D300 … 1.972,00 lei, contul 4427 are 1.442,94 lei (diferență 529,06 lei)» și «TVA deductibilă: … 464,00 lei, contul 4426 are 0,00 lei»; explicația e doar «Note în ciornă pe contul 4427 în perioadă: 12, cu suma de 617,92 lei» și «pe 4426: 4, 485,56 lei» — fără notele numite, iar 617,92 ≠ 529,06
+F169	Funcțional	603x590	0	F1 › Control fiscal, 10/2026: «TVA colectată: D300 … 1.972,00 lei, contul 4427 are 1.442,94 lei (diferență 529,06 lei)» și «TVA deductibilă: … 464,00 lei, contul 4426 are 0,00 lei»; explicația e doar «Note în ciornă pe contul 4427 în perioadă: 12, cu suma de 617,92 lei» și «pe 4426: 4, 485,56 lei» — fără notele numite, iar 617,92 ≠ 529,06
+F169	Aspect	1366x768	1	Control fiscal 1334×736 încape, o derulare; 6 semne «?» (F022, F169, F163, F162, F184, F183), neacoperite (5 sub linia de plutire, în derulare)
+F169	Aspect	603x590	1	Control fiscal F1 571×558 încape, o derulare; coloana de acțiuni fără titlu are 12 px (antet gol, fără conținut ascuns)
+F169	Design	1366x768	1	o acțiune principală («Rerulează auditul», în secțiunea Audit de preluare); «Contabilizează statul de plată» lângă diferența cauzată de stat
+F169	Design	603x590	1	o acțiune principală
+F169	Simplitate	1366x768	0	diferența de 529,06 lei nu se poate închide de pe ecran: notele care o explică nu sunt numite și suma din explicație (617,92) nu egalează diferența
+F169	Simplitate	603x590	0	diferența de 529,06 lei nu se poate închide de pe ecran: notele care o explică nu sunt numite și suma din explicație (617,92) nu egalează diferența
+F169	Conformitate	1366x768	1	compară D300 generat cu 4427/4426 pe aceeași perioadă; declarația nedepusă e spusă «generat azi»
+F169	Conformitate	603x590	1	compară D300 generat cu 4427/4426 pe aceeași perioadă; declarația nedepusă e spusă «generat azi»
+F169	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F169	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F172	Funcțional	1366x768	1	caseta «Pleacă marfa acum?» cu «Da, pleacă marfa» / «Nu, doar factură» e în codul servit (emitere_ecran.js:184–187), neschimbat de R2 în afară de semnul «?»; emiterea nu e refăcută (ar crea o factură); v2: DA → F1A nr. 25 cu nota «Ieșire stoc Marfa A × 1 buc»
+F172	Funcțional	603x590	1	caseta «Pleacă marfa acum?» cu «Da, pleacă marfa» / «Nu, doar factură» e în codul servit (emitere_ecran.js:184–187), neschimbat de R2 în afară de semnul «?»; emiterea nu e refăcută (ar crea o factură); v2: DA → F1A nr. 25 cu nota «Ieșire stoc Marfa A × 1 buc»
+F172	Aspect	1366x768	1	Emite factură 1334×736 încape, fără derulare, nimic tăiat
+F172	Aspect	603x590	1	Emite factură 571×558 încape, o derulare
+F172	Design	1366x768	0	"textul casetei închide citatul greșit: «alege „Nu, doar factură"".» — ghilimea dreaptă ASCII ("") în loc de ” (emitere_ecran.js:184 pe E_R2)"
+F172	Design	603x590	0	"ghilimeaua ASCII în textul casetei «alege „Nu, doar factură"".»"
+F172	Simplitate	1366x768	1	o singură întrebare la emitere; «Emite factură» inactiv cât caseta e deschisă
+F172	Simplitate	603x590	1	o singură întrebare la emitere; «Emite factură» inactiv cât caseta e deschisă
+F172	Conformitate	1366x768	1	descărcarea din gestiune numai când marfa pleacă fizic (nota «Ieșire stoc» la DA, fără notă la NU)
+F172	Conformitate	603x590	1	descărcarea din gestiune numai când marfa pleacă fizic (nota «Ieșire stoc» la DA, fără notă la NU)
+F172	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F172	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F176	Funcțional	1366x768	0	Setări cont › Conectare SPV: «Conectat. Certificat emis de DigiSign; titularul nu e transmis de ANAF. Acces valabil până la 14 ianuarie 2027.»; 8 firme «fără drept în SPV» cu mesajul ANAF citat și calea de rezolvare; lipsește încă 289 în fereastra firmei (v2, cod neschimbat)
+F176	Funcțional	603x590	0	Setări cont › Conectare SPV: «Conectat. Certificat emis de DigiSign; titularul nu e transmis de ANAF. Acces valabil până la 14 ianuarie 2027.»; 8 firme «fără drept în SPV» cu mesajul ANAF citat și calea de rezolvare; lipsește încă 289 în fereastra firmei (v2, cod neschimbat)
+F176	Aspect	1366x768	1	fereastra 1334×736 încape, fără derulare; semnul F176 lângă titlu
+F176	Aspect	603x590	1	Conectare SPV 571×558 încape, o derulare
+F176	Design	1366x768	1	o acțiune («Reconectează SPV») în fereastră, ✕ și ←
+F176	Design	603x590	1	o acțiune («Reconectează SPV»)
+F176	Simplitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): cele 8 firme fără drept sunt înșirate într-un singur paragraf cu 8 citate ANAF și temeiul legal
+F176	Simplitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): cele 8 firme fără drept sunt înșirate într-un singur paragraf cu 8 citate ANAF și temeiul legal
+F176	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): temeiul OMFP 660/2017 art. 15 alin. (1) pentru dreptul în SPV
+F176	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): temeiul OMFP 660/2017 art. 15 alin. (1) pentru dreptul în SPV
+F176	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F176	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F179	Funcțional	1366x768	0	nejudecabil: FISCALOS › Facturi primite din SPV: «certificatul cabinetului are drept pe CUI-ul acestei firme (55229657) · verificat ultima dată 24.11.2026, 14:17 · 0 facturi primite»; nicio factură reală de la un furnizor către FISCALOS încă (pasul lui Costin)
+F179	Funcțional	603x590	0	nejudecabil: FISCALOS › Facturi primite din SPV: «certificatul cabinetului are drept pe CUI-ul acestei firme (55229657) · verificat ultima dată 24.11.2026, 14:17 · 0 facturi primite»; nicio factură reală de la un furnizor către FISCALOS încă (pasul lui Costin)
+F179	Aspect	1366x768	1	încape, fără derulare; semnul F043 lângă titlu
+F179	Aspect	603x590	1	Facturi primite din SPV 571×558 încape, fără derulare
+F179	Design	1366x768	1	acțiunile la vedere («Verifică acum în SPV», «Importă XML UBL», «Introdu factura de mână»), fără butoane inactive
+F179	Design	603x590	1	acțiunile la vedere, fără butoane inactive
+F179	Simplitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): starea SPV și rezultatul citirii pe ecran
+F179	Simplitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): starea SPV și rezultatul citirii pe ecran
+F179	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): facturile primite se validează înainte de cheltuieli
+F179	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): facturile primite se validează înainte de cheltuieli
+F179	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F179	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F183	Funcțional	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): F6 › Control fiscal › Audit de preluare: balanța coerentă (111.170,00), divergențele 2131 / 2813 / 371 numite cu sumele, creditorul scris «creditor 6.000,00», fără minus (609); «Rerulează auditul» dă același verdict (6 coerent · 3 divergent · 6 neverificat, a 3-a rulare 24.11.2026 07:07). Lipsește: nicio divergență n-are acțiune — doar text «reimportă (Migrare › Mijloace fixe)» în «▾ detalii», fără buton sau link; în detaliul lui 2131 paragraful «Registrul mijloacelor fixe și balanța…» apare de două ori (623.1)
+F183	Funcțional	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): F6 › Control fiscal › Audit de preluare: balanța coerentă (111.170,00), divergențele 2131 / 2813 / 371 numite cu sumele, creditorul scris «creditor 6.000,00», fără minus (609); «Rerulează auditul» dă același verdict (6 coerent · 3 divergent · 6 neverificat, a 3-a rulare 24.11.2026 07:07). Lipsește: nicio divergență n-are acțiune — doar text «reimportă (Migrare › Mijloace fixe)» în «▾ detalii», fără buton sau link; în detaliul lui 2131 paragraful «Registrul mijloacelor fixe și balanța…» apare de două ori (623.1)
+F183	Aspect	1366x768	1	Control fiscal F6 încape, o derulare; secțiunea Audit de preluare cu semnul F183, neacoperit
+F183	Aspect	603x590	1	Control fiscal F6 571×558 încape, o derulare
+F183	Design	1366x768	1	o acțiune principală («Rerulează auditul»)
+F183	Design	603x590	1	o acțiune principală («Rerulează auditul»)
+F183	Simplitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): contabilul trebuie să caute singur ecranul de reimport pentru fiecare divergență
+F183	Simplitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): contabilul trebuie să caute singur ecranul de reimport pentru fiecare divergență
+F183	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): verificări pe planul OMFP (funcțiunea contului, partidă dublă)
+F183	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): verificări pe planul OMFP (funcțiunea contului, partidă dublă)
+F183	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F183	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F252	Funcțional	1366x768	1	F1A nr. 23 către GOOGLE IRELAND (IE6388047V): cota 0% cu «Taxare inversă — prestare de servicii cu locul în alt stat membru, art.278 alin.(2)», adresa clientului; «nu e obligatorie (clientul nu e stabilit în România)» la SPV
+F252	Funcțional	603x590	1	F1A nr. 23 către GOOGLE IRELAND (IE6388047V): cota 0% cu «Taxare inversă — prestare de servicii cu locul în alt stat membru, art.278 alin.(2)», adresa clientului; «nu e obligatorie (clientul nu e stabilit în România)» la SPV
+F252	Aspect	1366x768	1	fișa facturii încape, fără derulare
+F252	Aspect	603x590	1	fișa facturii 571×558 încape, o derulare
+F252	Design	1366x768	0	fișa facturii arată butoane inactive fără rost: «Transformă în factură» («Documentul e deja factură.»), «Șterge factura»
+F252	Design	603x590	0	«Transformă în factură» și «Șterge factura» inactive fără rost
+F252	Simplitate	1366x768	1	mențiunea de taxare inversă scrisă pe linie și pe factură, fără pas suplimentar
+F252	Simplitate	603x590	1	mențiunea de taxare inversă scrisă pe linie și pe factură, fără pas suplimentar
+F252	Conformitate	1366x768	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): art. 278 alin. (2) pe factură și în PDF
+F252	Conformitate	603x590	1	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): art. 278 alin. (2) pe factură și în PDF
+F252	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F252	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F254	Funcțional	1366x768	0	F1A nr. 13 (pe bonul 0002/22.10.2026, Carte tehnica 99,10 + TVA 11% 10,90): fișa scrie «conform bon fiscal nr. 0002/22.10.2026» ✓, dar D300 10/2026 (calculul aplicației pe producție) are rd. 10 bază 899 = 800 + 99,10 — factura intră peste raportul Z validat al zilei, TVA dublat
+F254	Funcțional	603x590	0	F1A nr. 13 (pe bonul 0002/22.10.2026, Carte tehnica 99,10 + TVA 11% 10,90): fișa scrie «conform bon fiscal nr. 0002/22.10.2026» ✓, dar D300 10/2026 (calculul aplicației pe producție) are rd. 10 bază 899 = 800 + 99,10 — factura intră peste raportul Z validat al zilei, TVA dublat
+F254	Aspect	1366x768	1	fișa facturii încape
+F254	Aspect	603x590	1	fișa facturii 571×558 încape, o derulare
+F254	Design	1366x768	0	«de preluat» și «nota contabilă» inactiv («Factura n-are încă notă contabilă…») sugerează o contare care nu trebuie să existe pe o factură emisă pe bon
+F254	Design	603x590	0	«de preluat» și «nota contabilă» inactiv pe factura pe bon
+F254	Simplitate	1366x768	0	nimic pe fișă nu spune că factura pe bon nu se mai contează și nu intră în D300
+F254	Simplitate	603x590	0	nimic pe fișă nu spune că factura pe bon nu se mai contează și nu intră în D300
+F254	Conformitate	1366x768	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): TVA-ul bonului declarat de două ori în D300 (Z + factură)
+F254	Conformitate	603x590	0	neschimbat față de v2 (serverul identic — R2 n-are fișiere .py de produs; ecranul identic în afară de semnul «?»): TVA-ul bonului declarat de două ori în D300 (Z + factură)
+F254	Stabilitate	1366x768	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+F254	Stabilitate	603x590	1	nicio eroare de server (jurnalul iconta-nou fără excepții după repornirea de la 14:05:53) și nicio excepție a aplicației în consolă pe traseul funcției; în consolă apar doar refuzurile de validare 400/422 provocate de probe
+X02	Funcțional	1366x768	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Funcțional	603x590	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Aspect	1366x768	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Aspect	603x590	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Design	1366x768	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Design	603x590	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Simplitate	1366x768	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Simplitate	603x590	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Conformitate	1366x768	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Conformitate	603x590	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Stabilitate	1366x768	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X02	Stabilitate	603x590	-	nemăsurat: necesită prima autentificare a unui utilizator nou «asistent junior» — pasul lui Costin după publicarea Q7; Claude nu introduce parole
+X05	Funcțional	1366x768	1	✕ 40×40 sus-dreapta (32 px de marginea ecranului) pe toate cele ~45 de ferestre măsurate la 1366x768; ← pe toate ferestrele cu un pas real înapoi; ferestrele de prim nivel ale cabinetului (De validat, Termene) au numai ✕
+X05	Funcțional	603x590	1	✕ 40×40 sus-dreapta (32 px de marginea ecranului) pe toate cele ~45 de ferestre măsurate la 603x590; ← pe toate ferestrele cu un pas real înapoi; ferestrele de prim nivel ale cabinetului (De validat, Termene) au numai ✕
+X05	Aspect	1366x768	1	✕ și ← nu strivesc titlul; la 603×590 antetul arată numai fereastra curentă (firma ascunsă sub 700 px, decizia 17.3, stil.css:3576–3578)
+X05	Aspect	603x590	1	✕ și ← nu strivesc titlul; la 603×590 antetul arată numai fereastra curentă (firma ascunsă sub 700 px, decizia 17.3, stil.css:3576–3578)
+X05	Design	1366x768	1	✕ 40×40 în același loc pe toate ferestrele; ← numai unde există pas înapoi
+X05	Design	603x590	1	✕ 40×40 în același loc pe toate ferestrele; ← numai unde există pas înapoi
+X05	Simplitate	1366x768	1	← duce un pas înapoi (pasul intern al ecranului, apoi fereastra), ✕ închide fereastra
+X05	Simplitate	603x590	1	← duce un pas înapoi (pasul intern al ecranului, apoi fereastra), ✕ închide fereastra
+X05	Conformitate	1366x768	1	regula DS a navigației (✕ pe fiecare fereastră, ← doar la pas real) respectată pe ferestrele măsurate
+X05	Conformitate	603x590	1	regula DS a navigației (✕ pe fiecare fereastră, ← doar la pas real) respectată pe ferestrele măsurate
+X05	Stabilitate	1366x768	1	nicio fereastră rămasă deschisă sau blocată la navigarea cu ← și ✕
+X05	Stabilitate	603x590	1	nicio fereastră rămasă deschisă sau blocată la navigarea cu ← și ✕

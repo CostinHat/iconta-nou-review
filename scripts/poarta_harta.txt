@@ -179,3 +179,4 @@ static/js/ecrane/rip_ecran.js => e2e_lot12_prod.py e2e_pilot_luna.py
 static/js/ecrane/sal_sume.js => e2e_lot13_sal.py
 static/js/ecrane/tabel_note.js => e2e_lot13_ds.py e2e_bloc_d.py
 static/js/ecrane/tari_partener.js => e2e_lot12_emit.py
+static/js/luna_lucru.js => e2e_luna_lucru_17_5_C.py

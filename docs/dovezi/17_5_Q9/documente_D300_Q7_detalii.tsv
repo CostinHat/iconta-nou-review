@@ -1,0 +1,21 @@
+tip	document	cota	baza	tva	inclus	motiv	moneda	curs
+factura	fără serie nr. 2	11	800.00	88.00	1	eligibilă	RON	1.0000
+factura_pe_bon	F1A nr. 13	11	99.10	10.90	0	emisă pe bonul 0002 din 2026-10-22: TVA-ul e în raportul Z al zilei	RON	1.0000
+factura	fără serie nr. 2	21	5000.00	1050.00	1	eligibilă	RON	1.0000
+factura	F1A nr. 3	21	200.00	42.00	1	eligibilă	RON	1.0000
+factura	F1A nr. 4	21	200.00	42.00	1	eligibilă	RON	1.0000
+factura	F1A nr. 8	21	532.72	111.87	1	eligibilă	EUR	5.3272
+factura	F1A nr. 9	21	-532.72	-111.87	1	stornare a facturii id 55	EUR	5.3272
+factura	F1A nr. 10	21	100.00	21.00	1	eligibilă	RON	1.0000
+factura	F1A nr. 11	21	-100.00	-21.00	1	stornare a facturii id 59	RON	1.0000
+factura	F1A nr. 12	21	53.27	11.19	1	eligibilă	EUR	5.3272
+factura	F1A nr. 14	21	267.47	56.17	1	eligibilă	EUR	5.3495
+factura	F1A nr. 16	21	1000.00	210.00	1	eligibilă	RON	1
+factura	F1A nr. 17	21	100.00	21.00	1	partener DE cu cotă internă 21% (FISC.2: se declară și se semnalează)	RON	1
+factura	F1A nr. 18	21	1000.00	210.00	1	eligibilă	RON	1
+factura	F1A nr. 19	21	1000.00	210.00	1	eligibilă	RON	1
+Z_ciorna	Z-8000000001-0042	11	99.10	10.90	0	notă ciorna: în afara decontului până la validare (regula W)	RON	
+Z_ciorna	Z-8000000001-0042	21	100.00	21.00	0	notă ciorna: în afara decontului până la validare (regula W)	RON	
+Z_ciorna	Z-8000000001-0043	21	100.00	21.00	0	notă ciorna: în afara decontului până la validare (regula W)	RON	
+Z_validat	Z-8000000001-0050	11	99.10	10.90	1	Z validat	RON	
+Z_validat	Z-8000000001-0050	21	200.00	42.00	1	Z validat	RON	

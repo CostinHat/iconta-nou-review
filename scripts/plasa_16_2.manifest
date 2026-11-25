@@ -33,3 +33,4 @@ frontend_test/e2e/e2e_ferestre_17_5_Q5.py	29cc944d0a8bffc2bd21f76c4cd2f4daaad12d
 frontend_test/e2e/e2e_ferestre_17_5_Q4.py	cee65c031e6e0f0841517c8be9375cd48d45a637b9e6c152dae7005925323bc3	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_Q4.py
 frontend_test/e2e/e2e_ferestre_17_5_Q6.py	00ee612ff672f9700d356e6a6b242e2e51bd845c05bbb6180d5e46d369d1f71b	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_Q6.py
 frontend_test/e2e/e2e_ajutor_17_5_R2.py	2608920d04a6ae0b0567fb535a151ca7f3ef0f94e4aff744dce425c110cf5bdf	1	python -m pytest -q frontend_test/e2e/e2e_ajutor_17_5_R2.py
+frontend_test/e2e/e2e_fundatie_17_5_Q9.py	80d4f3c71c40e7cebfffdb716e0ecb5ce6916e51ffeba5cd83e6043a6338f1cc	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_Q9.py

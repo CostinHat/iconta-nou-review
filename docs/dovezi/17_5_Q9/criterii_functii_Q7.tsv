@@ -1,0 +1,46 @@
+cod	conditie_verificabila
+F003	Pe raportul Z gol, toate câmpurile obligatorii sunt semnalate simultan. Pe raportul populat verifică acțiunea, nota și starea.
+F011	Pe F2 importă cele cinci mișcări. Mesajul, cele patru rânduri fără potrivire, comisionul 627=5121 și variația cipurilor se reconciliază. Toate câmpurile rămân lizibile la 603.
+F012	Reimportă aceleași mișcări din XLSX după CSV și verifică «Nicio linie nouă», aceleași identități și valori, tabelul populat și absența lui 409. Pe mobil verifică separat tabelul.
+F015	În Casă, Dispoziție nouă este acțiunea principală vizibilă. După Plată furnizor motivul listează numai ce mai lipsește și se actualizează pe măsură ce se completează câmpurile.
+F017	Caută partenerul după nume, identifică-l prin CUI, verifică numele în registru, motivul după alegerea tipului și formularea chitanței pentru soldul preluat în PDF.
+F018	Din toate cele trei intrări ajungi la același registru. Adaugă, caută, editează și șterge fișa eligibilă. Confirmă orașul și județul în date și lizibilitatea listei mici.
+F019	Confruntă separat cardul, ciornele proprii din Poarta 1 și, pe candidat, coada „Note de validat” populată cu o notă trimisă pentru validare. Păstrează ID, rol, stare și dovada distinctă pe ambele rezoluții. O coadă goală lasă acest scenariu neexecutat. Numără o singură principală la vedere. Acțiunile pe rând și identitățile distincte rămân utilizabile. Verifică afișarea firmei, operatorului și stării la 603.
+F022	În Control fiscal F2 selectează o lună eligibilă. Verifică limita preluării/înființării, semnalul D390 integral și o singură explicație pentru aceeași diferență TVA.
+F023	Alege Marfa A din rezultate. Verifică stocul din date la momentul probei, prețul în format românesc și mesajul pentru o căutare într-adevăr goală.
+F025	În Închidere lună, Reevaluare valută și Blochează luna au ierarhia stării și o singură principală. Tabelul mic păstrează contul, moneda și contul diferenței.
+F026	F1, D100 T3. Leagă balanța la 31.07 de rulajul 707 și suma XML cod 121, DUK și confruntare. Verifică și selecția perioadei și accesul la Continuă.
+F028	La alegerea declarației, perioadele anterioare sunt accesibile într-un grup inițial desfăcut. Continuă este la vedere după selecție și deschide declarația și perioada alese.
+F031	Pentru octombrie reconciliază fiecare document cu XML, blocajul și 4427/4426 în aceeași firmă. Verifică linkurile, accesul la detalii și acțiunea din pasul 2.
+F034	Confruntă toate operațiunile lunii cu XML și semnalele nominale, inclusiv cele două operațiuni N. Verifică refuzul la lipsa NC, codul completat, rezultatul DUK și derularea în afara XML.
+F035	Nota 146 și o stornare nouă au descrierea corectă. Z apare în jurnalul său. Lista facturilor fără notă se deschide integral și blochează depunerea.
+F043	Pe UBL verifică scadența, destinatarul și UM. Transportul se reconciliază cu costul sau contul lui. Alegerea NIR precedă confirmarea. Validează este acțiunea principală în starea eligibilă.
+F045	Din fișa facturii deschide PDF-ul, confruntă adresa cu documentul clientului și numele fișierului cu seria și numărul. Pe factura emisă apar acțiunile aplicabile.
+F046	Nota numește factura originală și data ei. Verifică refuzul ordinii inverse, apoi validează originalul și stornarea în această ordine. Verifică numărul de note și mișcări și prezentarea comenzilor în Registru.
+F054	Execută scenariul corectat pentru nota manuală, validată și trimisă la cabinet. Păstrează verificările de drepturi și refuz PUT/DELETE, suma și etichetele câmpurilor.
+F061	Pe balanță compară lista de conturi, denumirile și sumele cu sursa la ambele lățimi. La 603 contul și denumirea sunt lizibile integral.
+F070	Salvarea denumirii existente indică dublura și păstrează cardinalitatea. Verifică acțiunea principală și temeiul AI cu diacritice, integral vizibil pe rând.
+F073	La încasarea DANTE verifică identitățile facturilor deschise. Facturile pe bon și cele stinse sunt excluse. Pe linia contată verifică acțiunile, starea și prezentarea la 603.
+F078	Repetă scenariul canonic integral, inclusiv alegerea printr-un singur control. Verifică aceleași valori disponibile și opțiunea efectiv selectată.
+F080	F5 în noiembrie. Confruntă statul, fluturașii ambilor salariați și D112. Net 2.981 și 4.095, CAM repartizată 113 și 157, acțiunea principală Contabilizează statul.
+F081	Repetă scenariul canonic al termenelor. Compară datele, navigarea și semnele de ajutor lângă titlul Termene la ambele rezoluții.
+F084	La preluarea cu sold pe 371, metoda de stoc este aleasă explicit și se păstrează. Soldul, egalitatea debit-credit și separarea stărilor între firme sunt probate.
+F085	Compară soldurile pe parteneri și termenele cu documentele originale; facturile 66 și 71 rămân fără scadență. Diferența 401 se explică o dată. Firma fără solduri afișează o dată «nu e cazul».
+F087	Verifică statul și ieșirea din fluxul salarial din scenariu. Contabilizează statul este acțiunea principală accesibilă.
+F089	Cu intrare ulterioară datei ieșirii verifică refuzul fără scrieri și cantitatea istorică. Pe o mișcare istorică nevalidă verifică fișa, anularea și încărcarea ecranului fără 500. Controlează CMP cu documentul.
+F118	Blochează și deblochează perioada în fixtura de test. Istoricul arată actorul, momentul și motivul. Confruntă drepturile, acțiunile și rândurile registrului.
+F122	Reia operațiile și documentele din scenariul canonic F122, pe cele două ecrane. Păstrează cele 12 rezultate și dovezile corespondente.
+F126	În FISCALOS verifică starea, termenul și acțiunile aplicabile. După publicare, factura reală a lui Costin, indexul SPV și stările concordante din istoric și detaliu închid funcția.
+F131	Compară numărul și identitatea rândurilor cu setul efectiv al firmei. La C4 au fost 12, inclusiv F1A 25/26. Păstrează totalurile și scenariul canonic.
+F134	Confruntă fișierul de plată card F5 cu statul documentat pentru noiembrie. Păstrează verificările pentru identitatea beneficiarilor și sume din scenariu.
+F139	Verifică repartizarea costurilor accesorii și totalurile pe documentele scenariului, inclusiv legătura dintre NIR, marfă și cost. Reia fluxul integral.
+F162	În Control fiscal F5 compară cele patru conturi D112, cu ambele valori vizibile chiar și la egalitate. Verifică starea verde, roșie sau gri după surse.
+F169	Pe octombrie, explică diferențele D300 și 4427/4426/4423 cu note individuale, linkuri și sume care închid diferența. Păstrează separat perioada și schema.
+F172	La emitere și la reluarea unei ciorne, decizia Pleacă marfa acum se cere explicit. Verifică ghilimelele din casetă și mișcarea de stoc pentru fiecare răspuns.
+F176	Confruntă emitentul și valabilitatea certificatului SPV cu fișa firmei. Cele opt explicații sunt accesibile prin detalii după un sumar scurt.
+F179	După publicare, urmărește factura reală a furnizorului pentru CUI 55229657 până la intrarea în ciornă. Confruntă indexul, destinatarul și intervalul de cel mult 30 min.
+F183	Din fiecare divergență a auditului F6 deschide exact importul corector al firmei. Verifică sumele la 2131, 2813, 371 și textul afișat o dată.
+F252	Verifică în fișa facturii acțiunile permise de tip și stare și existența documentului rezultat în scenariul canonic. Ascunde comenzile inaplicabile.
+F254	Urmărește F1A 13 și bonul 0002 până la Z și D300. Confruntă sursele pe cote, apoi D406, jurnalul și lista de preluare. Fișa explică de ce nu se contează din nou.
+X02	Costin face prima intrare junior după publicare. Verifică ghidul corespunzător rolului și a doua autentificare fără reapariție. Păstrează dovada primei intrări.
+X05	Reia parcursul nativ 16.8 cu ← și ✕, inclusiv ferestre suprapuse, stornare, D104, ieșire și banner. Verifică revenirea și comenzile după fiecare închidere.

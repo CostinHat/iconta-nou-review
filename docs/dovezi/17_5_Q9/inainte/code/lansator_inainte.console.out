@@ -1,0 +1,4 @@
+[lacat_test] lacăt preluat de la pid 1677502 (mort sau refolosit)
+([('f.1', 'trece', '')], 'trece')
+([('f.2', 'trece', ''), ('a.1', 'pica', 'găsit 59, așteptat 0')], 'pica')
+

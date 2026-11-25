@@ -1,0 +1,21 @@
+tip	document	cota	tva	inclus	localizare
+factura	fără serie nr. 2 din 2026-10-05 (id 48, DANTE INTERNATIONAL SA, RON)	11	88.00	1	snap_tenant_9049_facturi.sql:28 (facturi id 48); snap_tenant_9049_factura_linii.sql:47
+factura_pe_bon	F1A nr. 13 din 2026-10-22 (id 64, DANTE INTERNATIONAL SA, RON)	11	10.90	0	snap_tenant_9049_facturi.sql:43 (facturi id 64); snap_tenant_9049_factura_linii.sql:30
+factura	fără serie nr. 2 din 2026-10-05 (id 48, DANTE INTERNATIONAL SA, RON)	21	1050.00	1	snap_tenant_9049_facturi.sql:28 (facturi id 48); snap_tenant_9049_factura_linii.sql:46
+factura	F1A nr. 3 din 2026-10-06 (id 49, DANTE INTERNATIONAL SA, RON)	21	42.00	1	snap_tenant_9049_facturi.sql:29 (facturi id 49); snap_tenant_9049_factura_linii.sql:48
+factura	F1A nr. 4 din 2026-10-16 (id 50, FISCALOS ICONTA S.R.L., RON)	21	42.00	1	snap_tenant_9049_facturi.sql:38 (facturi id 50); snap_tenant_9049_factura_linii.sql:49
+factura	F1A nr. 8 din 2026-10-19 (id 55, DANTE INTERNATIONAL SA, EUR)	21	111.87	1	snap_tenant_9049_facturi.sql:27 (facturi id 55); snap_tenant_9049_factura_linii.sql:54
+factura	F1A nr. 9 din 2026-10-19 (id 56, DANTE INTERNATIONAL SA, EUR)	21	-111.87	1	snap_tenant_9049_facturi.sql:32 (facturi id 56); snap_tenant_9049_factura_linii.sql:55
+factura	F1A nr. 10 din 2026-10-20 (id 59, DANTE INTERNATIONAL SA, RON)	21	21.00	1	snap_tenant_9049_facturi.sql:33 (facturi id 59); snap_tenant_9049_factura_linii.sql:27
+factura	F1A nr. 11 din 2026-10-20 (id 60, DANTE INTERNATIONAL SA, RON)	21	-21.00	1	snap_tenant_9049_facturi.sql:34 (facturi id 60); snap_tenant_9049_factura_linii.sql:28
+factura	F1A nr. 12 din 2026-10-20 (id 62, DANTE INTERNATIONAL SA, EUR)	21	11.19	1	snap_tenant_9049_facturi.sql:36 (facturi id 62); snap_tenant_9049_factura_linii.sql:29
+factura	F1A nr. 14 din 2026-10-24 (id 65, DANTE INTERNATIONAL SA, EUR)	21	56.17	1	snap_tenant_9049_facturi.sql:44 (facturi id 65); snap_tenant_9049_factura_linii.sql:34
+factura	F1A nr. 16 din 2026-10-27 (id 72, DANTE INTERNATIONAL SA, RON)	21	210.00	1	snap_tenant_9049_facturi.sql:49 (facturi id 72); snap_tenant_9049_factura_linii.sql:42
+factura	F1A nr. 17 din 2026-10-29 (id 73, DANTE INTERNATIONAL SA, RON)	21	21.00	1	snap_tenant_9049_facturi.sql:51 (facturi id 73); snap_tenant_9049_factura_linii.sql:43
+factura	F1A nr. 18 din 2026-10-31 (id 74, Client Test SRL, RON)	21	210.00	1	snap_tenant_9049_facturi.sql:52 (facturi id 74); snap_tenant_9049_factura_linii.sql:44
+factura	F1A nr. 19 din 2026-10-31 (id 75, Client Test SRL, RON)	21	210.00	1	snap_tenant_9049_facturi.sql:53 (facturi id 75); snap_tenant_9049_factura_linii.sql:45
+Z_ciorna	Z-8000000001-0042 din 2026-10-20 (înregistrarea 162, nota ciorna)	11	10.90	0	snap_tenant_9049_rapoarte_z_cote.sql:26 (rapoarte_z_cote id 26); snap_tenant_9049_inregistrari.sql:72 (inregistrari id 162)
+Z_ciorna	Z-8000000001-0042 din 2026-10-20 (înregistrarea 162, nota ciorna)	21	21.00	0	snap_tenant_9049_rapoarte_z_cote.sql:27 (rapoarte_z_cote id 27); snap_tenant_9049_inregistrari.sql:72 (inregistrari id 162)
+Z_ciorna	Z-8000000001-0043 din 2026-10-21 (înregistrarea 173, nota ciorna)	21	21.00	0	snap_tenant_9049_rapoarte_z_cote.sql:28 (rapoarte_z_cote id 28); snap_tenant_9049_inregistrari.sql:110 (inregistrari id 173)
+Z_validat	Z-8000000001-0050 din 2026-10-22 (înregistrarea 177, nota validata)	11	10.90	1	snap_tenant_9049_rapoarte_z_cote.sql:29 (rapoarte_z_cote id 29); snap_tenant_9049_inregistrari.sql:86 (inregistrari id 177)
+Z_validat	Z-8000000001-0050 din 2026-10-22 (înregistrarea 177, nota validata)	21	42.00	1	snap_tenant_9049_rapoarte_z_cote.sql:30 (rapoarte_z_cote id 30); snap_tenant_9049_inregistrari.sql:86 (inregistrari id 177)

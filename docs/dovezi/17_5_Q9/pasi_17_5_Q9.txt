@@ -1,0 +1,5 @@
+PASI 17.5-Q9 — 1366x768, contul de probă.
+Format: aserțiune | pas | ecran | operator | valoare | descriere | sursa valorii
+f.1 | implicit | Cabinet | egal | De depus | De depus pe card | validat.js:146; contul probei, CSV B4 f.1 r1
+f.2 | ciorne | De depus | text_vizibil | Validează | În secțiunea „Notele tale în ciornă” există un rând cu „Validează” | validat.js:444,471
+a.1 | ciorne | De depus | nr_randuri | 0 | În secțiunea „Notele tale în ciornă”, niciun rând nu are buton de clasă primară | măsurarea F019 Design pe ambele rezoluții

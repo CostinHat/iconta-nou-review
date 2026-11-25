@@ -1,0 +1,541 @@
+cod	criteriu	rezolutie	v2	v3	sursa_v3
+F003	Funcțional	1366x768	1	1	măsurat pe E_R2
+F003	Funcțional	603x590	1	1	măsurat pe E_R2
+F003	Aspect	1366x768	1	1	măsurat pe E_R2
+F003	Aspect	603x590	1	1	măsurat pe E_R2
+F003	Design	1366x768	0	0	măsurat pe E_R2
+F003	Design	603x590	0	0	măsurat pe E_R2
+F003	Simplitate	1366x768	0	0	măsurat pe E_R2
+F003	Simplitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F003	Conformitate	1366x768	1	1	măsurat pe E_R2
+F003	Conformitate	603x590	1	1	măsurat pe E_R2
+F003	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F003	Stabilitate	603x590	1	1	măsurat pe E_R2
+F011	Funcțional	1366x768	0	0	măsurat pe E_R2
+F011	Funcțional	603x590	0	0	măsurat pe E_R2
+F011	Aspect	1366x768	1	1	măsurat pe E_R2
+F011	Aspect	603x590	0	0	măsurat pe E_R2
+F011	Design	1366x768	1	1	măsurat pe E_R2
+F011	Design	603x590	1	1	măsurat pe E_R2
+F011	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F011	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F011	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F011	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F011	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F011	Stabilitate	603x590	1	1	măsurat pe E_R2
+F012	Funcțional	1366x768	0	1	măsurat pe E_R2
+F012	Funcțional	603x590	0	1	măsurat pe E_R2
+F012	Aspect	1366x768	1	1	măsurat pe E_R2
+F012	Aspect	603x590	0	0	măsurat pe E_R2
+F012	Design	1366x768	1	1	măsurat pe E_R2
+F012	Design	603x590	1	1	măsurat pe E_R2
+F012	Simplitate	1366x768	1	1	măsurat pe E_R2
+F012	Simplitate	603x590	1	1	măsurat pe E_R2
+F012	Conformitate	1366x768	1	1	măsurat pe E_R2
+F012	Conformitate	603x590	1	1	măsurat pe E_R2
+F012	Stabilitate	1366x768	0	1	măsurat pe E_R2
+F012	Stabilitate	603x590	0	1	măsurat pe E_R2
+F015	Funcțional	1366x768	1	1	măsurat pe E_R2
+F015	Funcțional	603x590	1	1	măsurat pe E_R2
+F015	Aspect	1366x768	1	1	măsurat pe E_R2
+F015	Aspect	603x590	0	0	măsurat pe E_R2
+F015	Design	1366x768	1	0	măsurat pe E_R2
+F015	Design	603x590	0	0	măsurat pe E_R2
+F015	Simplitate	1366x768	0	0	măsurat pe E_R2
+F015	Simplitate	603x590	0	0	măsurat pe E_R2
+F015	Conformitate	1366x768	1	1	măsurat pe E_R2
+F015	Conformitate	603x590	1	1	măsurat pe E_R2
+F015	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F015	Stabilitate	603x590	1	1	măsurat pe E_R2
+F017	Funcțional	1366x768	1	1	măsurat pe E_R2
+F017	Funcțional	603x590	1	1	măsurat pe E_R2
+F017	Aspect	1366x768	1	1	măsurat pe E_R2
+F017	Aspect	603x590	1	1	măsurat pe E_R2
+F017	Design	1366x768	1	1	măsurat pe E_R2
+F017	Design	603x590	1	1	măsurat pe E_R2
+F017	Simplitate	1366x768	0	0	măsurat pe E_R2
+F017	Simplitate	603x590	0	0	măsurat pe E_R2
+F017	Conformitate	1366x768	0	0	măsurat pe E_R2
+F017	Conformitate	603x590	0	0	măsurat pe E_R2
+F017	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F017	Stabilitate	603x590	1	1	măsurat pe E_R2
+F018	Funcțional	1366x768	1	1	măsurat pe E_R2
+F018	Funcțional	603x590	1	1	măsurat pe E_R2
+F018	Aspect	1366x768	1	1	măsurat pe E_R2
+F018	Aspect	603x590	0	0	măsurat pe E_R2
+F018	Design	1366x768	0	0	măsurat pe E_R2
+F018	Design	603x590	0	0	măsurat pe E_R2
+F018	Simplitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F018	Simplitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F018	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F018	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F018	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F018	Stabilitate	603x590	1	1	măsurat pe E_R2
+F019	Funcțional	1366x768	1	1	măsurat pe E_R2
+F019	Funcțional	603x590	1	1	măsurat pe E_R2
+F019	Aspect	1366x768	0	1	măsurat pe E_R2
+F019	Aspect	603x590	0	0	măsurat pe E_R2
+F019	Design	1366x768	0	0	măsurat pe E_R2
+F019	Design	603x590	0	0	măsurat pe E_R2
+F019	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F019	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F019	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F019	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F019	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F019	Stabilitate	603x590	1	1	măsurat pe E_R2
+F022	Funcțional	1366x768	1	1	măsurat pe E_R2
+F022	Funcțional	603x590	1	1	măsurat pe E_R2
+F022	Aspect	1366x768	0	0	măsurat pe E_R2
+F022	Aspect	603x590	0	0	măsurat pe E_R2
+F022	Design	1366x768	1	1	măsurat pe E_R2
+F022	Design	603x590	1	1	măsurat pe E_R2
+F022	Simplitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F022	Simplitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F022	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F022	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F022	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F022	Stabilitate	603x590	1	1	măsurat pe E_R2
+F023	Funcțional	1366x768	1	1	măsurat pe E_R2
+F023	Funcțional	603x590	1	1	măsurat pe E_R2
+F023	Aspect	1366x768	0	0	măsurat pe E_R2
+F023	Aspect	603x590	0	0	măsurat pe E_R2
+F023	Design	1366x768	1	1	măsurat pe E_R2
+F023	Design	603x590	1	1	măsurat pe E_R2
+F023	Simplitate	1366x768	0	0	măsurat pe E_R2
+F023	Simplitate	603x590	0	0	măsurat pe E_R2
+F023	Conformitate	1366x768	1	1	măsurat pe E_R2
+F023	Conformitate	603x590	1	1	măsurat pe E_R2
+F023	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F023	Stabilitate	603x590	1	1	măsurat pe E_R2
+F025	Funcțional	1366x768	1	1	măsurat pe E_R2
+F025	Funcțional	603x590	1	1	măsurat pe E_R2
+F025	Aspect	1366x768	1	1	măsurat pe E_R2
+F025	Aspect	603x590	0	0	măsurat pe E_R2
+F025	Design	1366x768	1	0	măsurat pe E_R2
+F025	Design	603x590	1	0	măsurat pe E_R2
+F025	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F025	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F025	Conformitate	1366x768	1	1	măsurat pe E_R2
+F025	Conformitate	603x590	1	1	măsurat pe E_R2
+F025	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F025	Stabilitate	603x590	1	1	măsurat pe E_R2
+F026	Funcțional	1366x768	0	0	măsurat pe E_R2
+F026	Funcțional	603x590	0	0	măsurat pe E_R2
+F026	Aspect	1366x768	1	1	măsurat pe E_R2
+F026	Aspect	603x590	1	1	măsurat pe E_R2
+F026	Design	1366x768	1	1	măsurat pe E_R2
+F026	Design	603x590	1	1	măsurat pe E_R2
+F026	Simplitate	1366x768	0	0	măsurat pe E_R2
+F026	Simplitate	603x590	0	0	măsurat pe E_R2
+F026	Conformitate	1366x768	0	0	măsurat pe E_R2
+F026	Conformitate	603x590	0	0	măsurat pe E_R2
+F026	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F026	Stabilitate	603x590	1	1	măsurat pe E_R2
+F028	Funcțional	1366x768	1	1	măsurat pe E_R2
+F028	Funcțional	603x590	1	1	măsurat pe E_R2
+F028	Aspect	1366x768	1	1	măsurat pe E_R2
+F028	Aspect	603x590	1	1	măsurat pe E_R2
+F028	Design	1366x768	1	1	măsurat pe E_R2
+F028	Design	603x590	1	1	măsurat pe E_R2
+F028	Simplitate	1366x768	0	0	măsurat pe E_R2
+F028	Simplitate	603x590	0	0	măsurat pe E_R2
+F028	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F028	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F028	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F028	Stabilitate	603x590	1	1	măsurat pe E_R2
+F031	Funcțional	1366x768	0	0	măsurat pe E_R2
+F031	Funcțional	603x590	0	0	măsurat pe E_R2
+F031	Aspect	1366x768	1	1	măsurat pe E_R2
+F031	Aspect	603x590	0	0	măsurat pe E_R2
+F031	Design	1366x768	0	0	măsurat pe E_R2
+F031	Design	603x590	0	0	măsurat pe E_R2
+F031	Simplitate	1366x768	0	0	măsurat pe E_R2
+F031	Simplitate	603x590	0	0	măsurat pe E_R2
+F031	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F031	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F031	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F031	Stabilitate	603x590	1	1	măsurat pe E_R2
+F034	Funcțional	1366x768	0	0	măsurat pe E_R2
+F034	Funcțional	603x590	0	0	măsurat pe E_R2
+F034	Aspect	1366x768	1	1	măsurat pe E_R2
+F034	Aspect	603x590	0	0	măsurat pe E_R2
+F034	Design	1366x768	0	0	măsurat pe E_R2
+F034	Design	603x590	0	0	măsurat pe E_R2
+F034	Simplitate	1366x768	0	0	măsurat pe E_R2
+F034	Simplitate	603x590	0	0	măsurat pe E_R2
+F034	Conformitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F034	Conformitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F034	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F034	Stabilitate	603x590	1	1	măsurat pe E_R2
+F035	Funcțional	1366x768	0	0	măsurat pe E_R2
+F035	Funcțional	603x590	0	0	măsurat pe E_R2
+F035	Aspect	1366x768	1	1	măsurat pe E_R2
+F035	Aspect	603x590	0	1	măsurat pe E_R2
+F035	Design	1366x768	0	0	măsurat pe E_R2
+F035	Design	603x590	0	0	măsurat pe E_R2
+F035	Simplitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F035	Simplitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F035	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F035	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F035	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F035	Stabilitate	603x590	1	1	măsurat pe E_R2
+F043	Funcțional	1366x768	0	0	măsurat pe E_R2
+F043	Funcțional	603x590	0	0	măsurat pe E_R2
+F043	Aspect	1366x768	1	1	măsurat pe E_R2
+F043	Aspect	603x590	1	1	măsurat pe E_R2
+F043	Design	1366x768	0	0	măsurat pe E_R2
+F043	Design	603x590	0	0	măsurat pe E_R2
+F043	Simplitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F043	Simplitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F043	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F043	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F043	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F043	Stabilitate	603x590	1	1	măsurat pe E_R2
+F045	Funcțional	1366x768	0	0	măsurat pe E_R2
+F045	Funcțional	603x590	0	0	măsurat pe E_R2
+F045	Aspect	1366x768	1	1	măsurat pe E_R2
+F045	Aspect	603x590	1	1	măsurat pe E_R2
+F045	Design	1366x768	0	0	măsurat pe E_R2
+F045	Design	603x590	0	0	măsurat pe E_R2
+F045	Simplitate	1366x768	1	1	măsurat pe E_R2
+F045	Simplitate	603x590	1	1	măsurat pe E_R2
+F045	Conformitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F045	Conformitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F045	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F045	Stabilitate	603x590	1	1	măsurat pe E_R2
+F046	Funcțional	1366x768	0	0	măsurat pe E_R2
+F046	Funcțional	603x590	0	0	măsurat pe E_R2
+F046	Aspect	1366x768	1	1	măsurat pe E_R2
+F046	Aspect	603x590	0	0	măsurat pe E_R2
+F046	Design	1366x768	0	0	măsurat pe E_R2
+F046	Design	603x590	0	0	măsurat pe E_R2
+F046	Simplitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F046	Simplitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F046	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F046	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F046	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F046	Stabilitate	603x590	1	1	măsurat pe E_R2
+F054	Funcțional	1366x768	1	1	măsurat pe E_R2
+F054	Funcțional	603x590	1	1	măsurat pe E_R2
+F054	Aspect	1366x768	1	1	măsurat pe E_R2
+F054	Aspect	603x590	0	0	măsurat pe E_R2
+F054	Design	1366x768	0	0	măsurat pe E_R2
+F054	Design	603x590	0	0	măsurat pe E_R2
+F054	Simplitate	1366x768	1	1	măsurat pe E_R2
+F054	Simplitate	603x590	1	1	măsurat pe E_R2
+F054	Conformitate	1366x768	1	1	măsurat pe E_R2
+F054	Conformitate	603x590	1	1	măsurat pe E_R2
+F054	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F054	Stabilitate	603x590	1	1	măsurat pe E_R2
+F061	Funcțional	1366x768	1	1	măsurat pe E_R2
+F061	Funcțional	603x590	1	1	măsurat pe E_R2
+F061	Aspect	1366x768	1	1	măsurat pe E_R2
+F061	Aspect	603x590	0	0	măsurat pe E_R2
+F061	Design	1366x768	1	1	măsurat pe E_R2
+F061	Design	603x590	1	1	măsurat pe E_R2
+F061	Simplitate	1366x768	1	1	măsurat pe E_R2
+F061	Simplitate	603x590	1	1	măsurat pe E_R2
+F061	Conformitate	1366x768	1	1	măsurat pe E_R2
+F061	Conformitate	603x590	1	1	măsurat pe E_R2
+F061	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F061	Stabilitate	603x590	1	1	măsurat pe E_R2
+F070	Funcțional	1366x768	0	0	măsurat pe E_R2
+F070	Funcțional	603x590	0	0	măsurat pe E_R2
+F070	Aspect	1366x768	1	1	măsurat pe E_R2
+F070	Aspect	603x590	1	1	măsurat pe E_R2
+F070	Design	1366x768	0	0	măsurat pe E_R2
+F070	Design	603x590	0	0	măsurat pe E_R2
+F070	Simplitate	1366x768	0	0	măsurat pe E_R2
+F070	Simplitate	603x590	0	0	măsurat pe E_R2
+F070	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F070	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F070	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F070	Stabilitate	603x590	1	1	măsurat pe E_R2
+F073	Funcțional	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F073	Funcțional	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F073	Aspect	1366x768	1	1	măsurat pe E_R2
+F073	Aspect	603x590	0	0	măsurat pe E_R2
+F073	Design	1366x768	0	0	măsurat pe E_R2
+F073	Design	603x590	0	0	măsurat pe E_R2
+F073	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F073	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F073	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F073	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F073	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F073	Stabilitate	603x590	1	1	măsurat pe E_R2
+F078	Funcțional	1366x768	1	1	măsurat pe E_R2
+F078	Funcțional	603x590	1	1	măsurat pe E_R2
+F078	Aspect	1366x768	1	1	măsurat pe E_R2
+F078	Aspect	603x590	1	1	măsurat pe E_R2
+F078	Design	1366x768	1	1	măsurat pe E_R2
+F078	Design	603x590	1	1	măsurat pe E_R2
+F078	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F078	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F078	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F078	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F078	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F078	Stabilitate	603x590	1	1	măsurat pe E_R2
+F080	Funcțional	1366x768	1	1	măsurat pe E_R2
+F080	Funcțional	603x590	1	1	măsurat pe E_R2
+F080	Aspect	1366x768	1	1	măsurat pe E_R2
+F080	Aspect	603x590	1	1	măsurat pe E_R2
+F080	Design	1366x768	0	0	măsurat pe E_R2
+F080	Design	603x590	0	0	măsurat pe E_R2
+F080	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F080	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F080	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F080	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F080	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F080	Stabilitate	603x590	1	1	măsurat pe E_R2
+F081	Funcțional	1366x768	1	1	măsurat pe E_R2
+F081	Funcțional	603x590	1	1	măsurat pe E_R2
+F081	Aspect	1366x768	1	1	măsurat pe E_R2
+F081	Aspect	603x590	1	1	măsurat pe E_R2
+F081	Design	1366x768	1	1	măsurat pe E_R2
+F081	Design	603x590	1	1	măsurat pe E_R2
+F081	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F081	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F081	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F081	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F081	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F081	Stabilitate	603x590	1	1	măsurat pe E_R2
+F084	Funcțional	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F084	Funcțional	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F084	Aspect	1366x768	1	1	măsurat pe E_R2
+F084	Aspect	603x590	1	1	măsurat pe E_R2
+F084	Design	1366x768	1	1	măsurat pe E_R2
+F084	Design	603x590	1	1	măsurat pe E_R2
+F084	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F084	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F084	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F084	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F084	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F084	Stabilitate	603x590	1	1	măsurat pe E_R2
+F085	Funcțional	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F085	Funcțional	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F085	Aspect	1366x768	1	1	măsurat pe E_R2
+F085	Aspect	603x590	1	1	măsurat pe E_R2
+F085	Design	1366x768	1	1	măsurat pe E_R2
+F085	Design	603x590	1	1	măsurat pe E_R2
+F085	Simplitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F085	Simplitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F085	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F085	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F085	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F085	Stabilitate	603x590	1	1	măsurat pe E_R2
+F087	Funcțional	1366x768	1	1	măsurat pe E_R2
+F087	Funcțional	603x590	1	1	măsurat pe E_R2
+F087	Aspect	1366x768	1	1	măsurat pe E_R2
+F087	Aspect	603x590	1	1	măsurat pe E_R2
+F087	Design	1366x768	0	0	măsurat pe E_R2
+F087	Design	603x590	0	0	măsurat pe E_R2
+F087	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F087	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F087	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F087	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F087	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F087	Stabilitate	603x590	1	1	măsurat pe E_R2
+F089	Funcțional	1366x768	0	0	măsurat pe E_R2
+F089	Funcțional	603x590	0	0	măsurat pe E_R2
+F089	Aspect	1366x768	1	1	măsurat pe E_R2
+F089	Aspect	603x590	1	1	măsurat pe E_R2
+F089	Design	1366x768	0	0	măsurat pe E_R2
+F089	Design	603x590	0	0	măsurat pe E_R2
+F089	Simplitate	1366x768	0	0	măsurat pe E_R2
+F089	Simplitate	603x590	0	0	măsurat pe E_R2
+F089	Conformitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F089	Conformitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F089	Stabilitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F089	Stabilitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F118	Funcțional	1366x768	0	0	măsurat pe E_R2
+F118	Funcțional	603x590	0	0	măsurat pe E_R2
+F118	Aspect	1366x768	1	1	măsurat pe E_R2
+F118	Aspect	603x590	0	0	măsurat pe E_R2
+F118	Design	1366x768	0	0	măsurat pe E_R2
+F118	Design	603x590	0	0	măsurat pe E_R2
+F118	Simplitate	1366x768	1	1	măsurat pe E_R2
+F118	Simplitate	603x590	1	1	măsurat pe E_R2
+F118	Conformitate	1366x768	1	1	măsurat pe E_R2
+F118	Conformitate	603x590	1	1	măsurat pe E_R2
+F118	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F118	Stabilitate	603x590	1	1	măsurat pe E_R2
+F122	Funcțional	1366x768	1	1	măsurat pe E_R2
+F122	Funcțional	603x590	1	1	măsurat pe E_R2
+F122	Aspect	1366x768	1	1	măsurat pe E_R2
+F122	Aspect	603x590	1	1	măsurat pe E_R2
+F122	Design	1366x768	1	1	măsurat pe E_R2
+F122	Design	603x590	1	1	măsurat pe E_R2
+F122	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F122	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F122	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F122	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F122	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F122	Stabilitate	603x590	1	1	măsurat pe E_R2
+F126	Funcțional	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F126	Funcțional	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F126	Aspect	1366x768	1	1	măsurat pe E_R2
+F126	Aspect	603x590	1	1	măsurat pe E_R2
+F126	Design	1366x768	0	0	măsurat pe E_R2
+F126	Design	603x590	0	0	măsurat pe E_R2
+F126	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F126	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F126	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F126	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F126	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F126	Stabilitate	603x590	1	1	măsurat pe E_R2
+F131	Funcțional	1366x768	1	1	măsurat pe E_R2
+F131	Funcțional	603x590	1	1	măsurat pe E_R2
+F131	Aspect	1366x768	1	1	măsurat pe E_R2
+F131	Aspect	603x590	1	1	măsurat pe E_R2
+F131	Design	1366x768	1	1	măsurat pe E_R2
+F131	Design	603x590	1	1	măsurat pe E_R2
+F131	Simplitate	1366x768	1	1	măsurat pe E_R2
+F131	Simplitate	603x590	1	1	măsurat pe E_R2
+F131	Conformitate	1366x768	1	1	măsurat pe E_R2
+F131	Conformitate	603x590	1	1	măsurat pe E_R2
+F131	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F131	Stabilitate	603x590	1	1	măsurat pe E_R2
+F134	Funcțional	1366x768	1	1	măsurat pe E_R2
+F134	Funcțional	603x590	1	1	măsurat pe E_R2
+F134	Aspect	1366x768	1	1	măsurat pe E_R2
+F134	Aspect	603x590	1	1	măsurat pe E_R2
+F134	Design	1366x768	1	1	măsurat pe E_R2
+F134	Design	603x590	1	1	măsurat pe E_R2
+F134	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F134	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F134	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F134	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F134	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F134	Stabilitate	603x590	1	1	măsurat pe E_R2
+F139	Funcțional	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F139	Funcțional	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F139	Aspect	1366x768	1	1	măsurat pe E_R2
+F139	Aspect	603x590	1	1	măsurat pe E_R2
+F139	Design	1366x768	1	1	măsurat pe E_R2
+F139	Design	603x590	1	1	măsurat pe E_R2
+F139	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F139	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F139	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F139	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F139	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F139	Stabilitate	603x590	1	1	măsurat pe E_R2
+F162	Funcțional	1366x768	0	0	măsurat pe E_R2
+F162	Funcțional	603x590	0	0	măsurat pe E_R2
+F162	Aspect	1366x768	1	1	măsurat pe E_R2
+F162	Aspect	603x590	1	1	măsurat pe E_R2
+F162	Design	1366x768	1	1	măsurat pe E_R2
+F162	Design	603x590	1	1	măsurat pe E_R2
+F162	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F162	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F162	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F162	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F162	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F162	Stabilitate	603x590	1	1	măsurat pe E_R2
+F169	Funcțional	1366x768	0	0	măsurat pe E_R2
+F169	Funcțional	603x590	0	0	măsurat pe E_R2
+F169	Aspect	1366x768	1	1	măsurat pe E_R2
+F169	Aspect	603x590	1	1	măsurat pe E_R2
+F169	Design	1366x768	1	1	măsurat pe E_R2
+F169	Design	603x590	1	1	măsurat pe E_R2
+F169	Simplitate	1366x768	0	0	măsurat pe E_R2
+F169	Simplitate	603x590	0	0	măsurat pe E_R2
+F169	Conformitate	1366x768	1	1	măsurat pe E_R2
+F169	Conformitate	603x590	1	1	măsurat pe E_R2
+F169	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F169	Stabilitate	603x590	1	1	măsurat pe E_R2
+F172	Funcțional	1366x768	1	1	măsurat pe E_R2
+F172	Funcțional	603x590	1	1	măsurat pe E_R2
+F172	Aspect	1366x768	1	1	măsurat pe E_R2
+F172	Aspect	603x590	1	1	măsurat pe E_R2
+F172	Design	1366x768	0	0	măsurat pe E_R2
+F172	Design	603x590	0	0	măsurat pe E_R2
+F172	Simplitate	1366x768	1	1	măsurat pe E_R2
+F172	Simplitate	603x590	1	1	măsurat pe E_R2
+F172	Conformitate	1366x768	1	1	măsurat pe E_R2
+F172	Conformitate	603x590	1	1	măsurat pe E_R2
+F172	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F172	Stabilitate	603x590	1	1	măsurat pe E_R2
+F176	Funcțional	1366x768	0	0	măsurat pe E_R2
+F176	Funcțional	603x590	0	0	măsurat pe E_R2
+F176	Aspect	1366x768	1	1	măsurat pe E_R2
+F176	Aspect	603x590	1	1	măsurat pe E_R2
+F176	Design	1366x768	1	1	măsurat pe E_R2
+F176	Design	603x590	1	1	măsurat pe E_R2
+F176	Simplitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F176	Simplitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F176	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F176	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F176	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F176	Stabilitate	603x590	1	1	măsurat pe E_R2
+F179	Funcțional	1366x768	0	0	măsurat pe E_R2
+F179	Funcțional	603x590	0	0	măsurat pe E_R2
+F179	Aspect	1366x768	1	1	măsurat pe E_R2
+F179	Aspect	603x590	1	1	măsurat pe E_R2
+F179	Design	1366x768	1	1	măsurat pe E_R2
+F179	Design	603x590	1	1	măsurat pe E_R2
+F179	Simplitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F179	Simplitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F179	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F179	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F179	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F179	Stabilitate	603x590	1	1	măsurat pe E_R2
+F183	Funcțional	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F183	Funcțional	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F183	Aspect	1366x768	1	1	măsurat pe E_R2
+F183	Aspect	603x590	1	1	măsurat pe E_R2
+F183	Design	1366x768	1	1	măsurat pe E_R2
+F183	Design	603x590	1	1	măsurat pe E_R2
+F183	Simplitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F183	Simplitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F183	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F183	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F183	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F183	Stabilitate	603x590	1	1	măsurat pe E_R2
+F252	Funcțional	1366x768	1	1	măsurat pe E_R2
+F252	Funcțional	603x590	1	1	măsurat pe E_R2
+F252	Aspect	1366x768	1	1	măsurat pe E_R2
+F252	Aspect	603x590	1	1	măsurat pe E_R2
+F252	Design	1366x768	0	0	măsurat pe E_R2
+F252	Design	603x590	0	0	măsurat pe E_R2
+F252	Simplitate	1366x768	1	1	măsurat pe E_R2
+F252	Simplitate	603x590	1	1	măsurat pe E_R2
+F252	Conformitate	1366x768	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F252	Conformitate	603x590	1	1	preluat din v2 (neschimbat, motivul în celulă)
+F252	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F252	Stabilitate	603x590	1	1	măsurat pe E_R2
+F254	Funcțional	1366x768	0	0	măsurat pe E_R2
+F254	Funcțional	603x590	0	0	măsurat pe E_R2
+F254	Aspect	1366x768	1	1	măsurat pe E_R2
+F254	Aspect	603x590	1	1	măsurat pe E_R2
+F254	Design	1366x768	0	0	măsurat pe E_R2
+F254	Design	603x590	0	0	măsurat pe E_R2
+F254	Simplitate	1366x768	0	0	măsurat pe E_R2
+F254	Simplitate	603x590	0	0	măsurat pe E_R2
+F254	Conformitate	1366x768	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F254	Conformitate	603x590	0	0	preluat din v2 (neschimbat, motivul în celulă)
+F254	Stabilitate	1366x768	1	1	măsurat pe E_R2
+F254	Stabilitate	603x590	1	1	măsurat pe E_R2
+X02	Funcțional	1366x768	-	-	nemăsurat
+X02	Funcțional	603x590	-	-	nemăsurat
+X02	Aspect	1366x768	-	-	nemăsurat
+X02	Aspect	603x590	-	-	nemăsurat
+X02	Design	1366x768	-	-	nemăsurat
+X02	Design	603x590	-	-	nemăsurat
+X02	Simplitate	1366x768	-	-	nemăsurat
+X02	Simplitate	603x590	-	-	nemăsurat
+X02	Conformitate	1366x768	-	-	nemăsurat
+X02	Conformitate	603x590	-	-	nemăsurat
+X02	Stabilitate	1366x768	-	-	nemăsurat
+X02	Stabilitate	603x590	-	-	nemăsurat
+X05	Funcțional	1366x768	1	1	măsurat pe E_R2
+X05	Funcțional	603x590	1	1	măsurat pe E_R2
+X05	Aspect	1366x768	1	1	măsurat pe E_R2
+X05	Aspect	603x590	1	1	măsurat pe E_R2
+X05	Design	1366x768	1	1	măsurat pe E_R2
+X05	Design	603x590	1	1	măsurat pe E_R2
+X05	Simplitate	1366x768	1	1	măsurat pe E_R2
+X05	Simplitate	603x590	1	1	măsurat pe E_R2
+X05	Conformitate	1366x768	1	1	măsurat pe E_R2
+X05	Conformitate	603x590	1	1	măsurat pe E_R2
+X05	Stabilitate	1366x768	1	1	măsurat pe E_R2
+X05	Stabilitate	603x590	1	1	măsurat pe E_R2

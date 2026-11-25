@@ -1,0 +1,25 @@
+{
+  "schema": "tenant_9049",
+  "perioada": "2026-10",
+  "snapshot_sha256": "054cd769c34408ac8bd2a90ba5dc03f5c323a1879dbc81a2081d4521a8ccb0ba",
+  "E_R2": "7d9536586ec0da47811f85191d0c7d18efa47811",
+  "rezultat_aplicatie_E_R2": {
+    "R9_1": "8921",
+    "R9_2": "1873",
+    "R10_1": "899",
+    "R10_2": "99",
+    "R17_2": "1972",
+    "R27_2": "674",
+    "R31_2": "-43",
+    "R32_2": "631",
+    "R34_2": "1341",
+    "R41_2": "1341"
+  },
+  "sursa_agregat": "d300_oct_2026_10_F1_iconta_test.txt",
+  "sha256_agregat": "d7a8ac56590013de08b7ff1f377866ff9fe2a2569003c2a7e8d21fd29b4dda91",
+  "facturi_in_pull": 27,
+  "extras_independent": "documente_D300_Q7.tsv",
+  "sha256_documente": "ae028ab381962972fe98735dbf393e1f7b5ea3e07f6d03e1a556df083bd98ece",
+  "sha256_detalii": "1d26eb3c4ee2e1f809429c8670e6ee3301055a948613eea8316a0b69e0dda87d",
+  "detalii": "documente_D300_Q7_detalii.tsv"
+}

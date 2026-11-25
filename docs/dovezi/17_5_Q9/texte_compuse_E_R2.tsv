@@ -1,0 +1,37 @@
+cod	text_v2	stare_pe_E_R2	ecran (traseu)	text pe ecran la E_R2 (copiat din DOM)	observatie
+F011	5 fără potrivire	găsit	F2 › Bancă › import extras_proba_2411.csv	5 linii importate: 0 potrivite pe facturi, 5 fără potrivire (alege factura sau contează pe nota propusă).	mesajul numără 5 fără potrivire; rândurile: 4 fără potrivire + 1 comision cu notă propusă 627=5121; cipul: «5 fără potrivire · 3 potriviri parțiale · 2 operațiuni ale băncii» (cu liniile vechi ale F2); proba curățată
+F015	Completează: tipul	găsit	F1 › Casă › + Dispoziție nouă › Plată furnizor	Completează: tipul	rămâne sub buton după alegerea tipului; titlul butonului: «Completează: partenerul, suma, poziția din listă sau „Avans, fără factură”»
+F017	Completează: tipul	găsit	F1 › Casă › + Dispoziție nouă › Încasare client	Completează: tipul	idem F015
+F017	reprezentând: contravaloare factura Sold la 31.08.2026 din 31.08.2026	nereprodus (PDF)	chitanța CHF1 nr. 4 (PDF)	—	text generat de server: core/uc_tenants.py:2343 și :2414 «contravaloare factura %s din %s»; serverul neschimbat de R2
+F019	81 de note ale tale în ciornă · 81 de note ale tale în ciornă	schimbat	pagina cabinetului › cardul De validat	7 note de validat · 0 declarații de depus · 2 depășite, de generat din nou · 82 de note ale tale în ciornă	textul nu mai e dublat pe E_R2
+F022	Verificat: D390 bunuri IC (…) și (2) D300 depus (rândurile	găsit	F2 › Control fiscal	Verificat: D390 bunuri IC (livrări L / achiziții A, automat din facturi) față de (1) evidența contabilă validată a acelorași facturi pe perioada comparată (10/2026) și (2) D300 depus (rândurile	se oprește în paranteză (textul elementului se termină acolo)
+F023	Marfa A · stoc 153 buc	găsit (cifră schimbată)	F1 › Facturi › Emite factură › linia 1 › articol	Marfa A · stoc 152 buc	stocul cu ciornele de azi; deasupra apare «Nimic din listă nu conține „Marfa A”»
+F043	Transport marfa	nereprodus	F1 › Facturi primite › import DNT-RT-1020.xml	—	importul nu e refăcut (ar recrea factura, articolele, produsele și mișcările curățate după v2); serverul neschimbat
+F043	1 era deja în listă	nelocalizat, nereprodus	import e-Factura	—	rămas nelocalizat în cod (harta_Q7); nereprodus
+F043	două controale pe linie	nu e text al aplicației	—	—	textul măsurătorii v2, retras la 08:59
+F043	leagă de NIR	nereprodus	validarea facturii primite, după confirmare	—	pasul după «Validează» nu e refăcut (ar scrie nota)
+F045	Către: F2 Profit Amortizare SRL - CUI: 403000015	găsit (fișa)	F1 › Facturi › Istoric › F1A nr. 20	Către: F2 Profit Amortizare SRL · CUI 403000015	pe fișă, fără adresă; PDF-ul (server neschimbat) are eticheta din v2
+F045	Factura F1A nr. 20	găsit	F1 › Facturi › Istoric › F1A nr. 20	Factură F1A nr. 20	titlul ferestrei
+F045	Cod TVA: RO401002001	nereprodus (PDF)	PDF factură	—	generat de server, neschimbat
+F046	Contare factura F1A nr. 22	găsit	F1 › Registru jurnal › 11/2026	Contare factura F1A nr. 22	nota de stornare are numele facturii de stornare, nu al celei stornate
+F046	Stornare factura F1A nr. 20 din 13.11.2026	negăsit (așteptat)	F1 › Registru jurnal › 11/2026	—	numele cerut de scenariu nu apare
+F046	Retur în stoc Marfa A × 2 buc (stornare)	găsit	F1 › Registru jurnal › 11/2026	Retur în stoc Marfa A × 2 buc (stornare) · Retur la Factură F1A n…	
+F046	validează întâi F1A nr. 20, apoi stornarea	nereprodus	validarea notei de stornare	—	refuzul nu e provocat (ar valida note)
+F070	Pâine albă	dată de probă	F1 › Produse	—	produsul de probă nu e reintrodus
+F070	Painea alba ... incadrandu-se ... fara zahar adaugat >= 10g/100g ... se aplica	găsit	F1 › Produse › Paine alba	Temeiul cotei: Painea alba este aliment pentru consum uman, incadrandu-se la art. 291 (2) b) Cod fiscal, fara zahar adaugat >= 10g/100g, deci cota red…	fără diacritice
+F070	Paine alba	găsit	F1 › Produse	Paine alba	
+F073	Stinge F1A nr. 13 · 110,00 lei	nereprodus	F1 › Bancă › import extras_F073_2011.csv	—	importul F073 nu e refăcut (depinde de factura DNT-RT-1020 curățată); serverul neschimbat
+F073	factura DNT-RT-1020	nereprodus	idem	—	
+F073	Comision administrare cont noiembrie	găsit	F1 › Bancă	Comision administrare cont noiembrie	linia din 03.02.2026 (date de test din 13.11), notă propusă 627 = 5121
+F089	Ieșire de 150 peste stocul de 0 la 01.08.2026	nereprodus	F1 › Stocuri › Mișcări	NU s-a salvat. Ieșire de 1.000 buc peste stocul de 152 buc	ieșirea de 150 la 01.08 nu e refăcută; refuzul măsurat azi compară cu stocul cu ciorne (152), nu cu cel validat (122)
+F126	netrimisă în SPV · termen de transmitere … (depășit)	găsit	F1 › Facturi › Istoric facturi	13.11.2026 · emisă · neîncasată · netrimisă în SPV · termen de transmitere în SPV 20.11.2026 (depășit)	pe F1A nr. 24; FISCALOS FIC nr. 1–3: «acceptată în SPV», FIC nr. 3 «SPV: trimisă (recipișă primită)»
+F162	D112 și contul 444/4315/4316/436 coincid	găsit	F5 › Control fiscal › luna comparată 09/2026	D112 și contul 444 coincid. / … 4315 coincid. / … 4316 coincid. / … 436 coincid.	fără cifrele celor două părți
+F169	Note în ciornă pe contul 4427: 12, cu suma de 617,92 lei	găsit	F1 › Control fiscal (10/2026)	Note în ciornă pe contul 4427 în perioadă: 12, cu suma de 617,92 lei.	
+F169	TVA de plată ... Diferență neexplicată: 1.257,00 lei	găsit (cifră schimbată)	F1 › Control fiscal (10/2026)	TVA de plată (rezultat decont): D300 nedeclarat (generat azi) ar avea 1.551,00 lei, contul 4423 are 0,00 lei (diferență 1.551,00 lei) · Diferență neexplicată: 1.551,00 lei.	1.257 → 1.551 după restaurarea F1 (C1)
+F176	Conectat. Certificat emis de DigiSign … Acces valabil până la 14 ianuarie 2027	găsit	Setări cont › Conectare SPV	Conectat. Certificat emis de DigiSign; titularul nu e transmis de ANAF. Acces valabil până la 14 ianuarie 2027.	
+F176	certificatul cabinetului are drept pe CUI-ul acestei firme · verificat ultima dată …	găsit	FISCALOS › Facturi › Facturi primite (SPV)	SPV: certificatul cabinetului are drept pe CUI-ul acestei firme (55229657) · verificat ultima dată 24.11.2026, 14:17 · 0 facturi primite la ultima citire	
+F179	Citit din SPV: 0 facturi primite în ultimele 3 zile	variantă	FISCALOS › Facturi primite (SPV)	… · 0 facturi primite la ultima citire	textul de după «Verifică acum în SPV» nu e provocat; starea arată ultima citire
+F183	Registrul mijloacelor fixe și balanța…	negăsit	F6 › Control fiscal › Audit de preluare	Contul 2131 (valoarea de intrare): registrul 0,00 lei, balanța debitor 24.000,00 lei — în registru lipsesc 24.000,00 lei față de balanță.	formularea v2 nu mai apare; divergența 2131/2813 e scrisă pe cont
+F254	conform bon fiscal nr. 0002/22.10.2026	găsit	F1 › Facturi › Istoric 10/2026 › F1A nr. 13	conform bon fiscal nr. 0002/22.10.2026	
+F254	de preluat · nota contabilă	găsit	F1 › Facturi › Istoric 10/2026 › F1A nr. 13	de preluat / nota contabilă (inactiv: «Factura n-are încă notă contabilă: nota se propune la contare…»)	
+X02	asistent junior	nemăsurat	prima autentificare a unui asistent nou	—	pasul lui Costin după publicarea Q7

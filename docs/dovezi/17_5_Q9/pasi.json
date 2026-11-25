@@ -1,0 +1,25 @@
+{
+  "asertiuni": [
+    {
+      "id": "f.1",
+      "pas": "implicit",
+      "operator": "egal",
+      "valoare": "De depus",
+      "cheie": "dom:button.cab-card:has([data-cheie=\"validat\"]) .cab-card-titlu|text"
+    },
+    {
+      "id": "f.2",
+      "pas": "ciorne",
+      "operator": "text_vizibil",
+      "valoare": "Validează",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #val-ciorne tbody.tn-nota button|text"
+    },
+    {
+      "id": "a.1",
+      "pas": "ciorne",
+      "operator": "nr_randuri",
+      "valoare": "0",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) #val-ciorne tbody.tn-nota button.buton-primar|numar"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+"an": "2026",
+"luna": "10",
+"prof": {
+"nume": "F1 Comert Stoc SRL",
+"cui": "401002001",
+"adresa": "Str. Comertului 1",
+"oras": "Bucuresti",
+"judet": "Bucuresti",
+"caen": "4711",
+"banca": "Banca Test",
+"iban": "RO49AAAA1B31007593840000",
+"tip_decont": "lunar",
+"pro_rata": "None",
+"tva_la_incasare": "False",
+"declarant_nume": "Ionescu",
+"declarant_prenume": "Ion",
+"declarant_functie": "Administrator",
+"tva_neexigibila": "{'valoare_a': Decimal('0'), 'valoare_a1': Decimal('0'), 'tva_a': Decimal('0'), 'tva_a1': Decimal('0'), 'valoare_b': Decimal('0'), 'valoare_b1': Decimal('0'), 'tva_b': Decimal('0'), 'tva_b1': Decimal('0')}"
+},
+"R": {
+"R9_1": "8921",
+"R9_2": "1873",
+"R10_1": "899",
+"R10_2": "99",
+"R3_1": "3000",
+"R3_1_1": "3000",
+"R17_1": "12820",
+"R17_2": "1972",
+"R22_1": "2981",
+"R22_2": "626",
+"R23_1": "441",
+"R23_2": "48",
+"R27_1": "3422",
+"R27_2": "674",
+"R28_2": "674",
+"R31_2": "-43",
+"R32_2": "631",
+"R34_2": "1341",
+"R37_2": "1341",
+"R41_2": "1341"
+},
+"tva_de_plata": "1341",
+"tva_de_recuperat": "0",
+"total_plata_a": "46061",
+"neexigibil": {},
+"ajustari_taxa": {
+"R31_2": "-43"
+}
+}
+facturi in pull: 27 | DNT-RT-1020 in pull: False
+genereaza: OK (fara blocaj)
