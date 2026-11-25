@@ -1,0 +1,92 @@
+{
+ "bloc": {
+  "text": "CUI cumpărător pe bon: niciun cod înscris pe bon TVA nedeductibil: pe bon nu este înscris codul fiscal al firmei cumpărătoare. Un bon fiscal ține loc de factură simplificată, deci justifică deducerea TVA, numai dacă poartă codul de înregistrare în scopuri de TVA al beneficiarului (HG 1/2016 pct. 69 alin. (6); Cod fiscal art. 319 alin. (12) și (21)). TVA intră în cheltuială. Verifică pe poză dacă codul chiar lipsește. Combustibil: deductibilitatea cheltuielii e limitată la 50% pentru vehiculele care nu sunt folosite exclusiv în activitatea economică (Cod fiscal art. 25 alin. (3) lit. l), iar deducerea TVA aferentă tot la 50% (art. 298 alin. (1)); excepțiile din aceleași articole nu se verifică aici. Verifică folosirea vehiculului înainte de a certifica.",
+  "atentie": true,
+  "pozitie": true
+ },
+ "diag": {
+  "t": 3924,
+  "overlays": [
+   {
+    "cls": "fereastra-overlay",
+    "opacity": "0.219959"
+   }
+  ],
+  "animatii": [
+   {
+    "nume": "aparitie-overlay",
+    "stare": "running",
+    "timp": 16.712999978661713,
+    "tinta": "fereastra-overlay"
+   },
+   {
+    "nume": "aparitie-fereastra",
+    "stare": "running",
+    "timp": 16.712999978661713,
+    "tinta": "fereastra fer-larg fer-lucru"
+   }
+  ],
+  "vizibil": true,
+  "vizibil_fara_opacitate": true,
+  "lant": [
+   {
+    "tag": "DIV",
+    "id": "d-fiscal",
+    "cls": "caseta-atentie ds-rezumat ds-rezumat-eroare",
+    "opacity": "1",
+    "display": "flex",
+    "visibility": "visible"
+   },
+   {
+    "tag": "DIV",
+    "id": "",
+    "cls": "fereastra-corp",
+    "opacity": "1",
+    "display": "flex",
+    "visibility": "visible"
+   },
+   {
+    "tag": "DIV",
+    "id": "",
+    "cls": "fereastra fer-larg fer-lucru",
+    "opacity": "0.190097",
+    "display": "flex",
+    "visibility": "visible"
+   },
+   {
+    "tag": "DIV",
+    "id": "",
+    "cls": "fereastra-overlay",
+    "opacity": "0.219959",
+    "display": "flex",
+    "visibility": "visible"
+   },
+   {
+    "tag": "DIV",
+    "id": "app",
+    "cls": "",
+    "opacity": "1",
+    "display": "block",
+    "visibility": "visible"
+   },
+   {
+    "tag": "BODY",
+    "id": "",
+    "cls": "",
+    "opacity": "1",
+    "display": "block",
+    "visibility": "visible"
+   },
+   {
+    "tag": "HTML",
+    "id": "",
+    "cls": "",
+    "opacity": "1",
+    "display": "block",
+    "visibility": "visible"
+   }
+  ],
+  "dom_sus": "<div class=\"fereastra-overlay\" data-nivel=\"3\"><div class=\"fereastra fer-larg fer-lucru\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Bon fiscal · Benzinarie Martor P SRL\">\n      <div class=\"fereastra-antet\">\n        <button class=\"nav-sageata nav-inapoi\" title=\"Înapoi\" aria-label=\"Înapoi\"><span aria-hidden=\"true\">←</span></button>\n        <span class=\"fereastra-fir\" title=\"F1 Comert Stoc SRL · CUI 401002001 › Bon fiscal · Benzinarie Martor P SRL\"><span class=\"fir-firma\">F1 Comert Stoc SRL · CUI 401002001</span><span class=\"fir-sep\" aria-hidden=\"true\">›</span><span class=\"fir-acum\" aria-current=\"page\">Bon fiscal · Benzinarie Martor P SRL</span></span>\n        <div class=\"cautare-globala cautare-in-fereastra\"><input type=\"search\" id=\"cautare-fereastra\" class=\"cautare-camp\" autocomplete=\"off\" spellcheck=\"false\" placeholder=\"Caută o funcție: D300, stat de plată, NIR…\" aria-label=\"Caută o funcție a aplicației (Ctrl+K)\" title=\"Ctrl+K\" role=\"combobox\" aria-expanded=\"false\" aria-controls=\"cautare-fereastra-rez\" aria-autocomplete=\"list\">\n    <div class=\"cautare-rez\" id=\"cautare-fereastra-rez\" role=\"listbox\" aria-label=\"Rezultatele căutării\" hidden=\"\"></div></div><span class=\"fereastra-spatiu\"></span>\n        <button class=\"nav-x\" title=\"Închide\" aria-label=\"Închide\"><span aria-hidden=\"true\">✕</span></button>\n      </div>\n      <div class=\"fereastra-corp\" tabindex=\"0\" style=\"--rezumat-h: 0px;\">\n      <h2 class=\"pf-titlu\">Bon fiscal · nr. P-1</h2>\n      <div id=\"d-fiscal\" class=\"caseta-atentie ds-rezumat ds-rezumat-eroare\" data-ds-auto=\"1\"><span class=\"ds-rezumat-text\" title=\"CUI cumpărător pe bon: niciun cod înscris pe bon TVA nedeductibil: pe bon nu este înscris codul fiscal al firmei cumpărătoare. Un bon fiscal ține loc de factură simplificată, deci justifică deducerea TVA, numai dacă poartă codul de înregistrare în scopuri de TVA al beneficiarului (HG 1/2016 pct. 69 alin. (6); Cod fiscal art. 319 alin. (12) și (21)). TVA intră în cheltuială. Verifică pe poză dacă codul chiar lipsește.Combustibil: deductibilitatea cheltuielii e limitată la 50% pentru vehiculele care nu sunt folosite exclusiv în activitatea economică (Cod fiscal art. 25 alin. (3) lit. l), iar deducerea TVA aferentă tot la 50% (art. 298 alin. (1)); excepțiile din aceleași articole nu se verifică aici. Verifică folosirea vehiculului înainte de a certifica.\">\n        <div class=\"ca-mesaj\"><b>CUI cumpărător pe bon:</b> niciun cod înscris pe bon</div>\n        <p class=\"ca-mesaj\">TVA nedeductibil: pe bon nu este înscris codul fiscal al firmei cumpărătoare. Un bon fiscal ține loc de factură simplificată, deci justifică deducerea TVA, numai dacă poartă codul de înregistrare în scopuri de TVA al beneficiarului (HG 1/2016 pct. 69 alin. (6); Cod fiscal art. 319 alin. (12) și (21)). TVA intră în cheltuială. Verifică pe poză dacă codul chiar lipsește.</p><p class=\"ca-mesaj\">Combustibil: deductibilitatea cheltuielii e limitată la 50% pentru vehiculele care nu sunt folosite exclusiv în activitatea economică (Cod fiscal art. 25 alin. (3) lit. l), iar deducerea TVA aferentă tot la 50% (art. 298 alin. (1)); excepțiile din aceleași articole nu se verifică aici. Verifică folosirea vehiculului înainte de a certifica.</p>\n      </span></div>\n      \n      \n      <div class=\"doc-split\">\n      <div class=\"doc-poza\" id=\"d-poze\"><p class=\"ecran-nota ds-rezumat ds-rezumat-info\" data-ds-auto=\"1\"><span class=\"ds-rezumat-text\" title=\"Fără poză (document mai vechi).\">Fără poză (document mai vechi).</span></p></div>\n      <div class=\"doc-campuri\">\n      <div class=\"grila-doc\" style=\"grid-template-columns:2fr 1fr 1fr 1fr\">\n        <label class=\"camp\"><span class=\"camp-eticheta\">Comerciant</span><input class=\"camp-input\" id=\"d-com\" value=\"Benzinarie Martor P SRL\"></label>\n        <label class=\"camp\"><span class=\"camp-eticheta\">Data</span><span class=\"data-golibila\"><input class=\"camp-input\" type=\"date\" id=\"d-data\" value=\"2026-11-02\"><button type=\"button\" class=\"data-goleste\" aria-label=\"Golește data\" title=\"Golește data\" data-fara-actiune=\"golește câmpul de dată; salvarea formularului poartă acțiunea\"><span aria-hidden=\"true\">×</span></button></span></label>\n        <label class=\"camp\"><span class=\"camp-eticheta\">Total</span><input class=\"camp-input\" type=\"text\" step=\"0.01\" id=\"d-tot\" value=\"60,50\" data-suma=\"\" inputmode=\"decimal\" data-numar=\"ro\" autocomplete=\"off\"></label>\n        <label class=\"camp\"><span class=\"camp-eticheta\">TVA total</span><input class=\"camp-input\" type=\"text\" step=\"0.01\" id=\"d-tva\" value=\"10,50\" data-suma=\"\" inputmode=\"decimal\" data-numar=\"ro\" autocomplete=\"off\"></label>\n      </div>\n      <div style=\"margin-top:8px\"><div class=\"camp-eticheta\">Denumire · valoare · cont</div>\n            <div class=\"grila-doc\" style=\"grid-template-columns:2fr 1fr 1fr;margin-top:4px\">\n              <input class=\"camp-input\" id=\"d-den-0\" aria-label=\"Denumire articol\" value=\"Motorina\" readonly=\"\">\n              <input class=\"camp-input\" type=\"text\" step=\"0.01\" id=\"d-val-0\" aria-label=\"Valoare articol\" value=\"60,50\" data-suma=\"\" inputmode=\"decimal\" data-numar=\"ro\" autocomplete=\"off\">\n              <input class=\"camp-input\" id=\"d-cont-0\" value=\"6022\" placeholder=\"cont\" aria-label=\"Cont propus\">\n            </div></div>\n      <div style=\"margin-top:14px\">\n        <button class=\"buton-verde\" id=\"d-certifica\" data-actiune=\"POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba\">Certifică și contează</button>\n        <span class=\"msg-eroare\" id=\"d-msg\" style=\"margin-left:10px\"></span>\n      </div>\n      </div>\n      </div><div class=\"fereastra-jos fj-fara-principal\" data-cu-formular=\"\"><span class=\"fj-motiv\" aria-live=\"polite\"></span><span class=\"fj-butoane\"></span></div></div>\n    </div></div>",
+  "dfiscal": "<div id=\"d-fiscal\" class=\"caseta-atentie ds-rezumat ds-rezumat-eroare\" data-ds-auto=\"1\"><span class=\"ds-rezumat-text\" title=\"CUI cumpărător pe bon: niciun cod înscris pe bon TVA nedeductibil: pe bon nu este înscris codul fiscal al firmei cumpărătoare. Un bon fiscal ține loc de factură simplificată, deci justifică deducerea TVA, numai dacă poartă codul de înregistrare în scopuri de TVA al beneficiarului (HG 1/2016 pct. 69 alin. (6); Cod fiscal art. 319 alin. (12) și (21)). TVA intră în cheltuială. Verifică pe poză dacă codul chiar lipsește.Combustibil: deductibilitatea cheltuielii e limitată la 50% pentru vehiculele care nu sunt folosite exclusiv în activitatea economică (Cod fiscal art. 25 alin. (3) lit. l), iar deducerea TVA aferentă tot la 50% (art. 298 alin. (1)); excepțiile din aceleași articole nu se verifică aici. Verifică folosirea vehiculului înainte de a certifica.\">\n        <div class=\"ca-mesaj\"><b>CUI cumpărător pe bon:</b> niciun cod înscris pe bon</div>\n        <p class=\"ca-mesaj\">TVA nedeductibil: pe bon nu este înscris codul fiscal al firmei cumpărătoare. Un bon fiscal ține loc de factură simplificată, deci justifică deducerea TVA, numai dacă poartă codul de înregistrare în scopuri de TVA al beneficiarului (HG 1/2016 pct. 69 alin. (6); Cod fiscal art. 319 alin. (12) și (21)). TVA intră în cheltuială. Verifică pe poză dacă codul chiar lipsește.</p><p class=\"ca-mesaj\">Combustibil: deductibilitatea cheltuielii e limitată la 50% pentru vehiculele care nu sunt folosite exclusiv în activitatea economică (Cod fiscal art. 25 alin. (3) lit. l), iar deducerea TVA aferentă tot la 50% (art. 298 alin. (1)); excepțiile din aceleași articole nu se verifică aici. Verifică folosirea vehiculului înainte de a certifica.</p>\n      </span></div>"
+ }
+}

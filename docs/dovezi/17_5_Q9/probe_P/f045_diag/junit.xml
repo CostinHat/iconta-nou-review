@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="12.915" timestamp="2026-11-25T08:35:43.322750+02:00" hostname="iconta-prod"><testcase classname="e2e_fluxuri_17_5_Q9" name="test_f045_pdf_adresa_si_numele_descarcat[laptop]" time="7.534"><failure message="AssertionError: assert b'%PDF-1.4\n%...4392\n%%EOF\n' == b''&#10;  &#10;  Use -v to get more diff">pagina = &lt;conftest.Ecran object at 0x775042267080&gt;
+firma_cv = {'tenant_id': 370964, 'schema': 'tenant_9732', 'nume': 'E2E Probă 8544767 SRL', 'cabinet_id': 1968}
+
+    def test_f045_pdf_adresa_si_numele_descarcat(pagina,firma_cv):
+        e=pagina
+        factura=emite_api(e,firma_cv)
+        fid=factura["factura_id"]
+        _deschide_factura(e,firma_cv,fid)
+        downloads=[]
+        popups=[]
+        def la_descarcare(fisier):
+            downloads.append(fisier)
+    
+        def la_fereastra(fereastra):
+            popups.append(fereastra)
+    
+        from contextlib import ExitStack
+        with ExitStack() as ascultatori:
+            for eveniment, functie in (("download", la_descarcare), ("popup", la_fereastra)):
+                e.pg.on(eveniment, functie)
+                ascultatori.callback(e.pg.remove_listener, eveniment, functie)
+            with e.pg.expect_response(lambda r:urlsplit(r.url).path.endswith(f"/facturi/{fid}/pdf")) as raspuns:
+                e.pg.locator("#fd-pdf").click()
+            r=raspuns.value
+            assert r.ok and "application/pdf" in r.headers.get("content-type","")
+            pdf=r.body()
+            import json as _j, os as _o
+            from conftest import CAPTURI as _C
+            open(_o.path.join(_C, 'f045_diag_%d.json' % e.pg.viewport_size['width']), 'w').write(_j.dumps({'status': r.status, 'url': r.url, 'antete': r.headers, 'toate': r.all_headers(), 'lungime_body': len(pdf), 'cerere': r.request.all_headers(), 'metoda': r.request.method, 'din_cache': getattr(r, 'from_service_worker', None)}, ensure_ascii=False, indent=1))
+            # Evenimentele de descărcare/deschidere pot urma după răspunsul HTTP.
+            from time import monotonic
+            termen=monotonic()+10
+            while not downloads and not any(x.url not in ("","about:blank") for x in popups) and monotonic()&lt;termen:
+                e.pg.wait_for_timeout(100)
+            if downloads:
+                f=downloads[0]
+                nume=f.suggested_filename
+&gt;               assert f.path().read_bytes()==pdf
+E               AssertionError: assert b'%PDF-1.4\n%...4392\n%%EOF\n' == b''
+E                 
+E                 Use -v to get more diff
+
+frontend_test/e2e/e2e_fluxuri_17_5_Q9.py:79: AssertionError</failure></testcase><testcase classname="e2e_fluxuri_17_5_Q9" name="test_f045_pdf_adresa_si_numele_descarcat[mic]" time="4.670"><failure message="AssertionError: assert b'%PDF-1.4\n%...4391\n%%EOF\n' == b''&#10;  &#10;  Use -v to get more diff">pagina = &lt;conftest.Ecran object at 0x7750422e33b0&gt;
+firma_cv = {'tenant_id': 370964, 'schema': 'tenant_9732', 'nume': 'E2E Probă 8544767 SRL', 'cabinet_id': 1968}
+
+    def test_f045_pdf_adresa_si_numele_descarcat(pagina,firma_cv):
+        e=pagina
+        factura=emite_api(e,firma_cv)
+        fid=factura["factura_id"]
+        _deschide_factura(e,firma_cv,fid)
+        downloads=[]
+        popups=[]
+        def la_descarcare(fisier):
+            downloads.append(fisier)
+    
+        def la_fereastra(fereastra):
+            popups.append(fereastra)
+    
+        from contextlib import ExitStack
+        with ExitStack() as ascultatori:
+            for eveniment, functie in (("download", la_descarcare), ("popup", la_fereastra)):
+                e.pg.on(eveniment, functie)
+                ascultatori.callback(e.pg.remove_listener, eveniment, functie)
+            with e.pg.expect_response(lambda r:urlsplit(r.url).path.endswith(f"/facturi/{fid}/pdf")) as raspuns:
+                e.pg.locator("#fd-pdf").click()
+            r=raspuns.value
+            assert r.ok and "application/pdf" in r.headers.get("content-type","")
+            pdf=r.body()
+            import json as _j, os as _o
+            from conftest import CAPTURI as _C
+            open(_o.path.join(_C, 'f045_diag_%d.json' % e.pg.viewport_size['width']), 'w').write(_j.dumps({'status': r.status, 'url': r.url, 'antete': r.headers, 'toate': r.all_headers(), 'lungime_body': len(pdf), 'cerere': r.request.all_headers(), 'metoda': r.request.method, 'din_cache': getattr(r, 'from_service_worker', None)}, ensure_ascii=False, indent=1))
+            # Evenimentele de descărcare/deschidere pot urma după răspunsul HTTP.
+            from time import monotonic
+            termen=monotonic()+10
+            while not downloads and not any(x.url not in ("","about:blank") for x in popups) and monotonic()&lt;termen:
+                e.pg.wait_for_timeout(100)
+            if downloads:
+                f=downloads[0]
+                nume=f.suggested_filename
+&gt;               assert f.path().read_bytes()==pdf
+E               AssertionError: assert b'%PDF-1.4\n%...4391\n%%EOF\n' == b''
+E                 
+E                 Use -v to get more diff
+
+frontend_test/e2e/e2e_fluxuri_17_5_Q9.py:79: AssertionError</failure></testcase></testsuite></testsuites>

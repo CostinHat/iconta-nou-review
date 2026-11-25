@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="26.172" timestamp="2026-11-25T08:05:08.012985+02:00" hostname="iconta-prod"><testcase classname="e2e_fundatie_17_5_Q9" name="test_fundatie_17_5_Q9" time="25.969" /></testsuite></testsuites>

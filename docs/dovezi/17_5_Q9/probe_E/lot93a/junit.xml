@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="11.430" timestamp="2026-11-25T08:45:10.482230+02:00" hostname="iconta-prod"><testcase classname="e2e_lot93a" name="test_def_c61_clientul_roman_are_localitatea_si_judetul_din_anaf_pe_factura_fara_dublare" time="10.772"><failure message="AssertionError: assert (True and 'Județul clientului*' == 'Județul clientului'&#10; +  where True = is_visible('#em-judet')&#10; +    where is_visible = &lt;Page url='http://127.0.0.1:8019/'&gt;.is_visible&#10;  &#10;  - Județul clientului&#10;  + Județul clientului*&#10;  ?                   +)">patron = &lt;conftest.Ecran object at 0x7dd5851d0980&gt;
+firma_cv = {'tenant_id': 370964, 'schema': 'tenant_9732', 'nume': 'E2E Probă 9112134 SRL', 'cabinet_id': 1968}
+
+    def test_def_c61_clientul_roman_are_localitatea_si_judetul_din_anaf_pe_factura_fara_dublare(patron, firma_cv):
+        """C61 (decizia Costin 19.10.2026, „Da, câmpuri și la român”). Pașii: Emite factură -&gt; la clientul român se văd „Localitatea
+        clientului” și „Județul clientului” (lista județelor), nu „Regiunea”; CUI -&gt; „Verifică”: localitatea și județul domiciliului fiscal se
+        completează (Sector 2 Mun. Bucureşti, București), modificabile -&gt; linia de servicii -&gt; „Emite factură”: factura le poartă (B = codul),
+        iar adresa clientului din detaliu și de pe PDF e cea din ANAF, fără „Sector 2 Mun. Bucureşti” și fără „B” repetate după ea
+        (CF art.319 alin.(20) lit.f: „denumirea/numele și adresa beneficiarului”).
+        MUTAȚIE (static/js/ecrane/emitere_ecran.js, ancora `        if (r.localitate) corp.querySelector("#em-oras").value = r.localitate;`
+        -&gt; gol): localitatea nu se mai completează -&gt; așteptarea pe `#em-oras` expiră -&gt; ROȘU."""
+        from e2e_bloc_a import PRODUS, _api, _deschide_emiterea, _deschide_factura, _octeti, _ok, _pdf_text
+        tid = firma_cv["tenant_id"]
+        _deschide_emiterea(patron, firma_cv["nume"])
+        pg = patron.pg
+        assert pg.inner_text("#em-oras-et") == "Localitatea clientului" and pg.is_visible("#em-oras")
+&gt;       assert pg.is_visible("#em-judet") and pg.inner_text("label[for='em-judet']") == "Județul clientului"
+E       AssertionError: assert (True and 'Județul clientului*' == 'Județul clientului'
+E        +  where True = is_visible('#em-judet')
+E        +    where is_visible = &lt;Page url='http://127.0.0.1:8019/'&gt;.is_visible
+E         
+E         - Județul clientului
+E         + Județul clientului*
+E         ?                   +)
+
+frontend_test/e2e/e2e_lot93a.py:114: AssertionError</failure></testcase></testsuite></testsuites>

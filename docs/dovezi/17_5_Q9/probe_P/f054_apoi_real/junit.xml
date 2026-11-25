@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="134.389" timestamp="2026-11-25T08:12:43.096093+02:00" hostname="iconta-prod"><testcase classname="e2e_pilot_f054" name="test_pilot_F054" time="118.570" /><testcase classname="e2e_fundatie_17_5_Q9" name="test_fundatie_17_5_Q9" time="15.321"><failure message="AssertionError: Q7_FUNDATIE {'e.1': False, 'e.2': True, 'e.3': True, 'e.4': True}&#10;assert False&#10; +  where False = all(dict_values([False, True, True, True]))&#10; +    where dict_values([False, True, True, True]) = &lt;built-in method values of dict object at 0x7eb1ba770c40&gt;()&#10; +      where &lt;built-in method values of dict object at 0x7eb1ba770c40&gt; = {'e.1': False, 'e.2': True, 'e.3': True, 'e.4': True}.values">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7eb1bac24e00&gt;
+
+    def test_fundatie_17_5_Q9(browser, capsys):
+        from conftest import BAZA, CAPTURI, Ecran, sesiune
+        from core.ceas_proba import MOMENT_REF
+        u = urlsplit(BAZA)
+        assert (u.scheme,u.hostname,u.port) in (("http","localhost",8019),("http","127.0.0.1",8019))
+        out = Path(CAPTURI)/"17_5_Q9"
+        out.mkdir(parents=True,exist_ok=True)
+        data, erori, masuri = {}, {}, {}
+        try:
+            for w,h in DIM:
+                size = f"{w}x{h}"
+                ctx = browser.new_context(viewport={"width":w,"height":h})
+                try:
+                    ctx.clock.set_fixed_time(MOMENT_REF)
+                    ctx.add_init_script(sesiune("dovada.71507@sesiuneab.test"))
+                    pg = ctx.new_page()
+                    ecran = Ecran(pg,"q7")
+                    ecran.acasa()
+                    card = card_cabinet(pg, CARD)
+                    titlu = card.locator(".cab-card-titlu").inner_text().strip()
+                    with pg.expect_response(lambda r: urlsplit(r.url).path == "/coada" and r.request.method == "GET") as apel:
+                        card.click()
+                    raspuns = apel.value
+                    if not raspuns.ok:
+                        raise ValueError("GET /coada a eșuat")
+                    elemente = raspuns.json()["coada"]
+                    numara_coada(elemente)
+                    top = pg.locator(TOP)
+                    top.locator("#val-ciorne tbody.tn-nota[data-tn]").first.wait_for(state="visible")
+                    obs = top.evaluate(MASOARA)
+                    obs["titlu_card"] = titlu
+                    obs["elemente_coada"] = [{k: el[k] for k in ("fel", "stare", "membri_ids") if k in el} for el in elemente]
+                    data[size] = obs
+                    def captura(*ids):
+                        for ident in ids:
+                            pg.screenshot(path=str(out/f"{ident}_{size}.png"))
+                            if w==1366:
+                                (out/f"{ident}.png").write_bytes((out/f"{ident}_{size}.png").read_bytes())
+                    captura("e.1")
+                    obs["validare_actionabila"] = False
+                    if obs["valideaza"]:
+                        from playwright.sync_api import TimeoutError as TimeoutPlaywright
+                        activ = top.locator("#val-ciorne tbody.tn-nota button:not(:disabled):not([aria-disabled='true'])").filter(
+                            has_text=re.compile(r"^\s*Validează\s*$")).first
+                        try:
+                            activ.click(trial=True, timeout=3000)
+                            obs["validare_actionabila"] = True
+                        except TimeoutPlaywright:
+                            pass
+                    captura("e.2")
+                    ecran.firma("F1 Comert Stoc")
+                    pg.locator("#fa-casa").click()
+                    top.locator("#c-toggle").click()
+                    btn = top.locator("#c-adauga")
+                    obs["motiv_inainte"] = btn.get_attribute("data-motiv-inactiv") or ""
+                    tip = top.locator("#c-cat")
+                    buton_tip = top.locator('#c-l-cat button[data-valoare="plata_furnizor"]')
+                    if buton_tip.is_visible():
+                        buton_tip.click()
+                    else:
+                        tip.select_option("plata_furnizor")
+                    # Permite redesenarea barei după evenimentul change, fără a aștepta verdictul dorit.
+                    pg.evaluate("() =&gt; new Promise(ok=&gt;requestAnimationFrame(()=&gt;requestAnimationFrame(ok)))")
+                    motiv = top.locator(".fj-motiv:visible")
+                    obs["motiv_vizibil"] = " ".join(motiv.all_inner_texts()).strip()
+                    obs.update(tip_dupa=tip.input_value(),suma_input=top.locator("#c-suma").input_value(),
+                               motiv_dupa=btn.get_attribute("data-motiv-inactiv") or "")
+                    captura("e.3")
+                    ecran.acasa()
+                    card_cabinet(pg, "button.cab-card:has([data-cheie='control'])").click()
+                    rand = top.locator("#cf-lista tbody tr").filter(has_text="F2 Profit Amortizare")
+                    rand.first.wait_for(state="visible")
+                    if rand.count()!=1:
+                        raise ValueError("Identitatea firmei din Control fiscal este ambiguă")
+                    with pg.expect_response(lambda r: re.fullmatch(r"/control-fiscal/\d+",urlsplit(r.url).path) and r.request.method=="GET") as rr:
+                        rand.click()
+                    if not rr.value.ok:
+                        raise ValueError("Control fiscal fără răspuns valid")
+                    sursa = rr.value.json()
+                    sel = top.locator("#cf-luna-comparata")
+                    sel.wait_for(state="attached")
+                    obs.update(preluare=sursa["luna_preluare"],luni_sursa=[f'{m["an"]}-{m["luna"]}' for m in sursa["luni_comparabile"]],
+                               luni_ui=sel.locator("option").evaluate_all("opts=&gt;opts.map(x=&gt;x.value).filter(Boolean)"))
+                    cutie = sel.locator("xpath=parent::*")
+                    eticheta = cutie.locator('label[for="cf-luna-comparata"]')
+                    inchise = cutie.locator("xpath=ancestor::details[not(@open)]")
+                    for grup in inchise.all():
+                        grup.locator(":scope &gt; summary").click()
+                    # Controlul public înlocuiește select-ul sursă când lista e lungă.
+                    buton_lista = cutie.locator(".ds-lista-titlu:visible")
+                    grup_butoane = cutie.locator(".alegere-butoane:visible")
+                    n_lista, n_grup = buton_lista.count(), grup_butoane.count()
+                    if n_lista + n_grup &gt; 1:
+                        raise ValueError("Mai multe reprezentări publice ale aceluiași selector")
+                    if n_lista:
+                        control = buton_lista
+                        valoare = control.locator(".ds-lista-ales")
+                    elif n_grup:
+                        control = grup_butoane.locator('button[role="radio"][aria-checked="true"]')
+                        valoare = control
+                    else:
+                        if sel.get_attribute("aria-hidden") == "true" or not sel.is_enabled():
+                            raise ValueError("Select sursă ascuns sau inactiv, fără control public")
+                        control = sel
+                        valoare = sel
+                    if control.count() != 1 or valoare.count() != 1:
+                        raise ValueError("Controlul public de lună nu este unic")
+                    control.wait_for(state="visible")
+                    control.evaluate("el=&gt;el.scrollIntoView({block:'center', inline:'nearest', behavior:'instant'})")
+                    buton_lista = cutie.locator(".ds-lista-titlu:visible")
+                    if buton_lista.count():
+                        if buton_lista.get_attribute("aria-expanded") == "false":
+                            buton_lista.click()
+                        nume_ui = cutie.locator('[role="option"]:not(.ds-lista-inactiv) .ds-lista-nume').all_inner_texts()
+                        optiuni = sel.locator("option").evaluate_all(
+                            "opts=&gt;opts.filter(x=&gt;x.value).map(x=&gt;[(x.dataset.nume || x.textContent).trim(),x.value])")
+                        if not nume_ui or buton_lista.get_attribute("aria-expanded") != "true":
+                            raise ValueError("Lista de luni nu s-a deschis")
+                        dupa_nume = dict(optiuni)
+                        if len(dupa_nume) != len(optiuni) or any(n.strip() not in dupa_nume for n in nume_ui):
+                            raise ValueError("Lunile din control nu se identifică univoc")
+                        obs["luni_ui"] = [dupa_nume[n.strip()] for n in nume_ui]
+                        control.evaluate("el=&gt;el.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'})")
+                    obs["eticheta_luni"] = eticheta.inner_text().strip().rstrip(" *")
+                    if not buton_lista.count() and grup_butoane.count():
+                        obs["luni_ui"] = grup_butoane.locator('button[role="radio"]:not(:disabled)').evaluate_all(
+                            "els=&gt;els.map(el=&gt;el.dataset.valoare)")
+                    if not buton_lista.count() and not grup_butoane.count():
+                        obs["luni_ui"] = sel.locator("option:not(:disabled)").evaluate_all(
+                            "opts=&gt;opts.map(x=&gt;x.value).filter(Boolean)")
+                    obs["valoare_selectata"] = sel.input_value()
+                    if buton_lista.count() or grup_butoane.count():
+                        obs["valoare_afisata"] = valoare.inner_text().strip()
+                    else:
+                        obs["valoare_afisata"] = sel.locator("option:checked").inner_text().strip()
+                    obs["zone_text"], obs["pixeli_text"] = fotografiaza_luna(pg, out, size, [w,h], eticheta, valoare)
+                    obs["control_luni_in_viewport"] = all(n &gt;= 8 for n in obs["pixeli_text"].values())
+                except Exception as exc:
+                    erori[size] = repr(exc)
+                finally:
+                    ctx.close()
+            campuri = {
+                "e.1": ("titluri_sectiuni", "primare_rand", "primare_fereastra", "principale_observate"),
+                "e.2": ("titluri_sectiuni", "valideaza", "iduri", "validare_actionabila"),
+                "e.3": ("tip_dupa", "suma_input", "motiv_inainte", "motiv_dupa", "motiv_vizibil"),
+                "e.4": ("preluare", "luni_ui", "luni_sursa", "eticheta_luni", "valoare_afisata", "valoare_selectata", "zone_text", "pixeli_text", "control_luni_in_viewport"),
+            }
+            diagnostic = {}
+            for i in IDS:
+                masuri[i] = {}
+                diagnostic[i] = {}
+                for w,h in DIM:
+                    z = f"{w}x{h}"
+                    try:
+                        bloc = {k: data[z][k] for k in ("dim","titlu_card","elemente_coada","randuri",*campuri[i])}
+                        masuri[i][z] = bloc
+                        # Valoarea locală este informativă atunci când alt martor nu se poate judeca.
+                        diagnostic[i][z] = pe_latime(i, bloc, w, h)
+                    except (KeyError, ValueError, TypeError) as exc:
+                        diagnostic[i][z] = {"neexecutat": str(exc)}
+                        erori[i+" "+z] = repr(exc)
+            (out/"diagnostic.json").write_text(json.dumps(diagnostic, ensure_ascii=False, indent=2))
+            if not erori:
+                rezultate = {i:verdict(i, masuri[i]) for i in IDS}
+        except Exception as exc:
+            erori["parcurs"] = repr(exc)
+        finally:
+            for n,obj in (("masuri",masuri),("erori",erori),("partiale",data if erori else {})):
+                (out/f"{n}.json").write_text(json.dumps(obj,ensure_ascii=False,indent=2))
+        assert not erori, f"Q7_NEEXECUTAT {erori}"
+        with capsys.disabled():
+            for i,v in rezultate.items():
+                print(f"VERDICT {i} {'trece' if v else 'pica'}",flush=True)
+&gt;       assert all(rezultate.values()), f"Q7_FUNDATIE {rezultate}"
+E       AssertionError: Q7_FUNDATIE {'e.1': False, 'e.2': True, 'e.3': True, 'e.4': True}
+E       assert False
+E        +  where False = all(dict_values([False, True, True, True]))
+E        +    where dict_values([False, True, True, True]) = &lt;built-in method values of dict object at 0x7eb1ba770c40&gt;()
+E        +      where &lt;built-in method values of dict object at 0x7eb1ba770c40&gt; = {'e.1': False, 'e.2': True, 'e.3': True, 'e.4': True}.values
+
+frontend_test/e2e/e2e_fundatie_17_5_Q9.py:428: AssertionError</failure></testcase></testsuite></testsuites>

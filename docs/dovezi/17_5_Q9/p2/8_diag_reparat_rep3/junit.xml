@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="4.745" timestamp="2026-11-25T07:46:30.137851+02:00" hostname="iconta-prod"><testcase classname="e2e_bon_cui_17_5_P2" name="test_bon_cui_cumparator_17_5_P2" time="4.649" /></testsuite></testsuites>

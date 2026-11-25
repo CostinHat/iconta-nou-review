@@ -1290,3 +1290,14 @@ Frazele §4 pct.1: `docs/dovezi/17_5_Q6/fraze_4_1.txt`. Martorii E/C și indexul
 - P-F179 — trece pe E (martorii «primita» la ambele rezoluții); pe C: în raport.
 - 848, r61-F043, r61-F078/F080, r61-F085, P-X02 — nemăsurate în lot (motivul pe fiecare rând al matricei).
 - C237 — rândul din tabel.
+
+## Constatările lotului 17.5-Q9 (25.11.2026; închiderea Pilotului; acceptare_17_5_Q9.tsv, 540 de criterii; E_R2 7d953658; produsul C2 289f094f al lui 17.5-Q8)
+Frazele §4 pct.1: `docs/dovezi/17_5_Q9/fraze_4_1.md` (neschimbate în raport). „Rezolvat” îl dă numai remăsurarea arhitectului după publicare (540 de poziții pe E_Q9); aici: ce s-a schimbat și dovada mecanică a lotului.
+- C238 — găsită de Code (regresia P2 din Q8): fereastra nouă apărea de la opacitate 0, deci în primul cadru blocul ei (aici #d-fiscal al bonului) era în pagină, cu butoane clicabile, dar invizibil; `e2e_bon_cui_17_5_P2` pica la întâmplare. Reparată în `static/stil.css` (estomparea pornește de la 0,6). Dovada: izolat cu diagnosticul 2 din 4 pică înainte, 5/5 trec după (docs/dovezi/17_5_Q9/p2).
+- C239 — găsită de Code: caseta de bun-venit (7 s, dreapta-jos) acoperea bara de jos a ferestrei de lucru cu acțiunea principală («Validează selectate» în De validat cu coada populată). Reparată în `static/stil.css` (caseta nu se arată cât e deschisă o fereastră). Dovada: f054 → REAL e.1 pica la ambele rezoluții, după reparație trece.
+- F019 / F022 / F015 / F017 (REAL e.1–e.4) — pe candidat: izolat (coada goală, «De depus») și după f054 (coada populată, «De validat», 8 note = GET /coada) patru «trece» la 1366×768 și 603×590; pe E izolat: pică / trece / trece / pică.
+- F089 (STOC.1), F045 (FINAL.5) — `e2e_fluxuri_17_5_Q9`: 4 din 4 la ambele rezoluții (F045 după citirea fișierului ca octeți în `api.descarca`).
+- F080 (DS.8) — `core/test_salariu_17_5_Q9.py` trece (setul pytest al porții).
+- Restul pozițiilor: produsul C2, cu schimbările listate în DECIZII «Lotul 17.5-Q8» și «Lotul 17.5-Q9»; judecata pe ecran: remăsurarea arhitectului.
+- Nerezolvate în lot, cu motivul în raport: FISC.1/F026, FINAL.10c (decizia 5), FISC.3, STOC.2 (transport, NIR), STOC.4, DS.1 (88 px / o zonă), DS.8 (eticheta CAM calculată), FINAL.11 (după publicare).
+- Roșii pe E, întâlnite (nu din lot): `e2e_lot93a.py::test_def_c61_*` (eticheta «Județul clientului*»), identic pe E_R2 și pe candidat; R021 și R027 (restanțe numerotate ale bazei).

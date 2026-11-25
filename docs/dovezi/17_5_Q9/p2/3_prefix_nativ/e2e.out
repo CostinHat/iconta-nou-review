@@ -1,0 +1,4 @@
+[e2e] aplicația din index pornită pe 8019 în 18s
+FAILED frontend_test/e2e/e2e_lot72_facturi.py::test_def_305_nota_cotei_si_localitatea_din_vies
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare
+[e2e] 2 failed, 91 passed in 2784.08s (0:46:24) (2802s; capturi în /home/costin/dovezi_17_5_Q9/p2/3_prefix_nativ/capturi)

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="4" time="16.547" timestamp="2026-11-25T08:33:03.454527+02:00" hostname="iconta-prod"><testcase classname="e2e_fluxuri_17_5_Q9" name="test_f089_iesirea_inaintea_intrarii_este_atomica[laptop]" time="3.777" /><testcase classname="e2e_fluxuri_17_5_Q9" name="test_f089_iesirea_inaintea_intrarii_este_atomica[mic]" time="2.170" /><testcase classname="e2e_fluxuri_17_5_Q9" name="test_f045_pdf_adresa_si_numele_descarcat[laptop]" time="5.466"><failure message="AssertionError: assert b'%PDF-1.4\n%...4389\n%%EOF\n' == b''&#10;  &#10;  Use -v to get more diff">pagina = &lt;conftest.Ecran object at 0x7d9256489010&gt;
+firma_cv = {'tenant_id': 370964, 'schema': 'tenant_9732', 'nume': 'E2E Probă 8385078 SRL', 'cabinet_id': 1968}
+
+    def test_f045_pdf_adresa_si_numele_descarcat(pagina,firma_cv):
+        e=pagina
+        factura=emite_api(e,firma_cv)
+        fid=factura["factura_id"]
+        _deschide_factura(e,firma_cv,fid)
+        downloads=[]
+        popups=[]
+        def la_descarcare(fisier):
+            downloads.append(fisier)
+    
+        def la_fereastra(fereastra):
+            popups.append(fereastra)
+    
+        from contextlib import ExitStack
+        with ExitStack() as ascultatori:
+            for eveniment, functie in (("download", la_descarcare), ("popup", la_fereastra)):
+                e.pg.on(eveniment, functie)
+                ascultatori.callback(e.pg.remove_listener, eveniment, functie)
+            with e.pg.expect_response(lambda r:urlsplit(r.url).path.endswith(f"/facturi/{fid}/pdf")) as raspuns:
+                e.pg.locator("#fd-pdf").click()
+            r=raspuns.value
+            assert r.ok and "application/pdf" in r.headers.get("content-type","")
+            pdf=r.body()
+            # Evenimentele de descărcare/deschidere pot urma după răspunsul HTTP.
+            from time import monotonic
+            termen=monotonic()+10
+            while not downloads and not any(x.url not in ("","about:blank") for x in popups) and monotonic()&lt;termen:
+                e.pg.wait_for_timeout(100)
+            if downloads:
+                f=downloads[0]
+                nume=f.suggested_filename
+&gt;               assert f.path().read_bytes()==pdf
+E               AssertionError: assert b'%PDF-1.4\n%...4389\n%%EOF\n' == b''
+E                 
+E                 Use -v to get more diff
+
+frontend_test/e2e/e2e_fluxuri_17_5_Q9.py:76: AssertionError</failure></testcase><testcase classname="e2e_fluxuri_17_5_Q9" name="test_f045_pdf_adresa_si_numele_descarcat[mic]" time="4.339"><failure message="AssertionError: assert b'%PDF-1.4\n%...4389\n%%EOF\n' == b''&#10;  &#10;  Use -v to get more diff">pagina = &lt;conftest.Ecran object at 0x7d92567cb350&gt;
+firma_cv = {'tenant_id': 370964, 'schema': 'tenant_9732', 'nume': 'E2E Probă 8385078 SRL', 'cabinet_id': 1968}
+
+    def test_f045_pdf_adresa_si_numele_descarcat(pagina,firma_cv):
+        e=pagina
+        factura=emite_api(e,firma_cv)
+        fid=factura["factura_id"]
+        _deschide_factura(e,firma_cv,fid)
+        downloads=[]
+        popups=[]
+        def la_descarcare(fisier):
+            downloads.append(fisier)
+    
+        def la_fereastra(fereastra):
+            popups.append(fereastra)
+    
+        from contextlib import ExitStack
+        with ExitStack() as ascultatori:
+            for eveniment, functie in (("download", la_descarcare), ("popup", la_fereastra)):
+                e.pg.on(eveniment, functie)
+                ascultatori.callback(e.pg.remove_listener, eveniment, functie)
+            with e.pg.expect_response(lambda r:urlsplit(r.url).path.endswith(f"/facturi/{fid}/pdf")) as raspuns:
+                e.pg.locator("#fd-pdf").click()
+            r=raspuns.value
+            assert r.ok and "application/pdf" in r.headers.get("content-type","")
+            pdf=r.body()
+            # Evenimentele de descărcare/deschidere pot urma după răspunsul HTTP.
+            from time import monotonic
+            termen=monotonic()+10
+            while not downloads and not any(x.url not in ("","about:blank") for x in popups) and monotonic()&lt;termen:
+                e.pg.wait_for_timeout(100)
+            if downloads:
+                f=downloads[0]
+                nume=f.suggested_filename
+&gt;               assert f.path().read_bytes()==pdf
+E               AssertionError: assert b'%PDF-1.4\n%...4389\n%%EOF\n' == b''
+E                 
+E                 Use -v to get more diff
+
+frontend_test/e2e/e2e_fluxuri_17_5_Q9.py:76: AssertionError</failure></testcase></testsuite></testsuites>

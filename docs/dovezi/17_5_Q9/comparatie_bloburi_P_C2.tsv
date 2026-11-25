@@ -1,0 +1,99 @@
+cale	P_egal_C2	motiv
+DECIZII.md	nu	registru: se scrie pentru Q9 (decizia 8), nu se preia din C2
+DEFICIENTE.md	nu	registru: se scrie pentru Q9
+DESIGN_SYSTEM.md	nu	varianta Q9 a reguli_DS_Q7.patch (Bancă «Contează» / Clienți «Salvează» pe rând, «EXCLUSE» în D394, grupul «înainte de preluare» desfăcut, eticheta «17.5-Q9»); C2 avea varianta Q8
+PREDARE_LANT.md	nu	registru: se scrie pentru Q9
+core/audit_preluare.py	da	-
+core/coada_api.py	da	-
+core/control_fiscal_api.py	da	-
+core/control_incrucisat.py	da	-
+core/d300.py	da	-
+core/d394.py	da	-
+core/d406.py	da	-
+core/deconturi.py	da	-
+core/facturi_api.py	da	-
+core/reconciliere_api.py	da	-
+core/repo_d300.py	da	-
+core/repo_facturi.py	da	-
+core/stocuri_cv.py	da	-
+core/stocuri_cv_api.py	da	-
+core/test_lot11_u0_erori.py	da	-
+core/test_lot13_ds_mesaje.py	da	-
+core/test_salariu_17_5_Q8.py	nu	testul Q8; în Q9 testul predat core/test_salariu_17_5_Q9.py
+core/uc_tenants.py	da	-
+docs/scenarii_pilot.txt	da	-
+frontend_test/e2e/e2e_d300_ciorne_17_5_W.py	nu	varianta Q9 a compatibilitate_W_si_Pilot.patch: dovezile din docs/dovezi/17_5_Q9 și condiția strictă FISC.2 (F1A 17 exclusă și numită în motiv); C2 avea condiția alternativă Q8
+frontend_test/e2e/e2e_fluxuri_17_5_Q8.py	nu	testul Q8; în Q9 frontend_test/e2e/e2e_fluxuri_17_5_Q9.py (F045 cu ascultători prin funcții)
+frontend_test/e2e/e2e_fundatie_17_5_Q8.py	nu	testul Q8; în Q9 frontend_test/e2e/e2e_fundatie_17_5_Q9.py (titlul cardului după GET /coada)
+frontend_test/e2e/e2e_lot93a.py	da	-
+frontend_test/e2e/e2e_pilot_f054.py	nu	varianta Q9 a compatibilitate_F054.patch: pasi_F054_Q7.json citit din docs/dovezi/17_5_Q9
+frontend_test/e2e/e2e_pilot_luna.py	nu	varianta Q9 a compatibilitate_W_si_Pilot.patch: numai eticheta comentariului (17.5-Q9)
+scripts/plasa_16_2.manifest	nu	rândul nou al testului REAL Q9 (80d4f3c7…) în locul celui Q8 și SHA-urile celor trei teste modificabile după patch-urile Q9
+scripts/praguri_17_5_Q8.txt	nu	pragurile Q8; în Q9 scripts/praguri_17_5_Q9.txt
+static/js/api.js	da	-
+static/js/app.js	da	-
+static/js/cadru.js	da	-
+static/js/carduri.js	da	-
+static/js/cautare.js	da	-
+static/js/ciorna_formular.js	da	-
+static/js/drepturi.js	da	-
+static/js/ds_piese.js	da	-
+static/js/ecrane/activitate_cabinet.js	da	-
+static/js/ecrane/admin.js	da	-
+static/js/ecrane/admin_activitate.js	da	-
+static/js/ecrane/admin_analytics.js	da	-
+static/js/ecrane/admin_raportari.js	da	-
+static/js/ecrane/admin_sanatate.js	da	-
+static/js/ecrane/ansamblu.js	da	-
+static/js/ecrane/asistent.js	da	-
+static/js/ecrane/asistenti.js	da	-
+static/js/ecrane/borderou_ecran.js	da	-
+static/js/ecrane/cabinet.js	da	-
+static/js/ecrane/capacitate.js	da	-
+static/js/ecrane/centre_cost_linie.js	da	-
+static/js/ecrane/clienti_ecran.js	da	-
+static/js/ecrane/coada_trimite.js	da	-
+static/js/ecrane/compensari_ecran.js	da	-
+static/js/ecrane/control.js	da	-
+static/js/ecrane/control_verdict.js	da	-
+static/js/ecrane/date_firma.js	da	-
+static/js/ecrane/declaratii.js	da	-
+static/js/ecrane/ecran_destinatie.js	da	-
+static/js/ecrane/emitere_ecran.js	da	-
+static/js/ecrane/etransport_ecran.js	da	-
+static/js/ecrane/facturi_ecran.js	da	-
+static/js/ecrane/firme.js	da	-
+static/js/ecrane/flux_concediu.js	da	-
+static/js/ecrane/inceput.js	da	-
+static/js/ecrane/intocmitor_bilant.js	da	-
+static/js/ecrane/login.js	da	-
+static/js/ecrane/mf_din_factura.js	da	-
+static/js/ecrane/migrare.js	da	-
+static/js/ecrane/mijloace_ecran.js	da	-
+static/js/ecrane/nir_legare.js	da	-
+static/js/ecrane/nume_anaf.js	da	-
+static/js/ecrane/operatiuni_ecran.js	da	-
+static/js/ecrane/pachete.js	da	-
+static/js/ecrane/portal.js	da	-
+static/js/ecrane/produse_ecran.js	da	-
+static/js/ecrane/raporteaza.js	da	-
+static/js/ecrane/recomanda.js	da	-
+static/js/ecrane/reevaluare_ecran.js	da	-
+static/js/ecrane/rip_ecran.js	da	-
+static/js/ecrane/sal_sume.js	da	-
+static/js/ecrane/salut.js	da	-
+static/js/ecrane/setari.js	da	-
+static/js/ecrane/spv_stare.js	da	-
+static/js/ecrane/supervizor.js	da	-
+static/js/ecrane/tabel_note.js	da	-
+static/js/ecrane/tari_partener.js	da	-
+static/js/ecrane/termene.js	da	-
+static/js/ecrane/tipare.js	da	-
+static/js/ecrane/validat.js	da	-
+static/js/ecrane/woo_ecran.js	da	-
+static/js/luna_lucru.js	da	-
+static/js/navigator.js	da	-
+verificator_conformitate.py	nu	varianta Q9 a reguli_DS_Q7.patch (anterioare_initial_pliat False = grupul desfăcut, DS.7) + ancora REFUZ_SALVARE integrată distinct din C2 (comentariul poartă eticheta 17.5-Q9)
+static/stil.css	(numai P)	C238 / P2: apariția ferestrei pornește de la opacitate 0,6 (nu 0)
+static/index.html, static/spv_callback.html	(numai P)	tokenul ?v= al stil.css (versioneaza_assets.py --scrie)
+scripts/poarta_harta.txt	(numai P0)	R11: static/js/luna_lucru.js => e2e_luna_lucru_17_5_C.py (neacoperit la --lista)

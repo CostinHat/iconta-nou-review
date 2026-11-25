@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="3.396" timestamp="2026-11-25T08:30:42.222104+02:00" hostname="iconta-prod"><testcase classname="e2e_bloc_a" name="test_def_198_salutul_de_la_intrare_are_diacritice" time="2.894" /></testsuite></testsuites>

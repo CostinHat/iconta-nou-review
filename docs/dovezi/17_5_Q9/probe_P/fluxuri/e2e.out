@@ -1,0 +1,4 @@
+[e2e] aplicația din index pornită pe 8019 în 19s
+FAILED frontend_test/e2e/e2e_fluxuri_17_5_Q9.py::test_f045_pdf_adresa_si_numele_descarcat[laptop]
+FAILED frontend_test/e2e/e2e_fluxuri_17_5_Q9.py::test_f045_pdf_adresa_si_numele_descarcat[mic]
+[e2e] 2 failed, 2 passed in 16.53s (36s; capturi în /home/costin/dovezi_17_5_Q9/probe_P/fluxuri/capturi)

@@ -1,0 +1,582 @@
+{
+  "e.1": {
+    "1366x768": {
+      "dim": [
+        1366,
+        768
+      ],
+      "titlu_card": "De validat",
+      "elemente_coada": [
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior",
+          "membri_ids": [
+            61864,
+            61865,
+            61866
+          ]
+        }
+      ],
+      "randuri": 59,
+      "titluri_sectiuni": [
+        "Note de validat (8)",
+        "Declarații (0)",
+        "Notele tale în ciornă (59)"
+      ],
+      "primare_rand": 0,
+      "primare_fereastra": 1,
+      "principale_observate": [
+        {
+          "text": "Validează selectate",
+          "pe_rand": false,
+          "in_viewport": true
+        }
+      ]
+    },
+    "603x590": {
+      "dim": [
+        603,
+        590
+      ],
+      "titlu_card": "De validat",
+      "elemente_coada": [
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior",
+          "membri_ids": [
+            61864,
+            61865,
+            61866
+          ]
+        }
+      ],
+      "randuri": 59,
+      "titluri_sectiuni": [
+        "Note de validat (8)",
+        "Declarații (0)",
+        "Notele tale în ciornă (59)"
+      ],
+      "primare_rand": 0,
+      "primare_fereastra": 1,
+      "principale_observate": [
+        {
+          "text": "Validează selectate",
+          "pe_rand": false,
+          "in_viewport": true
+        }
+      ]
+    }
+  },
+  "e.2": {
+    "1366x768": {
+      "dim": [
+        1366,
+        768
+      ],
+      "titlu_card": "De validat",
+      "elemente_coada": [
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior",
+          "membri_ids": [
+            61864,
+            61865,
+            61866
+          ]
+        }
+      ],
+      "randuri": 59,
+      "titluri_sectiuni": [
+        "Note de validat (8)",
+        "Declarații (0)",
+        "Notele tale în ciornă (59)"
+      ],
+      "valideaza": 59,
+      "iduri": [
+        "c105779-123",
+        "c105779-176",
+        "c105779-131",
+        "c105779-141",
+        "c105779-142",
+        "c105779-148",
+        "c105779-149",
+        "c105779-150",
+        "c105779-151",
+        "c105779-152",
+        "c105779-153",
+        "c105779-154",
+        "c105779-155",
+        "c105779-156",
+        "c105779-157",
+        "c105779-158",
+        "c105779-159",
+        "c105779-160",
+        "c105779-161",
+        "c105779-162",
+        "c105779-172",
+        "c105779-173",
+        "c105779-174",
+        "c105779-183",
+        "c105779-184",
+        "c105779-175",
+        "c105779-178",
+        "c105779-179",
+        "c105779-180",
+        "c105779-181",
+        "c105779-182",
+        "c105779-185",
+        "c105779-194",
+        "c105779-190",
+        "c105779-191",
+        "c105779-192",
+        "c105779-193",
+        "c105779-195",
+        "c105779-196",
+        "c105779-197",
+        "c105779-201",
+        "c105779-204",
+        "c105779-205",
+        "c105779-206",
+        "c105779-207",
+        "c105779-212",
+        "c105779-213",
+        "c105779-214",
+        "c105779-215",
+        "c105780-80",
+        "c105780-81",
+        "c105780-87",
+        "c105780-88",
+        "c105780-90",
+        "c105780-91",
+        "c105783-7",
+        "c105783-8",
+        "c105785-5",
+        "c105785-4"
+      ],
+      "validare_actionabila": true
+    },
+    "603x590": {
+      "dim": [
+        603,
+        590
+      ],
+      "titlu_card": "De validat",
+      "elemente_coada": [
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior",
+          "membri_ids": [
+            61864,
+            61865,
+            61866
+          ]
+        }
+      ],
+      "randuri": 59,
+      "titluri_sectiuni": [
+        "Note de validat (8)",
+        "Declarații (0)",
+        "Notele tale în ciornă (59)"
+      ],
+      "valideaza": 59,
+      "iduri": [
+        "c105779-123",
+        "c105779-176",
+        "c105779-131",
+        "c105779-141",
+        "c105779-142",
+        "c105779-148",
+        "c105779-149",
+        "c105779-150",
+        "c105779-151",
+        "c105779-152",
+        "c105779-153",
+        "c105779-154",
+        "c105779-155",
+        "c105779-156",
+        "c105779-157",
+        "c105779-158",
+        "c105779-159",
+        "c105779-160",
+        "c105779-161",
+        "c105779-162",
+        "c105779-172",
+        "c105779-173",
+        "c105779-174",
+        "c105779-183",
+        "c105779-184",
+        "c105779-175",
+        "c105779-178",
+        "c105779-179",
+        "c105779-180",
+        "c105779-181",
+        "c105779-182",
+        "c105779-185",
+        "c105779-194",
+        "c105779-190",
+        "c105779-191",
+        "c105779-192",
+        "c105779-193",
+        "c105779-195",
+        "c105779-196",
+        "c105779-197",
+        "c105779-201",
+        "c105779-204",
+        "c105779-205",
+        "c105779-206",
+        "c105779-207",
+        "c105779-212",
+        "c105779-213",
+        "c105779-214",
+        "c105779-215",
+        "c105780-80",
+        "c105780-81",
+        "c105780-87",
+        "c105780-88",
+        "c105780-90",
+        "c105780-91",
+        "c105783-7",
+        "c105783-8",
+        "c105785-5",
+        "c105785-4"
+      ],
+      "validare_actionabila": true
+    }
+  },
+  "e.3": {
+    "1366x768": {
+      "dim": [
+        1366,
+        768
+      ],
+      "titlu_card": "De validat",
+      "elemente_coada": [
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior",
+          "membri_ids": [
+            61864,
+            61865,
+            61866
+          ]
+        }
+      ],
+      "randuri": 59,
+      "tip_dupa": "plata_furnizor",
+      "suma_input": "",
+      "motiv_inainte": "Completează: tipul",
+      "motiv_dupa": "Completează: partenerul, suma, poziția din listă sau „Avans, fără factură”",
+      "motiv_vizibil": "Completează: partenerul, suma, poziția din listă sau „Avans, fără factură”"
+    },
+    "603x590": {
+      "dim": [
+        603,
+        590
+      ],
+      "titlu_card": "De validat",
+      "elemente_coada": [
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior",
+          "membri_ids": [
+            61864,
+            61865,
+            61866
+          ]
+        }
+      ],
+      "randuri": 59,
+      "tip_dupa": "plata_furnizor",
+      "suma_input": "",
+      "motiv_inainte": "Completează: tipul",
+      "motiv_dupa": "Completează: partenerul, suma, poziția din listă sau „Avans, fără factură”",
+      "motiv_vizibil": "Completează: partenerul, suma, poziția din listă sau „Avans, fără factură”"
+    }
+  },
+  "e.4": {
+    "1366x768": {
+      "dim": [
+        1366,
+        768
+      ],
+      "titlu_card": "De validat",
+      "elemente_coada": [
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior",
+          "membri_ids": [
+            61864,
+            61865,
+            61866
+          ]
+        }
+      ],
+      "randuri": 59,
+      "preluare": "03/2026",
+      "luni_ui": [
+        "2026-10",
+        "2026-9",
+        "2026-8",
+        "2026-7",
+        "2026-6",
+        "2026-5",
+        "2026-4",
+        "2026-3"
+      ],
+      "luni_sursa": [
+        "2026-10",
+        "2026-9",
+        "2026-8",
+        "2026-7",
+        "2026-6",
+        "2026-5",
+        "2026-4",
+        "2026-3"
+      ],
+      "eticheta_luni": "Luna comparată",
+      "valoare_afisata": "10/2026",
+      "valoare_selectata": "2026-10",
+      "zone_text": {
+        "eticheta": [
+          49,
+          377,
+          137,
+          17
+        ],
+        "valoare": [
+          62,
+          413,
+          67,
+          20
+        ]
+      },
+      "pixeli_text": {
+        "eticheta": 722,
+        "valoare": 365
+      },
+      "control_luni_in_viewport": true
+    },
+    "603x590": {
+      "dim": [
+        603,
+        590
+      ],
+      "titlu_card": "De validat",
+      "elemente_coada": [
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior"
+        },
+        {
+          "fel": "nota",
+          "stare": "la_senior",
+          "membri_ids": [
+            61864,
+            61865,
+            61866
+          ]
+        }
+      ],
+      "randuri": 59,
+      "preluare": "03/2026",
+      "luni_ui": [
+        "2026-10",
+        "2026-9",
+        "2026-8",
+        "2026-7",
+        "2026-6",
+        "2026-5",
+        "2026-4",
+        "2026-3"
+      ],
+      "luni_sursa": [
+        "2026-10",
+        "2026-9",
+        "2026-8",
+        "2026-7",
+        "2026-6",
+        "2026-5",
+        "2026-4",
+        "2026-3"
+      ],
+      "eticheta_luni": "Luna comparată",
+      "valoare_afisata": "10/2026",
+      "valoare_selectata": "2026-10",
+      "zone_text": {
+        "eticheta": [
+          49,
+          288,
+          137,
+          17
+        ],
+        "valoare": [
+          62,
+          324,
+          67,
+          20
+        ]
+      },
+      "pixeli_text": {
+        "eticheta": 722,
+        "valoare": 365
+      },
+      "control_luni_in_viewport": true
+    }
+  }
+}
