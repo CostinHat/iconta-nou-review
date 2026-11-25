@@ -16,7 +16,7 @@ import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=19949a9cc9"; 
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
 import { meniuMigrarePerFirma } from "./migrare.js?v=8a2358dab7";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api } from "../api.js?v=76d1a3d8b0";
+import { api } from "../api.js?v=dc526532b7";
 
 export const ECRANE = {
   date_firma: {

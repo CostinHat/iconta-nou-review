@@ -1,7 +1,7 @@
 // termene.js — restantele (termen trecut, nedepuse) si scadentele fiscale viitoare pe portofoliu (orizont 60 zile).
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
-import { api, semnAjutor, cate, dupaNumar, dataRo, esc } from "../api.js?v=76d1a3d8b0";
+import { api, semnAjutor, cate, dupaNumar, dataRo, esc } from "../api.js?v=dc526532b7";
 import { tabelDS } from "../ds_piese.js?v=91866a42f7";   // [15.1-E3] lista scadențelor pe tabelul DS
 import { deschideFirma } from "./firme.js?v=320489dd29";
 import { randeazaDeclaratii } from "./declaratii.js?v=455ec134b8";   // [17.5-M, AC014] „Deschide declarația” din Detaliu termen; declaratii.js nu importă termene.js (fără ciclu)   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului

@@ -1824,6 +1824,10 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   opacity: 0; transform: translateY(12px); transition: opacity .3s ease, transform .3s ease;
 }
 .sumar-toast.sumar-toast-vizibil { opacity: 1; transform: translateY(0); }
+/* [17.5-Q9, F019 / DS.2] caseta de bun-venit stă în colțul în care fereastra de lucru își ține bara de jos cu acțiunea principală
+   («Validează selectate» în De validat era acoperit 7 s după intrare): cât e deschisă o fereastră, caseta nu se arată; aceleași
+   cifre rămân pe clopoțel și pe carduri */
+body:has(.fereastra-overlay) .sumar-toast { display: none; }
 .sumar-toast-cap { font-size: var(--text-mic); font-weight: 600; color: #1a1d21; margin-bottom: 4px; }
 .sumar-toast-corp { font-size: var(--text-mic); color: #444; line-height: 1.4; }
 

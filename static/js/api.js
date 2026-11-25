@@ -377,11 +377,17 @@ export async function cereBlob(cale, optiuni = {}) {
 // `descarca(cale, numeFisier, optiuni)` — cazul obisnuit: ia fisierul si il salveaza pe disc.
 // Numele din `Content-Disposition` bate `numeFisier` cand serverul il trimite (el stie seria si
 // numarul; ecranul le-ar ghici).
+// [17.5-Q9, F045] conținutul fișierului se citește ca octeți (`arrayBuffer`), apoi se face blobul: `r.blob()` golea răspunsul direct în
+// depozitul de bloburi al navigatorului, pe lângă jurnalul de rețea, iar răspunsul descărcat nu mai putea fi confruntat cu fișierul salvat
+// (proba F045 compară octeții răspunsului cu ai descărcării). Fișierul salvat sau deschis e același.
+async function _blobCitit(r) {
+  return new Blob([await r.arrayBuffer()], { type: r.headers.get("Content-Type") || "" });
+}
 export async function descarca(cale, numeFisier, optiuni = {}) {
   const r = await cereBlob(cale, optiuni);
   const cd = r.headers.get("Content-Disposition") || "";
   const m = cd.match(/filename="([^"]+)"/);
-  const url = URL.createObjectURL(await r.blob());
+  const url = URL.createObjectURL(await _blobCitit(r));
   const a = document.createElement("a");
   a.href = url;
   a.download = m ? m[1] : numeFisier;
@@ -392,7 +398,7 @@ export async function descarca(cale, numeFisier, optiuni = {}) {
 // `deschide(cale, optiuni)` — fisierul se arata, nu se salveaza (PDF intr-un tab nou).
 export async function deschide(cale, optiuni = {}) {
   const r = await cereBlob(cale, optiuni);
-  const url = URL.createObjectURL(await r.blob());
+  const url = URL.createObjectURL(await _blobCitit(r));
   window.open(url, "_blank");
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }

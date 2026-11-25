@@ -8,7 +8,7 @@
 // și `propus`), iar `cuLegareaNir` arată caseta-poartă (DS cap.5 v2.14: două alegeri care merg amândouă înainte) și retrimite
 // cu alegerea. Preselecția = `propus` (DS cap.17 v2.79: dedusă din date — același furnizor, același cost —, vizibilă, schimbabilă);
 // fără propunere, „— alege —”.
-import { esc, bani, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=76d1a3d8b0";
+import { esc, bani, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=dc526532b7";
 // [17.5-Q8, DS.5 / F043] sumele din eticheta NIR-ului (scrisă de server cu punct zecimal, „cost 600.00 lei”) se arată românește („600,00 lei”)
 const _etichetaRo = (t) => String(t || "").replace(/(\d+)\.(\d{2}) lei/g, (_m, i, z) => bani(i + "." + z) + " lei");
 
