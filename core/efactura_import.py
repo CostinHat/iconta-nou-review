@@ -240,8 +240,6 @@ def parseaza_xml(continut, cui_firma):
         "cumparator_tara": (_txt(root, "cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode")
                             or "").strip().upper() or None,
         "total": total, "tva": tva, "moneda": moneda,
-        # [17.5-Q10, F043] BT-109 (totalul fără TVA), pentru confruntarea totalurilor (`neconcordanta_tva`)
-        "total_fara_tva": _txt(root, "cac:LegalMonetaryTotal/cbc:TaxExclusiveAmount") or None,
         # [lotul 11, C79] TVA-ul FACTURII pe cote (BG-23), cum l-a scris furnizorul — sursa TVA-ului deductibil (`tva_cote_din_xml`)
         "tva_cote": tva_cote_din_xml(root),
         # [lotul 11, C81] BT-111: TVA-ul facturii în lei, scris de furnizor (factura în valută cu BT-6 = RON), sau None
@@ -266,8 +264,11 @@ def neconcordanta_tva(f):
         tva = Decimal(str(f.get("tva") or "0"))
         sub = [Decimal(str(c.get("tva") or "0")) for c in cote]
         total = Decimal(str(f.get("total") or "0"))
-        net = Decimal(str(f["total_fara_tva"])) if f.get("total_fara_tva") not in (None, "") else None
-    except (InvalidOperation, ValueError):
+        # BT-109 (totalul fără TVA) din XML-ul facturii (`xml`), citit aici: forma facturii (cheile lui `parseaza_xml`) rămâne aceeași
+        _r = ET.fromstring(f["xml"].encode("utf-8") if isinstance(f.get("xml"), str) else f["xml"]) if f.get("xml") else None
+        _net = _txt(_r, "cac:LegalMonetaryTotal/cbc:TaxExclusiveAmount") if _r is not None else None
+        net = Decimal(str(_net)) if _net not in (None, "") else None
+    except (InvalidOperation, ValueError, ET.ParseError):
         return None
     suma = sum(sub, Decimal(0))
     motive = []

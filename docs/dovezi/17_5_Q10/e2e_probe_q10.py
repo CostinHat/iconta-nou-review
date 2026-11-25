@@ -128,7 +128,6 @@ def antet(P, email):
     for w, h in ((1920, 1080),) + DIM:
         ctx, pg = _pg(P.b, w, h, email)
         try:
-            from e2e_ferestre_17_5_Q5 import acasa
             pg.goto(os.environ["PROBA_BAZA"] + "/", wait_until="domcontentloaded")
             pg.wait_for_selector("#nav-iesire")
             _stabil(pg)

@@ -1232,7 +1232,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const tipDoc = (corp.querySelector("#em-tip") || {}).value || "factura";
     if (tipDoc === "factura" && !corp.querySelector("#em-adresa").value.trim() && !(corp.querySelector("#em-oras").value || "").trim()) {
       eroareCamp(corp, "em-adresa", MESAJ_ADRESA_BENEFICIAR);
-      rez.textContent = "Factura NU s-a emis: " + MESAJ_ADRESA_BENEFICIAR;
+      rez.textContent = "Factura nu s-a emis: " + MESAJ_ADRESA_BENEFICIAR;
       rez.className = "em-rezultat em-rau";
       return;
     }

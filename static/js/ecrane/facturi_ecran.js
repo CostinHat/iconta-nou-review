@@ -9,7 +9,7 @@ import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?
 import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=4c864c130d";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=bf57dded62";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=200eda21e4";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor

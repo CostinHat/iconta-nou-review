@@ -1,0 +1,834 @@
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  2%]
+........................................................................ [  4%]
+........................................................................ [  7%]
+..........................................................FF............ [  9%]
+............xx.x...xxx.....x..x.xxxx.xx................................. [ 12%]
+........................................................................ [ 14%]
+........................................................................ [ 17%]
+...................................F............F....................... [ 19%]
+........................................................F............... [ 22%]
+..................F..................................................... [ 24%]
+........................................................................ [ 27%]
+........................................................................ [ 29%]
+........................................................................ [ 32%]
+....................................................F................... [ 34%]
+...s.................................................................... [ 37%]
+........................................................................ [ 39%]
+........................................................................ [ 42%]
+........................................................................ [ 44%]
+.........................F.............................................. [ 47%]
+........................................................................ [ 49%]
+........................................................................ [ 52%]
+.......................................................F................ [ 54%]
+................F....................................................... [ 57%]
+............................F........................................... [ 59%]
+........................................................................ [ 62%]
+........................................................................ [ 64%]
+............ssss........................................................ [ 67%]
+........................................F............................... [ 69%]
+..........................................................FF............ [ 72%]
+.....................................................................F.. [ 74%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 82%]
+................................F....................................... [ 84%]
+........................................................................ [ 87%]
+........................................................................ [ 89%]
+........................................................................ [ 92%]
+........................................................................ [ 94%]
+...............................................FF...........F........... [ 97%]
+...................F.....................................F.............. [ 99%]
+......FF.                                                                [100%]
+=================================== FAILURES ===================================
+_________________________ test_niciun_fisier_nu_creste _________________________
+[gw2] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+acum = Counter({'scripts/infra_g2.py': 5, 'scripts/poarta_lib.py': 5, 'core/uc_declaratii.py': 4, 'core/uc_tenants.py': 4, 's...1, 'core/tipare_api.py': 1, 'core/uc_portal.py': 1, 'scripts/matrice_text_taiat.py': 1, 'scripts/poarta_rulare.py': 1})
+
+    def test_niciun_fisier_nu_creste(acum):
+        """Miezul clichetului."""
+        rele = ["  %-42s %d > %d" % (f, n, BASELINE[f]) for f, n in sorted(acum.items())
+                if f in BASELINE and n > BASELINE[f]]
+>       assert not rele, (
+            "afirmații netipate ÎN CREȘTERE (scrie-le ca obiecte, nu ridica baseline-ul):\n"
+            + "\n".join(rele))
+E       AssertionError: afirmații netipate ÎN CREȘTERE (scrie-le ca obiecte, nu ridica baseline-ul):
+E           core/uc_tenants.py                         4 > 2
+E       assert not ['  core/uc_tenants.py                         4 > 2']
+
+core/test_afirmatii_tipate.py:75: AssertionError
+____________________________ test_niciun_fisier_nou ____________________________
+[gw2] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+acum = Counter({'scripts/infra_g2.py': 5, 'scripts/poarta_lib.py': 5, 'core/uc_declaratii.py': 4, 'core/uc_tenants.py': 4, 's...1, 'core/tipare_api.py': 1, 'core/uc_portal.py': 1, 'scripts/matrice_text_taiat.py': 1, 'scripts/poarta_rulare.py': 1})
+
+    def test_niciun_fisier_nou(acum):
+        """Un fișier care începe azi să producă afirmații netipate n-are voie să intre tăcut."""
+        noi = ["  %-42s %d" % (f, n) for f, n in sorted(acum.items()) if f not in BASELINE]
+>       assert not noi, (
+            "fișiere NOI cu afirmații netipate — decizia din 21.08 cere obiecte cu `fel`, nu proză în "
+            "dicționar. Folosește `core/afirmatii.afirmatie()`:\n" + "\n".join(noi))
+E       AssertionError: fișiere NOI cu afirmații netipate — decizia din 21.08 cere obiecte cu `fel`, nu proză în dicționar. Folosește `core/afirmatii.afirmatie()`:
+E           core/d394.py                               2
+E           core/uc_declaratii.py                      4
+E           docs/dovezi/17_5_Q6/colector_q6.py         2
+E           scripts/calibreaza_16_5.py                 4
+E           scripts/infra_g2.py                        5
+E           scripts/matrice_text_taiat.py              1
+E           scripts/poarta_lib.py                      5
+E           scripts/poarta_rulare.py                   1
+E       assert not ['  core/d394.py                               2', '  core/uc_declaratii.py                      4', '  docs/dovezi/17...           4', '  scripts/infra_g2.py                        5', '  scripts/matrice_text_taiat.py              1', ...]
+
+core/test_afirmatii_tipate.py:83: AssertionError
+________________ test_e2e_nu_fabrica_prin_sql_datele_aplicatiei ________________
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_e2e_nu_fabrica_prin_sql_datele_aplicatiei():
+        """Comanda 11.2 pct.2. MUTAȚIE: un `sql('INSERT INTO "%s".facturi …')` nemarcat într-un e2e_lot11_*.py -> pică."""
+        rele = abateri(masoara(), PLAFON)
+>       assert not rele, "\n".join(rele)
+E       AssertionError: frontend_test/e2e/e2e_baza_test.py: 1 scrieri SQL nemarcate (plafon 0): linia 48 chitante — e2e-ul reface pașii contabilului pe ecran / API; o scriere directă e admisă numai pentru datele de pornire, cu `# date-de-pornire: <motiv>`
+E         frontend_test/e2e/e2e_lot6.py: 1 scrieri SQL nemarcate (plafon 0): linia 85 firma_profil — e2e-ul reface pașii contabilului pe ecran / API; o scriere directă e admisă numai pentru datele de pornire, cu `# date-de-pornire: <motiv>`
+E         frontend_test/e2e/e2e_pilot_17_5_S.py: 4 scrieri SQL nemarcate (plafon 0): linia 55 inregistrari, linia 57 inregistrari_linii, linia 78 firma_profil, linia 85 firma_profil — e2e-ul reface pașii contabilului pe ecran / API; o scriere directă e admisă numai pentru datele de pornire, cu `# date-de-pornire: <motiv>`
+E         frontend_test/e2e/e2e_portal_17_5_L.py: 2 scrieri SQL nemarcate (plafon 0): linia 660 public.declaratii_depuse, linia 734 public.solicitari_client — e2e-ul reface pașii contabilului pe ecran / API; o scriere directă e admisă numai pentru datele de pornire, cu `# date-de-pornire: <motiv>`
+E       assert not ['frontend_test/e2e/e2e_baza_test.py: 1 scrieri SQL nemarcate (plafon 0): linia 48 chitante — e2e-ul reface pașii cont...ntabilului pe ecran / API; o scriere directă e admisă numai pentru datele de pornire, cu `# date-de-pornire: <motiv>`']
+
+core/test_e2e_fara_date_fabricate.py:146: AssertionError
+____________________ test_campul_mort_explicatie_nu_reapare ____________________
+[gw2] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_campul_mort_explicatie_nu_reapare():
+        """`explicatie` de pe containerul de modul a fost SCOASĂ (21.08): nu o citea nimeni — nici
+        `control_verdict.js` (randează `limita`), nici `firme.js` (o declară IGNORAT), nici vreun modul
+        Python; nu ieșea prin `/api/v1`, nu se persista, nu ajungea în PDF. Șapte din douăsprezece erau
+        șirul gol; cinci calculau o frază pe care n-o vedea nimeni.
+    
+        Gardul e pe REAPARIȚIE, nu pe absență: un câmp mort care se întoarce arată ca o funcționalitate.
+        Dacă vreodată containerul chiar are ce explica, se construiește atunci — cu un consumator real,
+        care apare în aserțiunea de mai jos."""
+        import io
+        import os
+        sursa = io.open(os.path.join(s.RAD, "core", "control_incrucisat.py"), encoding="utf-8").read()
+        linii = [ln for ln in sursa.split("\n")
+                 if '"explicatie"' in ln and not ln.lstrip().startswith("#")]
+        assert not linii, (
+            "`explicatie` a reapărut în containerele de modul:\n  " + "\n  ".join(linii[:4])
+            + "\n\nDacă are acum un consumator real, numește-l aici și scoate gardul.")
+        js = io.open(os.path.join(s.RAD, "static", "js", "ecrane", "control_verdict.js"),
+                     encoding="utf-8").read()
+>       assert ".explicatie" not in js, "randorul a început să citească `explicatie` — actualizează gardul"
+E       AssertionError: randorul a început să citească `explicatie` — actualizează gardul
+E       assert '.explicatie' not in '// control_...Audit);\n}\n'
+E         
+E         '.explicatie' is contained here:
+E           emnal + (c.explicatie_ciorne && !c.diferenta_neexplicata ? semnalHtml({ ton: "info", text: c.explicatie_ciorne }) : "");
+E         ?           +++++++++++
+E           }
+E           
+E           // constatările aceleiași acțiuni repetate (statul de plată necontabilizat, câte una pe contribuție) devin UN SINGUR card-rezumat cu butonul lui;...
+E         
+E         ...Full output truncated (549 lines hidden), use '-vv' to show
+
+core/test_afirmatii_tipate.py:220: AssertionError
+________________ test_importul_numara_ce_s_a_potrivit_si_ce_nu _________________
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+conn = <connection object at 0x75da4a3cb600; dsn: 'user=iconta_test_user password=xxx dbname=iconta_test host=localhost port=5432 options='-c lock_timeout=30s -c idle_in_transaction_session_timeout=10min'', closed: 0>
+
+    def test_importul_numara_ce_s_a_potrivit_si_ce_nu(conn):
+        """„2 linii importate și potrivite” când una era fără potrivire. MUTAȚIE: `rezumat` scos -> pică."""
+        r = _importa(conn, [(-12.5, "Comision administrare cont"), (500.0, "Incasare necunoscuta")])
+>       assert r["rezumat"] == {"total": 2, "noi": 2, "deja": 0, "potrivite": 0, "fara_potrivire": 2}   # [277] + noi / deja (duplicatele pe mișcare)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert {'total': 2, ...vite': 0, ...} == {'total': 2, ...vite': 0, ...}
+E         
+E         Omitting 5 identical items, use -vv to show
+E         Left contains 1 more item:
+E         {'operatiuni_banca': 1}
+E         Use -v to get more diff
+
+core/test_flux_factura_f1_c.py:152: AssertionError
+___________________________ test_clichetul_nu_creste ___________________________
+[gw0] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+inv = [{'f': 'ajustari_fiscale.py', 'l': 78, 'v': '70', 'casa': 'H4', ...}, {'f': 'alerta_load.py', 'l': 48, 'v': '15', 'cas..._load.py', 'l': 56, 'v': '75', 'casa': 'H1', ...}, {'f': 'alerta_load.py', 'l': 57, 'v': '75', 'casa': 'H1', ...}, ...]
+
+    def test_clichetul_nu_creste(inv):
+        """Miezul. Un fișier nou fiscal pornește de la 0 — orice constantă nesursată în el pică."""
+        acum = _pe_fisier(inv)
+        crescut = []
+        for f, n in sorted(acum.items()):
+            lim = BASELINE.get(f, 0)
+            if n > lim:
+                noi = [h for h in inv if h["cls"] == "C" and h["f"] == f][lim:]
+                crescut.append("  %s: %d > %d  (ex: l.%s `%s` — %s)"
+                               % (f, n, lim, noi[0]["l"], noi[0]["v"], noi[0]["txt"][:60]) if noi
+                               else "  %s: %d > %d" % (f, n, lim))
+>       assert not crescut, (
+            "constante fiscale NESURSATE în plus față de clichet:\n" + "\n".join(crescut)
+            + "\n\nRemediu: atașează un `Temei(...)` (vezi common.COTE) sau mută valoarea în registru."
+            + "\nDacă e nomenclator (cod din XSD, pondere de checksum), botează-l ca atare — vezi"
+            + " scan_constante.NOM — și scrie de unde vine.")
+E       AssertionError: constante fiscale NESURSATE în plus față de clichet:
+E           efactura_import.py: 2 > 0  (ex: l.274 `0.005` — if abs(tva - suma) > Decimal("0.005"):)
+E           uc_portal.py: 2 > 0  (ex: l.273 `4000` — MAX_MESAJ_CLIENT = 4000)
+E         
+E         Remediu: atașează un `Temei(...)` (vezi common.COTE) sau mută valoarea în registru.
+E         Dacă e nomenclator (cod din XSD, pondere de checksum), botează-l ca atare — vezi scan_constante.NOM — și scrie de unde vine.
+E       assert not ['  efactura_import.py: 2 > 0  (ex: l.274 `0.005` — if abs(tva - suma) > Decimal("0.005"):)', '  uc_portal.py: 2 > 0  (ex: l.273 `4000` — MAX_MESAJ_CLIENT = 4000)']
+
+core/test_constante_nesursate.py:189: AssertionError
+___________________________ test_clichetul_nu_creste ___________________________
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_clichetul_nu_creste():
+        """Miezul. Un fișier nou pornește de la 0: orice import mort în el pică."""
+        c = _f401()
+        crescut = ["  %s: %d > %d" % (f, n, BASELINE.get(f, 0))
+                   for f, n in sorted(c.items()) if n > BASELINE.get(f, 0)]
+>       assert not crescut, (
+            "importuri nefolosite în plus față de clichet:\n" + "\n".join(crescut)
+            + "\n\nRemediu: scoate importul. Dacă e intenționat (re-export), pune-i `# noqa: F401` cu "
+              "motivul — un import păstrat fără motiv scris e o urmă de intenție, nu o decizie (R23).")
+E       AssertionError: importuri nefolosite în plus față de clichet:
+E           core/test_17_5_J.py: 1 > 0
+E           core/test_alerta_whatsapp_17_2_A.py: 1 > 0
+E           core/test_bon_cui_cumparator_17_5_P2.py: 1 > 0
+E           core/test_deficiente_lot15.py: 1 > 0
+E           core/test_delta_P0.py: 1 > 0
+E           core/test_faze_verificator_16_4.py: 1 > 0
+E           core/test_intrari_publicare_migrare.py: 2 > 0
+E           core/test_lanseaza_sectiune_16_8_B.py: 1 > 0
+E           core/test_lot11_w4_ecrane.py: 1 > 0
+E           core/test_lot13_firme2_ecrane.py: 1 > 0
+E           core/test_lot17_5_l_portal.py: 2 > 0
+E           core/test_oracol_valoare_16_5.py: 1 > 0
+E           core/test_reguli_publicare_migrare.py: 3 > 0
+E           core/test_verifica_pas_operatori_17_5_X7.py: 1 > 0
+E           core/test_verificator_design_16_7.py: 1 > 0
+E           core/uc_tenants.py: 1 > 0
+E           scripts/alerta_whatsapp.py: 1 > 0
+E           scripts/calibreaza_16_1_C3.py: 1 > 0
+E           scripts/calibreaza_16_3.py: 2 > 0
+E           scripts/calibreaza_16_5.py: 1 > 0
+E           scripts/oracol_pasi.py: 1 > 0
+E           scripts/raport_timp_lot.py: 1 > 0
+E           scripts/verifica_pas.py: 1 > 0
+E           scripts/verifica_plasa_pilot.py: 1 > 0
+E         
+E         Remediu: scoate importul. Dacă e intenționat (re-export), pune-i `# noqa: F401` cu motivul — un import păstrat fără motiv scris e o urmă de intenție, nu o decizie (R23).
+E       assert not ['  core/test_17_5_J.py: 1 > 0', '  core/test_alerta_whatsapp_17_2_A.py: 1 > 0', '  core/test_bon_cui_cumparator_17_5_...test_deficiente_lot15.py: 1 > 0', '  core/test_delta_P0.py: 1 > 0', '  core/test_faze_verificator_16_4.py: 1 > 0', ...]
+
+core/test_importuri_nefolosite.py:106: AssertionError
+_______________ test_niciun_test_nou_nu_lasa_search_path_in_pool _______________
+[gw0] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_niciun_test_nou_nu_lasa_search_path_in_pool():
+        noi = sorted(_cu_scurgere() - BAZA)
+>       assert not noi, "SET search_path de sesiune într-un test nou (folosește SET LOCAL sau db.get_conn(schema)): %s" % noi
+E       AssertionError: SET search_path de sesiune într-un test nou (folosește SET LOCAL sau db.get_conn(schema)): ['core/test_ciorne_decont_17_5_W.py', 'core/test_pozitii_pilot_17_5_S.py']
+E       assert not ['core/test_ciorne_decont_17_5_W.py', 'core/test_pozitii_pilot_17_5_S.py']
+
+core/test_lot10_search_path_pool.py:179: AssertionError
+___ test_def_598_garda_nicio_exceptie_a_unui_canal_extern_nu_ajunge_pe_ecran ___
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_def_598_garda_nicio_exceptie_a_unui_canal_extern_nu_ajunge_pe_ecran():
+        """MUTAȚIE: `mesaje, eroare = [], str(e)` pus înapoi în `spv_receive.citeste_firma` -> pică (locul numit)."""
+        gasite = scurgeri()
+>       assert not gasite, "textul excepției unui canal extern ajunge la contabil:\n  " + "\n  ".join("%s:%d %s" % g for g in gasite)
+E       AssertionError: textul excepției unui canal extern ajunge la contabil:
+E           core/migrari_registru.py:439 return 'REFUZ: identitatea Git a versiunii țintă nu se poate citi: %s' % str(e).split('\n')[0]
+E           core/migrari_registru.py:462 return 'REFUZ: planul migrării declarate e corupt sau discordant: %s' % ex
+E       assert not [('core/migrari_registru.py', 439, "return 'REFUZ: identitatea Git a versiunii țintă nu se poate citi: %s' % str(e).sp...[0]"), ('core/migrari_registru.py', 462, "return 'REFUZ: planul migrării declarate e corupt sau discordant: %s' % ex")]
+
+core/test_lot12_notif_598_mesaje_canale.py:263: AssertionError
+___________ test_def_477_factura_de_mana_are_forma_facturii_din_xml ____________
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_def_477_factura_de_mana_are_forma_facturii_din_xml():
+        """Același drum: dict-ul facturii de mână are cheile lui `efactura_import.parseaza_xml` (pe care le citește `_factura_importata`), iar
+        TVA-ul e regula unică (BR-CO-17): 2 × 50 = 100, TVA 21, total 121."""
+        import io
+        from core import efactura_import
+        xml = io.open("/home/costin/ghid_incoming/lot12_fisiere_proba/F1_efactura_DANTE_DNT-RT-1020.xml", encoding="utf-8").read()
+        chei_xml = set(efactura_import.parseaza_xml(xml, "401002001"))
+        f = ufp.factura_din_formular(_corp())
+        lipsa = {k for k in chei_xml if k not in f and not k.startswith(("furnizor_", "cumparator_"))}
+>       assert not lipsa, lipsa
+E       AssertionError: {'total_fara_tva'}
+E       assert not {'total_fara_tva'}
+
+core/test_lot12_scad_primita.py:78: AssertionError
+_______ test_nicio_functie_nu_tine_doua_conexiuni_in_afara_celor_permise _______
+[gw0] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_nicio_functie_nu_tine_doua_conexiuni_in_afara_celor_permise():
+        gasite, nedecise = SC.inventar()
+        noi = sorted(gasite - set(PERMISE))
+        reparate = sorted(set(PERMISE) - gasite)
+>       assert not noi, ("C201: funcții care țin o conexiune și mai deschid una (o cerere lucrează pe O SINGURĂ conexiune — dă conexiunea "
+                         "ținută mai departe, sau închide-o înainte):\n  " + "\n  ".join(noi))
+E       AssertionError: C201: funcții care țin o conexiune și mai deschid una (o cerere lucrează pe O SINGURĂ conexiune — dă conexiunea ținută mai departe, sau închide-o înainte):
+E           core/uc_tenants.py::jurnal_creeaza -> core/uc_tenants.py::_cere_confirmare_inainte_de_preluare
+E       assert not ['core/uc_tenants.py::jurnal_creeaza -> core/uc_tenants.py::_cere_confirmare_inainte_de_preluare']
+
+core/test_lot13_infra_o_conexiune.py:59: AssertionError
+______ test_pastila_fara_scadenta_si_suma_pastilelor_e_numarul_randurilor ______
+[gw0] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+pagina = <Page url='http://127.0.0.1:54259/static/'>
+
+    def test_pastila_fara_scadenta_si_suma_pastilelor_e_numarul_randurilor(pagina):
+        """738: a patra pastilă, ultima, «<N> fără scadență» (N = rezumat.fara_scadenta); restanțe + scadențe + în termen + fără scadență = rândurile listei.
+        MUTAȚIE: pastila scoasă -> suma pastilelor 3 față de 4 rânduri -> pică."""
+        linii = [_linie("restanta", 1), _linie("in_termen", 2), _linie("fara_scadenta", 3), _linie("fara_scadenta", 4)]
+        RASP["/tenants/7/scadentar"] = {"linii": linii, "rezumat": {"restanta": 1, "scade_curand": 0, "in_termen": 1, "fara_scadenta": 2}, "clienti": [], "optin": False}
+        r = pagina.evaluate("""async () => {
+          const m = await import('/static/js/ecrane/facturi_ecran.js');
+          document.body.innerHTML = '<div id="mount"></div>';
+          %s
+          await m.scadentarEcran(document.getElementById('mount'), nav, 7, {});
+          return [[...document.querySelectorAll('#mount .cf-sumar .cf-pastila')].map((e) => e.innerText.trim()), document.querySelectorAll('#sc-lista .pf-frand').length];
+        }""" % NAV)
+        pastile, randuri = r
+>       assert pastile[-1] == "2 fără scadență", pastile
+E       AssertionError: ['1 restantă', '0 scadențe apropiate', '1 în termen', '2 fără scadență în sistem']
+E       assert '2 fără scadență în sistem' == '2 fără scadență'
+E         
+E         - 2 fără scadență
+E         + 2 fără scadență în sistem
+E         ?                ++++++++++
+
+core/test_pozitii_pilot_17_5_S.py:155: AssertionError
+----------------------------- Captured stderr call -----------------------------
+127.0.0.1 - - [25/Nov/2026 20:42:28] "GET /static/js/ecrane/facturi_ecran.js HTTP/1.1" 200 -
+___________ test_ecranul_tinta_aduce_campul_in_vedere_si_ii_da_focus ___________
+[gw0] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_ecranul_tinta_aduce_campul_in_vedere_si_ii_da_focus():
+        """Plumbul până la ecran: butonul trimite `camp`, Date firmă îl caută și îi dă focus. MUTAȚIE: `_tinta.focus()` scos -> pică."""
+        dest = io.open(os.path.join(_RAD, "static", "js", "ecrane", "ecran_destinatie.js"), encoding="utf-8").read()
+>       assert dest.count("opt.camp || null") == 1 and dest.count("randeazaDateFirma(c2, nav, tenantId, { inapoiLa, camp })") == 1
+E       AssertionError: assert (1 == 1 and 0 == 1)
+E        +  where 1 = <built-in method count of str object at 0x20bdc020>('opt.camp || null')
+E        +    where <built-in method count of str object at 0x20bdc020> = '// ecran_destinatie.js — [lotul 07.10 pct.2, comanda Costin 06.10.2026] „Orice mesaj care trimite în alt ecran are bu...a`: câmpurile necompletate de marcat la deschidere (numai Date firmă)\n  });\n  zona.appendChild(b);\n  return b;\n}\n'.count
+E        +  and   0 = <built-in method count of str object at 0x20bdc020>('randeazaDateFirma(c2, nav, tenantId, { inapoiLa, camp })')
+E        +    where <built-in method count of str object at 0x20bdc020> = '// ecran_destinatie.js — [lotul 07.10 pct.2, comanda Costin 06.10.2026] „Orice mesaj care trimite în alt ecran are bu...a`: câmpurile necompletate de marcat la deschidere (numai Date firmă)\n  });\n  zona.appendChild(b);\n  return b;\n}\n'.count
+
+core/test_refuz_spre_ecran.py:84: AssertionError
+___________________ test_datoria_nu_creste_pe_niciun_fisier ____________________
+[gw0] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+inv = [{'fisier': 'main.py', 'linia': 514, 'functie': 'index', 'clasa': 'negasit', ...}, {'fisier': 'main.py', 'linia': 523,...t', 'clasa': 'acces', ...}, {'fisier': 'main.py', 'linia': 560, 'functie': 'cere_cabinet', 'clasa': 'acces', ...}, ...]
+
+    def test_datoria_nu_creste_pe_niciun_fisier(inv):
+        """Miezul. Fiecare fișier își păzește propria cifră — creșterea nu se poate ascunde în total."""
+        acum = s.datorie(inv)
+        crescute = ["  %-42s %d -> %d" % (f, BASELINE.get(f, 0), n)
+                    for f, n in sorted(acum.items()) if n > BASELINE.get(f, 0)]
+>       assert not crescute, (
+            "refuzuri fără temei ÎN CREȘTERE, în module care citează legea:\n" + "\n".join(crescute)
+            + "\n\nModulul ăsta știe să citeze o normă — deci un refuz al lui care nu spune pe ce se "
+            "sprijină e o afirmație fără autor. Pune `temei=` pe excepție, sau o cheie `temei` în "
+            "corpul refuzului. Dacă e un refuz de FORMĂ (un număr negativ, un câmp gol), scrie de ce "
+            "n-are temei — lângă el.")
+E       AssertionError: refuzuri fără temei ÎN CREȘTERE, în module care citează legea:
+E           core/stocuri_cv.py                         8 -> 10
+E         
+E         Modulul ăsta știe să citeze o normă — deci un refuz al lui care nu spune pe ce se sprijină e o afirmație fără autor. Pune `temei=` pe excepție, sau o cheie `temei` în corpul refuzului. Dacă e un refuz de FORMĂ (un număr negativ, un câmp gol), scrie de ce n-are temei — lângă el.
+E       assert not ['  core/stocuri_cv.py                         8 -> 10']
+
+core/test_refuzuri.py:212: AssertionError
+___________ test_coada_cere_poarta_pentru_toate_declaratiile_de_tva ____________
+[gw0] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72aa46fb6300>
+
+    def test_coada_cere_poarta_pentru_toate_declaratiile_de_tva(monkeypatch):
+        """„se aplică tuturor declarațiilor de TVA: D300, D394, D390”; celelalte nu trec prin ea. MUTAȚIE: apelul porții scos din
+        `coada_adauga` -> d394 intră -> pică."""
+        import types
+        from core import uc_coada as uq, uc_comun, declaratii_api, erori
+        assert uq.DECLARATII_TVA == ("d300", "d394", "d390")
+        chemat = []
+        monkeypatch.setattr(uc_comun, "_are_permisiune", lambda ctx, p: True)
+        monkeypatch.setattr(uc_comun, "_schema_sau_404", lambda ctx, tid: "tenant_x")
+        monkeypatch.setattr(declaratii_api, "genereaza", lambda c, s, tip, body: ("<x/>", []))
+        monkeypatch.setattr(uq.db, "get_conn", lambda schema=None: __import__("contextlib").nullcontext(None))
+        from core import uc_declaratii   # [lotul 10, C69] localitatea partenerilor din ANAF înaintea generării: baza e simulată aici
+        monkeypatch.setattr(uc_declaratii, "aduce_localitati_parteneri", lambda schema, tip: None)
+        # [lotul 12, C19] poarta rectificativei D394 citește depunerile din bază (simulată aici cu None); o păzește core/test_lot12_decl3_c19.py
+        monkeypatch.setattr(uc_declaratii, "poarta_cererii", lambda *a, **k: None)
+        monkeypatch.setattr(uq, "poarta_tva_balanta", lambda s, an, luna, trim=None: chemat.append(an) or {"cod": uq.COD_TVA_BALANTA,
+                                                                                                        "mesaj": "m", "diferente": []})
+        monkeypatch.setattr(uq, "ciorne_in_perioada", lambda s, an, luna: 0)   # fără ciorne: diferența blochează (R36)
+        # [297 + 298] sursele perioadei: fără note nevalidate și fără facturi necontate
+        monkeypatch.setattr(uq, "surse_declaratiei", lambda s, tip, an, luna, trim: {
+            "de_la": "2099-01-01", "pana_la": "2099-02-01", "amprenta": "x", "note": [], "facturi": [], "documente_nevalidate": None})
+        for tip in ("d300", "d394", "d390"):
+            d = types.SimpleNamespace(tip=tip, tenant_id=1, an=2099, luna=10, trim=None, motiv_trecere=None,
+                                      model_dump=lambda **k: {"tip": tip, "an": 2099, "luna": 10})
+            with pytest.raises(erori.DateInvalide) as e:
+>               uq.coada_adauga(d, {"uid": 1, "firm": 1})
+
+core/test_retest_0810.py:230: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+date = namespace(tip='d300', tenant_id=1, an=2099, luna=10, trim=None, motiv_trecere=None, model_dump=<function test_coada_cere_poarta_pentru_toate_declaratiile_de_tva.<locals>.<lambda> at 0x72aa35b202c0>)
+ctx = {'uid': 1, 'firm': 1}
+
+    def coada_adauga(date, ctx):
+        """[P7 · use-case] Corpul rutei `/coada`; docstringul ei a ramas in stratul HTTP."""
+        # [B4, 17.09.2026] A pune o declarație în coadă e actul de PREGĂTIRE — cere `poate_pregati`.
+        # Până azi flagul apărea doar la setare, nu la folosire: orice angajat sub `cere_cabinet` genera
+        # și punea în coadă. Poarta e aici, pe acțiune, nu doar în profil.
+        if not _uc_comun._are_permisiune(ctx, "poate_pregati"):
+            raise _erori.FaraDrept(FARA_DREPT_PREGATIRE)
+        schema = _uc_comun._schema_sau_404(ctx, date.tenant_id)
+        body = date.model_dump(exclude_none=True)
+        for k in ("tenant_id", "tip", "inceput_la", "inlocuieste"):  # [p15] inceput_la nu merge la generator; [297] nici înlocuirea
+            body.pop(k, None)
+        # 1) generează declarația pe schema tenantului — [lotul 10, C69] localitatea partenerilor din ANAF, înaintea tranzacției
+        from core.uc_declaratii import aduce_localitati_parteneri, poarta_cererii
+        aduce_localitati_parteneri(schema, date.tip)
+        try:
+            with db.get_conn(schema) as conn:
+                xml, res = declaratii_api.genereaza(conn, schema, date.tip, body)
+                # [lotul 12, C19] porțile cererii, ca la pasul 2 al Declarațiilor: rectificativa D394 numai confirmată (și la reluarea automată)
+                poarta_cererii(conn, schema, date.tip, body, xml, res)
+        except ValueError as e:   # [lotul 11, 445] refuzul cu trimitere (`RefuzGenerare`: ecranul / câmpul / notele de reparat) ajunge la ecran ca obiect, ca în uc_declaratii
+            raise _erori.DateInvalide(e.detaliu() if isinstance(e, _erori.RefuzGenerare) else str(e))
+        # [F163v2] păstrăm și `res` întreg (serializat) în payload, nu doar avertismente: e singura
+        # cale prin care rândurile depuse ajung persistate (marcheaza_depusa le scrie în
+        # declaratii_depuse.randuri). d112 -> randuri None (randuri_din_res, temei acolo).
+        payload = {"xml": xml,
+                   "avertismente": (res if isinstance(res, list) else getattr(res, "avertismente", None)),
+                   "note_rezultat": ([] if isinstance(res, list) else (getattr(res, "note_rezultat", None) or [])),
+                   "randuri": coada_api.randuri_din_res(res)}
+        # 1b) [08.10.2026, decizia Costin U1 + completarea] „Gardă obligatorie: dacă rândurile de TVA colectată și deductibilă ale D300 nu
+        # se potrivesc cu rulajele 4427 și 4426 ale lunii (toleranță: rotunjirea la leu), «Trimite în coadă» e blocat și se afișează
+        # diferența pe conturi. Validatorul DUK verifică doar structura, nu cifrele.” — și „se aplică tuturor declarațiilor de TVA: D300,
+        # D394, D390”. Comparația există o singură dată (`control_incrucisat.verifica_tva`: R17_2 <-> rulajul creditor 4427, R27_2 <->
+        # rulajul debitor 4426, numai note validate, toleranța 1 leu); aici devine poartă. Fără portiță: `motiv_trecere` e pentru DUK.
+        # 1c) [08.10.2026, decizia Costin V1] D406: totalurile GeneralLedgerEntries = rulajele balanței pe perioadă, altfel blocat.
+        # [08.10.2026, decizia Costin §6 pct.7 — R36] „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în lună,
+        # dau doar avertisment, nu blocaj.” Fără ciorne, diferența blochează ca înainte; cu ciorne, intră în coadă cu avertismentul.
+        # [PIVOT 09.10.2026, deficiențele 120 + 210; PIVOT 10.10.2026, comanda Costin pct.3] diferența blochează și cu ciorne, la toate patru.
+        avertismente_poarta = []
+        avertismente_langa_note = []   # [lotul 11, 436] aceleași avertismente fără lista notelor, pentru lângă butoanele lor
+        # [deficiențele 297 + 298] datele-sursă ale declarației: amprenta (pentru „depășită”), notele nevalidate și facturile fără notă
+        # validată ale perioadei, NUMITE — la orice declarație, nu numai la TVA
+        _surse = surse_declaratiei(schema, date.tip, date.an, date.luna, date.trim)
+        payload["_surse"] = {k: _surse[k] for k in ("de_la", "pana_la", "amprenta", "amprenta_salarii") if k in _surse}
+        # [329, 18.10.2026] avertismentul documentelor nevalidate NU se mai îngheață aici: lista cozii îl calculează la fiecare citire
+        # (`coada_api.nevalidate_acum`); notele numite rămân, pentru motivul lui „depășită” (`coada_api.depasire`)
+        payload["_surse"]["note"] = [{"nota_id": n["nota_id"], "data": n["data"], "eticheta": n["eticheta"]} for n in _surse["note"]]
+        payload["_cerere"] = {k: v for k, v in body.items() if k != "motiv_trecere"}
+        payload["_cerere"].update(tenant_id=date.tenant_id, tip=date.tip)
+        # [17.5-W, AC184] rapoartele Z cu nota în ciornă pe care decontul nu le cuprinde: refuz NUMIT, înaintea porții TVA–balanță și peste ea — ele sunt
+        # cauza diferenței dintre decont și balanță, iar fără ordinea asta poarta de balanță ar refuza cu textul ei. Citit ACUM din baza de date;
+        # se ridică ca refuzul 436 (`DateInvalide(dict)`), fără așteptare automată a validării. Poarta de balanță (R36) nu se schimbă.
+        if date.tip in coada_api.TIPURI_RAPOARTE_Z:
+            with db.get_conn(schema) as _conn_z:
+>               with _conn_z.cursor() as _cur_z:
+                     ^^^^^^^^^^^^^^
+E               AttributeError: 'NoneType' object has no attribute 'cursor'
+
+core/uc_coada.py:331: AttributeError
+___________________ test_NICIUN_APEL_nu_s_a_pierdut_pe_drum ____________________
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
+        """Conservarea apelurilor: ce chema ruta înainte, cheamă și acum — învelișul plus use-case-ul.
+    
+        **De ce e nevoie de proba asta pe lângă cea de mai sus.** Perechile `(cod, mesaj)` spun ce se
+        întâmplă când operațiunea REFUZĂ; nu spun nimic despre o instrucțiune care a dispărut tăcut.
+        Instanța care a cerut-o: mutatorul a lăsat pe dinafară `_rate_limit_reset(request)` și
+        `_rate_limit_email(_magic_rate, request)` — două gărzi anti-spam —, iar contractul de refuz a
+        rămas identic, suita verde, ruff verde. *Un apel care nu se mai face nu strigă; se vede numai
+        numărându-l.*
+        """
+        harta = _harta_cod()
+        uc = _module_uc()
+        nou_src = io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read()
+        av, an = ast.parse(_sursa_veche()), ast.parse(nou_src)
+        vechi = {n.name: n for n in av.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        nou = {n.name: n for n in an.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        dif, confruntate = [], 0
+        for nume, vfn in sorted(vechi.items()):
+            nfn = nou.get(nume)
+            if nfn is None:
+                continue
+            tinta = _tinta_invelisului(nfn)
+            if tinta is None:
+                continue                      # n-a plecat: se compară cu el însuși, n-are ce spune
+            corp = uc.get(tinta)
+            if corp is None:
+                dif.append("%s: învelișul trimite la %s, care nu există" % (nume, tinta))
+                continue
+            confruntate += 1
+            inainte = _apeluri(vfn, harta)
+            acum = _apeluri(nfn, harta)
+            for k, v in _apeluri(corp, harta).items():
+                acum[k] = acum.get(k, 0) + v
+            acum.pop("_http_din", None)
+            acum[tinta[1]] = acum.get(tinta[1], 0) - 1          # delegarea, adăugată de val
+            if acum.get(tinta[1]) == 0:
+                acum.pop(tinta[1])
+            # [R187] INLOCUIRILE declarate se contabilizeaza pe numele VECHI: apelul nu s-a pierdut, i
+            # s-a schimbat numele. Tabelul e pazit de `test_INLOCUIRILE_declarate_chiar_exista`.
+            for (_fn, _vechi), (_nou, _m) in APELURI_INLOCUITE.items():
+                if _fn == nume and acum.get(_nou):
+                    acum[_vechi] = acum.get(_vechi, 0) + acum[_nou]
+            # [08.10.2026] corpul EXTRAS într-un ajutor: creditul = apelurile pe care ajutorul chiar le face (vezi tabelul de sus)
+            if nume in APELURI_EXTRASE_IN_AJUTOR and acum.get(APELURI_EXTRASE_IN_AJUTOR[nume][0][1]):
+                # creditul se dă PE APEL efectiv al ajutorului (ca la BIFA_INLOCUIRI): `portal_bon` cheamă `dir_bonuri` de două ori, cum
+                # chema înainte `expanduser` (deficiența 9)
+                _n_apel = acum[APELURI_EXTRASE_IN_AJUTOR[nume][0][1]]
+                for k, v in _apeluri_ajutor(*APELURI_EXTRASE_IN_AJUTOR[nume][0]).items():
+                    acum[k] = acum.get(k, 0) + v * _n_apel
+            # [15.10.2026, lotul 4] corpul extras în mai multe ajutoare, creditate în ordine (vezi APELURI_EXTRASE_IN_AJUTOARE)
+            for _cale_a, _ajutor in (APELURI_EXTRASE_IN_AJUTOARE.get(nume, ((), ""))[0]):
+                _n_apel = acum.get(_ajutor, 0)
+                # un ajutor din stratul use-case se numără ca ruta (refuzurile `_erori.*` = HTTPException, prin aceeași hartă); unul
+                # din afara lui, ca în tabelul cu un singur ajutor
+                _cheie_uc = (os.path.basename(_cale_a)[:-3], _ajutor)
+                _ale = (_apeluri(uc[_cheie_uc], harta) if _cheie_uc in uc else _apeluri_ajutor(_cale_a, _ajutor))
+                for k, v in _ale.items():
+                    acum[k] = acum.get(k, 0) + v * _n_apel
+            for (_fn, _apel), _m in APELURI_SCOASE.items():
+                if _fn == nume:
+                    inainte.pop(_apel, None)
+            for (_fn, _apel), (_n, _m) in {**APELURI_REDUSE, **APELURI_REDUSE_DUPA_EXTRAGERE}.items():
+                if _fn == nume:
+                    inainte[_apel] = inainte.get(_apel, 0) - _n
+            # [lot 19, 03.10.2026] fiecare `_uc_comun.bifa(corp, x)` inlocuieste o pereche `bool(corp.get(x))` (sau, la
+            # taxarea inversa, `str(corp.get(x)).strip().lower()`): creditul se da PE APEL efectiv, iar `extra` numeste
+            # apelurile scoase deliberat. Anti-vacuu: `test_BIFA_INLOCUIRI_chiar_cheama_bifa`.
+            if nume in BIFA_INLOCUIRI:
+                _per_apel, _extra, _m = BIFA_INLOCUIRI[nume]
+                for k, v in _per_apel.items():
+                    acum[k] = acum.get(k, 0) + v * acum.get("bifa", 0)
+                for k, v in _extra.items():
+                    acum[k] = acum.get(k, 0) + v
+            lipsa = {k: inainte[k] - acum.get(k, 0) for k in inainte if inainte[k] > acum.get(k, 0)}
+            if lipsa:
+                dif.append("%s: apeluri pierdute %s" % (nume, lipsa))
+        assert confruntate >= 300, "doar %d funcții confruntate — universul s-a golit" % confruntate
+>       assert not dif, ("apeluri care nu se mai fac, în %d funcții:\n    %s"
+                         % (len(dif), "\n    ".join(dif[:10])))
+E       AssertionError: apeluri care nu se mai fac, în 1 funcții:
+E             factura_pdf_ruta: apeluri pierdute {'str': 1}
+E       assert not ["factura_pdf_ruta: apeluri pierdute {'str': 1}"]
+
+core/test_p7_uc.py:1772: AssertionError
+____________________ test_ecranele_fara_majuscule_de_accent ____________________
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_ecranele_fara_majuscule_de_accent():
+        gasite = defecte_js()
+>       assert not gasite, "Text de ecran cu majuscule de accent / diacritice lipsă:\n" + "\n".join(
+            "  %s:%d [%s] %s <- %r" % (fn, ln, rol, ",".join(h), s[:100]) for fn, ln, rol, s, h in gasite)
+E       AssertionError: Text de ecran cu majuscule de accent / diacritice lipsă:
+E           static/js/ecrane/emitere_ecran.js:1235 [atribuire:textContent] NU <- 'Factura NU s-a emis:'
+E       assert not [('static/js/ecrane/emitere_ecran.js', 1235, 'atribuire:textContent', 'Factura NU s-a emis:', ['NU'])]
+
+core/test_text_afisat_limbaj.py:406: AssertionError
+______________________ test_textul_afisat_e_limba_romana _______________________
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+texte = [('core/activitati_amef.py', 82, 'Chitanța nu s-a emis: o vânzare încasată în numerar fără factură se face cu bon fisc...s%% nu se poate folosi la data chitanței. Cotele posibile atunci: %s.'), ('core/activitati_amef.py', 115, '%s%%'), ...]
+
+    def test_textul_afisat_e_limba_romana(texte):
+        gasite = defecte(texte)
+        raport = "\n".join("  %s:%d  [%s] %s  <- %r" % (fn, ln, fel, ",".join(g), s[:110]) for fn, ln, fel, g, s in gasite)
+>       assert not gasite, "Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:\n" + raport
+E       AssertionError: Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:
+E           core/migrari_registru.py:323  [diacritice] fara,operatie  <- 'fara operatie'
+E           core/migrari_registru.py:329  [diacritice] operatie  <- 'alta operatie'
+E       assert not [('core/migrari_registru.py', 323, 'diacritice', ['fara', 'operatie'], 'fara operatie'), ('core/migrari_registru.py', 329, 'diacritice', ['operatie'], 'alta operatie')]
+
+core/test_text_afisat_limbaj.py:413: AssertionError
+____________________ test_nicio_ruta_in_afara_inventarului _____________________
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+d = {'total_rute': 529, 'orfane': [('GET', '/tenants/{tenant_id}/salariati/{salariat_id}/baza-cm')], 'dublate': [], 'nedocumentare': 127, ...}
+
+    def test_nicio_ruta_in_afara_inventarului(d):
+>       assert not d["orfane"], (
+            "rute care nu aparțin niciunui traseu și nici unei suprafețe declarate "
+            "ne-documentare: %s. Adaugă ruta la traseul ei în scripts/scan_trasee.py:TRASEE, "
+            "sau la NEDOCUMENTARE cu eticheta ei." % d["orfane"])
+E       AssertionError: rute care nu aparțin niciunui traseu și nici unei suprafețe declarate ne-documentare: [('GET', '/tenants/{tenant_id}/salariati/{salariat_id}/baza-cm')]. Adaugă ruta la traseul ei în scripts/scan_trasee.py:TRASEE, sau la NEDOCUMENTARE cu eticheta ei.
+E       assert not [('GET', '/tenants/{tenant_id}/salariati/{salariat_id}/baza-cm')]
+
+core/test_trasee.py:63: AssertionError
+_______________ test_antetul_fiecarui_traseu_e_GENERAT_nu_scris ________________
+[gw2] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+st = <module 'scan_trasee' from '/home/costin/iconta_lot17_5q10/scripts/scan_trasee.py'>
+
+    def test_antetul_fiecarui_traseu_e_GENERAT_nu_scris(st):
+        """[30.08.2026, regula lui Costin dupa a doua instanta] *Orice proza care reafirma un numar
+        derivat ori se genereaza, ori se sterge.*
+    
+        **Instanta, masurata inainte de reparatie: 5 din 21 de antete scrise dadeau alte cifre decat
+        instrumentul**, iar al saselea (T05) fusese prins cu o zi inainte — deci sase din douazeci si
+        doua. Niciunul n-a tipat: nimic nu le compara cu nimic. Un antet care spune „19 rute" pe un
+        traseu de 20 nu e o greseala de tipar; e o masuratoare care contrazice instrumentul si pe care
+        cineva o poate cita intr-un raport.
+    
+        Aici s-a ales GENERAREA, nu stergerea, fiindca randul e util — spune dintr-o privire cat de
+        mare e traseul si pe cate firme se poate exercita. Ce s-a schimbat e cine il scrie.
+    
+        Cele 15 trasee care n-aveau antet deloc l-au primit: absenta nu e mai buna decat o cifra
+        gresita, doar mai putin vizibila.
+        """
+        doc = io.open(os.path.join(_RAD, "TRASEE_VERIFICARI.md"), encoding="utf-8").read()
+        d = st.construieste(True)
+        per, _o, _dub, _n = st.acoperire(st.citeste_rute())
+        linii = doc.split(chr(10))
+        poz = {}
+        for i, ln in enumerate(linii):
+            m = re.match(r"^## (T\d\d) ", ln)
+            if m:
+                poz[m.group(1)] = i
+        assert len(poz) >= 30, "anti-vacuu: doar %d sectiuni de traseu gasite in document" % len(poz)
+        rele = []
+        for tid, _nume, _tip, _tab in st.TRASEE:
+            assert tid in poz, "traseul %s n-are sectiune in TRASEE_VERIFICARI.md" % tid
+            nou = st.antet_traseu(tid, d, per)
+            vecine = [x for x in linii[poz[tid]:poz[tid] + 6] if x.startswith("*clasa ")]
+            if not vecine:
+                rele.append("  %s: fara antet" % tid)
+            elif vecine[0] != nou:
+                rele.append("  %s:%s    scris:   %s%s    generat: %s"
+                            % (tid, chr(10), vecine[0], chr(10), nou))
+>       assert not rele, (
+            "antete de traseu care difera de ce genereaza instrumentul:" + chr(10)
+            + chr(10).join(rele) + chr(10) + chr(10)
+            + "Nu se repara cu mana. Regenereaza-le din `scan_trasee.antet_traseu`.")
+E       AssertionError: antete de traseu care difera de ce genereaza instrumentul:
+E           T01:
+E             scris:   *clasa MECANIC · 21 rute · 13 schimba date · 9 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 21 rute · 13 schimba date · 10 firme il pot exercita azi*
+E           T02:
+E             scris:   *clasa MANUAL · 22 rute · 16 schimba date · 13 firme il pot exercita azi*
+E             generat: *clasa MANUAL · 22 rute · 16 schimba date · 18 firme il pot exercita azi*
+E           T04:
+E             scris:   *clasa MECANIC · 5 rute · 3 schimba date · 4 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 5 rute · 3 schimba date · 5 firme il pot exercita azi*
+E           T05:
+E             scris:   *clasa MECANIC · 40 rute · 29 schimba date · 20 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 40 rute · 29 schimba date · 29 firme il pot exercita azi*
+E           T06:
+E             scris:   *clasa MANUAL · 15 rute · 10 schimba date · 1 firme il pot exercita azi*
+E             generat: *clasa MANUAL · 15 rute · 10 schimba date · 2 firme il pot exercita azi*
+E           T07:
+E             scris:   *clasa MECANIC · 7 rute · 5 schimba date · 2 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 7 rute · 5 schimba date · 4 firme il pot exercita azi*
+E           T08:
+E             scris:   *clasa MECANIC · 3 rute · 1 schimba date · 0 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 3 rute · 1 schimba date · 1 firme il pot exercita azi*
+E           T09:
+E             scris:   *clasa MECANIC · 6 rute · 5 schimba date · 2 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 6 rute · 5 schimba date · 4 firme il pot exercita azi*
+E           T11:
+E             scris:   *clasa MECANIC · 8 rute · 5 schimba date · 1 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 8 rute · 5 schimba date · 2 firme il pot exercita azi*
+E           T13:
+E             scris:   *clasa MECANIC · 12 rute · 6 schimba date · 20 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 12 rute · 6 schimba date · 29 firme il pot exercita azi*
+E           T14:
+E             scris:   *clasa MECANIC · 39 rute · 22 schimba date · 5 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 39 rute · 22 schimba date · 11 firme il pot exercita azi*
+E           T15:
+E             scris:   *clasa MANUAL · 20 rute · 14 schimba date · 8 firme il pot exercita azi*
+E             generat: *clasa MANUAL · 20 rute · 14 schimba date · 11 firme il pot exercita azi*
+E           T18:
+E             scris:   *clasa MECANIC · 6 rute · 3 schimba date · 1 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 6 rute · 3 schimba date · 3 firme il pot exercita azi*
+E           T20:
+E             scris:   *clasa MECANIC · 12 rute · 7 schimba date · 2 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 12 rute · 7 schimba date · 4 firme il pot exercita azi*
+E           T21:
+E             scris:   *clasa MECANIC · 9 rute · 7 schimba date · 1 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 9 rute · 7 schimba date · 2 firme il pot exercita azi*
+E           T22:
+E             scris:   *clasa MECANIC · 6 rute · 5 schimba date · 2 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 6 rute · 5 schimba date · 4 firme il pot exercita azi*
+E           T31:
+E             scris:   *clasa MECANIC · 11 rute · 7 schimba date · 3 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 11 rute · 7 schimba date · 4 firme il pot exercita azi*
+E           T32:
+E             scris:   *clasa MECANIC · 7 rute · 5 schimba date · 0 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 7 rute · 5 schimba date · 1 firme il pot exercita azi*
+E           T34:
+E             scris:   *clasa MECANIC · 15 rute · 6 schimba date · 1 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 15 rute · 6 schimba date · 2 firme il pot exercita azi*
+E           T35:
+E             scris:   *clasa MECANIC · 39 rute · 17 schimba date · 1 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 39 rute · 17 schimba date · 2 firme il pot exercita azi*
+E           T36:
+E             scris:   *clasa MECANIC · 13 rute · 8 schimba date · 4 firme il pot exercita azi*
+E             generat: *clasa MECANIC · 13 rute · 8 schimba date · 6 firme il pot exercita azi*
+E         
+E         Nu se repara cu mana. Regenereaza-le din `scan_trasee.antet_traseu`.
+E       assert not ['  T01:\n    scris:   *clasa MECANIC · 21 rute · 13 schimba date · 9 firme il pot exercita azi*\n    generat: *clasa ...firme il pot exercita azi*\n    generat: *clasa MECANIC · 7 rute · 5 schimba date · 4 firme il pot exercita azi*', ...]
+
+core/test_trasee.py:669: AssertionError
+_____________________ test_artefactele_nu_pastreaza_morti ______________________
+[gw0] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+    def test_artefactele_nu_pastreaza_morti():
+        """Clichet pe mulțime, în direcția cealaltă: o intrare care nu mai e raportată (ruta a primit
+        ecran, sau a fost ștearsă) trebuie scoasă DELIBERAT, ca lista să nu devină o colecție de morți.
+    
+        Se aplică pe partea VIZIBILĂ a suprafeței — vezi `test_gardul_isi_spune_NUMITORUL` și R80.
+    
+        Se aplică DOAR artefactelor. Cele declarate în cod ies singure: dacă marcajul dispare odată cu
+        ruta, `declarate()` nu le mai vede — de-aia partea aia nu mai are nevoie de clichet."""
+        st = _scan()
+        gasite = _fara_apelant(st.citeste_rute(), _static())
+        disparute = sorted(_ARTEFACTE - gasite)
+>       assert not disparute, (
+            "intrări din `_ARTEFACTE` care nu mai sunt raportate: %s — scoate-le, altfel lista "
+            "scuză o problemă care nu mai există" % ["%s %s" % r for r in disparute])
+E       AssertionError: intrări din `_ARTEFACTE` care nu mai sunt raportate: ['GET /tenants/{tenant_id}/perioade-blocate/istoric'] — scoate-le, altfel lista scuză o problemă care nu mai există
+E       assert not [('GET', '/tenants/{tenant_id}/perioade-blocate/istoric')]
+
+core/test_ruta_fara_apelant.py:260: AssertionError
+__ test_adnotarea_din_TRASEE_VERIFICARI_e_IDENTICA_cu_ce_masoara_instrumentul __
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+st = <module 'scan_trasee' from '/home/costin/iconta_lot17_5q10/scripts/scan_trasee.py'>
+
+    def test_adnotarea_din_TRASEE_VERIFICARI_e_IDENTICA_cu_ce_masoara_instrumentul(st):
+        """doc↔cod, a doua oară. Rândul `*ce face:*` e derivat din cod, ca blocul din `TRASEE.md` —
+        dar până azi nimic nu-l compara cu instrumentul: testul de deasupra cere doar să EXISTE.
+    
+        Măsurat la construcție (26.08.2026): **121 din 192 difereau**. Patru din reparația R60;
+        117 rămase din ziua în care `scrie X` s-a despărțit de `poate atinge, prin modul X` fără ca
+        fișierul în care se SCRIU verificările să fie regenerat. Adică verificările se scriau
+        uitându-se la un rând care spunea *„ruta scrie în T"* acolo unde instrumentul măsurase
+        *„un modul chemat de ea scrie în T"* — o afirmație mai tare decât măsurătoarea, exact
+        inversul a ce apără cuvântul PLAFON.
+    
+        De ce e o gardă și nu o regenerare la fiecare rulare: regenerarea din schelet ȘTERGE
+        verificările scrise. Se repară cu un patch care atinge doar rândul, iar gardul spune când."""
+        import re
+        canonic = {(m, c): ce for _t, _n, m, c, ce, _g in st.pasii_ordonati()}
+        assert len(canonic) > 150, "anti-vacuu: doar %d pași canonici" % len(canonic)
+    
+        linii = io.open(os.path.join(_RAD, "TRASEE_VERIFICARI.md"), encoding="utf-8").read().split(chr(10))
+        cap_re = re.compile(r"^### `([A-Z]+) (/.*)`\s*$")
+        diferite, lipsa, vazute = [], [], 0
+        for i, ln in enumerate(linii):
+            m = cap_re.match(ln)
+            if not m:
+                continue
+            cheie = (m.group(1), m.group(2))
+            if cheie not in canonic:
+                continue
+            vazute += 1
+            rand = None
+            for j in range(i + 1, len(linii)):
+                if linii[j].startswith("### ") or linii[j].startswith("## "):
+                    break
+                if linii[j].startswith("*ce face:"):
+                    rand = linii[j]
+                    break
+            if rand is None:
+                lipsa.append("%s %s" % cheie)
+            elif rand != "*ce face: %s*" % canonic[cheie]:
+                diferite.append("%s %s" % cheie)
+    
+        assert vazute > 150, (
+            "anti-vacuu: doar %d capete de pas regăsite în TRASEE_VERIFICARI.md — formatul "
+            "titlurilor s-a schimbat și gardul se uită în gol" % vazute)
+>       assert not lipsa and not diferite, (
+            "adnotări care nu mai spun ce măsoară instrumentul: %d diferite, %d lipsă.%s%s%s"
+            "Verificările scrise sub ele stau pe o descriere a efectului care nu mai e adevărată."
+            % (len(diferite), len(lipsa), chr(10), chr(10).join((diferite + lipsa)[:12]), chr(10)))
+E       AssertionError: adnotări care nu mai spun ce măsoară instrumentul: 11 diferite, 0 lipsă.
+E         POST /tenants/{tenant_id}/facturi
+E         POST /tenants/{tenant_id}/facturi-recurente
+E         DELETE /tenants/{tenant_id}/facturi-recurente/{sid}
+E         POST /tenants/{tenant_id}/facturi-recurente/{sid}/emite
+E         PUT /tenants/{tenant_id}/facturi-recurente/{sid}
+E         POST /tenants/{tenant_id}/facturi/previzualizare-lei
+E         PUT /tenants/{tenant_id}/facturi/numerotare
+E         POST /tenants/{tenant_id}/facturi/{factura_id}/email
+E         POST /tenants/{tenant_id}/facturi/{factura_id}/storno
+E         POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba
+E         POST /tenants/{tenant_id}/woocommerce/sincronizeaza
+E         Verificările scrise sub ele stau pe o descriere a efectului care nu mai e adevărată.
+E       assert (not [] and not ['POST /tenants/{tenant_id}/facturi', 'POST /tenants/{tenant_id}/facturi-recurente', 'DELETE /tenants/{tenant_id}/fact...mite', 'PUT /tenants/{tenant_id}/facturi-recurente/{sid}', 'POST /tenants/{tenant_id}/facturi/previzualizare-lei', ...])
+
+core/test_trasee.py:578: AssertionError
+________ test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul _________
+[gw1] linux -- Python 3.12.3 /home/costin/iconta_lot17_5q10/venv/bin/python
+
+st = <module 'scan_trasee' from '/home/costin/iconta_lot17_5q10/scripts/scan_trasee.py'>
+
+    def test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul(st):
+        """doc↔cod. Partea XII din `TRASEE.md` e GENERATĂ (`--md`). Dacă cineva o editează cu
+        mâna, sau dacă inventarul se schimbă și documentul rămâne, cele două diverg — și
+        atunci documentul descrie o aplicație care nu mai există. Regenerarea:
+        `./venv/bin/python scripts/scan_trasee.py --md` + rescrierea blocului dintre marcaje."""
+        doc = io.open(os.path.join(_RAD, "TRASEE.md"), encoding="utf-8").read()
+        assert st.MARCA_START in doc and st.MARCA_STOP in doc, (
+            "TRASEE.md n-are marcajele blocului generat — Partea XII a fost ștearsă?")
+        a = doc.index(st.MARCA_START)
+        b = doc.index(st.MARCA_STOP) + len(st.MARCA_STOP)
+        din_doc = doc[a:b]
+        generat = st.redare_md()
+        if din_doc != generat:
+            ld, lg = din_doc.split(chr(10)), generat.split(chr(10))
+            prima = next((i for i in range(max(len(ld), len(lg)))
+                          if (ld[i] if i < len(ld) else None) != (lg[i] if i < len(lg) else None)),
+                         0)
+>           raise AssertionError(
+                "blocul din TRASEE.md diferă de ce generează scan_trasee.py --md, "
+                "prima diferență la linia %d a blocului:%s  doc:     %r%s  generat: %r%s"
+                "Regenerează: ./venv/bin/python scripts/scan_trasee.py --md"
+                % (prima + 1, chr(10), ld[prima] if prima < len(ld) else "(lipsește)", chr(10),
+                   lg[prima] if prima < len(lg) else "(lipsește)", chr(10)))
+E           AssertionError: blocul din TRASEE.md diferă de ce generează scan_trasee.py --md, prima diferență la linia 9 a blocului:
+E             doc:     '**Clasa:** MECANIC · **rute:** 21 (din care schimba date: 13) · **refuzuri explicite:** 108'
+E             generat: '**Clasa:** MECANIC · **rute:** 21 (din care schimba date: 13) · **refuzuri explicite:** 109'
+E           Regenerează: ./venv/bin/python scripts/scan_trasee.py --md
+
+core/test_trasee.py:601: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nu_creste - Assertio...
+FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nou - AssertionError...
+FAILED core/test_e2e_fara_date_fabricate.py::test_e2e_nu_fabrica_prin_sql_datele_aplicatiei
+FAILED core/test_afirmatii_tipate.py::test_campul_mort_explicatie_nu_reapare
+FAILED core/test_flux_factura_f1_c.py::test_importul_numara_ce_s_a_potrivit_si_ce_nu
+FAILED core/test_constante_nesursate.py::test_clichetul_nu_creste - Assertion...
+FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+FAILED core/test_lot10_search_path_pool.py::test_niciun_test_nou_nu_lasa_search_path_in_pool
+FAILED core/test_lot12_notif_598_mesaje_canale.py::test_def_598_garda_nicio_exceptie_a_unui_canal_extern_nu_ajunge_pe_ecran
+FAILED core/test_lot12_scad_primita.py::test_def_477_factura_de_mana_are_forma_facturii_din_xml
+FAILED core/test_lot13_infra_o_conexiune.py::test_nicio_functie_nu_tine_doua_conexiuni_in_afara_celor_permise
+FAILED core/test_pozitii_pilot_17_5_S.py::test_pastila_fara_scadenta_si_suma_pastilelor_e_numarul_randurilor
+FAILED core/test_refuz_spre_ecran.py::test_ecranul_tinta_aduce_campul_in_vedere_si_ii_da_focus
+FAILED core/test_refuzuri.py::test_datoria_nu_creste_pe_niciun_fisier - Asser...
+FAILED core/test_retest_0810.py::test_coada_cere_poarta_pentru_toate_declaratiile_de_tva
+FAILED core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum - Assertio...
+FAILED core/test_text_afisat_limbaj.py::test_ecranele_fara_majuscule_de_accent
+FAILED core/test_text_afisat_limbaj.py::test_textul_afisat_e_limba_romana - A...
+FAILED core/test_trasee.py::test_nicio_ruta_in_afara_inventarului - Assertion...
+FAILED core/test_trasee.py::test_antetul_fiecarui_traseu_e_GENERAT_nu_scris
+FAILED core/test_ruta_fara_apelant.py::test_artefactele_nu_pastreaza_morti - ...
+FAILED core/test_trasee.py::test_adnotarea_din_TRASEE_VERIFICARI_e_IDENTICA_cu_ce_masoara_instrumentul
+FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+SKIPPED [1] core/test_limita_text_anaf.py:189: d301 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [4] core/test_nomenclator_pe_norma.py:70: norma nu închide lista (deschis=True) - se verifică prin dezacord, nu prin egalitate
+23 failed, 2847 passed, 5 skipped, 14 xfailed in 2861.11s (0:47:41)
+rc=1

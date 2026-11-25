@@ -56,13 +56,15 @@ def importa_mesaj(schema, principal, cif_tenant, msg, stat):
     """Un mesaj listaMesajeFactura -> rand efactura_primite (ciorna/descarcata). Idempotent + anti-scurgere."""
     id_mesaj = str(msg.get("id") or "")
     cif_ben = _digits(msg.get("cif_beneficiar"))
-    # GARD anti-scurgere: importa DOAR daca beneficiarul e chiar tenantul
-    if not cif_ben or cif_ben != _digits(cif_tenant):
+    # GARD anti-scurgere: importa DOAR daca beneficiarul e chiar tenantul. [17.5-Q10, F179] Lista SPV poate veni FĂRĂ beneficiar (mesajul
+    # 8962564865 pentru 55229657, 24.11.2026): atunci beneficiarul se citește din documentul autentic (XML-ul descărcat, cumpărătorul) și se
+    # confruntă cu CUI-ul firmei înainte de orice scriere; absent, ambiguu sau altul = refuz, nimic scris (`refuz_beneficiar`)
+    if cif_ben and cif_ben != _digits(cif_tenant):
         stat["scurgere_evitata"] += 1
         print("  ANTI-SCURGERE %s: mesaj %s cif_beneficiar=%s != cif tenant %s - NU import"
               % (schema, id_mesaj, cif_ben, _digits(cif_tenant)), file=sys.stderr)
         return
-    if _deja_importat(schema, id_mesaj):     # dedup: nu re-descarca
+    if _deja_importat(schema, id_mesaj):     # dedup: nu re-descarca (aceeași citire repetată / reîncercarea aceluiași index)
         stat["deja"] += 1
         return
     try:
@@ -84,6 +86,13 @@ def importa_mesaj(schema, principal, cif_tenant, msg, stat):
     if not xml:
         stat["fara_xml"] += 1
         return
+    if not cif_ben:
+        motiv = refuz_beneficiar(xml, cif_tenant)
+        if motiv:
+            stat["scurgere_evitata"] += 1
+            print("  ANTI-SCURGERE %s: mesaj %s fără beneficiar în listă — %s - NU import" % (schema, id_mesaj, motiv), file=sys.stderr)
+            return
+        cif_ben = _digits(cif_tenant)   # confirmat din documentul autentic
     xml_txt = xml.decode("utf-8", "replace") if isinstance(xml, (bytes, bytearray)) else xml
     sha = hashlib.sha256(xml_txt.encode("utf-8")).hexdigest()
     status = "descarcata"
@@ -183,6 +192,28 @@ def citeste_firma(schema, stat=None, _dormi=None):
             print("  EROARE import %s/%s: %s" % (schema, msg.get("id"), e), file=sys.stderr)
         _dormi(INTERVAL_SEC)
     return {"cif": cif, "zile": zile, "mesaje": len(mesaje), "eroare": None}
+
+
+def refuz_beneficiar(xml, cif_tenant):
+    """[17.5-Q10, F179] Motivul refuzului unui mesaj SPV fără beneficiar în listă, citit din documentul autentic, sau None când beneficiarul
+    facturii (AccountingCustomerParty: PartyLegalEntity/CompanyID sau PartyTaxScheme/CompanyID) e chiar firma. Absent (niciun cod),
+    ambiguu (coduri diferite între ele) sau străin (alt cod) = refuz. PURĂ."""
+    import xml.etree.ElementTree as _ET
+    try:
+        root = _ET.fromstring(xml if isinstance(xml, (bytes, bytearray)) else str(xml).encode("utf-8"))
+    except _ET.ParseError:
+        return "documentul nu se poate citi"
+    ns = {"cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
+          "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"}
+    coduri = {_digits(e.text) for e in root.findall("cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:CompanyID", ns)
+              + root.findall("cac:AccountingCustomerParty/cac:Party/cac:PartyTaxScheme/cbc:CompanyID", ns) if _digits(e.text)}
+    if not coduri:
+        return "beneficiarul lipsește din document (absent)"
+    if len(coduri) > 1:
+        return "documentul are mai multe coduri de beneficiar (%s): ambiguu" % ", ".join(sorted(coduri))
+    if coduri != {_digits(cif_tenant)}:
+        return "beneficiarul din document e %s, nu firma (%s): străin" % (next(iter(coduri)), _digits(cif_tenant))
+    return None
 
 
 def _stat_nou():
