@@ -18,8 +18,6 @@ import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";  // [lotul 
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444] numele ANAF vs fișa clientului
 import { ciornaPeServer } from "../ciorna_formular.js?v=461bec469f";   // [495] ciorna facturii pe server (transportul comun al ciornelor)
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF / VIES țin de CUI-ul lor
-// [17.5-Q10, F045] motivul refuzului facturii fără adresa beneficiarului (Cod fiscal art.319 alin.(20) lit.f), spus înainte de emitere
-const MESAJ_ADRESA_BENEFICIAR = "Scrie adresa beneficiarului: Codul fiscal (art. 319 alin. (20) lit. f) cere pe factură denumirea și adresa lui. „Verifică” o aduce de la ANAF, iar pentru un client din listă o iei din fișa lui.";
 import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
 
 // [15.1-E5, pct.1] cardul ciornei: card-rezumat informativ cu butonul S „Renunță la factură” (confirmarea și ștergerea ciornei o face ecranul, la clic)
@@ -477,7 +475,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       </div></div>
       <div><label class="camp-eticheta" for="em-nume">Denumire beneficiar<span class="oblig">*</span></label>
       <input class="camp-input em-nume" id="em-nume" autocomplete="off"></div>
-      <div class="em-client-lat"><label class="camp-eticheta" for="em-adresa">Adresă beneficiar (art. 319)<span class="oblig">*</span></label>
+      <div class="em-client-lat"><label class="camp-eticheta" for="em-adresa">Adresă beneficiar (art. 319)</label>
       <textarea class="camp-input em-adresa" id="em-adresa" rows="1" autocomplete="off"></textarea></div>
       </div>
       <div class="em-cui-stare" id="em-cui-stare"></div>
@@ -1227,15 +1225,6 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   async function trimiteEmitere(cursManual) {
     const rez = corp.querySelector("#em-rezultat");
     curataEroriCamp(corp);
-    // [17.5-Q10, F045] factura obișnuită cuprinde denumirea ȘI adresa beneficiarului (Cod fiscal art.319 alin.(20) lit.f): fără adresă (nici
-    // stradă, nici localitate) nu se emite — lipsa se spune înainte, lângă câmp; proforma și avizul nu o cer
-    const tipDoc = (corp.querySelector("#em-tip") || {}).value || "factura";
-    if (tipDoc === "factura" && !corp.querySelector("#em-adresa").value.trim() && !(corp.querySelector("#em-oras").value || "").trim()) {
-      eroareCamp(corp, "em-adresa", MESAJ_ADRESA_BENEFICIAR);
-      rez.textContent = "Factura nu s-a emis: " + MESAJ_ADRESA_BENEFICIAR;
-      rez.className = "em-rezultat em-rau";
-      return;
-    }
     // NU se filtreaza randuri (cap.24 regula 2): lista trimisa = lista randata. Un rand incomplet se
     // valideaza pe backend si se raporteaza langa campul lui, nu dispare tacit.
     const payload = {

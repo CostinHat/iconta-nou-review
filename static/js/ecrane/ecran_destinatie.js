@@ -12,7 +12,7 @@
 import { randeazaDateFirma } from "./date_firma.js?v=b4b224cb24";
 import { panouConectareSPV } from "./setari.js?v=63fb54f44e";
 import { randeazaProduse } from "./produse_ecran.js?v=f1efa2b688";
-import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=a0e77946ee";   // [lotul 11, decizia 10.3] fișa partenerului
+import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=2320a19b51";   // [lotul 11, decizia 10.3] fișa partenerului
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
 import { meniuMigrarePerFirma } from "./migrare.js?v=4408029606";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
 import { sesiune } from "../sesiune.js?v=898215e0ee";

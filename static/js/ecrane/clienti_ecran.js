@@ -355,7 +355,7 @@ export async function ecranParteneriFirmei(corp, nav, t) {
       <h2 class="pf-titlu">Parteneri ${semnAjutor("F018")}</h2>
       <p class="pf-intro">Clienții și furnizorii firmei, din fișe și din toate documentele: facturi emise și primite, casă, bancă, note
         contabile, soldurile de preluare. Deschide fișa unui partener ca să-i vezi datele, documentele și soldul din contabilitate și să-i editezi datele.</p>
-      <p><button type="button" class="buton-primar" id="pt-nou" data-actiune="POST /tenants/{tenant_id}/clienti">+ Fișă de partener</button></p>
+      <p><button type="button" class="buton-secundar" id="pt-nou" data-actiune="POST /tenants/{tenant_id}/clienti">+ Fișă de partener</button></p>
       ${lista.length ? `<input id="pt-cauta" class="camp-input" style="max-width:420px" placeholder="Caută după nume sau cod fiscal"
         aria-label="Caută partenerul după nume sau cod fiscal" autocomplete="off">
       <span class="tip-desc" id="pt-numar" style="margin-left:8px">${esc(cate(lista.length, "partener", "parteneri"))}</span>` : ""}
