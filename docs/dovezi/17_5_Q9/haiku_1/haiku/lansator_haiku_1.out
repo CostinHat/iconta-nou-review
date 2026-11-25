@@ -1,0 +1,12 @@
+[haiku, instanța 1] cod 0
+**f.1 — corespunde.** Cardul „De depus” apare pe ecranul Cabinet, cu textul „0 declarații de depus · 59 de note ale tale în ciornă”.
+
+**f.2 — corespunde.** Ecranul „De depus” are secțiunea „Notele tale în ciornă (59)”, iar în primul rând („09.10.2026”, „Plată către furnizor — document DP-1”) butonul din coloana Acțiune este „Validează”.
+
+**a.1 — nejudecabil.** Cele două rânduri vizibile în secțiune au butoane „Validează” cu contur alb, nu cu fundal colorat de clasă primară. Însă secțiunea are 59 de rânduri, iar captura arată doar primele două, deci nu poate confirma „niciun rând”. Butonul albastru „Descarcă PDF” este în afara secțiunii și nu intră în aserțiune.
+
+```json
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Pe ecranul Cabinet apare cardul „De depus”, deci este vizibil cardul cerut."}, {"id": "f.2", "raspuns": "corespunde", "motiv": "În secțiunea „Notele tale în ciornă (59)” primul rând are butonul „Validează”."}, {"id": "a.1", "raspuns": "nejudecabil", "motiv": "Sunt vizibile doar 2 din 59 de rânduri din secțiune, iar cele vizibile au butoane albe, dar captura nu acoperă toate rândurile cerute de aserțiune."}]
+```
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: f.1=corespunde; f.2=corespunde; a.1=nejudecabil | nejudecabile: 1 din 3
