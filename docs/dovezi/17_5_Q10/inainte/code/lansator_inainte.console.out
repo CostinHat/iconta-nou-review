@@ -1,0 +1,12 @@
+[lacat_test] lacăt preluat de la pid 3993548 (mort sau refolosit)
+Traceback (most recent call last):
+  File "/home/costin/iconta_q10_E/scripts/lanseaza_verificator.py", line 345, in <module>
+    sys.exit(main(sys.argv[1:]))
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/costin/iconta_q10_E/scripts/lanseaza_verificator.py", line 284, in main
+    cod, complet, contor = _lanseaza(a, sha, VP)
+                           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/costin/iconta_q10_E/scripts/lanseaza_verificator.py", line 339, in _lanseaza
+    open(a.iesire, "w", encoding="utf-8").write(text + "\n")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '/home/costin/iconta_lot17_5q10/docs/dovezi/17_5_Q10/inainte/code'

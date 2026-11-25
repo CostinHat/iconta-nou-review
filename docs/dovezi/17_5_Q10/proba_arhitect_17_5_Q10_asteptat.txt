@@ -1,0 +1,7 @@
+f.1 | Pe baza E_Q9 și pe C, textul controlului de adăugare este „+ Fișă de partener”.
+f.2 | Pe ambele versiuni există un singur tabel al registrului.
+a.1 | Câmpul de căutare este ascuns pe E_Q9 (pică), afișat pe C (trece).
+e.1 | La ambele dimensiuni, cheile din tabelul inițial și din GET pentru aceeași firmă coincid.
+e.2 | Câmpul se vede, primește clic, filtrează după nume și cod și reface lista la ștergere. Pe E_Q9 pică la ambele dimensiuni, pe C trece.
+e.3 | Butonul unic de adăugare al Partenerilor este disponibil.
+Predicțiile sunt anterioare B4 și REAL native. Dacă fixtura sau rezultatul diferă, se consemnează diferența cu XML, rc și capturi.

@@ -1,0 +1,22 @@
+{
+  "cod": "F126",
+  "actor": "Costin",
+  "executat_de": "Claude, în contul de lucru, la cererea lui Costin din 25.11.2026 13:43 («trimite-o tu, catre Amzuica»; conținutul «Ca FIC 1» ales de el)",
+  "document_sau_cont": "Factura FIC nr. 4 din 25.11.2026, FISCALOS ICONTA S.R.L. (CUI 55229657) către AMZUICĂ BOGDAN-FLORIAN — expert contabil (CIF 26766053): 1 buc «Servicii test F126» × 1,00 lei, scutit art. 310",
+  "commit_servit": "830d7c55845a90a1b911e54470b1c9e9863e32b5",
+  "moment_actiune": "2026-11-25T13:45:49+02:00",
+  "dovada": "dovezi/F126/F126_masuri_4.json",
+  "sha256": "39a47e147ebb7a3838beaea9495d3f1fb17ff13cab23b059338d1f4a98a7df7e",
+  "localizare": "masuri, cheile F126@1366x768#istoric_FIC4_acceptata_1366 și F126@1366x768#fisa_FIC4_acceptata_1366: rândul din Istoric facturi «FIC nr. 4 · AMZUICĂ … 25.11.2026 · emisă · neîncasată · acceptată în SPV · 1,00 RON» și fișa facturii cu eticheta «acceptată în SPV», după citirea SPV de la 14:07; trimiterea și răspunsul ANAF pe server: dovezi/F126/F126_spv_FIC4_server.txt (efactura_trimiteri id 4: index 7088988392, trimis_la 13:45:49, stare ok la 14:07:02; spv_poll.log: stare=\"ok\", id_descarcare 8889108340)",
+  "index_spv": "7088988392",
+  "stare_istoric": "acceptată",
+  "stare_detaliu": "acceptată",
+  "stare_afisata": "«acceptată în SPV» — identic în Istoric facturi și în fișa facturii",
+  "cui_destinatar": "",
+  "intrare_ciorna": "",
+  "stare_la_intrare": "",
+  "rol": "",
+  "bun_venit_prima_intrare": null,
+  "bun_venit_a_doua_intrare": null,
+  "a_doua_intrare": ""
+}

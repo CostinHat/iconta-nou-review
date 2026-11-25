@@ -1,0 +1,152 @@
+{
+  "e.1": {
+    "1366x768": {
+      "latime": 1366,
+      "registru": [
+        {
+          "cheie": "cui-410001005",
+          "nume": "Client Test SRL",
+          "cui": "410001005"
+        },
+        {
+          "cheie": "cui-14399840",
+          "nume": "DANTE INTERNATIONAL SA",
+          "cui": "14399840"
+        },
+        {
+          "cheie": "cui-55229657",
+          "nume": "FISCALOS ICONTA S.R.L.",
+          "cui": "55229657"
+        },
+        {
+          "cheie": "cui-420002008",
+          "nume": "Furnizor Test SRL",
+          "cui": "420002008"
+        },
+        {
+          "cheie": "cui-IE6388047V",
+          "nume": "GOOGLE IRELAND LIMITED",
+          "cui": "IE6388047V"
+        },
+        {
+          "cheie": "nume-ION_POPESCU",
+          "nume": "Ion Popescu",
+          "cui": null
+        },
+        {
+          "cheie": "nume-MARIA_IONESCU",
+          "nume": "Maria Ionescu",
+          "cui": null
+        },
+        {
+          "cheie": "nume-VASILE_TEST",
+          "nume": "Vasile Test",
+          "cui": null
+        }
+      ],
+      "initial": [
+        "cui-410001005",
+        "cui-14399840",
+        "cui-55229657",
+        "cui-420002008",
+        "cui-IE6388047V",
+        "nume-ION_POPESCU",
+        "nume-MARIA_IONESCU",
+        "nume-VASILE_TEST"
+      ]
+    },
+    "603x590": {
+      "latime": 603,
+      "registru": [
+        {
+          "cheie": "cui-410001005",
+          "nume": "Client Test SRL",
+          "cui": "410001005"
+        },
+        {
+          "cheie": "cui-14399840",
+          "nume": "DANTE INTERNATIONAL SA",
+          "cui": "14399840"
+        },
+        {
+          "cheie": "cui-55229657",
+          "nume": "FISCALOS ICONTA S.R.L.",
+          "cui": "55229657"
+        },
+        {
+          "cheie": "cui-420002008",
+          "nume": "Furnizor Test SRL",
+          "cui": "420002008"
+        },
+        {
+          "cheie": "cui-IE6388047V",
+          "nume": "GOOGLE IRELAND LIMITED",
+          "cui": "IE6388047V"
+        },
+        {
+          "cheie": "nume-ION_POPESCU",
+          "nume": "Ion Popescu",
+          "cui": null
+        },
+        {
+          "cheie": "nume-MARIA_IONESCU",
+          "nume": "Maria Ionescu",
+          "cui": null
+        },
+        {
+          "cheie": "nume-VASILE_TEST",
+          "nume": "Vasile Test",
+          "cui": null
+        }
+      ],
+      "initial": [
+        "cui-410001005",
+        "cui-14399840",
+        "cui-55229657",
+        "cui-420002008",
+        "cui-IE6388047V",
+        "nume-ION_POPESCU",
+        "nume-MARIA_IONESCU",
+        "nume-VASILE_TEST"
+      ]
+    }
+  },
+  "e.2": {
+    "1366x768": {
+      "cautari": 1,
+      "ales": {
+        "cheie": "cui-410001005",
+        "nume": "Client Test SRL",
+        "cui": "410001005"
+      },
+      "vizibil": false,
+      "operabil": false,
+      "filtre": {},
+      "restabilit": []
+    },
+    "603x590": {
+      "cautari": 1,
+      "ales": {
+        "cheie": "cui-410001005",
+        "nume": "Client Test SRL",
+        "cui": "410001005"
+      },
+      "vizibil": false,
+      "operabil": false,
+      "filtre": {},
+      "restabilit": []
+    }
+  },
+  "e.3": {
+    "1366x768": {
+      "butoane": 1,
+      "adaugare": "+ Fișă de partener",
+      "activ": true
+    },
+    "603x590": {
+      "butoane": 1,
+      "adaugare": "+ Fișă de partener",
+      "activ": true
+    }
+  }
+}

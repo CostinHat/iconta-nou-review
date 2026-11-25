@@ -1,0 +1,131 @@
+VERDICT e.1 trece
+VERDICT e.2 pica
+VERDICT e.3 trece
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________________________ test_fundatie_17_5_Q10 ____________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+capsys = <_pytest.capture.CaptureFixture object at 0x7d8b7e70c380>
+
+    def test_fundatie_17_5_Q10(browser, capsys):
+        from conftest import BAZA, CAPTURI, Ecran, sesiune
+        from core.ceas_proba import MOMENT_REF
+        from e2e_ferestre_17_5_Q5 import F1, TOP, firma, origine_proba, stabil
+        from urllib.parse import urlsplit
+    
+        origine_proba(BAZA)
+        director = Path(CAPTURI) / "17_5_Q10"
+        director.mkdir(parents=True, exist_ok=True)
+        tot = {}
+        for w, h in DIM:
+            z = f"{w}x{h}"
+            ctx = browser.new_context(viewport={"width": w, "height": h})
+            try:
+                ctx.clock.set_fixed_time(MOMENT_REF)
+                ctx.add_init_script(sesiune("dovada.71507@sesiuneab.test"))
+                pg = ctx.new_page()
+                Ecran(pg, "q10").acasa()
+                with pg.expect_response(
+                    lambda r: (
+                        urlsplit(r.url).path == "/tenants/105779/parteneri-firma"
+                        and r.request.method == "GET"
+                    )
+                ) as rasp:
+                    firma(pg, F1, "#fa-parteneri")
+                assert rasp.value.ok
+                registru = [
+                    {k: p.get(k) for k in ("cheie", "nume", "cui")}
+                    for p in rasp.value.json()["parteneri"]
+                ]
+                tinta = next(
+                    p
+                    for p in registru
+                    if p["cui"]
+                    and p["nume"]
+                    and all(
+                        any(
+                            normal(str(p[k])) not in normal(str(q["nume"]))
+                            and normal(str(p[k])) not in normal(str(q["cui"] or ""))
+                            for q in registru
+                        )
+                        for k in ("nume", "cui")
+                    )
+                )
+                top = pg.locator(TOP.strip())
+                randuri = top.locator("#pt-tabel tbody tr[data-cheie]")
+                randuri.first.wait_for(state="attached")
+                stabil(pg)
+    
+                def chei():
+                    return randuri.evaluate_all(
+                        "rows => rows.filter(r=>!r.hidden && r.getClientRects().length).map(r=>r.dataset.cheie)"
+                    )
+    
+                def captura(nume):
+                    img = pg.screenshot(path=str(director / f"{nume}_{z}.png"))
+                    if w == 1366 and nume in IDS:
+                        (director / f"{nume}.png").write_bytes(img)
+    
+                c = top.locator("#pt-cauta")
+                ad = top.locator("#pt-nou")
+                m = {
+                    "latime": w,
+                    "registru": registru,
+                    "initial": chei(),
+                    "cautari": c.count(),
+                    "butoane": ad.count(),
+                    "adaugare": ad.inner_text().strip(),
+                    "activ": ad.is_enabled(),
+                    "ales": tinta,
+                    "vizibil": c.is_visible(),
+                    "operabil": False,
+                    "filtre": {},
+                    "restabilit": [],
+                }
+                captura("e.1")
+                if m["vizibil"]:
+                    c.scroll_into_view_if_needed()
+                    m["operabil"] = (
+                        c.evaluate("""n=>{const r=n.getBoundingClientRect();return !n.disabled && !n.readOnly &&
+                        n.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2))}""")
+                    )
+                if m["operabil"]:
+                    c.click()
+                    for k in ("nume", "cui"):
+                        termen = str(tinta[k])
+                        c.fill(termen)
+                        stabil(pg)
+                        m["filtre"][termen] = chei()
+                        captura("filtru_" + k)
+                    c.fill("")
+                    stabil(pg)
+                    m["restabilit"] = chei()
+                captura("e.2")
+                captura("e.3")
+                tot[z] = m
+            finally:
+                ctx.close()
+        (director / "masuri.json").write_text(
+            json.dumps(impacheteaza(tot), ensure_ascii=False, indent=2)
+        )
+        (director / "erori.json").write_text("{}")
+        (director / "partiale.json").write_text("{}")
+        pe_rezolutie = [valideaza(m) for m in tot.values()]
+        with capsys.disabled():
+            for i in IDS:
+                print(
+                    "VERDICT",
+                    i,
+                    "trece" if all(v[i] for v in pe_rezolutie) else "pica",
+                    flush=True,
+                )
+>       assert all(all(v.values()) for v in pe_rezolutie), "Q10_F018"
+E       AssertionError: Q10_F018
+E       assert False
+E        +  where False = all(<generator object test_fundatie_17_5_Q10.<locals>.<genexpr> at 0x7d8b7c616420>)
+
+frontend_test/e2e/e2e_fundatie_17_5_Q10.py:186: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_fundatie_17_5_Q10.py::test_fundatie_17_5_Q10 - A...
+1 failed in 9.32s

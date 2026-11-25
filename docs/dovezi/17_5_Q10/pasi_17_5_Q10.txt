@@ -1,0 +1,4 @@
+PASI 17.5-Q10 — Parteneri F1, contul nativ de probă, 1366×768.
+f.1 | parteneri | Parteneri | egal | + Fișă de partener | Textul butonului de adăugare | #pt-nou
+f.2 | parteneri | Parteneri | nr_randuri | 1 | Registrul Parteneri este prezent o singură dată | #pt-tabel
+a.1 | parteneri | Parteneri | interval_px | 1-768 | Câmpul real de căutare are înălțime afișată | #pt-cauta
