@@ -1,0 +1,1817 @@
+{
+ "cont_junior": {
+  "email_anonimizat": "dov…",
+  "gasit": true
+ },
+ "AC188": {
+  "1920x1080": {
+   "cabinet": "Cabinet Test Sesiunea B SRL — copie de dovadă",
+   "utilizator": "Ana Asistent",
+   "text": "Cabinet Test Sesiunea B SRL — copie de dovadă · Ana Asistent",
+   "titlu_integral": "Cabinet Test Sesiunea B SRL — copie de dovadă · Ana Asistent",
+   "linii": 1,
+   "text_overflow": "ellipsis",
+   "overflow_x": "hidden",
+   "text_scroll_width": 528,
+   "text_client_width": 528,
+   "latime_document": 1920,
+   "latime_viewport": 1920,
+   "inaltime_viewport": 1080,
+   "dreptunghi_veriga": [
+    176.359375,
+    18,
+    704.265625,
+    36
+   ],
+   "dreptunghi_cautare": [
+    871.109375,
+    10,
+    1211.109375,
+    44
+   ],
+   "dreptunghi_iesire": [
+    1864,
+    7,
+    1904,
+    47
+   ],
+   "hit_cautare": true,
+   "hit_iesire": true,
+   "captura": "AC188_1920x1080.png"
+  },
+  "1366x768": {
+   "cabinet": "Cabinet Test Sesiunea B SRL — copie de dovadă",
+   "utilizator": "Ana Asistent",
+   "text": "Cabinet Test Sesiunea B SRL — copie de dovadă · Ana Asistent",
+   "titlu_integral": "Cabinet Test Sesiunea B SRL — copie de dovadă · Ana Asistent",
+   "linii": 1,
+   "text_overflow": "ellipsis",
+   "overflow_x": "hidden",
+   "text_scroll_width": 528,
+   "text_client_width": 504,
+   "latime_document": 1366,
+   "latime_viewport": 1366,
+   "inaltime_viewport": 768,
+   "dreptunghi_veriga": [
+    176.359375,
+    18,
+    680.5625,
+    36
+   ],
+   "dreptunghi_cautare": [
+    842.5625,
+    10,
+    1167.296875,
+    44
+   ],
+   "dreptunghi_iesire": [
+    1310,
+    7,
+    1350,
+    47
+   ],
+   "hit_cautare": true,
+   "hit_iesire": true,
+   "captura": "AC188_1366x768.png"
+  },
+  "603x590": {
+   "cabinet": "Cabinet Test Sesiunea B SRL — copie de dovadă",
+   "utilizator": "Ana Asistent",
+   "text": "Cabinet Test Sesiunea B SRL — copie de dovadă · Ana Asistent",
+   "titlu_integral": "Cabinet Test Sesiunea B SRL — copie de dovadă · Ana Asistent",
+   "linii": 1,
+   "text_overflow": "ellipsis",
+   "overflow_x": "hidden",
+   "text_scroll_width": 528,
+   "text_client_width": 91,
+   "latime_document": 603,
+   "latime_viewport": 603,
+   "inaltime_viewport": 590,
+   "dreptunghi_veriga": [
+    176.359375,
+    18,
+    267.84375,
+    36
+   ],
+   "dreptunghi_cautare": [
+    345.375,
+    10,
+    404.296875,
+    44
+   ],
+   "dreptunghi_iesire": [
+    547,
+    7,
+    587,
+    47
+   ],
+   "hit_cautare": true,
+   "hit_iesire": true,
+   "captura": "AC188_603x590.png"
+  },
+  "durata_s": 3.1
+ },
+ "AC188_cabinet": {
+  "1920x1080": {
+   "cabinet": "Cabinet Test Sesiunea B SRL — copie de dovadă",
+   "utilizator": "Contabil Sesiunea B",
+   "text": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "titlu_integral": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "linii": 1,
+   "text_overflow": "ellipsis",
+   "overflow_x": "hidden",
+   "text_scroll_width": 589,
+   "text_client_width": 589,
+   "latime_document": 1920,
+   "latime_viewport": 1920,
+   "inaltime_viewport": 1080,
+   "dreptunghi_veriga": [
+    176.359375,
+    18,
+    765.71875,
+    36
+   ],
+   "dreptunghi_cautare": [
+    789.71875,
+    10,
+    1129.71875,
+    44
+   ],
+   "dreptunghi_iesire": [
+    1864,
+    7,
+    1904,
+    47
+   ],
+   "hit_cautare": true,
+   "hit_iesire": true,
+   "captura": "AC188_1920x1080.png"
+  },
+  "1366x768": {
+   "cabinet": "Cabinet Test Sesiunea B SRL — copie de dovadă",
+   "utilizator": "Contabil Sesiunea B",
+   "text": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "titlu_integral": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "linii": 1,
+   "text_overflow": "ellipsis",
+   "overflow_x": "hidden",
+   "text_scroll_width": 589,
+   "text_client_width": 589,
+   "latime_document": 1366,
+   "latime_viewport": 1366,
+   "inaltime_viewport": 768,
+   "dreptunghi_veriga": [
+    176.359375,
+    18,
+    765.71875,
+    36
+   ],
+   "dreptunghi_cautare": [
+    789.71875,
+    10,
+    1129.71875,
+    44
+   ],
+   "dreptunghi_iesire": [
+    1310,
+    7,
+    1350,
+    47
+   ],
+   "hit_cautare": true,
+   "hit_iesire": true,
+   "captura": "AC188_1366x768.png"
+  },
+  "603x590": {
+   "cabinet": "Cabinet Test Sesiunea B SRL — copie de dovadă",
+   "utilizator": "Contabil Sesiunea B",
+   "text": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "titlu_integral": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "linii": 1,
+   "text_overflow": "ellipsis",
+   "overflow_x": "hidden",
+   "text_scroll_width": 589,
+   "text_client_width": 129,
+   "latime_document": 603,
+   "latime_viewport": 603,
+   "inaltime_viewport": 590,
+   "dreptunghi_veriga": [
+    176.359375,
+    18,
+    305.6875,
+    36
+   ],
+   "dreptunghi_cautare": [
+    329.6875,
+    10,
+    404.296875,
+    44
+   ],
+   "dreptunghi_iesire": [
+    547,
+    7,
+    587,
+    47
+   ],
+   "hit_cautare": true,
+   "hit_iesire": true,
+   "captura": "AC188_603x590.png"
+  },
+  "durata_s": 2.5
+ },
+ "cadru": {
+  "1366x768": {
+   "animatie_activa": true,
+   "nume": [
+    "aparitie-overlay",
+    "aparitie-fereastra"
+   ],
+   "timp_cadru_initial_ms": 0,
+   "opacitate_overlay": "0.6",
+   "opacitate_fereastra": "0.6",
+   "fereastra_vizibila": true,
+   "t": 1024,
+   "salut_pe_pagina": null,
+   "salut_sub_fereastra": null,
+   "click_pe_principala": true,
+   "captura": "cadru_1366x768.png"
+  },
+  "603x590": {
+   "animatie_activa": true,
+   "nume": [
+    "aparitie-overlay",
+    "aparitie-fereastra"
+   ],
+   "timp_cadru_initial_ms": 0,
+   "opacitate_overlay": "0.6",
+   "opacitate_fereastra": "0.6",
+   "fereastra_vizibila": true,
+   "t": 1906,
+   "salut_pe_pagina": null,
+   "salut_sub_fereastra": null,
+   "click_pe_principala": true,
+   "captura": "cadru_603x590.png"
+  },
+  "durata_s": 2.5
+ },
+ "banca": {
+  "1366x768": {
+   "pasi": [
+    {
+     "formate_vizibile": true,
+     "eroare": "",
+     "iduri_dom": [
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "lucru": 5,
+     "deoparte": 0,
+     "cautare": true,
+     "cautare_vizibila": true,
+     "carduri": [
+      "Formate acceptate: MT940, ING, altă bancă",
+      "1 fără potrivire · 3 potriviri parțiale · 1 operațiune a băncii"
+     ],
+     "motive_alege": [
+      [
+       "5",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "4",
+       ""
+      ],
+      [
+       "3",
+       ""
+      ],
+      [
+       "2",
+       ""
+      ],
+      [
+       "1",
+       ""
+      ]
+     ],
+     "http": 200,
+     "iduri_api": [
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "cipuri_api": {
+      "lucru": 5,
+      "deoparte": 0
+     },
+     "cipuri_dom": {
+      "lucru": 5,
+      "deoparte": 0
+     },
+     "cautare_filtreaza": 1,
+     "captura": "banca_1366x768_0.png"
+    },
+    {
+     "formate_vizibile": true,
+     "eroare": "",
+     "iduri_dom": [
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "lucru": 7,
+     "deoparte": 0,
+     "cautare": true,
+     "cautare_vizibila": true,
+     "carduri": [
+      "Formate acceptate: MT940, ING, altă bancă",
+      "1 fără potrivire · 3 potriviri parțiale · 3 operațiuni ale băncii"
+     ],
+     "motive_alege": [
+      [
+       "7",
+       "Linia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "6",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "5",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "4",
+       ""
+      ],
+      [
+       "3",
+       ""
+      ],
+      [
+       "2",
+       ""
+      ],
+      [
+       "1",
+       ""
+      ]
+     ],
+     "http": 200,
+     "iduri_api": [
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "cipuri_api": {
+      "lucru": 7,
+      "deoparte": 0
+     },
+     "cipuri_dom": {
+      "lucru": 7,
+      "deoparte": 0
+     },
+     "cautare_filtreaza": 1,
+     "captura": "banca_1366x768_1.png"
+    },
+    {
+     "formate_vizibile": true,
+     "eroare": "",
+     "iduri_dom": [
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "lucru": 7,
+     "deoparte": 0,
+     "cautare": true,
+     "cautare_vizibila": true,
+     "carduri": [
+      "Formate acceptate: MT940, ING, altă bancă",
+      "1 fără potrivire · 3 potriviri parțiale · 3 operațiuni ale băncii"
+     ],
+     "motive_alege": [
+      [
+       "7",
+       "Linia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "6",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "5",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "4",
+       ""
+      ],
+      [
+       "3",
+       ""
+      ],
+      [
+       "2",
+       ""
+      ],
+      [
+       "1",
+       ""
+      ]
+     ],
+     "http": 200,
+     "iduri_api": [
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "cipuri_api": {
+      "lucru": 7,
+      "deoparte": 0
+     },
+     "cipuri_dom": {
+      "lucru": 7,
+      "deoparte": 0
+     },
+     "cautare_filtreaza": 1,
+     "captura": "banca_1366x768_2.png"
+    }
+   ],
+   "derulari": {
+    "derulari": [
+     {
+      "id": "",
+      "cls": "zona-derulare",
+      "sh": 550,
+      "ch": 381,
+      "sw": 1302,
+      "cw": 1302,
+      "xml": false
+     }
+    ],
+    "corp": {
+     "sh": 680,
+     "ch": 680,
+     "sw": 1334,
+     "cw": 1334
+    },
+    "fer": [
+     1334,
+     736
+    ],
+    "primare": [
+     "Importă extras"
+    ],
+    "text": "←\nF2 Profit Amortizare SRL · CUI 403000015\n›\nBancă\n✕\nBancă \n?\n?\n?\n\nToate liniile\nDe contat\nContate\nPuse deoparte\nToate liniile\nDe contat\nContate\nPuse deoparte\n\nFormate acceptate: MT940, ING, altă bancă\n1 fără potrivire · 3 potriviri parțiale · 3 operațiuni ale băncii\nNicio linie nouă: nu s-a adăugat nimic.\n2 linii găsite deja (aceeași mișcare există, nu s-a adăugat din nou):\n12.11.2026 · 3,25 lei · plată · Comision proba Q10 1366x768\n13.11.2026 · 1,10 lei · încasare · Dobanda proba Q10 1366x768\nSoldurile: extrasul în tabel (.xls, .xlsx, .csv) nu are sold inițial și final, deci nu s-au comparat cu 5121.\nData\tSuma (lei)\tDescriere\tCUI\tPotrivire\tAcțiune\n13.11.2026\t+1,10\tDobanda proba Q10 1366x768\t\t● Notă propusă 5121 = 766\noperațiune a băncii\n\tContează 5121=766 Alege facturile\nLinia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă.\n\n12.11.2026\t−3,25\tComision proba Q10 1366x768\t\t● Notă propusă 627 = 5121\noperațiune a băncii\n\tContează 627=5121 Alege facturile\nLinia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă.\n\n22.10.2026\t−3,50\tComision transfer\t\t● Notă propusă 627 = 5121\noperațiune a băncii\n\tContează 627=5121 Alege facturile\nLinia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă.\n\n22.10.2026\t+500,00\tIncasare DANTE INTERNATIONAL SA CUI 14399840 factura F1A5\t14399840\t● Parțial\nparțial\n\tContează Alege facturile\n21.10.2026\t−827,00\tPlata DANTE INTERNATIONAL SA CUI 14399840 factura DNT-TEST-1019\t14399840\t● Parțial\nparțial\n\tContează Alege facturile\n21.10.2026\t+1.000,00\tIncasare GOOGLE IRELAND LIMITED IE6388047V factura F1A7\t\t● Fără potrivire\nalege factura\n\tContează 5121=4111 Alege facturile\n16.10.2026\t+242,00\tIncasare FISCALOS ICONTA SRL CUI 55229657 contravaloare factura F1A4 din 16.10.2026\t55229657\t● Parțial\nparțial\n\tContează Alege facturile\nImportă extras"
+   }
+  },
+  "603x590": {
+   "pasi": [
+    {
+     "formate_vizibile": true,
+     "eroare": "",
+     "iduri_dom": [
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "lucru": 7,
+     "deoparte": 0,
+     "cautare": true,
+     "cautare_vizibila": true,
+     "carduri": [
+      "Formate acceptate: MT940, ING, altă bancă",
+      "1 fără potrivire · 3 potriviri parțiale · 3 operațiuni ale băncii"
+     ],
+     "motive_alege": [
+      [
+       "7",
+       "Linia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "6",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "5",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "4",
+       ""
+      ],
+      [
+       "3",
+       ""
+      ],
+      [
+       "2",
+       ""
+      ],
+      [
+       "1",
+       ""
+      ]
+     ],
+     "http": 200,
+     "iduri_api": [
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "cipuri_api": {
+      "lucru": 7,
+      "deoparte": 0
+     },
+     "cipuri_dom": {
+      "lucru": 7,
+      "deoparte": 0
+     },
+     "cautare_filtreaza": 1,
+     "captura": "banca_603x590_0.png"
+    },
+    {
+     "formate_vizibile": true,
+     "eroare": "",
+     "iduri_dom": [
+      "9",
+      "8",
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "lucru": 9,
+     "deoparte": 0,
+     "cautare": true,
+     "cautare_vizibila": true,
+     "carduri": [
+      "Formate acceptate: MT940, ING, altă bancă",
+      "1 fără potrivire · 3 potriviri parțiale · 5 operațiuni ale băncii"
+     ],
+     "motive_alege": [
+      [
+       "9",
+       "Linia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "8",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "7",
+       "Linia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "6",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "5",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "4",
+       ""
+      ],
+      [
+       "3",
+       ""
+      ],
+      [
+       "2",
+       ""
+      ],
+      [
+       "1",
+       ""
+      ]
+     ],
+     "http": 200,
+     "iduri_api": [
+      "9",
+      "8",
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "cipuri_api": {
+      "lucru": 9,
+      "deoparte": 0
+     },
+     "cipuri_dom": {
+      "lucru": 9,
+      "deoparte": 0
+     },
+     "cautare_filtreaza": 2,
+     "captura": "banca_603x590_1.png"
+    },
+    {
+     "formate_vizibile": true,
+     "eroare": "",
+     "iduri_dom": [
+      "9",
+      "8",
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "lucru": 9,
+     "deoparte": 0,
+     "cautare": true,
+     "cautare_vizibila": true,
+     "carduri": [
+      "Formate acceptate: MT940, ING, altă bancă",
+      "1 fără potrivire · 3 potriviri parțiale · 5 operațiuni ale băncii"
+     ],
+     "motive_alege": [
+      [
+       "9",
+       "Linia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "8",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "7",
+       "Linia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "6",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "5",
+       "Linia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă."
+      ],
+      [
+       "4",
+       ""
+      ],
+      [
+       "3",
+       ""
+      ],
+      [
+       "2",
+       ""
+      ],
+      [
+       "1",
+       ""
+      ]
+     ],
+     "http": 200,
+     "iduri_api": [
+      "9",
+      "8",
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+     ],
+     "cipuri_api": {
+      "lucru": 9,
+      "deoparte": 0
+     },
+     "cipuri_dom": {
+      "lucru": 9,
+      "deoparte": 0
+     },
+     "cautare_filtreaza": 2,
+     "captura": "banca_603x590_2.png"
+    }
+   ],
+   "derulari": {
+    "derulari": [
+     {
+      "id": "",
+      "cls": "zona-derulare",
+      "sh": 2295,
+      "ch": 263,
+      "sw": 539,
+      "cw": 539,
+      "xml": false
+     }
+    ],
+    "corp": {
+     "sh": 502,
+     "ch": 502,
+     "sw": 571,
+     "cw": 571
+    },
+    "fer": [
+     571,
+     558
+    ],
+    "primare": [
+     "Importă extras"
+    ],
+    "text": "←\nBancă\n✕\nBancă \n?\n?\n?\n\nNicio linie nouă: nu s-a adăugat nimic.\n2 linii găsite deja (aceeași mișcare există, nu s-a adăugat din nou):\n12.11.2026 · 3,25 lei · plată · Comision proba Q10 603x590\n13.11.2026 · 1,10 lei · încasare · Dobanda proba Q10 603x590\nSoldurile: extrasul în tabel (.xls, .xlsx, .csv) nu are sold inițial și final, deci nu s-au comparat cu 5121.\nToate liniile\nDe contat\nContate\nPuse deoparte\nToate liniile\nDe contat\nContate\nPuse deoparte\nFormate acceptate: MT940, ING, altă bancă\n1 fără potrivire · 3 potriviri parțiale · 5 operațiuni ale băncii\n13.11.2026\n+1,10\nDobanda proba Q10 603x590\n● Notă propusă 5121 = 766\noperațiune a băncii\nContează 5121=766 Alege facturile\nLinia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă.\n12.11.2026\n−3,25\nComision proba Q10 603x590\n● Notă propusă 627 = 5121\noperațiune a băncii\nContează 627=5121 Alege facturile\nLinia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă.\n13.11.2026\n+1,10\nDobanda proba Q10 1366x768\n● Notă propusă 5121 = 766\noperațiune a băncii\nContează 5121=766 Alege facturile\nLinia e o operațiune a băncii (nota propusă 5121 = 766), nu plata unei facturi: se contează pe nota propusă.\n12.11.2026\n−3,25\nComision proba Q10 1366x768\n● Notă propusă 627 = 5121\noperațiune a băncii\nContează 627=5121 Alege facturile\nLinia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă.\n22.10.2026\n−3,50\nComision transfer\n● Notă propusă 627 = 5121\noperațiune a băncii\nContează 627=5121 Alege facturile\nLinia e o operațiune a băncii (nota propusă 627 = 5121), nu plata unei facturi: se contează pe nota propusă.\n22.10.2026\n+500,00\nIncasare DANTE INTERNATIONAL SA CUI 14399840 factura F1A5\n14399840\n● Parțial\nparțial\nContează Alege facturile\n21.10.2026\n−827,00\nPlata DANTE INTERNATIONAL SA CUI 14399840 factura DNT-TEST-1019\n14399840\n● Parțial\nparțial\nContează Alege facturile\n21.10.2026\n+1.000,00\nIncasare GOOGLE IRELAND LIMITED IE6388047V factura F1A7\n● Fără potrivire\nalege factura\nContează 5121=4111 Alege facturile\n16.10.2026\n+242,00\nIncasare FISCALOS ICONTA SRL CUI 55229657 contravaloare factura F1A4 din 16.10.2026\n55229657\n● Parțial\nparțial\nContează Alege facturile\nImportă extras"
+   }
+  },
+  "durata_s": 15.8
+ },
+ "AC189": {
+  "1366x768": {
+   "api": {
+    "status": 200,
+    "date": {
+     "an": 2026,
+     "introduceri": {
+      "cumulat": "0",
+      "status": "sub_prag",
+      "luna_depasirii": null,
+      "procent": "0.0",
+      "prag": "1000000"
+     },
+     "expedieri": {
+      "cumulat": "3000.0",
+      "status": "sub_prag",
+      "luna_depasirii": null,
+      "procent": "0.3",
+      "prag": "1000000"
+     },
+     "nivel": null,
+     "nota": "obligatia de declarare la INS (intrastat.ro) incepe cu luna depasirii pragului, separat pe flux (Ordin INS 1604/2025)"
+    }
+   },
+   "introduceri_dom": "0,00 lei (0%)",
+   "expedieri_dom": "3.000,00 lei (0,3%)",
+   "captura": "AC189_1366x768.png"
+  },
+  "603x590": {
+   "api": {
+    "status": 200,
+    "date": {
+     "an": 2026,
+     "introduceri": {
+      "cumulat": "0",
+      "status": "sub_prag",
+      "luna_depasirii": null,
+      "procent": "0.0",
+      "prag": "1000000"
+     },
+     "expedieri": {
+      "cumulat": "3000.0",
+      "status": "sub_prag",
+      "luna_depasirii": null,
+      "procent": "0.3",
+      "prag": "1000000"
+     },
+     "nivel": null,
+     "nota": "obligatia de declarare la INS (intrastat.ro) incepe cu luna depasirii pragului, separat pe flux (Ordin INS 1604/2025)"
+    }
+   },
+   "introduceri_dom": "0,00 lei (0%)",
+   "expedieri_dom": "3.000,00 lei (0,3%)",
+   "captura": "AC189_603x590.png"
+  },
+  "durata_s": 11.6
+ },
+ "AC190": {
+  "1366x768": {
+   "reveniri_la_403": 0,
+   "reveniri_la_eroare_retea": 0,
+   "reveniri_login": 1,
+   "login_vizibil": true,
+   "text_motiv": "Sesiunea a expirat\n✕\n\nCe ai completat rămâne pe ecran. Introdu parola și continui exact de unde ai rămas.\n\nEmail\nParola\n\nIeși din cont\nContinuă",
+   "motiv_vizibil": true,
+   "captura_401": "AC190_1366x768_401.png",
+   "status_protejate": [
+    401,
+    401
+   ],
+   "bucla_la_login_invalid": false,
+   "eroare_login_invalid": "email sau parola greșite",
+   "dupa_reautentificare": 200,
+   "secventa_http": [
+    [
+     "/tenants",
+     "GET",
+     403
+    ],
+    [
+     "/tenants",
+     "GET",
+     "abort"
+    ],
+    [
+     "/coada",
+     "GET",
+     401
+    ],
+    [
+     "/notificari",
+     "GET",
+     401
+    ],
+    [
+     "/tenants",
+     "GET",
+     401
+    ],
+    [
+     "/auth/login",
+     "POST",
+     401
+    ],
+    [
+     "/auth/login",
+     "POST",
+     200
+    ]
+   ]
+  },
+  "603x590": {
+   "reveniri_la_403": 0,
+   "reveniri_la_eroare_retea": 0,
+   "reveniri_login": 1,
+   "login_vizibil": true,
+   "text_motiv": "Sesiunea a expirat\n✕\n\nCe ai completat rămâne pe ecran. Introdu parola și continui exact de unde ai rămas.\n\nEmail\nParola\n\nIeși din cont\nContinuă",
+   "motiv_vizibil": true,
+   "captura_401": "AC190_603x590_401.png",
+   "status_protejate": [
+    401,
+    401
+   ],
+   "bucla_la_login_invalid": false,
+   "eroare_login_invalid": "email sau parola greșite",
+   "dupa_reautentificare": 200,
+   "secventa_http": [
+    [
+     "/tenants",
+     "GET",
+     403
+    ],
+    [
+     "/tenants",
+     "GET",
+     "abort"
+    ],
+    [
+     "/coada",
+     "GET",
+     401
+    ],
+    [
+     "/notificari",
+     "GET",
+     401
+    ],
+    [
+     "/tenants",
+     "GET",
+     401
+    ],
+    [
+     "/auth/login",
+     "POST",
+     401
+    ],
+    [
+     "/auth/login",
+     "POST",
+     200
+    ]
+   ]
+  },
+  "durata_s": 20.8
+ },
+ "jurnal": {
+  "1366x768 11/2026": {
+   "fara_note": true,
+   "derulari": {
+    "derulari": [],
+    "corp": {
+     "sh": 680,
+     "ch": 680,
+     "sw": 1334,
+     "cw": 1334
+    },
+    "fer": [
+     1334,
+     736
+    ],
+    "primare": [
+     "+ Notă nouă"
+    ],
+    "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nRegistru jurnal\n✕\nRegistru jurnal ?\n\nLuna 08/2025 · 0 note\n← luna\nluna →\nGenerează amortizarea\nBlochează luna\n?\n\nNicio notă în luna asta.\n+ Notă nouă"
+   },
+   "captura": "jurnal_1366x768_11_2026.png"
+  },
+  "1366x768 10/2026": {
+   "zona": [
+    227,
+    625
+   ],
+   "rand": [
+    545.5,
+    589.5
+   ],
+   "corp": [
+    72,
+    752
+   ],
+   "vizibil": true,
+   "prima_nota": "7\t05.10.2026\tContare factura 2\tFactură 2 din 05.10.2026\t4111 = 707, 4111 = 4427\t6.938,00\t● Validată\t\n",
+   "derulari": {
+    "derulari": [
+     {
+      "id": "",
+      "cls": "zona-derulare",
+      "sh": 4234,
+      "ch": 398,
+      "sw": 1314,
+      "cw": 1302,
+      "xml": false
+     }
+    ],
+    "corp": {
+     "sh": 680,
+     "ch": 680,
+     "sw": 1334,
+     "cw": 1334
+    },
+    "fer": [
+     1334,
+     736
+    ],
+    "primare": [
+     "+ Notă nouă"
+    ],
+    "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nRegistru jurnal\n✕\nRegistru jurnal ?\n\nLuna 10/2026 · 84 de note · 52 de ciorne ale lunii în afara cozii (le validezi de aici)\n← luna\nluna →\nGenerează amortizarea\nBlochează luna\n?\n\nRezolvă întâi ce oprește închiderea (3): 52 de note rămân în ciornă în perioadă; validează-le sau șterge-le din Jurnal, altfel rămân închise înăuntru și nu mai apar nicăieri · TVA-ul perioadei nu e regularizat: la sfârșitul lunii contul 4426 (TVA deductibilă) are sold debitor 0,00 lei, iar 4427 (TVA colectată) sold creditor 1.486,18 lei. Propune nota de regularizare (4427 = 4426, iar diferența în 4423, TVA de plată) și validează-o. · soldurile în valută de la sfârșitul lunii nu sunt reevaluate la cursul BNR din ultima zi bancară (OMFP 1802/2014 pct.325: 1 partener); deschide „Reevaluare valută”, verifică propunerea și generează nota\nToate stările\nCiorne (nevalidate)\nValidate\nLa validare în cabinet\nRespinse, de corectat\nFără document justificativ\nToate stările\nCiorne (nevalidate)\nValidate\nLa validare în cabinet\nRespinse, de corectat\nFără document justificativ\nNote validate în lună\n32\nNote fără document justificativ (nici document scris, nici factură legată)\n2\nCiorne în lună (nu intră în total)\n52 · 14.732,14 lei\nFără document justificativ (1): o notă nu se validează fără documentul din care provine (Registrul-jurnal, col.3: felul, numărul și data).\nFăcută dintr-un document (50): nota se corectează din documentul ei (factură, NIR, stat de plată …), nu din Registrul jurnal; unde anume, scrie în detaliul notei.\nNr. crt.\tData\tExplicație\tDocument\tConturi\tSumă (lei)\tStare\tAcțiune\n7\t05.10.2026\tContare factura 2\tFactură 2 din 05.10.2026\t4111 = 707, 4111 = 4427\t6.938,00\t● Validată\t\n8\t05.10.2026\tIeșire stoc Marfa A × 2 buc\tfără document\t607 = 371\t100,00\t● Validată\t\n9\t05.10.2026\tIncasare DANTE INTERNATIONAL SA RO14399840 contravaloare factura 2 din 05.10.2026\tFactură 2 din 05.10.2026\t5121 = 4111\t6.938,00\t● Validată\t\n10\t05.10.2026\tComision administrare cont octombrie\tExtras de cont nr. 10 din 05.10.2026\t627 = 5121\t15,00\t● Validată\t\n30\t05.10.2026\tStornare: nota nr. crt. 8 din 05.10.2026 (Ieșire stoc Marfa A × 2 buc) — descărcarea facturii, scrisă fără document\tNota nr. crt. 8 din 05.10.2026\t607 = 371\t−100,00\t● Validată\t\n31\t05.10.2026\tIeșire stoc Marfa A × 2 buc\tFactură 2 din 05.10.2026\t607 = 371\t100,00\t● Validată\t\n32\t05.10.2026\tStornare: nota nr. crt. 8 din 05.10.2026 (Ieșire stoc Marfa A × 2 buc) — descărcarea facturii, scrisă fără document\tNota din 05.10.2026\t607 = 371\t−100,00\t● Validată\t\n33\t05.10.2026\tIeșire stoc Marfa A × 2 buc\tFactură 2 din 05.10.2026\t607 = 371\t100,00\t● Validată\t\n11\t06.10.2026\tContare factura F1A nr. 3\tFactură F1A nr. 3 din 06.10.2026\t4111 = 707, 4111 = 4427\t242,00\t● Validată\t\n12\t06.10.2026\tIeșire stoc Marfa A × 2 buc\tFactură F1A nr. 3 din 06.10.2026\t607 = 371\t100,00\t● Validată\t\n13\t07.10.2026\tNIR 2 DANTE INTERNATIONAL SA\tNIR nr 2 din 07.10.2026\t371 = 401\t600,00\t● Validată\t\n14\t07.10.2026\tNIR 2 DANTE INTERNATIONAL SA\tNIR nr 2 din 07.10.2026\t4426 = 401\t126,00\t● Validată\t\n15\t07.10.2026\tNIR 1 DANTE INTERNATIONAL SA\tNIR nr 1 din 07.10.2026\t371 = 401\t550,00\t● Validată\t\n16\t07.10.2026\tNIR 1 DANTE INTERNATIONAL SA\tNIR nr 1 din 07.10.2026\t4426 = 401\t115,50\t● Validată\t\n17\t07.10.2026\tRefacere NIR nr. 2 fără factură: costul și TVA-ul trec de pe 401 pe 408 (furnizori - facturi nesosite) și 4428.01 (TVA neexigibilă), până la sosirea facturii\tNIR nr 2 din 07.10.2026\t371 = 401, 4426 = 401 + 2\t726,00\nstornare −726,00\n\t● Validată\t\n18\t07.10.2026\tRefacere NIR nr. 1 fără factură: costul și TVA-ul trec de pe 401 pe 408 (furnizori - facturi nesosite) și 4428.01 (TVA neexigibilă), până la sosirea facturii\tNIR nr 1 din 07.10.2026\t371 = 401, 4426 = 401 + 2\t665,50\nstornare −665,50\n\t● Validată\t\n19\t08.10.2026\tDANTE INTERNATIONAL SA\tCHF1-1 · stinge factura F1A nr. 3 din 06.10.2026\t5311 = 4111\t242,00\t● Validată\t\n—\t09.10.2026\tPlată către furnizor — document DP-1 — DANTE INTERNATIONAL SA\tDP-1\t401 = 5311\t100,00\t● Ciornă\ndin casa\n\tValidează\n21\t16.10.2026\tContare factura F1A nr. 4\tFactură F1A nr. 4 din 16.10.2026\t4111 = 707, 4111 = 4427\t242,00\t● Validată\t\n22\t16.10.2026\tIeșire stoc Marfa A × 2 buc\tFactură F1A nr. 4 din 16.10.2026\t607 = 371\t102,38\t● Validată\t\n23\t16.10.2026\tÎncasare de la client — document Încasare factura F1A4 — FISCALOS ICONTA S.R.L.\tÎncasare factura F1A4\t5311 = 4111\t6.000,00\t● Validată\t\n24\t16.10.2026\tStornare: Încasare de la client — document Încasare factura F1A4 — FISCALOS ICONTA S.R.L.\tSTORNO Încasare factura F1A4\t5311 = 4111\t−6.000,00\t● Validată\t\n25\t16.10.2026\tIncasare FISCALOS ICONTA SRL CUI 55229657 contravaloare factura F1A4 din 16.10.2026\tExtras bancar extras_F1_test_MT940.sta din 16.10.2026\t5121 = 4111\t242,00\t● Validată\t\n—\t16.10.2026\tComision administrare cont octombrie -\tExtras bancar extras_F1_test_MT940.sta din 16.10.2026\t627 = 5121\t12,50\t● Ciornă\ndin extras\n\tValidează\n26\t17.10.2026\tContare factura F1A nr. 5\tFactură F1A nr. 5 din 17.10.2026\t4111 = 704\t1.000,00\t● Validată\t\n27\t18.10.2026\tContare factura F1A nr. 6\tFactură F1A nr. 6 din 18.10.2026\t4111 = 704\t500,00\t● Validată\t\n—\t19.10.2026\tContare factura F1A nr. 7\tFactură F1A nr. 7 din 19.10.2026\t4111 = 704\t1.000,00\t● Ciornă\ndin factura\n\tValidează\n—\t19.10.2026\tNIR 3 DANTE INTERNATIONAL SA\tNIR nr 3 din 19.10.2026\t371 = 408\t1.000,00\t● Ciornă\ndin nir\n\tValidează\n—\t19.10.2026\tNIR 3 DANTE INTERNATIONAL SA\tNIR nr 3 din 19.10.2026\t4428.01 = 408\t210,00\t● Ciornă\ndin nir\n\tValidează\n—\t19.10.2026\tNIR 3 DANTE INTERNATIONAL SA\tNIR nr 3 din 19.10.2026\t371 = 401\t100,00\t● Ciornă\ndin nir\n\tValidează\n—\t19.10.2026\t50 kg fier vechi - Ion Popescu\tBorderou de achiziție BA-1 din 19.10.2026\t371 = 401\t100,00\t● Ciornă\ndin borderou\n\tValidează\n—\t19.10.2026\tInventar Marfa A: minus 4 buc\tListă de inventariere nr 1 din 19.10.2026\t607 = 371\t205,90\t● Ciornă\ndin stoc\n\tValidează\n—\t19.10.2026\tInventar Marfa B: plus 2 buc\tListă de inventariere nr 1 din 19.10.2026\t371 = 607\t55,00\t● Ciornă\ndin stoc\n\tValidează\n28\t19.10.2026\tPlată către furnizor — document DP-2 — DANTE I"
+   },
+   "captura": "jurnal_1366x768_10_2026.png"
+  },
+  "1366x768 09/2026": {
+   "zona": [
+    269,
+    625
+   ],
+   "rand": [
+    387.5,
+    431.5
+   ],
+   "corp": [
+    72,
+    752
+   ],
+   "vizibil": true,
+   "prima_nota": "1\t20.09.2026\tContare factura 1\tFactură 1 din 20.09.2026\t4111 = 707, 4111 = 4427\t1.210,00\t● Validată\t\n",
+   "derulari": {
+    "derulari": [
+     {
+      "id": "",
+      "cls": "zona-derulare",
+      "sh": 450,
+      "ch": 356,
+      "sw": 1302,
+      "cw": 1302,
+      "xml": false
+     }
+    ],
+    "corp": {
+     "sh": 680,
+     "ch": 680,
+     "sw": 1334,
+     "cw": 1334
+    },
+    "fer": [
+     1334,
+     736
+    ],
+    "primare": [
+     "+ Notă nouă"
+    ],
+    "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nRegistru jurnal\n✕\nRegistru jurnal ?\n\nLuna 09/2026 · 7 note ← luna luna → Generează amortizarea Deblochează luna? \nToate stările\nCiorne (nevalidate)\nValidate\nLa validare în cabinet\nRespinse, de corectat\nFără document justificativ\nToate stările\nCiorne (nevalidate)\nValidate\nLa validare în cabinet\nRespinse, de corectat\nFără document justificativ\n\nLuna e blocată: deblochează-o ca să generezi amortizarea.\n\nNote fără document justificativ (nici document scris, nici factură legată)\n2\nScrisă înainte de încheierea lunii (1): nota s-a calculat înainte ca luna ei să se încheie; motivul și ce urmează sunt în detaliul notei.\nNr. crt.\tData\tExplicație\tDocument\tConturi\tSumă (lei)\tStare\tAcțiune\n1\t20.09.2026\tContare factura 1\tFactură 1 din 20.09.2026\t4111 = 707, 4111 = 4427\t1.210,00\t● Validată\t\n2\t20.09.2026\tIeșire stoc Marfa A × 10 buc\tfără document\t607 = 371\t500,00\t● Validată\t\n3\t20.09.2026\tContare factura FURN-2026-001\tFactură FURN-2026-001 din 20.09.2026\t371 = 401, 4426 = 401\t1.210,00\t● Validată\t\n4\t20.09.2026\tIncasare factura client Client Test SRL RO410001005\tFactură 1 din 20.09.2026\t5121 = 4111\t1.210,00\t● Validată\t\n5\t20.09.2026\tPlata factura furnizor Furnizor Test SRL RO420002008\tFactură FURN-2026-001 din 20.09.2026\t401 = 5121\t1.210,00\t● Validată\t\n6\t28.09.2026\tStat de plata 09/2026\tfără document\t421 = 4315, 421 = 4316 + 3\t19.766,00\t● Validată\nscrisă înainte de încheierea lunii\n\t\n40\t30.09.2026\tRegularizarea TVA la 30.09.2026\tNotă de calcul nr 1 din 30.09.2026\t4427 = 4426\t210,00\t● Validată\t\nNote validate în lună\n7\nTotal sume debitoare (note validate)\n25.316,00 lei\nTotal sume creditoare (note validate)\n25.316,00 lei\n+ Notă nouă"
+   },
+   "captura": "jurnal_1366x768_09_2026.png"
+  },
+  "603x590 11/2026": {
+   "fara_note": true,
+   "derulari": {
+    "derulari": [],
+    "corp": {
+     "sh": 502,
+     "ch": 502,
+     "sw": 571,
+     "cw": 571
+    },
+    "fer": [
+     571,
+     558
+    ],
+    "primare": [
+     "+ Notă nouă"
+    ],
+    "text": "←\nRegistru jurnal\n✕\nRegistru jurnal ?\n\nLuna 08/2025 · 0 note\n← luna\nluna →\nGenerează amortizarea\nBlochează luna\n?\n\nNicio notă în luna asta.\n+ Notă nouă"
+   },
+   "captura": "jurnal_603x590_11_2026.png"
+  },
+  "603x590 10/2026": {
+   "zona": [
+    207,
+    423
+   ],
+   "rand": [
+    207,
+    336
+   ],
+   "corp": [
+    72,
+    574
+   ],
+   "vizibil": true,
+   "prima_nota": "7\n05.10.2026\nContare factura 2\nFactură 2 din 05.10.2026\n4111 = 707, 4111 = 4427\n6.938,00\n● Validată",
+   "derulari": {
+    "derulari": [
+     {
+      "id": "",
+      "cls": "zona-derulare",
+      "sh": 14359,
+      "ch": 216,
+      "sw": 539,
+      "cw": 539,
+      "xml": false
+     }
+    ],
+    "corp": {
+     "sh": 502,
+     "ch": 502,
+     "sw": 571,
+     "cw": 571
+    },
+    "fer": [
+     571,
+     558
+    ],
+    "primare": [
+     "+ Notă nouă"
+    ],
+    "text": "←\nRegistru jurnal\n✕\nRegistru jurnal ?\n\nLuna 10/2026 · 84 de note · 52 de ciorne ale lunii în afara cozii (le validezi de aici)\n← luna\nluna →\nGenerează amortizarea\nBlochează luna\n?\n\nToate stările\nCiorne (nevalidate)\nValidate\nLa validare în cabinet\nRespinse, de corectat\nFără document justificativ\nToate stările\nCiorne (nevalidate)\nValidate\nLa validare în cabinet\nRespinse, de corectat\nFără document justificativ\nNote validate în lună\n32\nNote fără document justificativ (nici document scris, nici factură legată)\n2\nCiorne în lună (nu intră în total)\n52 · 14.732,14 lei\nFără document justificativ (1): o notă nu se validează fără documentul din care provine (Registrul-jurnal, col.3: felul, numărul și data).\nFăcută dintr-un document (50): nota se corectează din documentul ei (factură, NIR, stat de plată …), nu din Registrul jurnal; unde anume, scrie în detaliul notei.\n7\n05.10.2026\nContare factura 2\nFactură 2 din 05.10.2026\n4111 = 707, 4111 = 4427\n6.938,00\n● Validată\n8\n05.10.2026\nIeșire stoc Marfa A × 2 buc\nfără document\n607 = 371\n100,00\n● Validată\n9\n05.10.2026\nIncasare DANTE INTERNATIONAL SA RO14399840 contravaloare factura 2 din 05.10.2026\nFactură 2 din 05.10.2026\n5121 = 4111\n6.938,00\n● Validată\n10\n05.10.2026\nComision administrare cont octombrie\nExtras de cont nr. 10 din 05.10.2026\n627 = 5121\n15,00\n● Validată\n30\n05.10.2026\nStornare: nota nr. crt. 8 din 05.10.2026 (Ieșire stoc Marfa A × 2 buc) — descărcarea facturii, scrisă fără document\nNota nr. crt. 8 din 05.10.2026\n607 = 371\n−100,00\n● Validată\n31\n05.10.2026\nIeșire stoc Marfa A × 2 buc\nFactură 2 din 05.10.2026\n607 = 371\n100,00\n● Validată\n32\n05.10.2026\nStornare: nota nr. crt. 8 din 05.10.2026 (Ieșire stoc Marfa A × 2 buc) — descărcarea facturii, scrisă fără document\nNota din 05.10.2026\n607 = 371\n−100,00\n● Validată\n33\n05.10.2026\nIeșire stoc Marfa A × 2 buc\nFactură 2 din 05.10.2026\n607 = 371\n100,00\n● Validată\n11\n06.10.2026\nContare factura F1A nr. 3\nFactură F1A nr. 3 din 06.10.2026\n4111 = 707, 4111 = 4427\n242,00\n● Validată\n12\n06.10.2026\nIeșire stoc Marfa A × 2 buc\nFactură F1A nr. 3 din 06.10.2026\n607 = 371\n100,00\n● Validată\n13\n07.10.2026\nNIR 2 DANTE INTERNATIONAL SA\nNIR nr 2 din 07.10.2026\n371 = 401\n600,00\n● Validată\n14\n07.10.2026\nNIR 2 DANTE INTERNATIONAL SA\nNIR nr 2 din 07.10.2026\n4426 = 401\n126,00\n● Validată\n15\n07.10.2026\nNIR 1 DANTE INTERNATIONAL SA\nNIR nr 1 din 07.10.2026\n371 = 401\n550,00\n● Validată\n16\n07.10.2026\nNIR 1 DANTE INTERNATIONAL SA\nNIR nr 1 din 07.10.2026\n4426 = 401\n115,50\n● Validată\n17\n07.10.2026\nRefacere NIR nr. 2 fără factură: costul și TVA-ul trec de pe 401 pe 408 (furnizori - facturi nesosite) și 4428.01 (TVA neexigibilă), până la sosirea facturii\nNIR nr 2 din 07.10.2026\n371 = 401, 4426 = 401 + 2\n726,00\nstornare −726,00\n● Validată\n18\n07.10.2026\nRefacere NIR nr. 1 fără factură: costul și TVA-ul trec de pe 401 pe 408 (furnizori - facturi nesosite) și 4428.01 (TVA neexigibilă), până la sosirea facturii\nNIR nr 1 din 07.10.2026\n371 = 401, 4426 = 401 + 2\n665,50\nstornare −665,50\n● Validată\n19\n08.10.2026\nDANTE INTERNATIONAL SA\nCHF1-1 · stinge factura F1A nr. 3 din 06.10.2026\n5311 = 4111\n242,00\n● Validată\n—\n09.10.2026\nPlată către furnizor — document DP-1 — DANTE INTERNATIONAL SA\nDP-1\n401 = 5311\n100,00\n● Ciornă\ndin casa\nValidează\n21\n16.10.2026\nContare factura F1A nr. 4\nFactură F1A nr. 4 din 16.10.2026\n4111 = 707, 4111 = 4427\n242,00\n● Validată\n22\n16.10.2026\nIeșire stoc Marfa A × 2 buc\nFactură F1A nr. 4 din 16.10.2026\n607 = 371\n102,38\n● Validată\n23\n16.10.2026\nÎncasare de la client — document Încasare factura F1A4 — FISCALOS ICONTA S.R.L.\nÎncasare factura F1A4\n5311 = 4111\n6.000,00\n● Validată\n24\n16.10.2026\nStornare: Încasare de la client — document Încasare factura F1A4 — FISCALOS ICONTA S.R.L.\nSTORNO Încasare factura F1A4\n5311 = 4111\n−6.000,00\n● Validată\n25\n16.10.2026\nIncasare FISCALOS ICONTA SRL CUI 55229657 contravaloare factura F1A4 din 16.10.2026\nExtras bancar extras_F1_test_MT940.sta din 16.10.2026\n5121 = 4111\n242,00\n● Validată\n—\n16.10.2026\nComision administrare cont octombrie -\nExtras bancar extras_F1_test_MT940.sta din 16.10.2026\n627 = 5121\n12,50\n● Ciornă\ndin extras\nValidează\n26\n17.10.2026\nContare factura F1A nr. 5\nFactură F1A nr. 5 din 17.10.2026\n4111 = 704\n1.000,00\n● Validată\n27\n18.10.2026\nContare factura F1A nr. 6\nFactură F1A nr. 6 din 18.10.2026\n4111 = 704\n500,00\n● Validată\n—\n19.10.2026\nContare factura F1A nr. 7\nFactură F1A nr. 7 din 19.10.2026\n4111 = 704\n1.000,00\n● Ciornă\ndin factura\nValidează\n—\n19.10.2026\nNIR 3 DANTE INTERNATIONAL SA\nNIR nr 3 din 19.10.2026\n371 = 408\n1.000,00\n● Ciornă\ndin nir\nValidează\n—\n19.10.2026\nNIR 3 DANTE INTERNATIONAL SA\nNIR nr 3 din 19.10.2026\n4428.01 = 408\n210,00\n● Ciornă\ndin nir\nValidează\n—\n19.10.2026\nNIR 3 DANTE INTERNATIONAL SA\nNIR nr 3 din 19.10.2026\n371 = 401\n100,00\n● Ciornă\ndin nir\nValidează\n—\n19.10.2026\n50 kg fier vechi - Ion Popescu\nBorderou de achiziție BA-1 din 19.10.2026\n371 = 401\n100,00\n● Ciornă\ndin borderou\nValidează\n—\n19.10.2026\nInventar Marfa A: minus 4 buc\nListă de inventariere nr 1 din 19.10.2026\n607 = 371\n205,90\n● Ciornă\ndin stoc\nValidează\n—\n19.10.2026\nInventar Marfa B: plus 2 buc\nListă de inventariere nr 1 din 19.10.2026\n371 = 607\n55,00\n● Ciornă\ndin stoc\nValidează\n28\n19.10.2026\nPlată către furnizor — document DP-2 — DANTE INTERNATIONAL SA\nDP-2\n401 = 5311\n200,00\n● Validată\n29\n19.10.2026\nStornare: Plată către furnizor — document DP-2 — DANTE INTERNATIONAL SA\nSTORNO DP-2\n401 = 5311\n−200,00\n● Validată\n38\n19.10.2026\nContare factura F1A nr. 8\nFactură F1A nr. 8 din 19.10.2026\n4111 = 707, 4111 = 4427\n644,59\n● Validată\n—\n19.10.2026\nIeșire stoc Marfa B × 1 buc\nFactură F1A nr. 8 din 19.10.2026\n607 = 371\n27,50\n● Ciornă\ndin stoc\nValidează\n—\n19.10.2026\nContare factura F1A nr. 9\nFactură F1A nr. 9 din 19.10.2026\n4111 = 707, 4111 = 4427\n−644,59\n● Ciornă\ndin factura\nValidează\n—\n19.10.2026\nContare factura DNT-TEST-1019\nFactură DNT-TEST-1019 din 19.10.2026\n371 = 401, 4426 = 401\n827,00\n● Ciornă\ndin factura\nValidează\n34\n19.10.2026\nÎncadrarea lipsei de la inventar (Marfa A, 205,90 lei): neimputabila\nListă de in"
+   },
+   "captura": "jurnal_603x590_10_2026.png"
+  },
+  "603x590 09/2026": {
+   "zona": [
+    221,
+    423
+   ],
+   "rand": [
+    221,
+    350
+   ],
+   "corp": [
+    72,
+    574
+   ],
+   "vizibil": true,
+   "prima_nota": "1\n20.09.2026\nContare factura 1\nFactură 1 din 20.09.2026\n4111 = 707, 4111 = 4427\n1.210,00\n● Validată",
+   "derulari": {
+    "derulari": [
+     {
+      "id": "",
+      "cls": "zona-derulare",
+      "sh": 1341,
+      "ch": 202,
+      "sw": 539,
+      "cw": 539,
+      "xml": false
+     }
+    ],
+    "corp": {
+     "sh": 502,
+     "ch": 502,
+     "sw": 571,
+     "cw": 571
+    },
+    "fer": [
+     571,
+     558
+    ],
+    "primare": [
+     "+ Notă nouă"
+    ],
+    "text": "←\nRegistru jurnal\n✕\nRegistru jurnal ?\n\nLuna 09/2026 · 7 note\n← luna\nluna →\nGenerează amortizarea\nDeblochează luna\n?\n\nLuna e blocată: deblochează-o ca să generezi amortizarea.\n\nToate stările\nCiorne (nevalidate)\nValidate\nLa validare în cabinet\nRespinse, de corectat\nFără document justificativ\nToate stările\nCiorne (nevalidate)\nValidate\nLa validare în cabinet\nRespinse, de corectat\nFără document justificativ\nNote validate în lună\n7\nNote fără document justificativ (nici document scris, nici factură legată)\n2\nScrisă înainte de încheierea lunii (1): nota s-a calculat înainte ca luna ei să se încheie; motivul și ce urmează sunt în detaliul notei.\n1\n20.09.2026\nContare factura 1\nFactură 1 din 20.09.2026\n4111 = 707, 4111 = 4427\n1.210,00\n● Validată\n2\n20.09.2026\nIeșire stoc Marfa A × 10 buc\nfără document\n607 = 371\n500,00\n● Validată\n3\n20.09.2026\nContare factura FURN-2026-001\nFactură FURN-2026-001 din 20.09.2026\n371 = 401, 4426 = 401\n1.210,00\n● Validată\n4\n20.09.2026\nIncasare factura client Client Test SRL RO410001005\nFactură 1 din 20.09.2026\n5121 = 4111\n1.210,00\n● Validată\n5\n20.09.2026\nPlata factura furnizor Furnizor Test SRL RO420002008\nFactură FURN-2026-001 din 20.09.2026\n401 = 5121\n1.210,00\n● Validată\n6\n28.09.2026\nStat de plata 09/2026\nfără document\n421 = 4315, 421 = 4316 + 3\n19.766,00\n● Validată\nscrisă înainte de încheierea lunii\n40\n30.09.2026\nRegularizarea TVA la 30.09.2026\nNotă de calcul nr 1 din 30.09.2026\n4427 = 4426\n210,00\n● Validată\nTotal sume debitoare (note validate)\n25.316,00 lei\nTotal sume creditoare (note validate)\n25.316,00 lei\n+ Notă nouă"
+   },
+   "captura": "jurnal_603x590_09_2026.png"
+  },
+  "durata_s": 80.2
+ },
+ "parteneri": {
+  "1366x768": {
+   "derulari": [],
+   "corp": {
+    "sh": 680,
+    "ch": 680,
+    "sw": 1334,
+    "cw": 1334
+   },
+   "fer": [
+    1334,
+    736
+   ],
+   "primare": [
+    "+ Fișă de partener"
+   ],
+   "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nParteneri\n✕\nParteneri ?\n\nClienții și furnizorii firmei, din fișe și din toate documentele: facturi emise și primite, casă, bancă, note contabile, soldurile de preluare. Deschide fișa unui partener ca să-i vezi datele, documentele și soldul din contabilitate și să-i editezi datele.\n\n 8 parteneri\nPartener\tCod fiscal\tRol\tDocumente\tAre fișă\tAcțiune\nClient Test SRL\t410001005\tclient\t5\t—\tFișa partenerului\nDANTE INTERNATIONAL SA\t14399840\tclient și furnizor\t25\tda\tFișa partenerului\nFISCALOS ICONTA S.R.L.\t55229657\tclient\t5\t—\tFișa partenerului\nFurnizor Test SRL\t420002008\tfurnizor\t2\t—\tFișa partenerului\nGOOGLE IRELAND LIMITED\tIE6388047V\tclient\t5\t—\tFișa partenerului\nIon Popescu\t—\tfurnizor\t1\t—\tFișa partenerului\nMaria Ionescu\t—\tfurnizor\t1\t—\tFișa partenerului\nVasile Test\t—\tfurnizor\t1\t—\tFișa partenerului\n+ Fișă de partener",
+   "extra": {
+    "cauta": true,
+    "nou": "buton-primar fj-principal"
+   },
+   "captura": "parteneri_1366x768.png"
+  },
+  "603x590": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "zona-derulare",
+     "sh": 866,
+     "ch": 215,
+     "sw": 539,
+     "cw": 539,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 502,
+    "ch": 502,
+    "sw": 571,
+    "cw": 571
+   },
+   "fer": [
+    571,
+    558
+   ],
+   "primare": [
+    "+ Fișă de partener"
+   ],
+   "text": "←\nParteneri\n✕\nParteneri ?\n\nClienții și furnizorii firmei, din fișe și din toate documentele: facturi emise și primite, casă, bancă, note contabile, soldurile de preluare. Deschide fișa unui partener ca să-i vezi datele, documentele și soldul din contabilitate și să-i editezi datele.\n\n 8 parteneri\nClient Test SRL\n410001005\nclient\n5\n—\nFișa partenerului\nDANTE INTERNATIONAL SA\n14399840\nclient și furnizor\n25\nda\nFișa partenerului\nFISCALOS ICONTA S.R.L.\n55229657\nclient\n5\n—\nFișa partenerului\nFurnizor Test SRL\n420002008\nfurnizor\n2\n—\nFișa partenerului\nGOOGLE IRELAND LIMITED\nIE6388047V\nclient\n5\n—\nFișa partenerului\nIon Popescu\n—\nfurnizor\n1\n—\nFișa partenerului\nMaria Ionescu\n—\nfurnizor\n1\n—\nFișa partenerului\nVasile Test\n—\nfurnizor\n1\n—\nFișa partenerului\n+ Fișă de partener",
+   "extra": {
+    "cauta": true,
+    "nou": "buton-primar fj-principal"
+   },
+   "captura": "parteneri_603x590.png"
+  },
+  "durata_s": 10.6
+ },
+ "clienti": {
+  "1366x768": {
+   "derulari": [],
+   "corp": {
+    "sh": 680,
+    "ch": 680,
+    "sw": 1334,
+    "cw": 1334
+   },
+   "fer": [
+    1334,
+    736
+   ],
+   "primare": [
+    "+ Client nou"
+   ],
+   "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nClienți\n✕\nClienți ?\n\nFișele clienților: numele, localitatea și județul — D406 și D394 le iau de aici când factura nu le are (persoanele fizice și firmele fără cod de TVA). Bifează clienții care sunt persoane afiliate firmei (Cod fiscal art.7 pct.26): pentru ei, chiar dacă firma aplică TVA la încasare, factura ia regulile generale — TVA-ul e exigibil la emitere, pe 4427 (Cod fiscal art.282 alin.(6) lit.d). Bifa se aplică facturilor emise de acum înainte; cele emise rămân cum au fost emise.\n\nClient\tCUI\tLocalitatea\tJudețul\tFacturi emise\tPersoană afiliată (Cod fiscal art.7 pct.26)\tAcțiune\n\t14399840\t\t\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n\t11\t\nDa\nNu\nDa\nNu\n\tSalvează\nNimic de salvat: schimbă numele, localitatea sau județul pe rând.\nAcțiuni\n\n\nfără fișă — din facturile emise\n\t410001005\t\t\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n\t3\t\nDa\nNu\nDa\nNu\n\tSalvează\nAcțiuni\n\n\nfără fișă — din facturile emise\n\t55229657\t\t\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n\t1\t\nDa\nNu\nDa\nNu\n\tSalvează\nAcțiuni\n\n\nfără fișă — din facturile emise\n\tIE6388047V\t\t— (partener din alt stat)\t4\t\nDa\nNu\nDa\nNu\n\tSalvează\nAcțiuni\n+ Client nou",
+   "extra": [
+    [
+     "true",
+     "Nimic de salvat: schimbă numele, localitatea sau județul pe rând.",
+     "cl-salveaza-c1-motiv"
+    ],
+    [
+     null,
+     "",
+     "cl-salveaza-p410001005-motiv"
+    ],
+    [
+     null,
+     "",
+     "cl-salveaza-p55229657-motiv"
+    ],
+    [
+     null,
+     "",
+     "cl-salveaza-pIE6388047V-motiv"
+    ]
+   ],
+   "captura": "clienti_1366x768.png"
+  },
+  "603x590": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "zona-derulare",
+     "sh": 1335,
+     "ch": 341,
+     "sw": 539,
+     "cw": 539,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 502,
+    "ch": 502,
+    "sw": 571,
+    "cw": 571
+   },
+   "fer": [
+    571,
+    558
+   ],
+   "primare": [
+    "+ Client nou"
+   ],
+   "text": "←\nClienți\n✕\nClienți ?\n\nFișele clienților: numele, localitatea și județul — D406 și D394 le iau de aici când factura nu le are (persoanele fizice și firmele fără cod de TVA). Bifează clienții care sunt persoane afiliate firmei (Cod fiscal art.7 pct.26): pentru ei, chiar dacă firma aplică TVA la încasare, factura ia regulile generale — TVA-ul e exigibil la emitere, pe 4427 (Cod fiscal art.282 alin.(6) lit.d). Bifa se aplică facturilor emise de acum înainte; cele emise rămân cum au fost emise.\n\n14399840\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n11\nDa\nNu\nDa\nNu\nSalvează\nNimic de salvat: schimbă numele, localitatea sau județul pe rând.\nAcțiuni\nfără fișă — din facturile emise\n410001005\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n3\nDa\nNu\nDa\nNu\nSalvează\nAcțiuni\nfără fișă — din facturile emise\n55229657\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n1\nDa\nNu\nDa\nNu\nSalvează\nAcțiuni\nfără fișă — din facturile emise\nIE6388047V\n— (partener din alt stat)\n4\nDa\nNu\nDa\nNu\nSalvează\nAcțiuni\n+ Client nou",
+   "extra": [
+    [
+     "true",
+     "Nimic de salvat: schimbă numele, localitatea sau județul pe rând.",
+     "cl-salveaza-c1-motiv"
+    ],
+    [
+     null,
+     "",
+     "cl-salveaza-p410001005-motiv"
+    ],
+    [
+     null,
+     "",
+     "cl-salveaza-p55229657-motiv"
+    ],
+    [
+     null,
+     "",
+     "cl-salveaza-pIE6388047V-motiv"
+    ]
+   ],
+   "captura": "clienti_603x590.png"
+  },
+  "durata_s": 10.6
+ },
+ "furnizori": {
+  "1366x768": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "zona-derulare",
+     "sh": 500,
+     "ch": 497,
+     "sw": 1302,
+     "cw": 1302,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 680,
+    "ch": 680,
+    "sw": 1334,
+    "cw": 1334
+   },
+   "fer": [
+    1334,
+    736
+   ],
+   "primare": [
+    "+ Furnizor nou"
+   ],
+   "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nFurnizori\n✕\nFurnizori ?\n\nFișele furnizorilor: numele, localitatea și județul — D406 și D394 le iau de aici când factura sau borderoul de achiziție nu le are (persoanele fizice și firmele fără cod de TVA).\n\nFurnizor\tCUI\tLocalitatea\tJudețul\tFacturi primite\tAcțiune\n\t14399840\t\t\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n\t4\tSalvează\nNimic de salvat: schimbă numele, localitatea sau județul pe rând.\nAcțiuni\n\n\nfără fișă — din facturile primite\n\t420002008\t\t\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n\t1\tSalvează\nAcțiuni\n\n\nfără fișă — din facturile primite\n\t—\t\t\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n\t1\tSalvează\nAcțiuni\n\n\nfără fișă — din facturile primite\n\t—\t\t\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nCluj\n▾\n\t1\tSalvează\nAcțiuni\n\n\nfără fișă — din facturile primite\npersoană fizică fără localitate: D394 o cere — completeaz-o\n\t—\t\t\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nAlege din listă\n▾\n\t1\tSalvează\nNimic de salvat: schimbă numele, localitatea sau județul pe rând.\nAcțiuni\n+ Furnizor nou",
+   "extra": null,
+   "captura": "furnizori_1366x768.png"
+  },
+  "603x590": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "zona-derulare",
+     "sh": 1116,
+     "ch": 235,
+     "sw": 539,
+     "cw": 539,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 502,
+    "ch": 502,
+    "sw": 571,
+    "cw": 571
+   },
+   "fer": [
+    571,
+    558
+   ],
+   "primare": [
+    "+ Furnizor nou"
+   ],
+   "text": "←\nFurnizori\n✕\nFurnizori ?\n\nFișele furnizorilor: numele, localitatea și județul — D406 și D394 le iau de aici când factura sau borderoul de achiziție nu le are (persoanele fizice și firmele fără cod de TVA).\n\n14399840\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n4\nSalvează\nNimic de salvat: schimbă numele, localitatea sau județul pe rând.\nAcțiuni\nfără fișă — din facturile primite\n420002008\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n1\nSalvează\nAcțiuni\nfără fișă — din facturile primite\n—\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nBucurești\n▾\n1\nSalvează\nAcțiuni\nfără fișă — din facturile primite\n—\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nCluj\n▾\n1\nSalvează\nAcțiuni\nfără fișă — din facturile primite\npersoană fizică fără localitate: D394 o cere — completeaz-o\n—\n— alege —\nAlba\nArad\nArgeș\nBacău\nBihor\nBistrița-Năsăud\nBotoșani\nBrașov\nBrăila\nBucurești\nBuzău\nCaraș-Severin\nCluj\nConstanța\nCovasna\nCălărași\nDolj\nDâmbovița\nGalați\nGiurgiu\nGorj\nHarghita\nHunedoara\nIalomița\nIași\nIlfov\nMaramureș\nMehedinți\nMureș\nNeamț\nOlt\nPrahova\nSatu Mare\nSibiu\nSuceava\nSălaj\nTeleorman\nTimiș\nTulcea\nVaslui\nVrancea\nVâlcea\nAlege din listă\n▾\n1\nSalvează\nNimic de salvat: schimbă numele, localitatea sau județul pe rând.\nAcțiuni\n+ Furnizor nou",
+   "extra": null,
+   "captura": "furnizori_603x590.png"
+  },
+  "durata_s": 10.6
+ },
+ "produse_formular": {
+  "1366x768": {
+   "derulari": [
+    {
+     "id": "pr-lista",
+     "cls": "pr-lista zona-derulare",
+     "sh": 728,
+     "ch": 290,
+     "sw": 1302,
+     "cw": 1302,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 680,
+    "ch": 680,
+    "sw": 1334,
+    "cw": 1334
+   },
+   "fer": [
+    1334,
+    736
+   ],
+   "primare": [
+    "Salvează",
+    "+ Adaugă produs"
+   ],
+   "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nProduse\n✕\nDenumire produs sau serviciu*\nPreț · unitate de măsură · cotă TVA\ncotă (auto)\n21%\n11%\n0% — Taxare inversă (art.331)\n0% — Scutit cu drept de deducere (art.294 alin.(1), 295, 296)\n0% — Scutit fără drept de deducere (art.292)\n0% — În afara sferei / bazei de impozitare a TVA (garanții, penalități, dobânzi)\nAlege din listă\n▾\nSalvează\nRenunță\nProduse și servicii \n?\n?\n\nScrii denumirea, iar sistemul potrivește automat cota de TVA corectă din legislație. O poți corecta oricând.\n\nCafea boabe\nbuc\nTemeiul cotei: cota de pe Factură DNT-UBL-083 din 23.10.2026\nTVA 21%\nCorectează cota\nAcțiuni\nCarte tehnica\nbuc\nTVA 11%\nCorectează cota\nAcțiuni\ngrau\nkg\n0% · Taxare inversă (art.331)\nCorectează cota\nAcțiuni\nMarfa A\n100,00 lei / buc\nTVA 21%\nCorectează cota\nAcțiuni\nMarfa B\nbuc\nTemeiul cotei: cota de pe NIR\nTVA 21%\nCorectează cota\nAcțiuni\nMarfa C\nbuc\nTemeiul cotei: cota de pe NIR nr 4 din 20.10.2026\nTVA 21%\nCorectează cota\nAcțiuni\nPaine alba\nbuc\nTemeiul cotei: Painea alba este aliment pentru consum uman, incadrandu-se la art. 291 (2) b) Cod fiscal, fara zahar adaugat >= 10g/100g, deci cota redusa de 11% se aplica.\nTVA 11% · AI\nCorectează cota\nAcțiuni\n+ Adaugă produs",
+   "extra": null,
+   "captura": "produse_formular_1366x768.png"
+  },
+  "603x590": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "fereastra-corp fj-are-principal",
+     "sh": 1576,
+     "ch": 502,
+     "sw": 571,
+     "cw": 571,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 1576,
+    "ch": 502,
+    "sw": 571,
+    "cw": 571
+   },
+   "fer": [
+    571,
+    558
+   ],
+   "primare": [
+    "Salvează",
+    "+ Adaugă produs"
+   ],
+   "text": "←\nProduse\n✕\nDenumire produs sau serviciu*\nPreț · unitate de măsură · cotă TVA\ncotă (auto)\n21%\n11%\n0% — Taxare inversă (art.331)\n0% — Scutit cu drept de deducere (art.294 alin.(1), 295, 296)\n0% — Scutit fără drept de deducere (art.292)\n0% — În afara sferei / bazei de impozitare a TVA (garanții, penalități, dobânzi)\nAlege din listă\n▾\nSalvează\nRenunță\nProduse și servicii \n?\n?\n\nScrii denumirea, iar sistemul potrivește automat cota de TVA corectă din legislație. O poți corecta oricând.\n\nCafea boabe\nbuc\nTemeiul cotei: cota de pe Factură DNT-UBL-083 din 23.10.2026\nTVA 21%\nCorectează cota\nAcțiuni\nCarte tehnica\nbuc\nTVA 11%\nCorectează cota\nAcțiuni\ngrau\nkg\n0% · Taxare inversă (art.331)\nCorectează cota\nAcțiuni\nMarfa A\n100,00 lei / buc\nTVA 21%\nCorectează cota\nAcțiuni\nMarfa B\nbuc\nTemeiul cotei: cota de pe NIR\nTVA 21%\nCorectează cota\nAcțiuni\nMarfa C\nbuc\nTemeiul cotei: cota de pe NIR nr 4 din 20.10.2026\nTVA 21%\nCorectează cota\nAcțiuni\nPaine alba\nbuc\nTemeiul cotei: Painea alba este aliment pentru consum uman, incadrandu-se la art. 291 (2) b) Cod fiscal, fara zahar adaugat >= 10g/100g, deci cota redusa de 11% se aplica.\nTVA 11% · AI\nCorectează cota\nAcțiuni\n+ Adaugă produs",
+   "extra": null,
+   "captura": "produse_formular_603x590.png"
+  },
+  "durata_s": 10.6
+ },
+ "raportz": {
+  "1366x768": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "fereastra-corp fj-are-principal",
+     "sh": 919,
+     "ch": 680,
+     "sw": 1334,
+     "cw": 1334,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 919,
+    "ch": 680,
+    "sw": 1334,
+    "cw": 1334
+   },
+   "fer": [
+    1334,
+    736
+   ],
+   "primare": [
+    "Generează notă"
+   ],
+   "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nRaport Z\n✕\nRaport Z\n?\n\nTotaluri cu TVA inclus. Numerar + card = total. NUI-ul casei de marcat și numărul raportului sunt în antetul bonului Z tipărit — ele fac raportul unic, ca să nu se înregistreze de două ori. Numărul de bonuri fiscale e tot pe raportul Z și intră în D394.\n\nImport fișier AMEF (p7b/XML)\n\nData\n×\nNUI casă de marcat\nTrece NUI-ul casei de marcat, din antetul raportului Z.\nNr. raport Z\nTrece numărul raportului Z, din antetul lui.\nTotal 11%\nTrece totalul pe cote (11% și / sau 21%), cu TVA inclus.\nTotal 21%\nNumerar\nCard\nNr. bonuri fiscale\nTrece numărul de bonuri fiscale de pe raportul Z — intră în D394.\n\nDescărcarea mărfii vândute — rapoartele Z (11/2026)\n\nLa stocul cantitativ-valoric raportul Z nu are articole: ce s-a vândut din stoc spui tu, pe articol. Z-ul se validează numai după descărcare — sau dacă declari că n-a vândut marfă din stoc.\n\nNiciun raport Z în luna asta.\nNUI casă de marcat — Trece NUI-ul casei de marcat, din antetul raportului Z.\nNr. raport Z — Trece numărul raportului Z, din antetul lui.\nTotal 11% — Trece totalul pe cote (11% și / sau 21%), cu TVA inclus.\nNr. bonuri fiscale — Trece numărul de bonuri fiscale de pe raportul Z — intră în D394.\nGenerează notă",
+   "extra": [
+    [
+     "z-nui",
+     "Trece NUI-ul casei de marcat, din antetul raportului Z."
+    ],
+    [
+     "z-nr",
+     "Trece numărul raportului Z, din antetul lui."
+    ],
+    [
+     "z-11",
+     "Trece totalul pe cote (11% și / sau 21%), cu TVA inclus."
+    ],
+    [
+     "z-bonuri",
+     "Trece numărul de bonuri fiscale de pe raportul Z — intră în D394."
+    ]
+   ],
+   "captura": "raportz_1366x768.png"
+  },
+  "603x590": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "fereastra-corp fj-are-principal",
+     "sh": 1294,
+     "ch": 502,
+     "sw": 571,
+     "cw": 571,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 1294,
+    "ch": 502,
+    "sw": 571,
+    "cw": 571
+   },
+   "fer": [
+    571,
+    558
+   ],
+   "primare": [
+    "Generează notă"
+   ],
+   "text": "←\nRaport Z\n✕\nRaport Z\n?\n\nTotaluri cu TVA inclus. Numerar + card = total. NUI-ul casei de marcat și numărul raportului sunt în antetul bonului Z tipărit — ele fac raportul unic, ca să nu se înregistreze de două ori. Numărul de bonuri fiscale e tot pe raportul Z și intră în D394.\n\nImport fișier AMEF (p7b/XML)\n\nData\n×\nNUI casă de marcat\nTrece NUI-ul casei de marcat, din antetul raportului Z.\nNr. raport Z\nTrece numărul raportului Z, din antetul lui.\nTotal 11%\nTrece totalul pe cote (11% și / sau 21%), cu TVA inclus.\nTotal 21%\nNumerar\nCard\nNr. bonuri fiscale\nTrece numărul de bonuri fiscale de pe raportul Z — intră în D394.\n\nDescărcarea mărfii vândute — rapoartele Z (11/2026)\n\nLa stocul cantitativ-valoric raportul Z nu are articole: ce s-a vândut din stoc spui tu, pe articol. Z-ul se validează numai după descărcare — sau dacă declari că n-a vândut marfă din stoc.\n\nNiciun raport Z în luna asta.\nNUI casă de marcat — Trece NUI-ul casei de marcat, din antetul raportului Z.\nNr. raport Z — Trece numărul raportului Z, din antetul lui.\nTotal 11% — Trece totalul pe cote (11% și / sau 21%), cu TVA inclus.\nNr. bonuri fiscale — Trece numărul de bonuri fiscale de pe raportul Z — intră în D394.\nGenerează notă",
+   "extra": [
+    [
+     "z-nui",
+     "Trece NUI-ul casei de marcat, din antetul raportului Z."
+    ],
+    [
+     "z-nr",
+     "Trece numărul raportului Z, din antetul lui."
+    ],
+    [
+     "z-11",
+     "Trece totalul pe cote (11% și / sau 21%), cu TVA inclus."
+    ],
+    [
+     "z-bonuri",
+     "Trece numărul de bonuri fiscale de pe raportul Z — intră în D394."
+    ]
+   ],
+   "captura": "raportz_603x590.png"
+  },
+  "durata_s": 11.9
+ },
+ "casa": {
+  "1366x768": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "zona-derulare",
+     "sh": 677,
+     "ch": 408,
+     "sw": 1302,
+     "cw": 1302,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 680,
+    "ch": 680,
+    "sw": 1334,
+    "cw": 1334
+   },
+   "fer": [
+    1334,
+    736
+   ],
+   "primare": [
+    "+ Dispoziție nouă"
+   ],
+   "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nCasă\n✕\nCasă ?\n\nLuna 10/2026 · sold la început 0,00 lei · sold final 558,46 lei (din care în contabilitate, pe notele validate — fișa contului 5311: 442,00 lei; restul sunt note ciornă)\n← luna\nluna →\n\n+ Chitanță fără factură \nToate operațiunile\nNote ciornă\nNote validate\nLa validare în cabinet\nRespinse la validare\nToate operațiunile\nNote ciornă\nNote validate\nLa validare în cabinet\nRespinse la validare\n\nChitanța fără factură e numai a activității exceptate de la casa de marcat (Date firmă › Activitate exceptată AMEF).\nÎncasare fără chitanță (1): chitanța nu s-a emis în aplicație (încasare scrisă înainte ca aplicația s-o emită singură); nu se emite cu dată trecută.Scrisă din alt ecran (3): rândul vine din raportul Z, statul de plată sau Registrul jurnal: se corectează de acolo.Stornată (2): operațiunea validată e anulată de rândul ei de stornare (cu minus), care trece și el prin validare.\nData\tDocument\tPartener · operațiunea\tÎncasare (lei)\tPlată (lei)\tSold (lei)\tNota\tAcțiune\n08.10.2026\tCHF1-1\tDANTE INTERNATIONAL SA\nÎncasare de la client\n\t242,00\t\t242,00\t● notă validată\t\nAcțiuni\n\n09.10.2026\tDP-1\tDANTE INTERNATIONAL SA\nPlată către furnizor\n\t\t100,00\t142,00\t● notă ciornă\t\nAcțiuni\n\n16.10.2026\tÎncasare factura F1A4\tFISCALOS ICONTA S.R.L.\nÎncasare de la client\n\t6.000,00\t\t6.142,00\t● notă validată\nstornată\n\t\nAcțiuni\n\n16.10.2026\tSTORNO Încasare factura F1A4\tFISCALOS ICONTA S.R.L.\nÎncasare de la client\n\t−6.000,00\t\t142,00\t● notă validată\t\nAcțiuni\n\n19.10.2026\tDP-2\tDANTE INTERNATIONAL SA\nPlată către furnizor\n\t\t200,00\t−58,00\t● notă validată\nstornată\nCasa rămâne pe minus (−58,00 lei)\n\t\nAcțiuni\n\n19.10.2026\tSTORNO DP-2\tDANTE INTERNATIONAL SA\nPlată către furnizor\n\t\t−200,00\t142,00\t● notă validată\t\nAcțiuni\n\n20.10.2026\tDP-3\tDANTE INTERNATIONAL SA\nPlată către furnizor · avans pentru NIR nr 1 din 07.10.2026\n\t\t100,00\t42,00\t● notă ciornă\t\nAcțiuni\n\n20.10.2026\tRaport Z nr 0042 din 20.10.2026 (casa 8000000001)\tVânzări din raportul Z nr 0042 din 20.10.2026, casa 8000000001\nnotă din raportul Z\n\t131,00\t\t173,00\t● notă ciornă\ndin alt ecran\n\t\nAcțiuni\n\n21.10.2026\tRaport Z nr 0043 din 21.10.2026 (casa 8000000001)\tVânzări din raportul Z nr 0043 din 21.10.2026, casa 8000000001\nnotă din raportul Z\n\t121,00\t\t294,00\t● notă ciornă\ndin alt ecran\n\t\nAcțiuni\n\n22.10.2026\tfără document\tDANTE INTERNATIONAL SA\nÎncasare de la client · factura F1A nr. 12 din 20.10.2026\n\t64,46\t\t358,46\t● notă ciornă\nfără chitanță\n\t\nAcțiuni\n\n22.10.2026\tRaport Z nr 0050 din 22.10.2026 (casa 8000000001)\tRaport Z 2026-10-22 casa 8000000001 nr 0050\nnotă din raportul Z\n\t200,00\t\t558,46\t● notă validată\ndin alt ecran\n\t\nAcțiuni\n+ Dispoziție nouă",
+   "extra": null,
+   "captura": "casa_1366x768.png"
+  },
+  "603x590": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "zona-derulare",
+     "sh": 2303,
+     "ch": 201,
+     "sw": 539,
+     "cw": 539,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 504,
+    "ch": 502,
+    "sw": 571,
+    "cw": 571
+   },
+   "fer": [
+    571,
+    558
+   ],
+   "primare": [
+    "+ Dispoziție nouă"
+   ],
+   "text": "←\nCasă\n✕\nCasă ?\n\nLuna 10/2026 · sold la început 0,00 lei · sold final 558,46 lei (din care în contabilitate, pe notele validate — fișa contului 5311: 442,00 lei; restul sunt note ciornă)\n← luna\nluna →\n\n+ Chitanță fără factură\n\nChitanța fără factură e numai a activității exceptate de la casa de marcat (Date firmă › Activitate exceptată AMEF).\nToate operațiunile\nNote ciornă\nNote validate\nLa validare în cabinet\nRespinse la validare\nToate operațiunile\nNote ciornă\nNote validate\nLa validare în cabinet\nRespinse la validare\nÎncasare fără chitanță (1): chitanța nu s-a emis în aplicație (încasare scrisă înainte ca aplicația s-o emită singură); nu se emite cu dată trecută.Scrisă din alt ecran (3): rândul vine din raportul Z, statul de plată sau Registrul jurnal: se corectează de acolo.Stornată (2): operațiunea validată e anulată de rândul ei de stornare (cu minus), care trece și el prin validare.\n08.10.2026\nCHF1-1\nDANTE INTERNATIONAL SA\nÎncasare de la client\n242,00\n242,00\n● notă validată\nAcțiuni\n09.10.2026\nDP-1\nDANTE INTERNATIONAL SA\nPlată către furnizor\n100,00\n142,00\n● notă ciornă\nAcțiuni\n16.10.2026\nÎncasare factura F1A4\nFISCALOS ICONTA S.R.L.\nÎncasare de la client\n6.000,00\n6.142,00\n● notă validată\nstornată\nAcțiuni\n16.10.2026\nSTORNO Încasare factura F1A4\nFISCALOS ICONTA S.R.L.\nÎncasare de la client\n−6.000,00\n142,00\n● notă validată\nAcțiuni\n19.10.2026\nDP-2\nDANTE INTERNATIONAL SA\nPlată către furnizor\n200,00\n−58,00\n● notă validată\nstornată\nCasa rămâne pe minus (−58,00 lei)\nAcțiuni\n19.10.2026\nSTORNO DP-2\nDANTE INTERNATIONAL SA\nPlată către furnizor\n−200,00\n142,00\n● notă validată\nAcțiuni\n20.10.2026\nDP-3\nDANTE INTERNATIONAL SA\nPlată către furnizor · avans pentru NIR nr 1 din 07.10.2026\n100,00\n42,00\n● notă ciornă\nAcțiuni\n20.10.2026\nRaport Z nr 0042 din 20.10.2026 (casa 8000000001)\nVânzări din raportul Z nr 0042 din 20.10.2026, casa 8000000001\nnotă din raportul Z\n131,00\n173,00\n● notă ciornă\ndin alt ecran\nAcțiuni\n21.10.2026\nRaport Z nr 0043 din 21.10.2026 (casa 8000000001)\nVânzări din raportul Z nr 0043 din 21.10.2026, casa 8000000001\nnotă din raportul Z\n121,00\n294,00\n● notă ciornă\ndin alt ecran\nAcțiuni\n22.10.2026\nfără document\nDANTE INTERNATIONAL SA\nÎncasare de la client · factura F1A nr. 12 din 20.10.2026\n64,46\n358,46\n● notă ciornă\nfără chitanță\nAcțiuni\n22.10.2026\nRaport Z nr 0050 din 22.10.2026 (casa 8000000001)\nRaport Z 2026-10-22 casa 8000000001 nr 0050\nnotă din raportul Z\n200,00\n558,46\n● notă validată\ndin alt ecran\nAcțiuni\n+ Dispoziție nouă",
+   "extra": null,
+   "captura": "casa_603x590.png"
+  },
+  "durata_s": 10.3
+ },
+ "banca_f1": {
+  "1366x768": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "zona-derulare",
+     "sh": 1317,
+     "ch": 471,
+     "sw": 1302,
+     "cw": 1302,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 680,
+    "ch": 680,
+    "sw": 1334,
+    "cw": 1334
+   },
+   "fer": [
+    1334,
+    736
+   ],
+   "primare": [
+    "Importă extras"
+   ],
+   "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nBancă\n✕\nBancă \n?\n?\n?\n\nToate liniile\nDe contat\nContate\nPuse deoparte\nToate liniile\nDe contat\nContate\nPuse deoparte\n\nFormate acceptate: MT940, ING, altă bancă\n4 contate, note nevalidate\nData\tSuma (lei)\tDescriere\tCUI\tPotrivire\tAcțiune\n22.10.2026\t−3,50\tComision transfer\t\t● Contată · notă ciornă\nnotă nevalidată\n\tContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e o operațiune a băncii (Comision transfer), contată pe nota 627 = 5121: n-are facturi de ales.\n\n21.10.2026\t−827,00\tPlata DANTE INTERNATIONAL SA CUI 14399840 factura DNT-TEST-1019\t14399840\t● Contată · notă ciornă\nnotă nevalidată\n\tContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura DNT-TEST-1019.\n\n21.10.2026\t+1.000,00\tIncasare GOOGLE IRELAND LIMITED IE6388047V factura F1A7\t\t● Contată · notă ciornă\nnotă nevalidată\n\tContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura F1A nr. 7.\n\n16.10.2026\t−12,50\tComision administrare cont octombrie\t\t● Contată · notă ciornă\nnotă nevalidată\n\tContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e o operațiune a băncii (Comision administrare cont octombrie), contată pe nota 627 = 5121: n-are facturi de ales.\n\n16.10.2026\t+242,00\tIncasare FISCALOS ICONTA SRL CUI 55229657 contravaloare factura F1A4 din 16.10.2026\t55229657\t● Contat ✓\tContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura F1A nr. 4.\n\n05.10.2026\t−15,00\tComision administrare cont octombrie\t\t● Contat ✓\tContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e o operațiune a băncii (Comision administrare cont octombrie), contată pe nota 627 = 5121: n-are facturi de ales.\n\n05.10.2026\t+6.938,00\tIncasare DANTE INTERNATIONAL SA RO14399840 contravaloare factura 2 din 05.10.2026\t14399840\t● Contat ✓\tContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura 2.\n\n20.09.2026\t−1.210,00\tPlata factura furnizor Furnizor Test SRL RO420002008\t420002008\t● Contat ✓\tContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura FURN-2026-001.\n\n20.09.2026\t+1.210,00\tIncasare factura client Client Test SRL RO410001005\t410001005\t● Contat ✓\tContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura 1.\nLinii puse deoparte (2)\n\nNu se contează; „Readu”, din detaliul liniei, o întoarce la lucru.\n\nData\tSuma (lei)\tDescriere\tCUI\tPotrivire\tAcțiune\n22.10.2026\t+500,00\tIncasare DANTE INTERNATIONAL SA CUI 14399840 factura F1A5\t14399840\t● Ignorată\tContează Alege facturile\nLinia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru.\n\n16.10.2026\t+242,00\tIncasare FISCALOS ICONTA SRL CUI 55229657 contravaloare factura F1A4 din 16.10.2026\t55229657\t● Ignorată\tContează Alege facturile\nLinia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru.\nImportă extras",
+   "extra": [
+    "Linia e o operațiune a băncii (Comision transfer), contată pe nota 627 = 5121: n-are facturi de ales.",
+    "Linia e contată: a stins factura DNT-TEST-1019.",
+    "Linia e contată: a stins factura F1A nr. 7.",
+    "Linia e o operațiune a băncii (Comision administrare cont octombrie), contată pe nota 627 = 5121: n-are facturi de ales.",
+    "Linia e contată: a stins factura F1A nr. 4.",
+    "Linia e o operațiune a băncii (Comision administrare cont octombrie), contată pe nota 627 = 5121: n-are facturi de ales.",
+    "Linia e contată: a stins factura 2.",
+    "Linia e contată: a stins factura FURN-2026-001.",
+    "Linia e contată: a stins factura 1.",
+    "Linia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru.",
+    "Linia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru."
+   ],
+   "captura": "banca_f1_1366x768.png"
+  },
+  "603x590": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "zona-derulare",
+     "sh": 2986,
+     "ch": 270,
+     "sw": 539,
+     "cw": 539,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 502,
+    "ch": 502,
+    "sw": 571,
+    "cw": 571
+   },
+   "fer": [
+    571,
+    558
+   ],
+   "primare": [
+    "Importă extras"
+   ],
+   "text": "←\nBancă\n✕\nBancă \n?\n?\n?\n\nToate liniile\nDe contat\nContate\nPuse deoparte\nToate liniile\nDe contat\nContate\nPuse deoparte\n\nFormate acceptate: MT940, ING, altă bancă\n4 contate, note nevalidate\n22.10.2026\n−3,50\nComision transfer\n● Contată · notă ciornă\nnotă nevalidată\nContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e o operațiune a băncii (Comision transfer), contată pe nota 627 = 5121: n-are facturi de ales.\n21.10.2026\n−827,00\nPlata DANTE INTERNATIONAL SA CUI 14399840 factura DNT-TEST-1019\n14399840\n● Contată · notă ciornă\nnotă nevalidată\nContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura DNT-TEST-1019.\n21.10.2026\n+1.000,00\nIncasare GOOGLE IRELAND LIMITED IE6388047V factura F1A7\n● Contată · notă ciornă\nnotă nevalidată\nContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura F1A nr. 7.\n16.10.2026\n−12,50\nComision administrare cont octombrie\n● Contată · notă ciornă\nnotă nevalidată\nContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e o operațiune a băncii (Comision administrare cont octombrie), contată pe nota 627 = 5121: n-are facturi de ales.\n16.10.2026\n+242,00\nIncasare FISCALOS ICONTA SRL CUI 55229657 contravaloare factura F1A4 din 16.10.2026\n55229657\n● Contat ✓\nContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura F1A nr. 4.\n05.10.2026\n−15,00\nComision administrare cont octombrie\n● Contat ✓\nContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e o operațiune a băncii (Comision administrare cont octombrie), contată pe nota 627 = 5121: n-are facturi de ales.\n05.10.2026\n+6.938,00\nIncasare DANTE INTERNATIONAL SA RO14399840 contravaloare factura 2 din 05.10.2026\n14399840\n● Contat ✓\nContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura 2.\n20.09.2026\n−1.210,00\nPlata factura furnizor Furnizor Test SRL RO420002008\n420002008\n● Contat ✓\nContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura FURN-2026-001.\n20.09.2026\n+1.210,00\nIncasare factura client Client Test SRL RO410001005\n410001005\n● Contat ✓\nContează Alege facturile\nLinia e contată: nota ei e în Registrul jurnal.\nLinia e contată: a stins factura 1.\nLinii puse deoparte (2)\n\nNu se contează; „Readu”, din detaliul liniei, o întoarce la lucru.\n\n22.10.2026\n+500,00\nIncasare DANTE INTERNATIONAL SA CUI 14399840 factura F1A5\n14399840\n● Ignorată\nContează Alege facturile\nLinia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru.\n16.10.2026\n+242,00\nIncasare FISCALOS ICONTA SRL CUI 55229657 contravaloare factura F1A4 din 16.10.2026\n55229657\n● Ignorată\nContează Alege facturile\nLinia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru.\nImportă extras",
+   "extra": [
+    "Linia e o operațiune a băncii (Comision transfer), contată pe nota 627 = 5121: n-are facturi de ales.",
+    "Linia e contată: a stins factura DNT-TEST-1019.",
+    "Linia e contată: a stins factura F1A nr. 7.",
+    "Linia e o operațiune a băncii (Comision administrare cont octombrie), contată pe nota 627 = 5121: n-are facturi de ales.",
+    "Linia e contată: a stins factura F1A nr. 4.",
+    "Linia e o operațiune a băncii (Comision administrare cont octombrie), contată pe nota 627 = 5121: n-are facturi de ales.",
+    "Linia e contată: a stins factura 2.",
+    "Linia e contată: a stins factura FURN-2026-001.",
+    "Linia e contată: a stins factura 1.",
+    "Linia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru.",
+    "Linia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru."
+   ],
+   "captura": "banca_f1_603x590.png"
+  },
+  "durata_s": 10.5
+ },
+ "stocuri": {
+  "1366x768": {
+   "derulari": [],
+   "corp": {
+    "sh": 680,
+    "ch": 680,
+    "sw": 1334,
+    "cw": 1334
+   },
+   "fer": [
+    1334,
+    736
+   ],
+   "primare": [
+    "+ NIR nou"
+   ],
+   "text": "←\nF1 Comert Stoc SRL · CUI 401002001\n›\nStocuri\n✕\nStocuri \n?\n?\n\nLuna 10/2026\n← luna\nluna →\nDescarcă gestiunea lunii\n\nMișcări, fișe de magazie, coduri, nivel minim Borderou de achiziție\n\nStoc validat 6.272,38 lei = balanța 371 ✓\n24 de mișcări de stoc în ciornă (3.251,90 lei), nu intră în stocul validat\n2 articole de verificat: cantități cu zecimale, denumiri\n6 NIR-uri în luna aleasă\nArticol\tUM\tGestiune\tCantitate\tCMP (lei)\tValoare (lei)\tÎn ciornă (lei)\nCafea boabe\tbuc\t—\t0\t—\t0,00\t90,00\nCarte tehnica\tbuc\t—\t0\t—\t0,00\t205,00\ngrau\tkg\t—\t0\t—\t0,00\t210,00\nMarfa A\tbuc\t—\t122\t51,1875\t6.244,88\t1.289,40\nMarfa B\tbuc\t—\t1\t27,50\t27,50\t577,50\nMarfa C\tbuc\t—\t0\t—\t0,00\t880,00\nTotal valoare stoc validat\t6.272,38\t3.251,90\n+ NIR nou",
+   "extra": null,
+   "captura": "stocuri_1366x768.png"
+  },
+  "603x590": {
+   "derulari": [
+    {
+     "id": "",
+     "cls": "zona-derulare",
+     "sh": 1007,
+     "ch": 259,
+     "sw": 539,
+     "cw": 539,
+     "xml": false
+    }
+   ],
+   "corp": {
+    "sh": 502,
+    "ch": 502,
+    "sw": 571,
+    "cw": 571
+   },
+   "fer": [
+    571,
+    558
+   ],
+   "primare": [
+    "+ NIR nou"
+   ],
+   "text": "←\nStocuri\n✕\nStocuri \n?\n?\n\nLuna 10/2026\n← luna\nluna →\nDescarcă gestiunea lunii\n\nMișcări, fișe de magazie, coduri, nivel minim Borderou de achiziție\n\nStoc validat 6.272,38 lei = balanța 371 ✓\n24 de mișcări de stoc în ciornă (3.251,90 lei), nu intră în stocul validat\n2 articole de verificat: cantități cu zecimale, denumiri\n6 NIR-uri în luna aleasă\nCafea boabe\nbuc\n—\n0\n—\n0,00\n90,00\nCarte tehnica\nbuc\n—\n0\n—\n0,00\n205,00\ngrau\nkg\n—\n0\n—\n0,00\n210,00\nMarfa A\nbuc\n—\n122\n51,1875\n6.244,88\n1.289,40\nMarfa B\nbuc\n—\n1\n27,50\n27,50\n577,50\nMarfa C\nbuc\n—\n0\n—\n0,00\n880,00\nTotal valoare stoc validat\n6.272,38\n3.251,90\n+ NIR nou",
+   "extra": null,
+   "captura": "stocuri_603x590.png"
+  },
+  "durata_s": 10.7
+ },
+ "F023": {
+  "1366x768": {
+   "articol": "Marfa A · stoc 145 buc",
+   "dupa_articol": {
+    "afisat": "100,00",
+    "valoare": "100.00",
+    "data_numar": "ro",
+    "total": "\n      Bază0,00 RON\n      TVA0,00 RON\n      Total0,00 RON\n      "
+   },
+   "dupa_cantitate": {
+    "afisat": "100,00",
+    "valoare": "100.00",
+    "data_numar": "ro",
+    "total": "\n      Bază100,00 RON\n      TVA21,00 RON\n      Total121,00 RON\n      "
+   },
+   "captura": "F023_1366x768.png"
+  },
+  "603x590": {
+   "articol": "Marfa A · stoc 145 buc",
+   "dupa_articol": {
+    "afisat": "100,00",
+    "valoare": "100.00",
+    "data_numar": "ro",
+    "total": "\n      Bază100,00 RON\n      TVA21,00 RON\n      Total121,00 RON\n      "
+   },
+   "dupa_cantitate": {
+    "afisat": "100,00",
+    "valoare": "100.00",
+    "data_numar": "ro",
+    "total": "\n      Bază100,00 RON\n      TVA21,00 RON\n      Total121,00 RON\n      "
+   },
+   "captura": "F023_603x590.png"
+  },
+  "durata_s": 14.4
+ },
+ "X02": {
+  "1366x768": {
+   "rol": "asistent junior",
+   "sesiuni": [
+    {
+     "poarta": false,
+     "prezentare_automata": false,
+     "captura_intrare": "X02_1366x768_sesiunea1.png",
+     "deschidere_manuala": true,
+     "buton_jos_in_bara": true,
+     "captura_dupa_inapoi": "X02_1366x768_s1_dupa_inapoi.png",
+     "inchideri": {
+      "x": true,
+      "esc": true,
+      "buton_jos": true,
+      "esc_dupa_inapoi": true
+     }
+    },
+    {
+     "poarta": false,
+     "prezentare_automata": false,
+     "captura_intrare": "X02_1366x768_sesiunea2.png",
+     "deschidere_manuala": true,
+     "buton_jos_in_bara": true,
+     "captura_dupa_inapoi": "X02_1366x768_s2_dupa_inapoi.png",
+     "inchideri": {
+      "x": true,
+      "esc": true,
+      "buton_jos": true,
+      "esc_dupa_inapoi": true
+     }
+    }
+   ]
+  },
+  "603x590": {
+   "rol": "asistent junior",
+   "sesiuni": [
+    {
+     "poarta": false,
+     "prezentare_automata": false,
+     "captura_intrare": "X02_603x590_sesiunea1.png",
+     "deschidere_manuala": true,
+     "buton_jos_in_bara": true,
+     "captura_dupa_inapoi": "X02_603x590_s1_dupa_inapoi.png",
+     "inchideri": {
+      "x": true,
+      "esc": true,
+      "buton_jos": true,
+      "esc_dupa_inapoi": true
+     }
+    },
+    {
+     "poarta": false,
+     "prezentare_automata": false,
+     "captura_intrare": "X02_603x590_sesiunea2.png",
+     "deschidere_manuala": true,
+     "buton_jos_in_bara": true,
+     "captura_dupa_inapoi": "X02_603x590_s2_dupa_inapoi.png",
+     "inchideri": {
+      "x": true,
+      "esc": true,
+      "buton_jos": true,
+      "esc_dupa_inapoi": true
+     }
+    }
+   ]
+  },
+  "durata_s": 51.5
+ }
+}

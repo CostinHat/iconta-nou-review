@@ -11,7 +11,7 @@
 import { uitaFereastra, memoreazaFereastra, memoreazaCampul } from "./restaurare.js?v=2e679a8748";   // [15.1, 725; 15.1-E3, 725.3]
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo, semnAjutor } from "./api.js?v=dc526532b7";  // esc canonic (cap.10): strip-html data-lossy inlocuit
-import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=12d99f0538";  // [bun_venit_v1] "?" general (ansamblu)
+import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=8196abbaa6";  // [bun_venit_v1] "?" general (ansamblu)
 import { baraDeJos } from "./cadru.js?v=d1095ef641";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
 import { puneCautarea } from "./cautare.js?v=3001002077";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias

@@ -12,7 +12,7 @@
 // ca butoanele. Asistentului fără firme i se spune asta, nu i se arată un fir pe care nu-l poate parcurge.
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
-import { api, esc, semnAjutor, inchidereDialog, cate } from "../api.js?v=dc526532b7";
+import { api, esc, semnAjutor, cate } from "../api.js?v=dc526532b7";
 import { STRATURI } from "./migrare.js?v=4408029606";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -122,18 +122,28 @@ async function _corpAnsamblu(corp) {
 }
 
 // semnul "?" GENERAL din bara de stare -> modalul de ansamblu (oricand)
-// [deficiența 4, retestul Costin 09.10] fereastra se închide și cu Esc, prin mecanismul unic al dialogurilor (`inchidereDialog`):
+// [deficiența 4, retestul Costin 09.10] fereastra se închide și cu Esc (ascultătorul prezentării, mai sus — 17.5-Q10, X02):
 // e o fereastră de citit, fără nimic de pierdut; X-ul ei rămâne cel al navigatorului
 // [lotul 13, 562] singurul drum spre prezentare (nu se mai deschide singură la prima logare); prima deschidere o marchează văzută
-// [17.5-Q10, X02] Esc, X și butonul de jos închid prezentarea și după „Primii pași” → „← Înapoi”: navigatorul redesenează fereastra la întoarcere
-// (alt element), deci închiderea prin Esc se leagă de fereastra fiecărei desenări, nu numai de prima. Butonul de jos „Închide prezentarea”
-// e secundar (`data-in-bara`): prezentarea n-are acțiune principală.
+// [17.5-Q10, X02] Esc, X și butonul de jos închid prezentarea și după „Primii pași” → „← Înapoi”: la întoarcere navigatorul pune la loc
+// conținutul păstrat al ferestrei (fără o nouă desenare), deci o legătură Esc făcută o dată, pe elementul ferestrei de atunci, se pierdea.
+// Un singur ascultător al prezentării judecă la fiecare Esc: prezentarea e în pagină și e fereastra de deasupra (nu una deschisă peste ea,
+// nici fereastra de reautentificare) -> se închide ca prin ✕. Butonul de jos „Închide prezentarea” e secundar (`data-in-bara`): prezentarea
+// n-are acțiune principală.
+let _corpPrezentare = null;
 function _legaInchiderea(corp) {
-  const fer = corp.closest(".fereastra");
-  if (!fer || fer.__inchidereAnsamblu) return;
-  fer.__inchidereAnsamblu = true;
-  inchidereDialog(fer, () => { if (fer.isConnected) window._navGlobal.inapoi(); });
+  _corpPrezentare = corp;
 }
+if (typeof document !== "undefined") document.addEventListener("keydown", (e) => {
+  const corp = _corpPrezentare;
+  if (e.key !== "Escape" || !corp || !corp.isConnected || !window._navGlobal || document.querySelector(".reaut-overlay")) return;
+  const ov = corp.closest(".fereastra-overlay");
+  const toate = [...document.querySelectorAll(".fereastra-overlay")];
+  if (!ov || ov.classList.contains("fundal") || toate[toate.length - 1] !== ov) return;
+  e.preventDefault();
+  e.stopPropagation();   // capturat pe document: Esc nu mai ajunge la stiva dialogurilor (un singur strat se închide)
+  window._navGlobal.inapoi();
+}, true);
 function _butonInchide(corp) {
   const fer = corp.closest(".fereastra");
   if (!fer || !corp.isConnected || corp.querySelector("#ans-inchide") || fer.querySelector("#ans-inchide")) return;

@@ -1,0 +1,356 @@
+{
+ "AC188": {
+  "eroare": "AssertionError: contul de test e2e-bloc-a-asist-948698013@prisma-cont.test nu e disponibil",
+  "urma": "Traceback (most recent call last):\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 87, in sectiune\n    v = fn()\n        ^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 477, in <lambda>\n    P.sectiune(\"AC188\", lambda: antet(P, junior))\n                                ^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 126, in antet\n    ctx, pg = _pg(P.b, w, h, email)\n              ^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 53, in _pg\n    ctx.add_init_script(sesiune(email, prima_intrare=prima))\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/conftest.py\", line 96, in sesiune\n    assert s and s.get(\"ok\"), \"contul de test %s nu e disponibil\" % email\n           ^^^^^^^^^^^^^^^^^\nAssertionError: contul de test e2e-bloc-a-asist-948698013@prisma-cont.test nu e disponibil\n",
+  "durata_s": 0.1
+ },
+ "AC188_cabinet": {
+  "1920x1080": {
+   "cabinet": "Cabinet Test Sesiunea B SRL — copie de dovadă",
+   "utilizator": "Contabil Sesiunea B",
+   "text": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "titlu_integral": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "linii": 1,
+   "text_overflow": "ellipsis",
+   "overflow_x": "hidden",
+   "text_scroll_width": 589,
+   "text_client_width": 589,
+   "latime_document": 1920,
+   "latime_viewport": 1920,
+   "inaltime_viewport": 1080,
+   "dreptunghi_veriga": [
+    176.359375,
+    18,
+    765.71875,
+    36
+   ],
+   "dreptunghi_cautare": [
+    789.71875,
+    10,
+    1129.71875,
+    44
+   ],
+   "dreptunghi_iesire": [
+    1864,
+    7,
+    1904,
+    47
+   ],
+   "hit_cautare": true,
+   "hit_iesire": true,
+   "captura": "AC188_1920x1080.png"
+  },
+  "1366x768": {
+   "cabinet": "Cabinet Test Sesiunea B SRL — copie de dovadă",
+   "utilizator": "Contabil Sesiunea B",
+   "text": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "titlu_integral": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "linii": 1,
+   "text_overflow": "ellipsis",
+   "overflow_x": "hidden",
+   "text_scroll_width": 589,
+   "text_client_width": 589,
+   "latime_document": 1366,
+   "latime_viewport": 1366,
+   "inaltime_viewport": 768,
+   "dreptunghi_veriga": [
+    176.359375,
+    18,
+    765.71875,
+    36
+   ],
+   "dreptunghi_cautare": [
+    789.71875,
+    10,
+    1129.71875,
+    44
+   ],
+   "dreptunghi_iesire": [
+    1310,
+    7,
+    1350,
+    47
+   ],
+   "hit_cautare": true,
+   "hit_iesire": true,
+   "captura": "AC188_1366x768.png"
+  },
+  "603x590": {
+   "cabinet": "Cabinet Test Sesiunea B SRL — copie de dovadă",
+   "utilizator": "Contabil Sesiunea B",
+   "text": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "titlu_integral": "Cabinet Test Sesiunea B SRL — copie de dovadă · Contabil Sesiunea B",
+   "linii": 1,
+   "text_overflow": "ellipsis",
+   "overflow_x": "hidden",
+   "text_scroll_width": 589,
+   "text_client_width": 129,
+   "latime_document": 603,
+   "latime_viewport": 603,
+   "inaltime_viewport": 590,
+   "dreptunghi_veriga": [
+    176.359375,
+    18,
+    305.6875,
+    36
+   ],
+   "dreptunghi_cautare": [
+    329.6875,
+    10,
+    404.296875,
+    44
+   ],
+   "dreptunghi_iesire": [
+    547,
+    7,
+    587,
+    47
+   ],
+   "hit_cautare": true,
+   "hit_iesire": true,
+   "captura": "AC188_603x590.png"
+  },
+  "durata_s": 3.1
+ },
+ "cadru": {
+  "1366x768": {
+   "animatie_activa": true,
+   "nume": [
+    "aparitie-overlay",
+    "aparitie-fereastra"
+   ],
+   "timp_cadru_initial_ms": 0,
+   "opacitate_overlay": "0.6",
+   "opacitate_fereastra": "0.6",
+   "fereastra_vizibila": true,
+   "t": 1040,
+   "salut_pe_pagina": null,
+   "salut_sub_fereastra": null,
+   "click_pe_principala": true,
+   "captura": "cadru_1366x768.png"
+  },
+  "603x590": {
+   "animatie_activa": true,
+   "nume": [
+    "aparitie-overlay",
+    "aparitie-fereastra"
+   ],
+   "timp_cadru_initial_ms": 0,
+   "opacitate_overlay": "0.6",
+   "opacitate_fereastra": "0.6",
+   "fereastra_vizibila": true,
+   "t": 800,
+   "salut_pe_pagina": null,
+   "salut_sub_fereastra": null,
+   "click_pe_principala": true,
+   "captura": "cadru_603x590.png"
+  },
+  "durata_s": 1.8
+ },
+ "banca": {
+  "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019",
+  "urma": "Traceback (most recent call last):\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 87, in sectiune\n    v = fn()\n        ^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 480, in <lambda>\n    P.sectiune(\"banca\", lambda: banca(P))\n                                ^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 198, in banca\n    _firma(pg, F2, \"#fa-banca\")\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 97, in _firma\n    firma(pg, nume, control)\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 28, in firma\n    acasa(pg)\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 20, in acasa\n    origine = origine_proba(pg.url)\n              ^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 15, in origine_proba\n    raise RuntimeError(\"Proba cere instanța de test pe loopback, portul 8019\")\nRuntimeError: Proba cere instanța de test pe loopback, portul 8019\n",
+  "durata_s": 0.1
+ },
+ "AC189": {
+  "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019",
+  "urma": "Traceback (most recent call last):\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 87, in sectiune\n    v = fn()\n        ^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 481, in <lambda>\n    P.sectiune(\"AC189\", lambda: ac189(P))\n                                ^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 356, in ac189\n    _firma(pg, F1, \"#fa-verificari\"); pg.wait_for_timeout(2500); _stabil(pg)\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 97, in _firma\n    firma(pg, nume, control)\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 28, in firma\n    acasa(pg)\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 20, in acasa\n    origine = origine_proba(pg.url)\n              ^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 15, in origine_proba\n    raise RuntimeError(\"Proba cere instanța de test pe loopback, portul 8019\")\nRuntimeError: Proba cere instanța de test pe loopback, portul 8019\n",
+  "durata_s": 0.1
+ },
+ "AC190": {
+  "1366x768": {
+   "reveniri_la_403": 0,
+   "reveniri_la_eroare_retea": 0,
+   "reveniri_login": 1,
+   "login_vizibil": true,
+   "text_motiv": "Sesiunea a expirat\n✕\n\nCe ai completat rămâne pe ecran. Introdu parola și continui exact de unde ai rămas.\n\nEmail\nParola\n\nIeși din cont\nContinuă",
+   "motiv_vizibil": true,
+   "captura_401": "AC190_1366x768_401.png",
+   "status_protejate": [
+    401,
+    401
+   ],
+   "bucla_la_login_invalid": false,
+   "eroare_login_invalid": "email sau parola greșite",
+   "dupa_reautentificare": 200,
+   "secventa_http": [
+    [
+     "/tenants",
+     "GET",
+     403
+    ],
+    [
+     "/tenants",
+     "GET",
+     "abort"
+    ],
+    [
+     "/coada",
+     "GET",
+     401
+    ],
+    [
+     "/notificari",
+     "GET",
+     401
+    ],
+    [
+     "/tenants",
+     "GET",
+     401
+    ],
+    [
+     "/auth/login",
+     "POST",
+     401
+    ],
+    [
+     "/auth/login",
+     "POST",
+     200
+    ]
+   ]
+  },
+  "603x590": {
+   "reveniri_la_403": 0,
+   "reveniri_la_eroare_retea": 0,
+   "reveniri_login": 1,
+   "login_vizibil": true,
+   "text_motiv": "Sesiunea a expirat\n✕\n\nCe ai completat rămâne pe ecran. Introdu parola și continui exact de unde ai rămas.\n\nEmail\nParola\n\nIeși din cont\nContinuă",
+   "motiv_vizibil": true,
+   "captura_401": "AC190_603x590_401.png",
+   "status_protejate": [
+    401,
+    401
+   ],
+   "bucla_la_login_invalid": false,
+   "eroare_login_invalid": "email sau parola greșite",
+   "dupa_reautentificare": 200,
+   "secventa_http": [
+    [
+     "/tenants",
+     "GET",
+     403
+    ],
+    [
+     "/tenants",
+     "GET",
+     "abort"
+    ],
+    [
+     "/tenants",
+     "GET",
+     401
+    ],
+    [
+     "/notificari",
+     "GET",
+     401
+    ],
+    [
+     "/coada",
+     "GET",
+     401
+    ],
+    [
+     "/auth/login",
+     "POST",
+     401
+    ],
+    [
+     "/auth/login",
+     "POST",
+     200
+    ]
+   ]
+  },
+  "durata_s": 19.3
+ },
+ "jurnal": {
+  "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019",
+  "urma": "Traceback (most recent call last):\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 87, in sectiune\n    v = fn()\n        ^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 483, in <lambda>\n    P.sectiune(\"jurnal\", lambda: jurnal(P))\n                                 ^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 397, in jurnal\n    _firma(pg, F1, \"#fa-jurnal\"); pg.wait_for_timeout(2500)\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 97, in _firma\n    firma(pg, nume, control)\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 28, in firma\n    acasa(pg)\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 20, in acasa\n    origine = origine_proba(pg.url)\n              ^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 15, in origine_proba\n    raise RuntimeError(\"Proba cere instanța de test pe loopback, portul 8019\")\nRuntimeError: Proba cere instanța de test pe loopback, portul 8019\n",
+  "durata_s": 0.1
+ },
+ "parteneri": {
+  "1366x768": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "603x590": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "durata_s": 0.1
+ },
+ "clienti": {
+  "1366x768": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "603x590": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "durata_s": 0.1
+ },
+ "furnizori": {
+  "1366x768": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "603x590": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "durata_s": 0.1
+ },
+ "produse_formular": {
+  "1366x768": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "603x590": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "durata_s": 0.1
+ },
+ "raportz": {
+  "1366x768": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "603x590": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "durata_s": 0.1
+ },
+ "casa": {
+  "1366x768": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "603x590": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "durata_s": 0.1
+ },
+ "banca_f1": {
+  "1366x768": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "603x590": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "durata_s": 0.1
+ },
+ "stocuri": {
+  "1366x768": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "603x590": {
+   "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019"
+  },
+  "durata_s": 0.1
+ },
+ "F023": {
+  "eroare": "RuntimeError: Proba cere instanța de test pe loopback, portul 8019",
+  "urma": "Traceback (most recent call last):\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 87, in sectiune\n    v = fn()\n        ^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 497, in <lambda>\n    P.sectiune(\"F023\", lambda: f023(P))\n                               ^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 440, in f023\n    _firma(pg, F1, \"#fa-facturi\")\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 97, in _firma\n    firma(pg, nume, control)\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 28, in firma\n    acasa(pg)\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 20, in acasa\n    origine = origine_proba(pg.url)\n              ^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/e2e_ferestre_17_5_Q5.py\", line 15, in origine_proba\n    raise RuntimeError(\"Proba cere instanța de test pe loopback, portul 8019\")\nRuntimeError: Proba cere instanța de test pe loopback, portul 8019\n",
+  "durata_s": 0.0
+ },
+ "X02": {
+  "eroare": "AssertionError: contul de test e2e-bloc-a-asist-948698013@prisma-cont.test nu e disponibil",
+  "urma": "Traceback (most recent call last):\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 87, in sectiune\n    v = fn()\n        ^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 498, in <lambda>\n    P.sectiune(\"X02\", lambda: x02(P, junior))\n                              ^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 239, in x02\n    ctx, pg = _pg(P.b, w, h, email, prima=(nr == 1))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/docs/dovezi/17_5_Q10/e2e_probe_q10.py\", line 53, in _pg\n    ctx.add_init_script(sesiune(email, prima_intrare=prima))\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/e2e_poarta/iconta_nou/frontend_test/e2e/conftest.py\", line 96, in sesiune\n    assert s and s.get(\"ok\"), \"contul de test %s nu e disponibil\" % email\n           ^^^^^^^^^^^^^^^^^\nAssertionError: contul de test e2e-bloc-a-asist-948698013@prisma-cont.test nu e disponibil\n",
+  "durata_s": 0.0
+ }
+}

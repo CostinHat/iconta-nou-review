@@ -94,6 +94,9 @@ class Proba:
 
 def _firma(pg, nume, control):
     from e2e_ferestre_17_5_Q5 import firma
+    if not pg.url.startswith("http"):
+        pg.goto(os.environ["PROBA_BAZA"] + "/", wait_until="domcontentloaded")
+        pg.locator("button.cab-card:has([data-cheie='firme'])").wait_for()
     firma(pg, nume, control)
     _stabil(pg)
 
@@ -379,11 +382,11 @@ JURNAL_PRIMUL = """() => {
 
 def _luna(pg, tinta):
     for _ in range(14):
-        txt = pg.locator(".fereastra-overlay:not(.fundal)").inner_text()
-        if tinta in txt.split("\n", 6)[-1][:400] or tinta in txt[:600]:
+        txt = pg.locator(".fereastra-overlay:not(.fundal) #j-rezumat").inner_text()
+        if "Luna " + tinta in txt:
             return True
-        pg.locator(".fereastra-overlay:not(.fundal) button[aria-label*='anterioar' i], .fereastra-overlay:not(.fundal) button:has-text('←')").first.click()
-        pg.wait_for_timeout(1200)
+        pg.locator(".fereastra-overlay:not(.fundal) #j-prev").click()
+        pg.wait_for_timeout(1500)
     return False
 
 
@@ -441,7 +444,7 @@ def f023(P):
             pg.locator(".fereastra-overlay:not(.fundal) #fac-emite").click()
             pg.wait_for_selector(".fereastra-overlay:not(.fundal) #em-cui", state="attached"); pg.wait_for_timeout(1500)
             sel = pg.locator(".fereastra-overlay:not(.fundal) select[id^='em-l0-'][id$='articol'], .fereastra-overlay:not(.fundal) #em-l0-articol").first
-            opt = sel.locator("option").nth(1)
+            opt = sel.locator("option", has_text="Marfa A").first
             sel.select_option(opt.get_attribute("value"))
             pg.wait_for_timeout(2500); _stabil(pg)
             m = {"articol": opt.inner_text(), "dupa_articol": pg.evaluate(PRET)}
@@ -473,7 +476,11 @@ def _ruleaza(browser):
     director = Path(CAPTURI) / "17_5_Q10_probe"
     director.mkdir(parents=True, exist_ok=True)
     P = Proba(browser, director)
-    junior = os.environ.get("Q10_JUNIOR", "e2e-bloc-a-asist-948698013@prisma-cont.test")
+    # asistentul junior (numai «Poate pregăti») al cabinetului contului de probă, din baza restaurată
+    r = conftest_e2e.sql("""SELECT u.email FROM public.users u WHERE u.rol = 'angajat' AND NOT COALESCE(u.poate_valida, false)
+                             AND COALESCE(u.activ, true) AND u.accounting_firm_id = (SELECT accounting_firm_id FROM public.users WHERE email = %s) ORDER BY u.id LIMIT 1""", (CABINET,))
+    junior = os.environ.get("Q10_JUNIOR") or (r[0][0] if r else None)
+    P.scrie("cont_junior", {"email_anonimizat": (junior or "")[:3] + "…" if junior else None, "gasit": bool(junior)})
     P.sectiune("AC188", lambda: antet(P, junior))
     P.sectiune("AC188_cabinet", lambda: antet(P, CABINET))
     P.sectiune("cadru", lambda: cadru(P))
