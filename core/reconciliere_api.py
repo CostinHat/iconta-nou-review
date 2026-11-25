@@ -110,7 +110,8 @@ def facturi_deschise(conn, schema, cu_asteptare=False):
             WHERE f.status NOT IN ('anulata','storno')
               AND f.storno_din_id IS NULL
               AND {_nsf.clauza_tip_cu_incasare("f")}
-        """, (CONT_CLIENTI, CONT_FURNIZORI) * 3)   # [lotul 12, C144] numai documentele cu încasare (nu proforme, avize)
+              AND {_fc_tp.clauza_nu_din_bon("f")}
+        """, (CONT_CLIENTI, CONT_FURNIZORI) * 3)   # [17.5-Q8, FISC.6 / F073] factura emisă pe bon fiscal e încasată la casa de marcat: nu se mai propune la alocare   # [lotul 12, C144] numai documentele cu încasare (nu proforme, avize)
         rez = []
         for r in cur.fetchall():
             sold = Decimal(r["total"] or 0) - Decimal(r["decontat"] or 0) + Decimal(r["storno"] or 0)
@@ -244,6 +245,12 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None, cont=None
                     _obs.esec_secundar("sugestie invatata la importul extrasului", _e)   # înghițit, dar nu tăcut
             status = "potrivit" if rez["status"] in ("verde", "galben") else "nou"
             rezumat["potrivite" if status == "potrivit" else "fara_potrivire"] += 1
+            # [17.5-Q8, FINAL.1 / F011] dintre liniile fără potrivire pe o factură, cele cu nota propusă a unei operațiuni a băncii (comision 627 = 5121;
+            # nicio parte pe 4111 / 401) se numără și separat, ca cipul ferestrei („· N operațiuni ale băncii”); cheia apare numai când există
+            _np = t.get("nota") or {}
+            if status == "nou" and _np.get("debit") and _np.get("credit") and not any(
+                    str(_np.get(k) or "").startswith(("4111", "401")) for k in ("debit", "credit")):
+                rezumat["operatiuni_banca"] = rezumat.get("operatiuni_banca", 0) + 1
             cur.execute(f"""
                 INSERT INTO {schema}.extras_linii
                   (data, descriere, suma, valuta, tip, cui_detectat, status,

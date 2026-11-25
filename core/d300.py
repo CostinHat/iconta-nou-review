@@ -174,6 +174,9 @@ class Rezultat:
     # și notele care o compun — reconcilierea (calea a doua) o confruntă cu propriul ei recalcul din carte
     ajustari_taxa: dict = field(default_factory=dict)
     note_ajustare: list = field(default_factory=list)
+    # [17.5-Q7, FISC.2 / F031] facturile cu partener străin și cotă internă pozitivă, scoase din rd.9: [{id, eticheta, tara, baza, tva}], în
+    # ordinea facturilor; avertismentul le numește, iar refuzul depunerii (`coada_api.cu_facturi_excluse`) le cere corectate înaintea depunerii
+    excluse_strain: list = field(default_factory=list)
 
 
 # ══════════════════════════════════════════════════════════════════ NOTELE CU TVA CARE NU VIN DIN FACTURI [lotul 11, C76]
@@ -514,7 +517,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             if strain:
                 # [B1] partener non-RO: rutare pe TARA, nu pe cota interna.
                 if ci:   # cota interna POZITIVA pe factura straina = probabil eroare -> NU tacit in R9
-                    foreign_pos.append((tara, baza, tva)); continue
+                    foreign_pos.append((tara, baza, tva, f.get("eticheta"), f.get("id"))); continue
                 if emisa:
                     if ue:
                         # [F125] tip din SURSA UNICA D390: L=bunuri->rd.1; P=servicii->rd.3; T/R=triangulatie
@@ -983,11 +986,19 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     if foreign_pos:
         _fpb = sum((x[1] for x in foreign_pos), Decimal(0))
         _fpt = sum((x[2] for x in foreign_pos), Decimal(0))
+        # [17.5-Q7, FISC.2 / F031] fiecare factură scoasă din rd.9 e numită (nu doar numărată): „nu se scoate tacit din decont”
+        _pe_factura = {}
+        for _t, _b, _v, _et_f, _id in foreign_pos:
+            x = _pe_factura.setdefault(_id, {"id": _id, "eticheta": _et_f or "factura fără număr", "tara": _t, "baza": Decimal(0), "tva": Decimal(0)})
+            x["baza"] += _b; x["tva"] += _v
+        res.excluse_strain = [dict(x, baza=str(x["baza"]), tva=str(x["tva"])) for x in _pe_factura.values()]
         res.avertismente.append(
             "%s cu partener străin (%s) dar cotă internă pozitivă (bază %s lei, TVA %s lei) — "
-            "probabil eroare: o operațiune intracomunitară sau un export nu poartă cotă internă. Nu s-a inclus în rd.9; "
-            "corectează cota (0%%) sau țara partenerului."
-            % (_cate(len(foreign_pos), "factură", "facturi"), ", ".join(sorted({x[0] for x in foreign_pos})), _f(_fpb), _f(_fpt)))
+            "probabil eroare: o operațiune intracomunitară sau un export nu poartă cotă internă. Nu s-a inclus în rd.9: %s. "
+            "Corectează cota (0%%) sau țara partenerului."
+            % (_cate(len(_pe_factura), "factură", "facturi"),
+               ", ".join(sorted({x[0] for x in foreign_pos})), _f(_fpb), _f(_fpt),
+               "; ".join("%s (%s, TVA %s lei)" % (x["eticheta"], x["tara"], _f(x["tva"])) for x in _pe_factura.values())))
     if ic_livr_bunuri:
         res.avertismente.append(
             "Livrări intracomunitare de bunuri către UE (bază %s lei) — declarate la rd.1 (0%%, art.294 "

@@ -3,8 +3,8 @@
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual: [lotul 12, 472] pe rândul produsului salvat, „Corectează cota”
 // (PUT /produse/{id}, consemnat în `produse_cota_jurnal`); [471] articolele din stoc fără produs vin cu cota propusă (NIR / potrivire).
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, semnAjutor, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=7396e03327";  /* cap6_catch_v1b + investigatie_identitate_v1 */
-import { meniuActiuni } from "../ds_piese.js?v=03f816740e";
+import { api, semnAjutor, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=76d1a3d8b0";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { meniuActiuni } from "../ds_piese.js?v=91866a42f7";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [lotul 12, 471] propunerea automată a cotei, numai cu dreptul ei */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
@@ -309,7 +309,11 @@ function formularAdauga(corp, tenantId, reincarca, cat) {
     }, 600);
   });
 
-  zona.querySelector("#pr-anuleaza").addEventListener("click", () => { zona.innerHTML = ""; });
+  // [17.5-Q8, DS.2 / F070] cu formularul deschis, acțiunea principală e „Salvează”: „+ Adaugă produs” trece secundar până se închide formularul
+  const bAdd = corp.querySelector("#pr-add");
+  if (bAdd) { bAdd.classList.replace("buton-primar", "buton-secundar"); }
+  const laInchidere = () => { if (bAdd && bAdd.isConnected) bAdd.classList.replace("buton-secundar", "buton-primar"); };
+  zona.querySelector("#pr-anuleaza").addEventListener("click", () => { zona.innerHTML = ""; laInchidere(); });
   zona.querySelector("#pr-salveaza").addEventListener("click", async () => {
     curataEroriCamp(zona);
     const denumire = inputDen.value.trim();
@@ -330,7 +334,15 @@ function formularAdauga(corp, tenantId, reincarca, cat) {
     if (cotaMan !== "") Object.assign(payload, dinCota(cotaMan));   // [449] cota și, la 0%, categoria ei
     if (payload.categorie_tva === "taxare_inversa") payload.categorie_331 = selC331.value;
     try {
-      await api.post(`/tenants/${tenantId}/produse`, payload);
+      const r = await api.post(`/tenants/${tenantId}/produse`, payload);
+      // [17.5-Q8, FINAL.6 / F070] denumirea există deja (și scrisă fără diacritice): serverul întoarce produsul existent, fără dublură;
+      // formularul spune asta, cu denumirea din listă, în loc să se închidă tăcut
+      if (r && r.existent) {
+        let m = zona.querySelector("#pr-existent");
+        if (!m) { m = document.createElement("div"); m.id = "pr-existent"; zona.querySelector(".pr-form-actiuni").before(m); }
+        arataMesaj(m, `Produsul există deja în listă: „${r.denumire}”. Nu s-a adăugat altul; caută-l în listă ca să-i corectezi cota.`, "avert");
+        return;
+      }
       zona.innerHTML = "";
       reincarca();
     } catch (e) {

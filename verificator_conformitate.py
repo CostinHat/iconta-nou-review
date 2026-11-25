@@ -2071,7 +2071,7 @@ for _ev in ("input", "change"):
 for _ancora, _cod_r in (('refuzSalvare({ camp: inp, txt });', "eroareCamp"),
                         ('if (txt && tip === "eroare") refuzSalvare({ mesaj: el });', "arataMesaj"),
                         ('_scoateDinRefuz(c);', "stergeEroriDupaCorectare"),
-                        ('box.innerHTML = \'<b>NU s-a salvat.</b><ul class="refuz-salvare-lista"></ul>\';', "textul")):
+                        ('box.innerHTML = \'<ul class="refuz-salvare-lista"></ul>\';', "textul")):   # [17.5-Q9, DS.5] caseta fără „NU s-a salvat.”
     if _ancora not in _api_l6:
         rap["fereastra_lot6"].append(("api.js", 0, "REFUZ_SALVARE",
                                       "%s nu mai alimentează lista „NU s-a salvat” de lângă buton (DS cap.6 v2.93, 410)" % _cod_r))
@@ -2974,7 +2974,9 @@ def analiza_lot13(fisiere, css="", numere_py=""):
             b = m.group(2)
             if not _re.search(r'class="[^"]*\b(buton-primar|buton-secundar|buton-sters|buton-verde|btn-link)\b', b):
                 continue
-            out.append((nume, ln(t, m.start()), "BUTON_ASCUNS", "butonul dispare când nu se aplică — stă inactiv, cu motivul (`atributeInactiv`, "
+            if _re.search(r'\bdata-context-q7="(?:rol|tip-document|stare-document|lista-completa|rand-neschimbat)"', b):
+                continue
+            out.append((nume, ln(t, m.start()), "BUTON_ASCUNS", "ascundere condițională fără motiv structural — dacă pasul este completabil, păstrează butonul cu motivul (`atributeInactiv`, "
                         "DS cap.1, 675): " + _re.sub(r"\s+", " ", b)[:70]))
         # 676 — listă derulantă cu cel mult 6 opțiuni (scrise în șablon sau dintr-o listă fixă a fișierului)
         for m in _re.finditer(r"<select\b([^>]*)>(.*?)</select>", t, _re.S):
@@ -3086,6 +3088,106 @@ rap["lot13"] = analiza_lot13(fisiere, open(os.path.join(BAZA_PY, "static", "stil
 rap["lot14_2"] = analiza_lot14_2(fisiere)
 
 rap["lot17_3"] = regula_fara_renunta_in_bara(fisiere)
+
+
+def reguli_pilot_q7(fisiere):
+    """Semnături statice din C3. Reguli dependente de stare: observații în aplicație."""
+    expresii = {
+        "Q7_PRINCIPALA_RAND": r'<button\b(?=[^>]*class="[^"]*\bbuton-primar\b)(?=[^>]*(?:data-act="valideaza-nota"|data-val-ciorna=))[^>]*>',
+        "Q7_TEXT_REFUZ": r'(?:>|["\x27\x60])\s*NU s-a salvat\.',
+        "Q7_TEXT_GHILIMEA": r'„Nu, doar factură(?:\\?"|&quot;)(?=[. <])',
+    }
+    constatari = []
+    for nume, cod in sorted(fisiere.items()):
+        for nr, linie in enumerate(cod.splitlines(), 1):
+            if linie.lstrip().startswith(("//", "/*", "*", "<!--")):
+                continue
+            for identificator, expresie in expresii.items():
+                for m in re.finditer(expresie, linie):
+                    constatari.append((nume, nr, identificator, m.group(0)))
+    return constatari
+
+from decimal import Decimal
+def egal_nevid(a,b):
+    return isinstance(a,list) and len(a)>0 and a==b
+
+def judeca(caz,m):
+    if caz=="tabel":
+        return (m["latime_corp"]>0 and 0<m["latime_continut"]<=m["latime_corp"]+1
+                and m["scrolluri_verticale_fara_preview_xml"]<=1 and m["celule_trunchiate"]==0
+                and egal_nevid(m["campuri_sursa"],m["campuri_accesibile"])
+                and (m["rezolutie"]!="603x590" or m["randuri_in_bloc"] is True)
+                and (not m["registru_jurnal"] or m["rezolutie"]!="603x590" or m["inaltime_utila"]>88))
+    if caz=="principala":
+        return (m["principale_vizibile"]==1 and bool(m["eticheta_asteptata"])
+                and m["eticheta_ui"]==m["eticheta_asteptata"] and m["in_viewport_initial"] is True
+                and m["principale_pe_randuri"]==0)
+    if caz=="inutile":
+        return (bool(m["inutile_in_stare"]) and set(m["inutile_in_stare"]).isdisjoint(m["controale_vizibile"])
+                and set(m["actiuni_permisesursa"])<=set(m["actiuni_accesibile"]))
+    if caz=="alegere":
+        return (m["grupuri_vizibile"]==1 and egal_nevid(m["valori_sursa"],m["valori_accesibile"])
+                and m["valoare_dupa"]==m["valoare_aleasa"])
+    if caz=="erori":
+        return (bool(m["obligatorii_goale"]) and set(m["obligatorii_goale"])==set(m["semnalate"])
+                and m["semnalari_duplicate"]==0 and m["casete_imbricate"]==0)
+    if caz=="motiv":
+        return (m["camp_completat"] not in m["campuri_lipsa_ui"] and bool(m["campuri_lipsa_sursa"])
+                and set(m["campuri_lipsa_ui"])==set(m["campuri_lipsa_sursa"]) and m["motiv_vizibil"] is True)
+    if caz=="cautare":
+        return (m["termen"]=="Marfa A" and m["optiune_aleasa"]==m["termen"] and m["mesaje_absenta"]==0)
+    if caz=="text":
+        return (bool(m["esantioane"]) and all(x["text_ui"]==x["text_asteptat"] and x["text_asteptat"] for x in m["esantioane"])
+                and m["fraze_duplicate"]==0 and m["lipiri"]==0)
+    if caz=="avertisment":
+        return (m["sumare_initiale"]==1 and m["detalii_initiale"]==0 and m["clicuri_detalii"]==1
+                and egal_nevid(m["iduri_sursa"],m["iduri_dupa_deschidere"]) and m["texte_ui"]==m["texte_integrale"])
+    if caz=="declaratii":
+        return (m["anterioare_initial_pliat"] is False and m["continua_vizibil_dupa_selectie"] is True
+                and m["continua_activ"] is True and m["declaratie_ui"]==m["declaratie_sursa"]
+                and egal_nevid(m["perechi_tip_perioada_sursa"],m["perechi_tip_perioada_accesibile"]))
+    if caz=="nota":
+        return (m["drept_validare"] is False and m["stare_nota"]=="la validare" and m["id_sursa"]==m["id_ui"]
+                and m["id_ui"] and m["editeaza_vizibil"] is False and m["sterge_vizibil"] is False)
+    if caz=="salariu":
+        asteptat=dict(brut=5000,cas=1250,cass=500,deducere=562,impozit=269,net=2981)
+        return (m["perioada"]=="2026-11" and m["persoane"]==0 and m["functie_baza"] is True
+                and all(Decimal(str(m[k]))==v for k,v in asteptat.items()))
+    raise ValueError("Caz DS necunoscut")
+
+CAZURI_DS_Q7 = {'tabel': 'F011 F012 F018 F019 F025 F031 F034 F035 F046 F054 F061 F073 F118', 'principala': 'F003 F015 F018 F019 F025 F031 F043 F045 F046 F054 F070 F080 F087 F089 F118', 'inutile': 'F018 F045 F046 F054 F073 F118 F126 F252', 'alegere': 'F078', 'erori': 'F003', 'motiv': 'F015 F017', 'cautare': 'F023', 'text': 'F019 F023 F034 F035 F043 F070 F084 F085 F172 F183', 'avertisment': 'F031 F034 F035 F176', 'declaratii': 'F026 F028 F031 F034 F035', 'nota': 'F054'}
+def verifica_observatii_q7(observatii):
+    asteptate = {(cod, caz, dim) for caz, coduri in CAZURI_DS_Q7.items()
+                 for cod in coduri.split() for dim in ("1366x768", "603x590")}
+    vazute = set()
+    abateri = []
+    for r in observatii:
+        cheie = (r["cod"], r["caz"], r["rezolutie"])
+        if cheie in vazute or cheie not in asteptate:
+            raise ValueError(f"Cheie DS duplicată sau străină: {cheie}")
+        vazute.add(cheie)
+        m = r["masuri"]
+        if m.get("rezolutie") != cheie[2]:
+            raise ValueError(f"Dimensiunea măsurilor diferă: {cheie}")
+        if not judeca(cheie[1], m):
+            abateri.append(cheie)
+    if vazute != asteptate:
+        raise ValueError(f"Probe DS lipsă: {sorted(asteptate - vazute)}")
+    return abateri
+
+rap["pilot_q7"] = reguli_pilot_q7(fisiere)
+if __name__ == "__main__":
+    import sys
+    if sys.argv[1:2] == ["--q7-probe"]:
+        import json
+        if len(sys.argv) != 3:
+            raise SystemExit("Utilizare: verificator_conformitate.py --q7-probe masuri_ds.json")
+        with open(sys.argv[2], encoding="utf-8") as sursa:
+            abateri_q7 = verifica_observatii_q7(json.load(sursa))
+        for abatere in abateri_q7:
+            print(*abatere)
+        raise SystemExit(int(bool(abateri_q7 or rap["pilot_q7"])))
+
 
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))

@@ -815,17 +815,27 @@ def test_pilot_08_partenerii_au_localitatea(patron, firma_pilot):
     """F018. Pașii: Furnizori -> furnizorii din facturile primite (Mobila, Imobiliare), fără fișă -> localitatea și județul -> „Salvează”:
     „… sunt în fișă — D406 și D394 le iau de aici.” (D406 cere localitatea fiecărui partener)."""
     pg = patron.pg
+    from urllib.parse import urlsplit
     for p in (MOBILA, IMOB):
         patron.firma(firma_pilot["nume"])
-        pg.click("#fa-furnizori")
-        pg.wait_for_selector(_F + "table.fd-tabel", timeout=30000)
-        rand = pg.locator(_F + "table.fd-tabel tbody tr", has_text=p["cui"]).first
-        rand.locator("input[id*='-oras-']").fill(p["oras"])
-        rand.locator("select[id*='-judet-']").select_option(p["judet"])
-        rand.locator("button[id*='-salveaza-']").click()
-        pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('sunt în fișă')", timeout=30000)
+        pg.click("#fa-parteneri")
+        registru = pg.locator(_F + "#pt-tabel")
+        rand = registru.locator("tr").filter(has_text=p["nume"]).first
+        rand.locator(".pt-deschide").click()
+        fer = pg.locator(".fereastra-overlay:not(.fundal)").last
+        fer.get_by_role("button", name=re.compile(r"Editează|Modifică")).first.click()
+        fer.get_by_label(re.compile("Localitate|Oraș", re.I)).fill(p["oras"])
+        judet = fer.get_by_label(re.compile("Județ", re.I))
+        judet.select_option(p["judet"])
+        with pg.expect_response(lambda r: r.request.method in ("PUT","POST","PATCH") and
+                                urlsplit(r.url).hostname==urlsplit(pg.url).hostname) as salvat:
+            fer.get_by_role("button",name=re.compile(r"^Salvează")).click()
+        assert salvat.value.ok, salvat.value.status
         patron.captura("furnizor_%s" % p["cui"])
-    assert {r[0] for r in sql('SELECT oras FROM "%s".furnizori' % firma_pilot["schema"])} >= {MOBILA["oras"], IMOB["oras"]}
+    assert {r[0] for r in sql('SELECT oras FROM "%s".furnizori' % firma_pilot["schema"])} >= {MOBILA["oras"], IMOB["oras"]}  # 17.5-Q9: județul și identitatea fiecărui partener se verifică și direct
+    for p in (MOBILA, IMOB):
+        assert sql('SELECT oras, judet FROM "%s".furnizori WHERE cui = %%s' % firma_pilot["schema"],
+                   (p["cui"],)) == [(p["oras"], p["judet"])]
 
 
 @pozitii("F018")

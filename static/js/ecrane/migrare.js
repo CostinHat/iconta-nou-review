@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, semnAjutor, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=7396e03327";
+import { api, semnAjutor, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=76d1a3d8b0";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -82,7 +82,7 @@ async function _existaPas(corp, firma, strat, nav = null) {
           an = z.getFullYear(); luna = z.getMonth() + 1;
         }
       } catch { /* fără dată citită: luna de lucru */ }
-      const { deschideBalanta } = await import("./firme.js?v=f7b964095e");
+      const { deschideBalanta } = await import("./firme.js?v=320489dd29");
       await deschideBalanta(nav, firma.tenant_id, an, luna);
     });
     el.append(" ", b);
@@ -2504,7 +2504,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=f7b964095e"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=320489dd29"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat
@@ -2544,6 +2544,11 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
   });
   // [drepturi_rol 04.10.2026] Niciun pas permis (asistent fără „Poate pregăti”): ecranul spune DE CE e gol și cine dă
   // dreptul, în loc de „Alege ce vrei să aduci” deasupra unei liste goale.
+  // [17.5-Q8, FINAL.9 / F183] deschis din butonul unei divergențe a auditului (`firma.deschide_pas`): pasul care o repară se deschide direct
+  if (firma.deschide_pas) {
+    const tinta = pasiVizibili.find((p) => p.titlu === firma.deschide_pas);
+    if (tinta) { nav.mergi(tinta.titlu, (c) => tinta.fn(c, nav)); return; }
+  }
   if (!pasiVizibili.filter((p) => p.strat !== "audit_preluare").some((p) => permis(p.actiune || (STRATURI.find((s) => s.cheie === p.strat) || {}).actiune))) {
     lista.insertAdjacentHTML("afterend", `<p class="ecran-nota drept-motiv" id="mig-fara-drept">Importul datelor firmei cere dreptul «Poate pregăti», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul Asistenți.</p>`);
   }

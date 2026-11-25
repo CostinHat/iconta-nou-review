@@ -42,7 +42,8 @@ def candidate_pentru_bon(cur, schema, cui, total):
 
 
 def factura_pentru_chitanta(cur, schema, factura_id):
-    cur.execute(f"SELECT serie, numar, tert_nume, tert_cui, total, directie, data_emitere FROM {schema}.facturi WHERE id=%s",
+    # [17.5-Q8, FINAL.3 / F017] + tip (al 8-lea câmp): soldul preluat la migrare (`tip = 'preluata'`, „Sold la …”) nu e numit „factura” pe chitanță
+    cur.execute(f"SELECT serie, numar, tert_nume, tert_cui, total, directie, data_emitere, tip FROM {schema}.facturi WHERE id=%s",
                 (factura_id,))
     return cur.fetchone()
 

@@ -6,11 +6,11 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
-import { api, semnAjutor, ultimaCerere, pastreazaCampulActiv, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";
-import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=03f816740e";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
-import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
+import { api, semnAjutor, ultimaCerere, pastreazaCampulActiv, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=76d1a3d8b0";
+import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=91866a42f7";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
+import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=200eda21e4";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=aab0f8253f";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
-import { randeazaStareSpv } from "./spv_stare.js?v=a491746870";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
+import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
 export const CULORI = {
@@ -55,6 +55,8 @@ export const ACTIUNI_REMEDIU = {
   regularizeaza_tva: { deFacut: "Regularizează TVA-ul perioadei, în Închidere lună.", eticheta: "Regularizează TVA-ul perioadei" },
   importa_solduri: { deFacut: "Importă soldurile pe parteneri (Import date), apoi reia auditul.", eticheta: "Importă soldurile", ecran: "import_solduri" },
   date_firma: { deFacut: "Completează datele firmei (Date firmă).", eticheta: "Deschide Date firmă", ecran: "date_firma" },
+  // [17.5-Q8, FINAL.9 / F183] divergența auditului de preluare are butonul ei spre pasul de import care o repară (`audit_preluare._pas_import`: remediu.pas)
+  importa_pas: { deFacut: "Deschide pasul de import numit, încarcă fișierul corectat primit de la contabilul anterior, apoi reia auditul.", eticheta: "Deschide importul" },
 };
 
 // codul acțiunii unei constatări: cel dat de server, sau — pentru remediile fără cod — cel care se vede din fel (profil fiscal incomplet -> Date firmă)
@@ -69,6 +71,7 @@ function codActiune(r) {
 // butonul S al unei acțiuni din catalog (lângă semnalul ei); `data-ecran-destinatie` îl leagă `legaVerdict`
 function butonActiune(cod, r) {
   const a = ACTIUNI_REMEDIU[cod];
+  if (cod === "importa_pas") return `<button type="button" class="buton-secundar buton-s" data-ecran-destinatie="import_pas" data-pas="${esc(r.pas || "")}" data-fara-actiune="deschide pasul de import care repară divergența">Deschide ${esc(r.pas || "importul")}</button>`;
   if (a.ecran) return `<button type="button" class="buton-secundar buton-s" data-ecran-destinatie="${esc(a.ecran)}" data-fara-actiune="deschide ecranul în care se face acțiunea">${esc(a.eticheta)}</button>`;
   if (cod === "regularizeaza_tva") return `<button type="button" class="buton-secundar buton-s cf-regulariza-tva" data-actiune="POST /tenants/{tenant_id}/inchidere/regularizare-tva" data-an="${esc(String(r.an))}" data-luna="${esc(String(r.luna))}">${esc(a.eticheta)}</button>`;
   const areFacturi = (r.facturi || []).length > 0;   // contabilizeaza_facturi
@@ -457,11 +460,20 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=f7b964095e");
+    const { deschideInchidereLuna } = await import("./firme.js?v=320489dd29");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {
     const e = ECRANE_DESTINATIE[b.dataset.ecranDestinatie];
+    if (b.dataset.ecranDestinatie === "import_pas") {   // [17.5-Q8, FINAL.9 / F183] meniul Import date al firmei, deschis direct pe pasul care repară divergența
+      nav.deschide("Import date", async (c2) => {
+        const { meniuMigrarePerFirma } = await import("./migrare.js?v=8a2358dab7");
+        const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === firma.tenant_id);
+        if (!t) { c2.innerHTML = `<p class="ecran-nota">Firma nu a fost găsită sau nu mai ai acces la ea.</p>`; return; }
+        return meniuMigrarePerFirma(c2, nav, { tenant_id: t.id, nume: t.nume, tip_firma: t.tip_firma, deschide_pas: b.dataset.pas || null });
+      });
+      return;
+    }
     if (e) e.deschide(nav, firma.tenant_id, null, null);
   }));
   corp.querySelectorAll(".cf-inainte-btn").forEach((b) => b.addEventListener("click", () => {
@@ -578,7 +590,9 @@ export function legaVerdict(corp, nav, firma) {
         if (cs.length === 1) return randA(Object.assign({}, cs[0], { stare: stareAfisata(cs[0].stare) }));
         const rem = [...new Map(cs.filter((c) => c.remediu).map((c) => [(c.remediu.cauza || "") + "|" + (c.remediu.actiune || ""), c.remediu])).values()];
         const detalii = `<p class="cf-incr-temei">${esc(cs[0].temei || "")}</p>${rem.map((r) => `<p class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}</p>`).join("")}`;
-        return cs.map((c, i) => semnalHtml({ ton: TON_STARE[stareAfisata(stare)] || "avertisment", text: c.mesaj || "", detaliiHtml: i === 0 ? detalii : "" })).join("");
+        // [17.5-Q8, FINAL.9 / F183] fiecare divergență are acțiunea ei (butonul spre importul care o repară), nu numai prima
+        return cs.map((c, i) => semnalHtml({ ton: TON_STARE[stareAfisata(stare)] || "avertisment", text: c.mesaj || "", detaliiHtml: i === 0 ? detalii : "",
+          actiuneHtml: codActiune(c.remediu) ? butonActiune(codActiune(c.remediu), c.remediu) : "" })).join("");
       }).join("");
     };
     // [deficiența 220] auditul nu e o restanță: „divergent” e galben și se spune pe nume (eticheta paletei ar fi zis „restanță”)

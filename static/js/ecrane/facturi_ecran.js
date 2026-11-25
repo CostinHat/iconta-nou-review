@@ -4,13 +4,13 @@
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=2e679a8748";   // [15.1, 725.1]
-import { inactiv, activ, noteGenerate, liniiNotaHtml, api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=7396e03327";  /* esc_nc27 */
+import { inactiv, activ, noteGenerate, liniiNotaHtml, api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=76d1a3d8b0";  /* esc_nc27 */
 import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
-import { randeazaStareSpv } from "./spv_stare.js?v=a491746870";  /* [lotul 6: 273, 275] */
+import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=890ce70523";
-import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=e4db4f2679";
+import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=200eda21e4";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
 import { optiuniTara, taraDinCui } from "./tari_partener.js?v=47a26608a6";
@@ -78,7 +78,6 @@ export const monedaScrisa = (m) => (!m || String(m).toUpperCase() === "RON") ? "
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
 
-const MOTIV_TOATE_FACTURILE = "Toate facturile lunii sunt afișate.";   // [17.5-Q3, 863]
 
 export function randeazaFacturi(corp, nav, tenantId, opt = {}) {
   meniuFacturi(corp, nav, tenantId, opt);
@@ -251,11 +250,16 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
       <label class="camp"><span class="camp-eticheta">TVA</span><input class="camp-input" id="pr-tva" value="${esc(sumaCuMoneda(p.tva, p.moneda))}" readonly aria-label="TVA"></label>
       <label class="camp"><span class="camp-eticheta">Total</span><input class="camp-input" id="pr-total" value="${esc(sumaCuMoneda(p.total, p.moneda))}" readonly aria-label="Total"></label>
     </div>
+    <!-- [17.5-Q8, STOC.2 / F043] scadența și cumpărătorul din XML, la vedere înaintea validării -->
+    <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:8px">
+      <label class="camp"><span class="camp-eticheta">Cumpărător (din XML)</span><input class="camp-input" id="pr-cumparator" value="${esc(p.cumparator || "")}" placeholder="nescris în XML" readonly aria-label="Cumpărător"></label>
+      <label class="camp"><span class="camp-eticheta">Scadență</span><input class="camp-input" id="pr-scadenta" value="${p.scadenta ? dataRo(p.scadenta) : ""}" placeholder="nescrisă în XML" readonly aria-label="Scadență"></label>
+    </div>
     <div class="fd-valuta" id="pr-valuta" aria-live="polite" hidden></div>
     <div style="margin-top:10px"><div class="camp-eticheta">Linii</div>
       <span class="camp-ajutor">Clasifică destinația TVA a fiecărei linii importate: <b>taxabilă</b> (deducere integrală, implicit), <b>scutită</b> (fără deducere), <b>mixtă</b> (intră în pro-rata, art. 300 alin. (5)). Faptul importat rămâne neschimbat — doar îl clasifici.</span>
       ${linii.map((l, i) => `<div class="pf-linie-clasif" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
-        <span class="pf-frand-sub" style="flex:1 1 200px">${esc(l.descriere)} · ${esc(cantitate(l.cantitate))} × ${esc(bani(l.pret))} · ${esc(l.cota)}%</span>
+        <span class="pf-frand-sub" style="flex:1 1 200px">${esc(l.descriere)} · ${esc(cantitate(l.cantitate))}${l.um ? " " + esc(l.um) : ""} × ${esc(bani(l.pret))} · ${esc(l.cota)}%</span>
         <select class="camp-input pr-dest" data-i="${i}" aria-label="Destinație TVA linie" style="flex:0 0 auto;width:auto" data-butoane="">
           <option value="taxabil" selected>Taxabilă</option>
           <option value="scutit">Scutită</option>
@@ -282,7 +286,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
         <select class="camp-input" id="pr-c331" aria-label="Categoria art.331"><option value="">— alege —</option>${categorii331.map((c) => `<option value="${esc(c)}">${esc(c.replace(/_/g, " "))}</option>`).join("")}</select></label>` : ""}
     </div>
     <div style="margin-top:14px">
-      <button class="buton-verde" id="pr-valideaza" data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza">Validează (scrie nota pe contul ales)</button>
+      <button class="buton-primar" id="pr-valideaza" data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza">Validează (scrie nota pe contul ales)</button>
       <button data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge" class="btn-link" id="pr-respinge" style="margin-left:10px">Respinge</button>
       <span class="btn-link" id="pr-xml" style="margin-left:10px">Vezi XML brut</span>
     </div>
@@ -327,7 +331,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=f7b964095e");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=320489dd29");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -724,14 +728,14 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         <button class="buton-secundar" id="fac-next"${opt.client && (an > anCurent || (an === anCurent && luna >= lunaCurenta)) ? atributeInactiv("Aceasta e luna curentă.") : ""}>luna \u2192</button>
         ${opt.client ? "" : `<button class="buton-secundar" id="fac-saga-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-saga" style="margin-left:12px">Export SAGA lun\u0103</button>
         <button class="buton-secundar" id="fac-winmentor-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-winmentor">Export WinMentor lun\u0103</button>`}
-        ${maiSunt ? `<button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px">Arată încă ${cate(ramase, "factură a lunii", "facturi ale lunii")}</button>`
-          : `<button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px" aria-describedby="fac-mai-multe-motiv"${atributeInactiv(MOTIV_TOATE_FACTURILE)}>Arată mai multe facturi ale lunii</button> <span class="tip-micut" id="fac-mai-multe-motiv">${MOTIV_TOATE_FACTURILE}</span>`}</p>
+        ${maiSunt ? `<button class="buton-secundar" id="fac-mai-multe" data-context-q7="lista-completa" style="margin-left:12px">Arată încă ${cate(ramase, "factură a lunii", "facturi ale lunii")}</button>`
+          : ""}</p>
       ${explicatie ? `<p class="ecran-nota" id="fac-luna-explicatie">${_fraza_luna_goala}</p>` : ""}
       ${blocInchidere}
       ${opt.client ? "" : `<div id="fac-saga-zona"></div>`}
       <div class="pf-lista zebra-lista">${corpuri}</div>`;
-    // [17.5-Q3, 863] „Arată încă N” numai cât mai sunt facturi ale lunii (N = câte aduce clicul, cel mult 10); la zero butonul nu mai promite „încă 0”: rămâne inactiv
-    // (675: nu dispare), cu eticheta generală și cu motivul scris lângă el, la vedere (`fac-mai-multe-motiv`)
+    // [17.5-Q3, 863] „Arată încă N” numai cât mai sunt facturi ale lunii (N = câte aduce clicul, cel mult 10). [17.5-Q8, DS.3] la sfârșitul paginării (toate facturile
+    // lunii sunt afișate) butonul nu se mai afișează: n-are obiect (DS „Disponibilitatea acțiunilor”, `lista-completa`)
     corp.querySelector("#fac-mai-multe")?.addEventListener("click", () => { afisate += 10; deseneaza(); });
     corp.querySelector("#fac-prev").addEventListener("click", () => { afisate = 10; explicatie = false; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#fac-next").addEventListener("click", () => {
@@ -1048,6 +1052,11 @@ function motivNeemis(s) {
   return "Factura lunii din acest șablon nu e de emis azi.";
 }
 
+// [17.5-Q7, FISC.2] factura numită într-un refuz (decontul D300 fără ea) se deschide din refuz, în fișa ei, ca pas al ferestrei
+export function deschideFactura(nav, tenantId, facturaId, opt = {}) {
+  nav.mergi("Factură", (c) => detaliiFactura(c, nav, tenantId, facturaId, opt));
+}
+
 async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
 
@@ -1126,7 +1135,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   // „notă propusă, de validat”. Din factură se ajunge la nota ei (Registrul jurnal, luna notei).
   const nc = f.nota_contare;
   // [17.5-L, AC164] clientul nu vede nimic din nota contabilă („contabilizată”, „notă propusă, de validat”): numai starea de business a facturii
-  const statusTxt = f.storno_din_id ? "storno" : (opt.client ? (STATUS_ETICHETA[f.status] || "")
+  // [17.5-Q8, FISC.5 / F254] factura emisă pe baza bonului fiscal: vânzarea e în raportul Z al zilei bonului; factura nu se contează, nu e „de preluat”
+  const dinBon = f.directie === "emisa" && !!String(f.bon_fiscal_nr || "").trim();
+  const statusTxt = dinBon ? "emisă pe baza bonului fiscal" : f.storno_din_id ? "storno" : (opt.client ? (STATUS_ETICHETA[f.status] || "")
     : (f.contabilizata ? "contabilizat\u0103" : (nc ? "not\u0103 propus\u0103, de validat" : (STATUS_ETICHETA[f.status] || f.status || ""))));
   // [lotul 10, 10.2 pct.7f, 419] factura stornat\u0103 integral (aceea\u0219i defini\u021bie ca starea \u201estornat\u0103\u201d, 416): nu mai e nimic de stornat \u0219i
   // nimic de \u00eencasat \u2014 \u201eStorneaz\u0103\u201d \u0219i \u201eEmite chitan\u021b\u0103\u201d nu se mai ofer\u0103 (serverul refuz\u0103 \u0219i el a doua stornare, `facturi_api.storneaza`)
@@ -1156,6 +1167,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       : (f.din_efactura || "")),
   };
 
+  // [17.5-Q8, DS.3 / F045, F126, F252] butoanele fără obiect în starea documentului nu se afișează (DS „Disponibilitatea acțiunilor”): factura nu se
+  // transformă în factură, factura emisă nu se șterge (se stornează), factura acceptată în SPV sau venită din e-Factura nu se mai trimite
+  const spvFaraObiect = !!(f.din_efactura || (f.stare_spv && f.stare_spv.stare === "acceptata"));
   // [lotul 10, deficiențele 421 / 424, DS cap.9 v2.96] „rezumatul stă fix sus și acțiunea principală fix jos; se derulează doar tabelul
   // din mijloc”: antetul facturii (numărul, stările, acțiunile, zona lor de mesaj, data și partenerul) e rezumatul — rămâne lipit sus cât
   // se derulează liniile, deci rezultatul unei acțiuni („Trimite în SPV”, „Emite chitanță”) se vede și de la capătul tabelului.
@@ -1169,12 +1183,12 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       <div class="fd-antet-sus">
         <h2 class="pf-titlu">Factur\u0103 ${f.numar ? esc(numarCuSerie(f.serie, f.numar)) : "\u2014"}</h2><span class="semne-ajutor">${semnAjutor("F045")}${semnAjutor("F046")}</span>
         ${statusTxt ? `<span class="fd-stare">${esc(statusTxt)}</span>` : ""}
-        ${opt.client ? "" : `<button class="btn-link" id="fd-vezi-nota"${nc ? "" : atributeInactiv("Factura n-are încă notă contabilă: nota se propune la contare.")}>${nc ? "nota " + esc(nc.eticheta || "") : "nota contabilă"}</button>`}
+        ${opt.client || (dinBon && !nc) ? "" : `<button class="btn-link" id="fd-vezi-nota" data-context-q7="tip-document"${nc ? "" : atributeInactiv("Factura n-are încă notă contabilă: nota se propune la contare.")}>${nc ? "nota " + esc(nc.eticheta || "") : "nota contabilă"}</button>`}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
         ${doarEmisa(`<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/email" class="buton-secundar em-buton-sec fd-email-btn" id="fd-email"${inactivDaca(motiv.trimiteEmail)}>Trimite pe email</button>`)}
-        ${opt.client ? "" : `<button data-actiune="DELETE /tenants/{tenant_id}/facturi/{factura_id}" class="buton-secundar em-buton-sec" id="fd-sterge"${inactivDaca(motiv.sterge)}>Șterge factura</button>`}
+        ${opt.client || emisa ? "" : `<button data-actiune="DELETE /tenants/{tenant_id}/facturi/{factura_id}" class="buton-secundar em-buton-sec" id="fd-sterge" data-context-q7="tip-document"${inactivDaca(motiv.sterge)}>Șterge factura</button>`}
         ${opt.client ? "" : doarEmisa(`<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/storno" class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno"${inactivDaca(motiv.storno)}>Storneaz\u0103</button>`)}
-        ${doarEmisa(`<button class="buton-secundar em-buton-sec" id="fd-transforma" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/transforma"${inactivDaca(motiv.transforma)}>Transform\u0103 \u00een factur\u0103</button>`)}
+        ${eFactura || !f.tip || f.transformat_in_id ? "" : doarEmisa(`<button class="buton-secundar em-buton-sec" id="fd-transforma" data-context-q7="tip-document" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/transforma"${inactivDaca(motiv.transforma)}>Transform\u0103 \u00een factur\u0103</button>`)}
         ${f.stare_incasare ? `<span class="fd-stare${f.stare_incasare.stare === "incasata" ? " fd-stare-verde" : ""}">${esc(etichetaIncasare(f))}</span>` : ""}
         ${f.stare_spv ? `<span class="fd-stare${f.stare_spv.stare === "acceptata" ? " fd-stare-verde" : ""}" id="fd-stare-spv" title="${esc(etichetaSpv(f))}">${esc(etichetaSpv(f))}</span>` : ""}
         ${f.platita_la && f.plata_confirmata_de === "mock" ? '<span class="fd-stare fd-stare-galben" title="Confirmare de simulare, nu de la un procesator de pl\u0103\u021bi. Nu dovede\u0219te c\u0103 au intrat bani.">pl\u0103tit\u0103 prin simulare</span>' : ""}
@@ -1189,7 +1203,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <!-- [lotul 11, C86] factura emisă venită din XML-ul e-Factura e deja transmisă de cine a emis-o: fără „Trimite în SPV” (serverul
              refuză și el, efactura_trimitere.refuz_din_efactura), cu motivul în locul butonului — textul vine de la server -->
         ${(f.directie === "emisa" && f.tip === "factura" && f.din_efactura) ? `<span class="fd-stare" id="fd-spv-motiv">${esc(f.din_efactura)}</span>` : ""}
-        ${doarEmisa(`<button class="buton-secundar em-buton-sec" id="fd-spv" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv"${inactivDaca(motiv.spv)}>Trimite în SPV</button>`)}
+        ${spvFaraObiect ? "" : doarEmisa(`<button class="buton-secundar em-buton-sec" id="fd-spv" data-context-q7="stare-document" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv"${inactivDaca(motiv.spv)}>Trimite în SPV</button>`)}
         <!-- [lotul 13, 675] „transformată în …” e o STARE a documentului (ca „stornată”), cu legătura spre factura rezultată: apare numai când
              starea există; acțiunea e „Transformă în factură”, care stă mereu la locul ei -->
         ${f.transformat_in_id ? `<span class="fd-stare"><button class="btn-link" id="fd-vezi-transformata">transformat\u0103 \u00een ${esc(f.transformat_in_numar ? numarCuSerie(f.transformat_in_serie, f.transformat_in_numar) : "factur\u0103")}</button></span>` : ""}
@@ -1203,6 +1217,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       ${partener ? `<div class="fd-antet-linie">${dir === "primit\u0103" ? "De la" : "C\u0103tre"}: ${partener}</div>` : ""}
       ${f.mentiune_storno ? `<div class="fd-antet-linie" id="fd-storno-din"><button class="btn-link" id="fd-vezi-stornata">${esc(f.mentiune_storno)}</button></div>` : ""}
       ${(f.mentiuni || []).map((m) => `<div class="fd-antet-linie">${esc(m)}</div>`).join("")}
+      ${dinBon && !opt.client ? `<div class="fd-antet-linie" id="fd-din-bon">Vânzarea e în raportul Z al zilei bonului: factura nu se contează separat și nu intră în D300.</div>` : ""}
     </div>
 
     <table class="fd-tabel">
@@ -1257,7 +1272,12 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       try { const m = await api.get(`/tenants/${tenantId}/trimiteri-spv`); st = m[String(facturaId)]; } catch {}
       if (!st || !st.stare) return;   // netrimisa -> butonul ramane gri, fara text
       const cul = CUL[st.stare] || "var(--gri)";
-      bSpv.disabled = ["ok", "in_prelucrare", "incarcat", "investigatie"].includes(st.stare);  // send viu/blocat -> nu retrimite (idempotency)
+      // send viu/blocat -> nu retrimite (idempotency). [17.5-Q8, DS.3 / F126] factura cu recipișă nu mai are ce trimite: butonul pleacă (starea
+      // rămâne scrisă alături); cât e la ANAF, butonul stă inactiv CU motivul
+      if (st.stare === "ok") bSpv.remove();
+      else if (["in_prelucrare", "incarcat", "investigatie"].includes(st.stare)) {
+        inactiv(bSpv, "Factura e deja trimisă în SPV: se retrimite numai după un răspuns de respingere.");
+      }
       zonaSpv.innerHTML = `<span class="fd-stare" style="color:${cul}">SPV: ${ET[st.stare] || st.stare}</span>`
         + (st.error_message ? ` <span class="btn-link" id="fd-spv-det">vezi mesajul</span>` : "");
       corp.querySelector("#fd-spv-det")?.addEventListener("click", () =>
@@ -1379,7 +1399,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       const txtVechi = btnPdf.textContent;
       btnPdf.disabled = true; btnPdf.textContent = "Se genereaz\u0103\u2026";
       try {
-        await deschide(`/tenants/${tenantId}/facturi/${facturaId}/pdf`);
+        // [17.5-Q8, FINAL.5 / F045] PDF-ul se descarcă cu numele dat de server (seria și numărul facturii), nu ca un fișier fără nume într-un tab
+        await descarca(`/tenants/${tenantId}/facturi/${facturaId}/pdf`, `factura_${String(numarCuSerie(f.serie, f.numar) || facturaId).replace(/[^\w.-]+/g, "_")}.pdf`);
       } catch (e) {
         // [R131] motivul serverului; [lotul 12, C164] în zona de rezultat a detaliului, nu în părintele butonului: `arataMesaj` pe rândul
         // butoanelor îi rescria tot conținutul (numărul, stările și toate acțiunile dispăreau, înlocuite de mesaj)
@@ -1456,7 +1477,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div id="fd-nota-linii" class="fd-nota-linii">${nota && nota.linii.length ? liniiNotaHtml(nota.linii) : "Nota n-are rânduri de afișat."}</div>
         <p style="margin-top:12px"><button type="button" class="buton-secundar" id="fd-nota-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Deschide în Registrul jurnal</button></p>`;
       c2.querySelector("#fd-nota-jurnal").addEventListener("click", async () => {
-        const { ecranJurnal } = await import("./firme.js?v=f7b964095e");   // dinamic: firme.js importă deja ecranul facturilor
+        const { ecranJurnal } = await import("./firme.js?v=320489dd29");   // dinamic: firme.js importă deja ecranul facturilor
         const [an, luna] = String(nc.data).split("-").map(Number);
         nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
       });

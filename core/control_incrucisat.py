@@ -426,8 +426,9 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
                                          "verificarea — abia atunci egalitatea afirmă ceva."),
                              "facturi": [f["id"] for f in fara_nota]}))
             else:
+                # [17.5-Q8, FISC.7 / F169, 484] verdictul arată cifrele ambelor părți și când coincid
                 rez.append(dict(baza, stare="verde",
-                                mesaj=f"{eticheta}: D300 și contul {cont} coincid.",
+                                mesaj=f"{eticheta}: D300 și contul {cont} coincid. D300: {_lei(decl)} · contul {cont}: {_lei(contabil)}.",
                                 remediu=None))
             continue
         # cauza DOVEDITA: diferenta se explica exact prin facturile fara nota validata
@@ -577,7 +578,8 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=Tru
                 "diferenta": dif, "temei": temei, "sursa_declarat": sursa_declarat}
         if abs(dif) <= tol:
             rez.append(dict(baza, stare="verde",
-                            mesaj=f"{eticheta}: D112 și contul {cont} coincid.", remediu=None))
+                            mesaj=f"{eticheta}: D112 și contul {cont} coincid. D112: {_lei(decl)} · contul {cont}: {_lei(contabil)}.",   # [17.5-Q8, FISC.7 / F162]
+                            remediu=None))
             continue
         mesaj = (f"{eticheta}: {declara('D112', sursa_declarat)} {_lei(decl)}, contul {cont} are {_lei(contabil)} "
                  f"(diferență {_lei(dif)}).")

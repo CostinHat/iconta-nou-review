@@ -7,11 +7,11 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=03f816740e";   // [15.1, F-A.1] caseta SPV de după emitere
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=7396e03327";
-import { inactiv, activ } from "../api.js?v=7396e03327";   // [17.5-Q3, F172 / F252] starea butonului de emitere, cu motivul scris în bară de cadru
+import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=91866a42f7";   // [15.1, F-A.1] caseta SPV de după emitere
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=76d1a3d8b0";
+import { inactiv, activ } from "../api.js?v=76d1a3d8b0";   // [17.5-Q3, F172 / F252] starea butonului de emitere, cu motivul scris în bară de cadru
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";
-import { textStareSpv } from "./spv_stare.js?v=a491746870";  /* [lotul 6, 275c] */
+import { textStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { optiuniTara as _optiuniTara, taraDinCui, nepotrivireTara } from "./tari_partener.js?v=47a26608a6";   // [lotul 12, C160] sursa unică
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
@@ -181,7 +181,7 @@ async function salveazaConfig(tenantId, serie, numar_start, platitor_tva) {
 export function intrebarePleacaMarfa(zona, nrArticole, laRaspuns, ids) {
   zona.innerHTML = `
     <div class="caseta-poarta">
-      <div class="cp-mesaj">Pleacă marfa acum? ${cate(nrArticole, "articol", "articole")} de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, livrare ulterioară sau serviciu, alege „Nu, doar factură".</div>
+      <div class="cp-mesaj">Pleacă marfa acum? ${cate(nrArticole, "articol", "articole")} de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, livrare ulterioară sau serviciu, alege „Nu, doar factură”.</div>
       <div class="cp-butoane">
         <button class="buton-secundar em-buton-sec" id="${ids.da}">Da, pleacă marfa</button>
         <button class="buton-secundar em-buton-sec" id="${ids.nu}">Nu, doar factură</button>
@@ -388,13 +388,18 @@ export function cautaInLista(intrare, lista) {
   intrare.addEventListener("input", () => {
     const q = _faraDiacritice(intrare.value), ales = lista.value;
     const pastrate = toate.filter((o) => o.valoare === "" || o.valoare === ales || !q || o.text.includes(q));
-    const nimic = q && !pastrate.some((o) => o.valoare !== "" && o.valoare !== ales)
+    // [17.5-Q8, DS.4 / F023] „nimic” numai când nicio opțiune nu conține textul — și cea deja aleasă contează (căutarea „Marfa A” cu „Marfa A” aleasă
+    // nu mai scrie „Nimic din listă…” deasupra ei)
+    const nimic = q && !toate.some((o) => o.valoare !== "" && o.text.includes(q))
       ? `<option value="" disabled>Nimic din listă nu conține „${esc(intrare.value.trim())}”</option>` : "";
     const goale = pastrate.filter((o) => o.valoare === "").map((o) => o.html).join("");
     lista.innerHTML = goale + nimic + pastrate.filter((o) => o.valoare !== "").map((o) => o.html).join("");
     lista.value = ales;
   });
 }
+
+// [17.5-Q8, STOC.6] amprenta acestei deschideri a aplicației: răspunsurile porților de emitere păstrate în ciornă valorează numai în ea
+const _SESIUNE_PAGINII = Math.random().toString(36).slice(2) + Date.now().toString(36);
 
 // ---------- FORMULAR EMITERE ----------
 // [331] UM-ul propus unei linii de servicii: cod E48 în e-Factura și D406 (`efactura_send._UM`, `d406.UOM_UNECE`); îl folosește și șablonul
@@ -980,7 +985,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     // răspuns: o ciornă lăsată în timpul verificării nu-l păstrează (la revenire n-ar mai veni nimic după el)
     const _st = corp.querySelector("#em-cui-stare");
     const c = { v: 1, salvat_la: new Date().toISOString(), linii: linii.map((l) => Object.assign({}, l)), moneda: monedaSel,
-                scadentaScrisa, pleacaMarfa: pleacaMarfaCurent, semnMarfa, campuri: {},
+                scadentaScrisa, pleacaMarfa: pleacaMarfaCurent, semnMarfa, sesiuneMarfa: _SESIUNE_PAGINII, campuri: {},
                 stareCui: _st && !_st.dataset.seVerifica ? { text: _st.textContent, rau: _st.classList.contains("em-cui-rau") } : null };
     CAMPURI_CIORNA.forEach((id) => { const e = corp.querySelector("#" + id); if (e) c.campuri[id] = e.value; });
     scrieCiorna(tenantId, c);
@@ -996,8 +1001,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       st.innerHTML = ciorna.stareCui.rau ? esc(ciorna.stareCui.text) : `<span class="em-cui-info">${esc(ciorna.stareCui.text)}</span>`;
     }
     scadentaScrisa = !!ciorna.scadentaScrisa;
-    pleacaMarfaCurent = ciorna.pleacaMarfa == null ? null : ciorna.pleacaMarfa;
-    semnMarfa = ciorna.semnMarfa || null;
+    // [17.5-Q8, STOC.6 / F172] răspunsul la „Pleacă marfa acum?” rămâne numai în aceeași deschidere a aplicației (revenirea din Date firmă, a doua
+    // apăsare pe „Emite”); o factură începută și păstrată de altă dată (altă zi, altă sesiune) pune întrebarea din nou
+    const aceeasiSesiune = ciorna.sesiuneMarfa === _SESIUNE_PAGINII;
+    pleacaMarfaCurent = aceeasiSesiune && ciorna.pleacaMarfa != null ? ciorna.pleacaMarfa : null;
+    semnMarfa = aceeasiSesiune ? (ciorna.semnMarfa || null) : null;
     // [818, decizia Costin 08.11.2026] o ciornă dintr-o zi trecută se redeschide cu data de azi, iar cardul spune data veche
     const dataCiorna = (ciorna.campuri || {})["em-data"];
     const aziIso = dataIso();

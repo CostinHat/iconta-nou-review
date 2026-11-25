@@ -78,7 +78,8 @@ def test_refuzul_de_formular_departe_de_buton_apare_cu_textul_lui_nu_motivul_e_m
         window.U0.arataMesaj(document.getElementById('u0-zona-sus'), 'Perioada 09/2026 e încheiată: nu se mai scrie în ea.', 'eroare'))""")
     _clic(pg, "#u0-salveaza")
     r = pg.evaluate("""() => [...document.querySelectorAll('.refuz-salvare li')].map((li) => [li.innerText, li.hidden])""")
-    assert pg.inner_text(".refuz-salvare b") == "NU s-a salvat."
+    # [17.5-T] actualizat la DS.5 17.5-Q8, decizia 11 (static/js/api.js:713): refuzul nu mai începe cu „NU s-a salvat.”, caseta spune direct motivul
+    assert not pg.locator(".refuz-salvare b").count() and "NU s-a salvat" not in pg.inner_text(".refuz-salvare")
     assert r == [["Perioada 09/2026 e încheiată: nu se mai scrie în ea.", False]], r   # 440: „fiecare cu textul ei”
     assert "motivul e" not in pg.inner_text(".refuz-salvare"), r                       # 440: „Fără «motivul e mai sus»”
 
@@ -92,7 +93,8 @@ def test_refuzul_de_formular_lipit_de_buton_nu_se_copiaza_a_doua_oara(pg):
     _clic(pg, "#u0-salveaza")
     vazut = pg.inner_text(".fereastra-corp")
     assert vazut.count("Casa ar ajunge la -58,00 lei.") == 1, vazut
-    assert pg.inner_text(".refuz-salvare b") == "NU s-a salvat."
+    # [17.5-T] actualizat la DS.5 17.5-Q8, decizia 11 (static/js/api.js:713): refuzul nu mai începe cu „NU s-a salvat.”, caseta spune direct motivul
+    assert not pg.locator(".refuz-salvare b").count() and pg.inner_text(".refuz-salvare").strip() == "Casa ar ajunge la -58,00 lei."
 
 
 def test_refuzul_serverului_cu_trei_campuri_le_marcheaza_pe_toate_chiar_daca_ecranul_arata_numai_mesajul(pg):

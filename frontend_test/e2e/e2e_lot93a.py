@@ -53,7 +53,7 @@ def _transforma_pana_la_intrebare(patron, firma, tip):
     pg.wait_for_selector("#fd-act-rez .caseta-poarta #fd-poarta-da", timeout=30000)
     t = " ".join(pg.inner_text("#fd-act-rez .caseta-poarta .cp-mesaj").split())
     assert t == ("Pleacă marfa acum? 1 articol de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, "
-                 "livrare ulterioară sau serviciu, alege „Nu, doar factură\"."), t
+                 "livrare ulterioară sau serviciu, alege „Nu, doar factură”."), t
     assert pg.is_visible("#fd-poarta-nu") and pg.is_visible("#fd-transforma"), "întrebarea vine înainte: documentul încă netransformat"
     assert _stoc(patron, firma, aid) == stoc0, "fără răspuns nu se descarcă nimic"
     return pg, aid, stoc0

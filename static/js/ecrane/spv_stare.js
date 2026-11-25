@@ -2,8 +2,8 @@
 // emisă): conexiunea cabinetului, ultima citire a CUI-ului firmei și răspunsul ANAF (`GET /tenants/{id}/spv/stare`,
 // `spv_conector.stare_firma`). Când lipsește ceva ce se repară în Setări cont → Conectare SPV, mesajul are butonul spre acolo
 // (`ecran_destinatie.butonSpreEcran`). O singură sursă a textului — nu câte o frază pe ecran.
-import { api, arataMesaj, cate, dataRo } from "../api.js?v=7396e03327";
-import { cardRezumat } from "../ds_piese.js?v=03f816740e";   // [15.1, 687.1-SPV]
+import { api, arataMesaj, cate, dataRo } from "../api.js?v=76d1a3d8b0";
+import { cardRezumat } from "../ds_piese.js?v=91866a42f7";   // [15.1, 687.1-SPV]
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";
 
 const _ora = (iso) => { const d = new Date(iso); return `${dataRo(iso)}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
@@ -35,8 +35,10 @@ export function textStareSpv(st) {
       + (st.eroare_de_la_anaf === false ? `ultima verificare (${_ora(st.verificat_la)}) nu s-a încheiat. ${st.eroare || ""}`.trim()
         : `ultima verificare (${_ora(st.verificat_la)}) a primit de la ANAF: „${st.eroare || "fără răspuns"}”.`) };
   }
+  // [17.5-Q8, FINAL.8 / F176, 289] fereastra firmei numește și emitentul certificatului (claim-ul `issuer` al tokenului ANAF, `spv_conector.stare_conexiune`)
+  const emitent = st.emitent_certificat ? `, emis de ${st.emitent_certificat},` : "";
   return { tip: "ok", spreConectare: false,
-    text: `SPV: certificatul cabinetului are drept pe CUI-ul acestei firme${cui} · verificat ultima dată ${_ora(st.verificat_la)}${st.mesaje != null ? ` · ${cate(st.mesaje, "factură primită", "facturi primite")} la ultima citire` : ""}.` };
+    text: `SPV: certificatul cabinetului${emitent} are drept pe CUI-ul acestei firme${cui} · verificat ultima dată ${_ora(st.verificat_la)}${st.mesaje != null ? ` · ${cate(st.mesaje, "factură primită", "facturi primite")} la ultima citire` : ""}.` };
 }
 
 /** Citește starea și o scrie în `zona` (mesajul + butonul spre Conectare SPV, când e cazul); întoarce starea (sau null). */

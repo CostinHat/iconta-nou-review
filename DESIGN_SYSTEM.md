@@ -52,17 +52,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   facturii rămânea după contare — 45 de butoane cu elemente, în 10 fișiere). Gard: `core/test_buton_blocat_structura.py`
   (în browser, pe modulul real).
 
-- **Comenzile se văd mereu: ce nu se aplică stă inactiv, cu motivul (v2.104)** — `atributeInactiv`, gardul `BUTON_ASCUNS` (lotul 13, deficiența 675 — clasă; comanda Costin 13.1,
-  verbatim: „entitățile de același tip (salariați, facturi, note…) au același set de butoane, în aceeași ordine; ce nu se aplică stă
-  inactiv, cu motivul la trecerea cu mouse-ul. Nicio setare care schimbă cifre nu stă ascunsă într-un formular de corectare. La salariat:
-  + masă, alături de + vacanță, + cadou, + cultural, + creșă.”). Pe rândurile aceleiași entități butoanele sunt aceleași, în aceeași
-  ordine; un buton care nu se aplică rândului (stare, regim, date lipsă) NU dispare: stă la locul lui, inactiv, cu motivul. Un singur
-  mecanism, în `api.js`: `inactiv(buton, motiv)` / `activ(buton)`, iar în șablon `${atributeInactiv(motiv)}` — `aria-disabled="true"` (rămâne
-  focusabil, motivul se citește și din tastatură), motivul în `title` (la trecerea cu mouse-ul), arată ca butonul `:disabled` al clasei
-  (stil.css), clicul e oprit în captură. INTERZIS `${cond ? \`<button …>\` : ""}` pentru o acțiune a entității. Rămân ascunse numai
-  acțiunile refuzate ROLULUI (cap.9, v2.64 — `data-actiune` + `drepturi.js`, cu nota `.drept-motiv`) și cardurile ferestrei firmei care nu
-  țin de regimul ei (cap.18). O setare care schimbă cifrele (tichetul de masă, salariul) are butonul ei pe rând, nu stă numai într-un
-  formular de corectare. Gard: verificator `BUTON_ASCUNS` (lotul 13) + `core/test_lot13_ds_ferestre.py`.
+- **Disponibilitatea acțiunilor (675, completare 17.5-Q9).** O acțiune disponibilă după completarea unui câmp rămâne la locul ei, cu motivul accesibil și actualizat prin `atributeInactiv`. În contextul în care acțiunea nu are obiect, butonul dispare. De exemplu, o factură emisă nu se transformă în factură, iar o notă manuală nu se reface din sursă. Aceeași distincție se aplică drepturilor, stării documentului și paginării încheiate. O setare cu efect financiar rămâne accesibilă pe rând. Pentru condiționalele care ascund un buton dintr-o categorie verificată, `data-context-q7` numește motivul structural. Etichetele tehnice, stările opuse și probele în aplicație sunt descrise la „Pilot 17.5-Q9”.
 
 **Feedback obligatoriu:**
 - Butoane cu zonă toggle: primesc `.buton-activ` cât timp zona e deschisă; deschiderea unei zone închide zonele-frate.
@@ -1358,7 +1348,7 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 incape_ecran.py`, `core/test_incape_ecran.py`, `core/test_lot14_incape.py`.
 
 **v2.104 (25.10.2026)** — lotul 13, comanda Costin 13.1 (grupa 1: 655; clasele DS 673–676; 504, 509, 515, 575, 581, 625, 654; căutarea 681):
-**cap.1** — „Comenzile se văd mereu” (675: `api.inactiv` / `atributeInactiv`, butonul inactiv cu motivul). **Cap.2a** — „Acțiunile din
+**cap.1** — „Disponibilitatea acțiunilor” (675, completare 17.5-Q9: `api.inactiv` / `atributeInactiv`, butonul inactiv cu motivul). **Cap.2a** — „Acțiunile din
 ferestre” (673: fereastră nouă, `fer-lucru` cât ecranul), „Orice acțiune e un buton” (674), „Listele scurte sunt butoane alăturate” (676:
 `data-butoane`, `api.alegereButoane`; `selectDaNu` le are). **Cap.6** — „Numerele scrise de om” (655: `numarRo` / `numere.numar_ro`, câmpul
 numeric românesc), „Nimic precompletat sau gri” (504, PIVOT cap.17 v2.79 pct.2/4), caseta de refuz spune motivul (515), aceeași eroare o dată
@@ -1639,3 +1629,15 @@ verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
 Bara obișnuită are 72 px. Când motivul vizibil și grupul cu o acțiune secundară marcată nu încap împreună pe lățimea efectivă a barei, motivul ocupă rândul de sus. Acțiunile se așază dedesubt, cu secundara înaintea principalei. Înălțimea urmează conținutul, cu minimum 72 px. Bara de mesaje sau totaluri rămâne imediat deasupra în timpul derulării. Când lățimea permite, cele trei elemente revin pe un singur rând.
 
 La capătul derulării corpului, bara pe două rânduri rămâne la marginea inferioară a ferestrei. Dacă formularul cuprinde o zonă derulabilă și mesaje, înălțimea lui în flux cuprinde ultimul control și mesajele. Ambele se văd integral deasupra barei, iar ultimul control poate fi apăsat.
+
+## Pilot 17.5-Q9
+
+1. Pe 603×590 fiecare rând al unui tabel de lucru se poate citi în bloc, cu etichetele, valorile și acțiunile sale. Fereastra încape orizontal și are o singură zonă verticală de derulare activă. Previzualizarea XML poate avea derulare proprie. În Registru jurnal înălțimea utilă pe mobil depășește 88 px.
+2. Într-o fereastră de lucru cu acțiune principală, aceasta e unică și vizibilă la intrare pe ambele rezoluții. Acțiunile locale de rând rămân accesibile cu aspect secundar.
+3. În Bancă rămâne «Contează» pe fiecare linie API; în Clienți rămâne «Salvează» pe rând. Permisiunile, tipul, starea documentului, sfârșitul paginării și rândul fără modificări pot face o acțiune inaplicabilă. Marcajele condiționalelor sunt `rol`, `tip-document`, `stare-document`, `lista-completa` și `rand-neschimbat`. Se probează și starea în care acțiunea devine utilă. Câmpurile completabile păstrează controlul inactiv și motivul lui. F078 rămâne probă de regresie pentru lista tehnică ascunsă din spatele butoanelor.
+4. La o încercare se afișează toate erorile aplicabile. După o alegere, motivul rămas corespunde câmpurilor încă necompletate. Căutarea cu rezultate afișează opțiunile, iar căutarea fără rezultate arată starea goală.
+5. În D394, avertismentul operațiunilor N păstrează literalul «EXCLUSE». Afișarea în română păstrează separatorii locali, diacriticele, ghilimelele „…”, spațiile și sensul textului. Mesajele generate, inclusiv explicațiile AI, urmează aceleași reguli. O constatare apare o dată în zona ei.
+6. Avertismentul are un sumar scurt. Inventarul de documente și motivele integrale se citesc în detalii, accesibile dintr-o singură acțiune.
+7. Alegerea declarației afișează inițial desfăcut grupul cu perioadele dinaintea preluării. Toate perioadele eligibile rămân accesibile. Imediat după alegere, „Continuă →” se vede și conduce la declarația și perioada selectate.
+
+Gardul static raportează exemple recognoscibile direct în șablon. La proba de candidat, modul `--q7-probe` al verificatorului verifică măsurile observabile ale fiecărui caz și rezoluții. Acuratețea surselor, rolurilor și stărilor este controlată în parcursul și probele Pilot.

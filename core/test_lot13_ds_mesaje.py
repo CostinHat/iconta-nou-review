@@ -67,7 +67,8 @@ def test_def_515_caseta_spune_motivul_o_singura_data(pg):
     r = pg.evaluate("""() => { const box = document.querySelector('.refuz-salvare');
       return { box: box && box.innerText, motiv: box && (box.querySelector('.refuz-salvare-motiv') || {}).textContent,
                zonaAscunsa: document.getElementById('m').hidden }; }""")
-    assert r["box"] and r["box"].startswith("NU s-a salvat.") and r["motiv"] == "Contul de ajustare a stocurilor trebuie să fie din grupa 39.", r
+    # [17.5-T] actualizat la DS.5 17.5-Q8, decizia 11 (static/js/api.js:713): refuzul nu mai începe cu „NU s-a salvat.”, caseta e chiar motivul
+    assert r["box"] and r["box"].strip() == "Contul de ajustare a stocurilor trebuie să fie din grupa 39." and r["motiv"] == "Contul de ajustare a stocurilor trebuie să fie din grupa 39.", r
     assert r["zonaAscunsa"] is True, r                                       # același text, o singură dată
     assert "motivul e mai" not in r["box"]
     # corectarea câmpului: refuzul pleacă, zona revine (goală)

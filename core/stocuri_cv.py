@@ -43,7 +43,7 @@ def mesaj_peste_stoc(cantitate, stoc, um="", data=None):
     return "Ieșire de %s peste stocul de %s%s" % (_c(cantitate, um), _c(stoc, um), _la(data))
 
 
-def fisa_magazie(miscari, stoc_initial=None, um="", recalculeaza=False):
+def fisa_magazie(miscari, stoc_initial=None, um="", recalculeaza=False, tolerant=False):
     """miscari: [{tip: 'intrare'|'iesire'|'ajustare' (de valoare, cantitate 0, `valoare`), cantitate, pret_unitar? (doar la intrare),
     data, document?}] in ordine cronologica.
     stoc_initial: {cantitate, valoare} sau None.
@@ -51,7 +51,9 @@ def fisa_magazie(miscari, stoc_initial=None, um="", recalculeaza=False):
     recalculeaza: [696.1] True = TOATE ieșirile se evaluează la CMP, chiar și cele scrise (ce-ar fi dacă: ștergerea unui Z, refacerea); implicit, o ieșire scrisă
     are valoarea din nota ei.
     Intoarce liniile fisei cu sold cantitate/valoare/CMP dupa fiecare miscare.
-    Ridica ValueError la iesire peste stoc."""
+    Ridica ValueError la iesire peste stoc.
+    tolerant: [17.5-Q7, STOC.1 / F089] citirea unei istorii deja scrise (ecranul Stocuri, fișa articolului): mișcarea care trece peste stoc nu mai
+    oprește citirea (ecranul cădea cu 500), ci primește `eroare` (motivul, pe rândul ei); soldul continuă cu ea, ca să se vadă efectul."""
     cant = _d((stoc_initial or {}).get("cantitate", 0))
     val = _d((stoc_initial or {}).get("valoare", 0))
     out = []
@@ -97,7 +99,15 @@ def fisa_magazie(miscari, stoc_initial=None, um="", recalculeaza=False):
             val += v
         elif m["tip"] == "iesire":
             if c > cant:
-                raise ValueError(mesaj_peste_stoc(c, cant, um, m.get("data")))
+                if not tolerant:
+                    raise ValueError(mesaj_peste_stoc(c, cant, um, m.get("data")))
+                # [17.5-Q7, STOC.1] mișcarea scrisă peste stoc: semnalată pe rândul ei, cu valoarea din nota ei (nu există CMP pe stoc zero)
+                v = _q(m.get("valoare") or 0)
+                cant -= c
+                val = _q(val - v)
+                out.append({**m, "valoare": v, "sold_cantitate": cant, "sold_valoare": _q(val), "cmp": None,
+                            "eroare": mesaj_peste_stoc(c, cant + c if cant + c > 0 else Decimal(0), um, m.get("data"))})
+                continue
             cmp_curent = val / cant  # cant > 0 garantat de conditia de mai sus
             # [696.1, comanda 14.3] „Valoarea din fișă trebuie să fie exact suma notelor (ieșirea se evaluează la valoarea din notă; soldul fișei = intrări −
             # ieșiri).” O mișcare deja scrisă (are `id` și `valoare`: valoarea notei 607 = 371) intră în fișă cu valoarea ei, nu recalculată la CMP-ul
@@ -116,6 +126,37 @@ def fisa_magazie(miscari, stoc_initial=None, um="", recalculeaza=False):
                     "sold_valoare": _q(val),
                     "cmp": _q4(val / cant) if cant > 0 else None})
     return out
+
+
+def _zi(d):
+    return str(d)[:10] if d not in (None, "") else ""
+
+
+def disponibil_la_data(miscari, stoc_initial, data, um=""):
+    """[17.5-Q7, STOC.1 / F089] Cantitatea care poate ieși la `data` fără ca stocul să devină negativ atunci SAU MAI TÂRZIU: soldul de după ultima
+    mișcare din ziua ei (sau dinainte), coborât la cel mai mic sold de după (o ieșire în trecut nu are voie să lase fără stoc ieșirile deja scrise).
+    PURĂ; `miscari` în ordinea fișei (data, id)."""
+    fisa = fisa_magazie(miscari, stoc_initial, um)
+    zi = _zi(data)
+    pana = [i for i, m in enumerate(fisa) if _zi(m.get("data")) <= zi]
+    sold = fisa[pana[-1]]["sold_cantitate"] if pana else _d((stoc_initial or {}).get("cantitate", 0))
+    dupa = [x["sold_cantitate"] for x in fisa[(pana[-1] + 1 if pana else 0):]]
+    return min([sold] + dupa)
+
+
+def valoare_iesire_la(miscari, stoc_initial, cantitate, data, um=""):
+    """[17.5-Q7, STOC.1 / F089] `valoare_iesire` pentru o ieșire datată: stocul se judecă la data ei (`disponibil_la_data`), nu la stocul de azi, iar
+    CMP-ul e cel de la data ei. Refuzul spune cantitatea disponibilă la acea dată. Fără dată: ca `valoare_iesire`."""
+    if data in (None, ""):
+        return valoare_iesire(miscari, stoc_initial, cantitate, um)
+    c = _d(cantitate)
+    if c <= 0:
+        raise ValueError("Cantitatea ieșirii trebuie să fie mai mare ca zero (are %s)" % _c(c, um))
+    disp = disponibil_la_data(miscari, stoc_initial, data, um)
+    if c > disp:
+        raise ValueError(mesaj_peste_stoc(c, disp if disp > 0 else Decimal(0), um, data))
+    zi = _zi(data)
+    return valoare_iesire([m for m in miscari if _zi(m.get("data")) <= zi], stoc_initial, c, um)
 
 
 def valoare_iesire(miscari, stoc_initial, cantitate, um=""):

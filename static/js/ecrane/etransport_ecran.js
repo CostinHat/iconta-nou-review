@@ -1,8 +1,8 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, semnAjutor, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile, arataRefuzul, inactiv } from "../api.js?v=7396e03327";
-import { textStareSpv } from "./spv_stare.js?v=a491746870";  /* [17.5-N, AC041] acoperirea SPV a firmei, cu regula implicită a textului de stare */
+import { api, semnAjutor, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile, arataRefuzul, inactiv } from "../api.js?v=76d1a3d8b0";
+import { textStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [17.5-N, AC041] acoperirea SPV a firmei, cu regula implicită a textului de stare */
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.

@@ -2,7 +2,7 @@
 // grupurile formularului (Document, Furnizor / Client, Sume, Descriere), lățimea câmpului după rol (XS 9, S 16, M 38, L jumătate, XL
 // toată lățimea) și cardul-rezumat de un rând cu detaliile pliate. Dimensiunile sunt în stil.css (`.ds-*`); aici stă numai alegerea
 // clasei, ca ecranele să nu mai aleagă singure lățimi și grupuri.
-import { esc, focusFaraSalt, cate } from "./api.js?v=7396e03327";
+import { esc, focusFaraSalt, cate } from "./api.js?v=76d1a3d8b0";
 
 export const GRUPURI_FORMULAR = ["Document", "Furnizor / Client", "Sume", "Descriere"];
 
@@ -171,7 +171,12 @@ export function textSemnal(t) {
   if (prima.length <= 200) return prima;
   const taiat = prima.slice(0, 200);
   const sp = taiat.lastIndexOf(" ");
-  return (sp > 120 ? taiat.slice(0, sp) : taiat).replace(/[\s,;—–-]+$/, "");
+  let c = (sp > 120 ? taiat.slice(0, sp) : taiat);
+  // [17.5-Q8, FISC.8 / F022] tăietura nu se oprește în mijlocul unei paranteze („… și (2) D300 depus (rândurile”): se taie înaintea parantezei
+  // deschise și rămase neînchise, iar „…” spune că textul întreg e în detalii
+  const deschise = (x) => (x.match(/\(/g) || []).length - (x.match(/\)/g) || []).length;
+  while (deschise(c) > 0 && c.lastIndexOf("(") > 60) c = c.slice(0, c.lastIndexOf("("));
+  return c.replace(/[\s,;:—–-]+$/, "") + "…";
 }
 
 /** [15.1, 687.1] Semnalele unei ferestre: un rând de 36 px pe semnal (textul pe cel mult două rânduri, fără tăiere), „ce e de făcut” pliat sub el; fără derulare proprie: peste
@@ -546,6 +551,12 @@ function _eticheteazaStiva(t) {
     }
   }
 }
+export const LATIME_MIN_CELULA = 56;
+function _coloaneStrivite(t) {
+  const randuri = [...(t.tHead ? t.tHead.rows : []), ...[...t.tBodies].flatMap((b) => [...b.rows].slice(0, 3))];
+  return randuri.some((r) => [...r.cells].some((c) => (c.colSpan || 1) === 1 && _txt(c.textContent) && c.getBoundingClientRect().width > 0
+    && c.getBoundingClientRect().width < LATIME_MIN_CELULA));
+}
 export function tabeleStivuiteAplica(corp) {
   const ingust = window.innerWidth <= LATIME_STIVA;
   for (const t of corp.querySelectorAll("table")) {
@@ -558,8 +569,11 @@ export function tabeleStivuiteAplica(corp) {
     const intregi = t.hasAttribute("data-stiva-cuvinte-intregi");
     if (intregi) t.classList.add("ds-tabel-proba");
     const lat = Math.ceil(t.getBoundingClientRect().width);
+    // [17.5-Q8, DS.1] „încape” înseamnă și coloane citibile: un tabel care intră în lățime numai strivind coloanele (o celulă cu text mai îngustă de
+    // LATIME_MIN_CELULA — măsurat pe E_R2: 16–53 px la 603×590 în Bancă, Clienți, De validat, Registru jurnal, Balanță) devine și el stivă
+    const strivit = lat <= loc.clientWidth + 1 && _coloaneStrivite(t);
     if (intregi) t.classList.remove("ds-tabel-proba");
-    if (lat <= loc.clientWidth + 1) continue;   // încape: rămâne tabel
+    if (lat <= loc.clientWidth + 1 && !strivit) continue;   // încape, cu coloane citibile: rămâne tabel
     _eticheteazaStiva(t);
     t.classList.add("ds-tabel-stiva");
   }

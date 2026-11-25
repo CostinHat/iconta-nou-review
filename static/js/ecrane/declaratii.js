@@ -6,8 +6,8 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=03f816740e";   // [15.1, 722] lista cu căutare
-import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=7396e03327";
+import { listaCuCautare, cardRezumat, tabelDS, semnalHtml, legaSemnale } from "../ds_piese.js?v=91866a42f7";   // [15.1, 722] lista cu căutare
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=76d1a3d8b0";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=b26ef32cac";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
@@ -274,6 +274,8 @@ ${S.firmaFixa ? "" : `      <label class="camp">
   if (S.tenant_id) declaratiiExistente(corp.querySelector("#dec-existente"), S.tenant_id);
   if (selFirma) selFirma.addEventListener("change", refresh);
   selTip.addEventListener("change", refresh);
+  // [17.5-Q8, DS.7 / F026, F028] imediat după alegere, „Continuă →” se vede (lista lungă nu-l mai lasă sub vedere)
+  selTip.addEventListener("change", () => requestAnimationFrame(() => { const c = corp.querySelector("#dec-continua"); if (c && c.isConnected) c.scrollIntoView({ block: "nearest" }); }));
   legPerioada(zonaP);
   // [deficiența 485] pasul 2 e un PAS al ferestrei (`nav.mergi`), nu o redesenare pe loc: săgeata înapoi a navigatorului scoate întâi pasul
   // de pe traseu și întoarce la alegerea declarației; până azi, cu fereastra deschisă din fereastra firmei, săgeata închidea Declarațiile
@@ -563,6 +565,7 @@ async function pas2(corp, nav) {
 
   const f = corp.closest(".fereastra"); if (f) f.classList.add("fer-larg");
   const avert = S.rezultat.avertismente || [];
+  const avertHtml = avert.map((a) => _avertPliat(typeof a === "string" ? a : (a.mesaj || "avertisment fără detalii"))).join("");   // [17.5-Q8, DS.6] textul trece prin esc() în _avertPliat
   const constat = S.rezultat.note_rezultat || [];   // fapte NEUTRE despre rezultat (sectiune informativa separata, nu avertisment)
   // [lotul 10, deficiența 436, comanda Costin 10.2 pct.6] „când declarația știe că are cifra greșită din note nevalidate, depunerea se
   // blochează până la validare, cu motivul lângă buton, la toate declarațiile.” Serverul spune refuzul (`uc_declaratii.blocaj_depunere`,
@@ -607,7 +610,7 @@ async function pas2(corp, nav) {
       </div>` : ""}
     ${avert.length ? `<div class="dec-avert">
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
-        <ul>${avert.map((a)=>`<li>${esc(typeof a==="string"?a:(a.mesaj||"avertisment fără detalii"))}</li>`).join("")}</ul>
+        <ul>${avertHtml}</ul>
       </div>` : ""}
     ${_blocComponente(S.rezultat.componente)}
     <details class="dec-xml">
@@ -630,8 +633,11 @@ async function pas2(corp, nav) {
     <div id="dec-coada-mesaj">${_blocaj ? `<div class="caseta-atentie" id="dec-blocaj" role="status"><div class="ca-mesaj">${esc(_mesajLangaNote(_blocaj))}</div></div>` : ""}</div></div>
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
+  legaSemnale(corp);   // [17.5-Q8, DS.6] „▾ detalii” al avertismentelor lungi
   // [lotul 10, 436] notele care opresc depunerea: fiecare cu drumul ei spre Registrul jurnal, în luna notei (ca refuzul porții TVA, 284)
   if (_blocaj && (_blocaj.note || []).length) legaturiNote(corp.querySelector("#dec-blocaj .ca-mesaj"), S.tenant_id, _blocaj.note);
+  // [17.5-Q7, FISC.2] facturile pe care decontul le-a scos din calcul (partener străin cu cotă internă): fiecare cu drumul ei spre fișa facturii
+  if (_blocaj && (_blocaj.documente || []).length) legaturiFacturi(corp.querySelector("#dec-blocaj .ca-mesaj"), nav, S.tenant_id, _blocaj.documente);
   const _bt = corp.querySelector("#dec-trimite");
   if (_bt) { _bt.addEventListener("click", () => pas3(corp, nav)); etichetaTrimitere(_bt); }   // [313]
   const _bDa = corp.querySelector("#dec-gol-da");
@@ -679,6 +685,27 @@ function randeazaDiferenteRectificativa(corp, nav, d) {
 // [lotul 11, deficiența 436 afișare] „paragraful repetă notele pe care le arată butoanele”: lângă butoanele „Deschide nota …”
 // (`legaturiNote`) refuzul spune câte note și ce e de făcut, nu le mai enumeră — serverul dă textul fără listă (`mesaj_langa_note`,
 // `coada_api.blocaj_note_nevalidate`); textul cu lista (`mesaj`) rămâne pentru locurile fără butoane („De depus”, API-ul).
+function legaturiFacturi(zona, nav, tenantId, documente) {
+  const lista = document.createElement("div");
+  lista.className = "coada-note-refuz";
+  lista.innerHTML = documente.map((d, i) => `<button type="button" class="buton-secundar" data-factura="${i}">Deschide ${esc(String(d.eticheta || "factura").replace(/^Factură\b/, "factura"))}</button>`).join(" ");
+  zona.appendChild(lista);
+  lista.querySelectorAll("[data-factura]").forEach((b) => b.addEventListener("click", async () => {
+    const d = documente[parseInt(b.dataset.factura, 10)];
+    const { deschideFactura } = await import("./facturi_ecran.js?v=bdc8349cd4");
+    deschideFactura(nav, tenantId, d.factura_id);
+  }));
+}
+
+// [17.5-Q8, DS.6 / F031, F034, F035] avertismentul e un semnal scurt: prima propoziție la vedere, inventarul de documente și motivele integrale
+// sub „▾ detalii”, deschise dintr-un singur clic (lista de 17 facturi nu mai e un paragraf de 20 de rânduri). Textul scurt rămâne întreg.
+function _avertPliat(text) {
+  const t = String(text || "").trim();
+  if (t.length <= 180) return `<li>${esc(t)}</li>`;
+  // piesa DS a semnalului (`semnalHtml`): prima propoziție la vedere, textul întreg sub butonul „▾ detalii” (`legaSemnale`)
+  return `<li class="dec-avert-semnal">${semnalHtml({ ton: "avertisment", text: t })}</li>`;
+}
+
 function _mesajLangaNote(refuz) {
   return (refuz.note || []).length ? refuz.mesaj_langa_note : (refuz.mesaj || "");
 }
@@ -721,7 +748,7 @@ async function randeazaClasificareD390(corp, nav) {
     </div>
     <p class="ecran-nota" style="margin-top:4px">Tip <b>A</b> (nota 1): achiziție intracomunitară de bunuri de la un furnizor UE care nu a comunicat un cod valid de TVA — completează Țara (statul membru din care s-au transportat bunurile) și lasă Codul gol.</p>
     <div id="dec-clasif-msg"></div>
-    <p style="margin-top:8px"><button class="buton-primar" id="dec-regen">Regenerează D390</button>
+    <p style="margin-top:8px"><button class="buton-secundar" id="dec-regen">Regenerează D390</button>
       <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
   </details>`;
   zona.querySelectorAll(".dec-recl").forEach((sel) => sel.addEventListener("change", async () => {
@@ -874,7 +901,7 @@ function randeazaFormularD710(corp, nav) {
       <button class="buton-secundar" id="d710-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>
     </div>
     <div id="d710-msg"></div>
-    <p style="margin-top:8px"><button class="buton-primar" id="d710-regen">${_etRegen()}</button>
+    <p style="margin-top:8px"><button class="buton-secundar" id="d710-regen">${_etRegen()}</button>
       <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
   </details>`;
   const gv = (id) => zona.querySelector(id);
@@ -975,7 +1002,7 @@ function randeazaFormularD311(corp, nav) {
     ${randuri}
     <p class="camp-ajutor" style="margin-top:8px">Total de plată (control): <b id="d311-total">${bani(total)} lei</b> — se calculează automat din bazele și TVA de mai sus. Subtotalurile nu se completează.</p>
     <div id="d311-msg"></div>
-    <p style="margin-top:8px"><button class="buton-primar" id="d311-regen">${_etRegen()}</button>
+    <p style="margin-top:8px"><button class="buton-secundar" id="d311-regen">${_etRegen()}</button>
       <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
   </details>`;
   const gv = (id) => zona.querySelector(id);
@@ -1071,7 +1098,7 @@ function randeazaFormularD307(corp, nav) {
     </div>
     <div id="d307-msg"></div>
     <p class="camp-ajutor" style="margin-top:8px">Total ajustare TVA: <b>${bani(total)} lei</b> — se calculează automat din operațiunile de mai sus.</p>
-    <p style="margin-top:8px"><button class="buton-primar" id="d307-regen">${_etRegen()}</button>
+    <p style="margin-top:8px"><button class="buton-secundar" id="d307-regen">${_etRegen()}</button>
       <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
   </details>`;
   const gv = (id) => zona.querySelector(id);
@@ -1189,7 +1216,7 @@ function randeazaFormularD107(corp, nav) {
       <div id="d107-ni-msg"></div>
     </details>
     <p class="camp-ajutor" id="d107-totaluri" style="margin-top:8px">${totaluri()}</p>
-    <p style="margin-top:8px"><button class="buton-primar" id="d107-regen">${_etRegen()}</button>
+    <p style="margin-top:8px"><button class="buton-secundar" id="d107-regen">${_etRegen()}</button>
       <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
   </details>`;
   const gv = (id) => zona.querySelector(id);
@@ -1319,7 +1346,7 @@ function randeazaFormularD177(corp, nav) {
     </div>
     <div id="d177-msg"></div>
     <p class="camp-ajutor" id="d177-totaluri" style="margin-top:8px">${totaluri()}</p>
-    <p style="margin-top:8px"><button class="buton-primar" id="d177-regen">${_etRegen()}</button>
+    <p style="margin-top:8px"><button class="buton-secundar" id="d177-regen">${_etRegen()}</button>
       <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
   </details>`;
   const gv = (id) => zona.querySelector(id);
@@ -1427,7 +1454,7 @@ function randeazaFormularD230(corp, nav) {
     "</div>" +
     '<p class="camp-ajutor" style="margin:6px 0 0">Sumă goală = ANAF determină cuantumul (până la 3,5% din impozit). Termen: 25 mai a anului următor.</p>' +
     '<div id="d230-msg"></div>' +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d230-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d230-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -1559,7 +1586,7 @@ function randeazaFormularD204(corp, nav) {
     '<p class="camp-ajutor" style="margin-top:8px">Σ cote: <b>' + (Math.round(sCota * 100) / 100) + "</b>% " + (okCota ? "✓" : "(trebuie 100)") +
       " · Σ venit repartizat: <b>" + sVen + "</b> / " + net3 + " lei " + (okVen ? "✓" : "(trebuie egal cu venitul net)") +
       (pierd3 > 0 ? (" · Σ pierdere: <b>" + sPier + "</b> / " + pierd3 + " " + (okPier ? "✓" : "(trebuie egal)")) : "") + "</p>" +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d204-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d204-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -1692,7 +1719,7 @@ function randeazaFormularD216(corp, nav) {
     "</div>" +
     '<div id="d216-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Impozit imobile: <b>' + tImob + "</b> · impozit mobile: <b>" + tMob + "</b> lei (calculat cu rata validatorului 0,3%). Valoarea impozabilă trebuie să depășească plafonul.</p>" +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d216-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d216-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -1845,7 +1872,7 @@ function randeazaFormularD208(corp, nav) {
     '<div id="d208-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ cote beneficiari: <b>' + (Math.round(sBen * 100) / 100) + "</b>% " + (okBen ? "✓" : "(trebuie 100)") +
       " · Σ cote părți: <b>" + (Math.round(sPar * 100) / 100) + "</b>% " + (okPar ? "✓" : "(trebuie 100)") + " · impozit total: <b>" + tImp + "</b> lei</p>" +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d208-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d208-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -1956,7 +1983,7 @@ function randeazaFormularD603(corp, nav) {
     "</div>" +
     '<p class="camp-ajutor" style="margin:6px 0 0">Statul de asigurare trebuie să fie diferit de RO (ești asigurat în alt stat). D603 nu conține sume — doar perioada și categoria exceptării.</p>' +
     '<div id="d603-msg"></div>' +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d603-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d603-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -2053,7 +2080,7 @@ function randeazaFormularD104(corp, nav) {
     "</div>" +
     '<div id="d104-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ venit: <b>' + tVen + "</b> · Σ cheltuieli: <b>" + tCh + "</b> · Σ impozit datorat: <b>" + tImp + "</b> lei. " + (defin ? "Definitivare (trim 4 -> luna 12): se completează și impozitul declarat." : "Trimestrial cumulat: impozitul declarat se completează doar la definitivare.") + "</p>" +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d104-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d104-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -2151,7 +2178,7 @@ function randeazaFormularD114(corp, nav) {
     "</div>" +
     '<div id="d114-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ venit: <b>' + tVen + "</b> · Σ CAM (1%): <b>" + tCam + "</b> lei. Contribuția se calculează automat = 1% din venit (regula validatorului). Perioada lunară din selectorul de sus.</p>" +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d114-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d114-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -2245,8 +2272,8 @@ function randeazaFormularD110(corp, nav) {
     "</div>" +
     '<div id="d110-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ de plată: <b>' + sPlata + "</b> · Σ de restituit: <b>" + sRest + "</b> lei. " +
-      (incoerent ? (rest ? "(cerere de restituire dar nicio diferență de restituit)" : "(există diferențe de restituit — alege „Cerere de restituire\" + IBAN)") : "") + "</p>" +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d110-regen">' + _etRegen() + '</button>' +
+      (incoerent ? (rest ? "(cerere de restituire dar nicio diferență de restituit)" : "(există diferențe de restituit — alege „Cerere de restituire” + IBAN)") : "") + "</p>" +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d110-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -2355,7 +2382,7 @@ function randeazaFormularD398(corp, nav) {
     "</div>" +
     '<div id="d398-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Total TVA datorat: <b>' + bani(gt) + "</b> " + esc(d.currency || "EUR") + ". Livrarea din sediul fix din alt stat membru există numai în regimul UE; regimul non-UE are numai servicii, iar regimul de import numai bunuri.</p>" +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d398-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d398-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -2534,7 +2561,7 @@ function randeazaFormularD318(corp, nav) {
     '<div id="d318-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Total TVA deductibil cerut la rambursare: <b>' + totalDed.toFixed(2) + "</b> " + esc(d.currency || "") +
       ". Pragul minim al cererii: 400 euro pe o perioadă mai scurtă de un an, 50 euro pe un an sau pe restul anului (HG 1/2016 pct.73 alin.(13)–(14)). Codul bunului / serviciului (1–10) e clasificarea statului de rambursare.</p>" +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d318-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d318-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -2888,7 +2915,7 @@ function randeazaFormularD212(corp, nav) {
     blocVenituri +
     blocStrainatate +
     blocContributii +
-    '<p style="margin-top:10px"><button class="buton-primar" id="d212-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:10px"><button class="buton-secundar" id="d212-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
   const gv = (id) => zona.querySelector(id);
@@ -3130,7 +3157,7 @@ function randeazaFormularD205(corp, nav, deschis) {
     '</div><div id="d205-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">' + cate(benef.length, "beneficiar", "beneficiari") + ' · distribuit <b>' + bani(tot("divid_d")) + '</b> · plătit <b>' +
       bani(tot("divid_p")) + '</b> · bază <b>' + bani(tot("baza")) + '</b> · impozit <b>' + bani(tot("imp")) + '</b> lei (Cod fiscal art.97 alin.(7)).</p>' +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d205-regen">Regenerează D205</button></p></details>';
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d205-regen">Regenerează D205</button></p></details>';
   const gv = (id) => zona.querySelector(id);
   zona.querySelectorAll(".dec-d205-del").forEach((b) => b.addEventListener("click", () => {
     S.d205.beneficiari.splice(parseInt(b.dataset.idx, 10), 1); randeazaFormularD205(corp, nav, true);
@@ -3237,7 +3264,7 @@ function randeazaFormularD207(corp, nav) {
     '<p class="camp-ajutor" id="d207-scutit-nota" style="margin:4px 0 0"></p>' +
     '<div id="d207-msg"></div>' +
     '<p class="camp-ajutor" id="d207-totaluri" style="margin-top:8px">' + cate(benef.length, "beneficiar", "beneficiari") + ' · bază impozabilă <b>' + bani(Tbaza) + '</b> · venit scutit <b>' + bani(Tscutit) + '</b> · impozit reținut <b>' + bani(Timp) + '</b> · impozit suportat de plătitor <b>' + bani(Timps) + '</b> lei. Suma de control a declarației: <b>' + totalCtrl + '</b> — se calculează automat din datele de mai sus.</p>' +
-    '<p style="margin-top:8px"><button class="buton-primar" id="d207-regen">' + _etRegen() + '</button>' +
+    '<p style="margin-top:8px"><button class="buton-secundar" id="d207-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   '</details>';
   const gv = (id) => zona.querySelector(id);
@@ -3325,7 +3352,7 @@ async function randeazaManualD300(corp, nav) {
       <button class="buton-secundar" id="d300-add" data-actiune="POST /tenants/{tenant_id}/d300-manual">+ adaugă</button>
     </div>` : `<p class="ecran-nota" style="margin-top:8px">Toate rândurile manual-acceptabile sunt fie deja introduse, fie derivate automat din facturile perioadei.</p>`}
     <div id="d300-msg"></div>
-    <p style="margin-top:8px"><button class="buton-primar" id="d300-regen">Regenerează D300</button>
+    <p style="margin-top:8px"><button class="buton-secundar" id="d300-regen">Regenerează D300</button>
       <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
   </details>`;
   const gv = (id) => zona.querySelector(id);

@@ -28,12 +28,12 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, semnAjutor, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=7396e03327";
+import { api, semnAjutor, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=76d1a3d8b0";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=ceec1ccebf";
-import { legaSemnale, meniuActiuni, paginareDS } from "../ds_piese.js?v=03f816740e";   // [15.1-E3] pliarea semnalelor constatărilor
+import { randA as randConstatare } from "./control_verdict.js?v=79e2b7d168";
+import { legaSemnale, meniuActiuni, paginareDS } from "../ds_piese.js?v=91866a42f7";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=f7b964095e";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=320489dd29";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -441,7 +441,7 @@ function randNotaCoada(c, firme, perm) {
   } else if (euAmPregatit) {
     actiuni = `<span class="val-nota-perm">ai pregătit-o tu — o validează altcineva</span>`;
   } else {
-    actiuni = `<button class="buton-primar val-btn val-aproba" data-act="valideaza-nota" data-actiune="POST /coada/{coada_id}/aproba">Validează</button>
+    actiuni = `<button class="buton-secundar val-btn val-aproba" data-act="valideaza-nota" data-actiune="POST /coada/{coada_id}/aproba">Validează</button>
       ${meniuActiuni([`<button class="buton-sters val-btn val-respinge" data-act="respinge-nota" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`])}`;
     selectabila = true;
   }
@@ -468,7 +468,7 @@ function randCiornaMea(f, n, valideaza) {
   const respinsa = n.in_coada === "respinsa";
   const b = [];
   if (n.in_coada !== "la_senior" && valideaza)
-    b.push(`<button class="buton-primar val-ciorna-valideaza" data-val-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Validează</button>`);
+    b.push(`<button class="buton-secundar val-ciorna-valideaza" data-val-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Validează</button>`);
   else if (n.in_coada !== "la_senior" && !valideaza)
     b.push(`<button class="buton-secundar val-ciorna-trimite" data-trimite-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite">${respinsa ? "Trimite din nou la validare" : "Trimite la validare"}</button>`);
   return {
@@ -782,8 +782,8 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     actiuni += perm.poate_pregati === false
       ? `<span class="val-nota-perm">o generează din nou cine are dreptul «Poate pregăti»</span>`
       : c.se_poate_regenera
-        ? `<button class="buton-primar val-btn val-regenereaza" data-act="regenereaza" data-actiune="POST /coada/{coada_id}/regenereaza">Generează din nou</button>`
-        : `<button class="buton-primar val-btn val-din-declaratii" data-act="din_declaratii" data-fara-actiune="navigare la Declarații; generarea de acolo poartă acțiunea">Generează din Declarații</button>`;
+        ? `<button class="buton-secundar val-btn val-regenereaza" data-act="regenereaza" data-actiune="POST /coada/{coada_id}/regenereaza">Generează din nou</button>`
+        : `<button class="buton-secundar val-btn val-din-declaratii" data-act="din_declaratii" data-fara-actiune="navigare la Declarații; generarea de acolo poartă acțiunea">Generează din Declarații</button>`;
   } else if (mod === "valida") {
     // Aprobă — doar dacă pot valida ȘI (patru-ochi activ) nu eu am pregătit-o
     if (!perm.poate_valida) {
@@ -791,7 +791,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     } else if (euAmPregatit) {
       actiuni += `<span class="val-nota-perm">ai pregătit-o tu — o validează altcineva</span>`;
     } else {
-      actiuni += `<button class="buton-primar val-btn val-aproba" data-act="aproba" data-actiune="POST /coada/{coada_id}/aproba">Aprobă</button>`;
+      actiuni += `<button class="buton-secundar val-btn val-aproba" data-act="aproba" data-actiune="POST /coada/{coada_id}/aproba">Aprobă</button>`;
     }
     // Respinge — oricine cu drept de validare (și care n-a pregătit-o, când patru-ochi e activ)
     if (perm.poate_valida && !euAmPregatit) {
@@ -807,7 +807,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     } else if (!potDepune) {
       actiuni += `<span class="val-nota-perm">nu ai dreptul de depunere</span>`;
     } else if (vi.gata) {
-      actiuni += `<button class="buton-primar val-btn val-depune" data-act="depune" data-actiune="POST /coada/{coada_id}/depune">Confirmă depunerea</button>`;
+      actiuni += `<button class="buton-secundar val-btn val-depune" data-act="depune" data-actiune="POST /coada/{coada_id}/depune">Confirmă depunerea</button>`;
     } else {
       // [R41 partea II] Nu e gata: acțiunea principală devine cea care REPARĂ (deschide, ca
       // validatorul să ruleze și verdictul să se păstreze). Depunerea rămâne posibilă, dar
@@ -865,7 +865,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=4d4df4dd83");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=455ec134b8");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

@@ -783,10 +783,10 @@ def calcul_d394(prof, perioada, date, manual=None):
     if excluse_N:
         lista = "; ".join("%s (baza %s lei)" % (n or (c or "fără CUI"), _int(b)) for n, c, b in excluse_N)
         avert.append(
-            "ATENTIE: EXCLUSE din D394 — %s (achiziții de la parteneri NEÎNREGISTRAȚI, persoane fizice), "
-            "fiindcă LIPSEȘTE categoria art.331 a bunurilor (op11.codPR e OBLIGATORIU la persoana "
-            "fizica, conform R233.6). Adaugă categoria produsului pe factura ca să fie declarate. Furnizori/sume: "
-            "%s. Restul declarației RAMANE valid." % (_cate(len(excluse_N), "operațiune N", "operațiuni N"), lista))
+            "Atenție: EXCLUSE din D394 — %s (achiziții de la parteneri neînregistrați, persoane fizice), "
+            "fiindcă lipsește categoria art.331 a bunurilor (codul produsului e obligatoriu la persoana "
+            "fizică, regula DUK R233.6). Adaugă categoria produsului pe factură, ca să fie declarate. Furnizori și sume: "
+            "%s. Restul declarației rămâne valid." % (_cate(len(excluse_N), "operațiune N", "operațiuni N"), lista))
 
     # [T1/G-c1 10.08.2026] CHECKSUM cuiP partener, PRE-DUK (altfel DUK il prinde brut: R218.2/R218.3).
     # Sursa canonica core.identitate (import read-only). Un CUI/CIF cu cifra de control gresita / lungime /
@@ -849,11 +849,11 @@ def calcul_d394(prof, perioada, date, manual=None):
             _ok, _tid, _m = _vcif(cuiP)
             if _ok and _tid == "cui":
                 avert.append(
-                    "Operațiune N către partener \"%s\" (cod \"%s\") - codul e CUI de FIRMA, nu CNP de "
-                    "persoana fizica: op11 (categoria art.331) e cerut la persoane fizice, iar un partener cu "
-                    "CUI de firma declarat ca N-persoana fizica e respins de DUK regula R233.4. Operațiune "
-                    "EXCLUSA din declarație; declara-l corect (persoana fizica fără CUI, sau alt tip de "
-                    "operatiune)." % (denP or "?", cuiP))
+                    "Operațiune N către partenerul „%s” (cod „%s”): codul e CUI de firmă, nu CNP de "
+                    "persoană fizică. Categoria art.331 se cere la persoane fizice, iar un partener cu "
+                    "CUI de firmă declarat ca persoană fizică e respins de DUK (regula R233.4). Operațiunea "
+                    "e în afara declarației; declar-o corect (persoană fizică fără CUI sau alt tip de "
+                    "operațiune)." % (denP or "?", cuiP))
                 del op1[k]
                 categorii.pop(k, None)
                 incluse.pop(k, None)
@@ -863,9 +863,9 @@ def calcul_d394(prof, perioada, date, manual=None):
             _regula = "R233.6" if tip == "N" else "R233.5"
             _ident = (denP or "?") + ((" (CUI %s)" % cuiP) if cuiP else "")
             avert.append(
-                "Operațiune %s către partener %s %s -> op1 s-ar emite FĂRĂ op11 (codul produsului "
-                "art.331), pe care DUK regula %s îl respinge. Operațiune EXCLUSA din declarație; adaugă "
-                "categoria art.331 / subcodul NC pe factura ca să fie declarata. Restul declarației RAMANE "
+                "Operațiune %s către partenerul %s %s: ar intra în declarație fără codul produsului "
+                "art.331, pe care DUK (regula %s) îl respinge. Operațiunea e în afara declarației până adaugi "
+                "categoria art.331 / subcodul NC pe factură; apoi generează din nou. Restul declarației rămâne "
                 "valid." % (tip, _ident, motiv, _regula))
             del op1[k]
             categorii.pop(k, None)

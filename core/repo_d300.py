@@ -150,6 +150,22 @@ def select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
     return cur.fetchall()
 
 
+def select_facturi_straine_cota_interna(cur, _STATUS_FINAL, _EXIG, inceput, sfarsit, q=""):
+    """[17.5-Q7, FISC.2] Facturile declarabile din fereastră (aceleași filtre ca `select_facturi_4`) cu partener din alt stat, fără taxare inversă și
+    cu cel puțin o linie pe cotă internă pozitivă: (id, tip, serie, numar, data_emitere, tert_tara, tva în lei). `q` = prefixul schemei („"tenant_x".”)
+    când conexiunea nu e pe schema firmei (și expresia exigibilității îl primește)."""
+    if q:
+        _EXIG = _EXIG.replace("FROM inregistrari ia JOIN inregistrari_linii la", "FROM %sinregistrari ia JOIN %sinregistrari_linii la" % (q, q))
+    cur.execute("SELECT f.id, f.tip, f.serie, f.numar, f.data_emitere, upper(f.tert_tara) AS tert_tara, COALESCE(f.tva_lei, f.tva) AS tva "
+                "FROM " + q + "facturi f "
+                "WHERE " + _EXIG + " >= %s AND " + _EXIG + " < %s "
+                "AND " + _STATUS_FINAL + " AND " + _doc_fiscal("f") + " AND " + _nu_din_bon("f") + " "
+                "AND upper(COALESCE(f.tert_tara, 'RO')) <> 'RO' AND NOT COALESCE(f.taxare_inversa, false) "
+                "AND EXISTS (SELECT 1 FROM " + q + "factura_linii l WHERE l.factura_id = f.id AND round(l.cota_tva) > 0) "
+                "ORDER BY f.data_emitere, f.id", (inceput, sfarsit))
+    return cur.fetchall()
+
+
 def select_facturi_5(cur, _nsf, _inc, _sf):
     # [DECIZII 46] Si numaratoarea de diagnostic: o proforma nu e un document „de contabilizat".
     cur.execute("SELECT count(*) FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "

@@ -1,7 +1,7 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=7396e03327";
+import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=76d1a3d8b0";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { cardRezumat } from "../ds_piese.js?v=03f816740e";   // [17.5-Q6, 867] sumarul firmelor fără drept în SPV
+import { cardRezumat } from "../ds_piese.js?v=91866a42f7";   // [17.5-Q6, 867] sumarul firmelor fără drept în SPV
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";   // [lotul 11, decizia 10.3] întocmitorul bilanțului, sub Date cabinet
 
 export async function randeazaSetari(corp, nav) {
@@ -534,7 +534,10 @@ export async function panouConectareSPV(zona) {
         + `${c.verificat_la ? " · verificat " + esc(dataRo(c.verificat_la, "cu_ora")) : ""}`
         + `${c.are_drept === false && c.eroare ? ` — ANAF: „${esc(c.eroare)}”` : ""}</li>`).join("");
       if (respinse >= 2) {   // sumarul unic poartă și explicația (o dată), iar rândurile firmelor, cu motivul fiecăreia, stau în detaliile lui
-        const card = cardRezumat({ text: `${cate(respinse, "firmă fără drept în SPV", "firme fără drept în SPV")} cu acest certificat.${st.explicatie_fara_drept ? " " + st.explicatie_fara_drept : ""}`, ton: "avertisment", detalii: ul, intreg: true });
+        // [17.5-Q8, DS.6 / F176] sumarul e un semnal scurt («N firme fără drept în SPV cu acest certificat.»); explicația cu temeiul (o dată) și rândurile
+        // firmelor, cu motivul ANAF al fiecăreia, stau în detaliile lui, deschise dintr-un clic
+        if (st.explicatie_fara_drept) { const li = document.createElement("li"); li.className = "spv-explicatie"; li.textContent = st.explicatie_fara_drept; ul.prepend(li); }
+        const card = cardRezumat({ text: `${cate(respinse, "firmă fără drept în SPV", "firme fără drept în SPV")} cu acest certificat.`, ton: "avertisment", detalii: ul, intreg: true });
         card.id = "spv-cuiuri-sumar";
         z.appendChild(card);
       } else z.appendChild(ul);

@@ -607,6 +607,10 @@ _JURNALE = {
     # NIR-uri, ieșiri, descărcarea lunii, inventarul. Norma nu numește un fel pentru stocuri -> „alte operațiuni”, ca AMORTIZARE
     # (abaterea 2 de mai sus); JournalID-ul e al nostru.
     "stocuri":    ("STOCURI",    "alte"),
+    # [17.5-Q8, FISC.4 / F035] „Raportul Z merge în jurnalul lui, nu în «Diverse»”: notele rapoartelor Z (introduse sau citite din casa de marcat) au
+    # jurnalul lor; norma nu numește un fel pentru ele -> „alte operațiuni”, ca STOCURI; JournalID-ul e al nostru
+    "horeca_z":   ("RAPOARTE_Z", "alte"),
+    "amef":       ("RAPOARTE_Z", "alte"),
 }
 # `furnizori` sta in nomenclator FARA mapare: niciun `inregistrari.sursa` nu-l produce azi.
 # Se scrie asa, nu se sterge - nomenclatorul e complet, maparea e partiala, si diferenta se vede.
@@ -627,7 +631,7 @@ def _sursa_cunoscuta(sursa):
 _ANTET_JURNAL = dict([(v[0], v[1]) for v in _JURNALE.values()] + [_JURNAL_DIVERSE])
 #: [Retest 2 pct.14] numele jurnalului pe ECRAN: JournalID-ul („FACTURI”) e al fișierului, contabilul citește „Facturi”
 ETICHETE_JURNAL = {"CASA": "Casă", "BANCA": "Bancă", "FACTURI": "Facturi", "SALARII": "Salarii", "AMORTIZARE": "Amortizare",
-                   "STOCURI": "Stocuri", "DIVERSE": "Diverse"}
+                   "STOCURI": "Stocuri", "RAPOARTE_Z": "Rapoarte Z", "DIVERSE": "Diverse"}
 TIP_JURNAL = "GL"   # GL.7 Type, SAFcodeType(9): mecanismul de grupare; unul singur, nu se inventeaza
 
 
@@ -1622,6 +1626,13 @@ def pull(conn, schema, an, luna):
             # factura_linii are descriere/um/cantitate/pret_unitar/cota_tva. uom_unece()
             # exista din 16.07 (d406.py:101) si traducea deja 'buc'/'kg' in H87/KGM -
             # era scrisa si NEAPELATA aici.
+            # [17.5-Q8, FISC.4 / F035] notele de stoc validate scrise în forma veche (stornarea cu eticheta ruptă de prima rulare a reparației 409:
+            # „Stornare: n (…)ota nr. crt. 8 …”; cantitatea „x2.000”) intră în SAF-T cu explicația de azi, aceeași ca în Registrul jurnal
+            # (`jurnal_api.explicatii_stoc_vechi`); nota validată rămâne neschimbată în bază (OMFP 1802/2014 pct.69)
+            from core import jurnal_api as _jn_d406
+            for _nid, _txt in _jn_d406.explicatii_stoc_vechi(cur, None, list(nmap)).items():
+                if _nid in nmap:
+                    nmap[_nid].descriere = _txt
             from core.contare_facturi import cont_venit_linie as _cont_venit_linie
             from core import facturi as _fc_d406
             _cvi = _repo.cont_venit_implicit(cur)
@@ -1749,7 +1760,9 @@ def pull(conn, schema, an, luna):
                 # [380] factura față de nota ei de contare: aceleași conturi (vânzare: creditul notei; cumpărare: debitul), fără TVA și terț
                 _in_linii = sorted({lf.cont for lf in linii})
                 _in_nota = sorted((_nota_f or {}).get("credit" if este_v else "debit", set()) - _fara_tva) if _nota_f else None
-                if _in_nota != _in_linii:
+                # [17.5-Q8, FISC.5 / F254] factura emisă pe baza bonului fiscal n-are notă de vânzare prin construcție (vânzarea e în nota Z):
+                # nu e „factură fără notă”
+                if _in_nota != _in_linii and not din_bon:
                     nepotriviri_jurnal.append((r["numar"] or str(r["id"]), _in_linii, _in_nota))
                 parteneri_perioadei["4111" if este_v else "401"].setdefault(pid, (r["tert_nume"] or "", r["tert_cui"] or ""))   # [486]
                 f = Factura(nr=r["numar"] or str(r["id"]), data=r["data_emitere"],

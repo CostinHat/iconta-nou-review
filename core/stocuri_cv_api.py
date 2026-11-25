@@ -31,7 +31,7 @@ def articole(conn, schema):
         out = []
         for a in arts:
             miscari = _miscari(cur, schema, a["id"])
-            fisa = _m.fisa_magazie(miscari)
+            fisa = _m.fisa_magazie(miscari, tolerant=True)   # [17.5-Q7, STOC.1] o mișcare veche peste stoc nu mai dă 500: e numită pe articol
             if fisa:
                 cant, val, cmp = fisa[-1]["sold_cantitate"], fisa[-1]["sold_valoare"], fisa[-1]["cmp"]
             else:
@@ -57,6 +57,7 @@ def articole(conn, schema):
                         "cmp_validat": str(cmp_v) if cmp_v is not None else None,
                         "valoare_ciorna": None if val_v is None else str(Decimal(str(val)) - Decimal(str(val_v))),
                         "miscari_ciorna": sum(1 for m in miscari if clasa.get(m["id"]) == "ciorna"),
+                        "miscari_gresite": [{"data": str(x.get("data")), "eroare": x["eroare"]} for x in fisa if x.get("eroare")],
                         "locatii": locatii.get(a["id"], [])})
         lex = _lexicon()
         for o in out:
@@ -203,7 +204,7 @@ def fisa(conn, schema, articol_id):
         a = cur.fetchone()
         if not a:
             return None
-        linii = _m.fisa_magazie(_miscari(cur, schema, articol_id))
+        linii = _m.fisa_magazie(_miscari(cur, schema, articol_id), tolerant=True)   # [17.5-Q7, STOC.1] mișcarea peste stoc e semnalată pe rândul ei
         doc = documente_fisa(cur, schema, linii)
     return {"articol": {"id": a["id"], "denumire": a["denumire"], "um": a["um"]},
             "linii": [{"data": str(l["data"]), "tip": l["tip"], "document": doc.get(l.get("id"), l.get("document")),
@@ -213,7 +214,8 @@ def fisa(conn, schema, articol_id):
                        # [lotul 10, 419] stornarea în roșu a unei mișcări (cantitatea și valoarea cu minus): ecranul o numește și pune un singur semn
                        "storno": bool(l.get("anuleaza_id")),
                        "sold_valoare": str(l["sold_valoare"]),
-                       "cmp": str(l["cmp"]) if l["cmp"] is not None else None}
+                       "cmp": str(l["cmp"]) if l["cmp"] is not None else None,
+                       "eroare": l.get("eroare")}
                       for l in linii]}
 
 
@@ -540,9 +542,26 @@ def iesire(conn, schema, corp, factura_id=None):
         from core import z_descarcare as _zd
         z_id = _zd.cere_z(cur, schema, corp["z_id"]) if corp.get("z_id") not in (None, "") else None
         try:
-            r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, corp["cantitate"], a["um"])
+            # [17.5-Q7, STOC.1 / F089] stocul de la data ieșirii (și de după ea), nu stocul de azi: o ieșire în trecut nu trece peste un sold zero
+            _mis = _miscari(cur, schema, a["id"])
+            r = _m.valoare_iesire_la(_mis, None, corp["cantitate"], corp.get("data"), a["um"])
         except ValueError as e:
-            return {"eroare": str(e)}
+            # [17.5-Q8, STOC.1 / F089] refuzul spune și ce parte din stocul opus e în ciornă (stocul validat la aceeași dată), ca să se știe ce stoc i s-a opus
+            mesaj = str(e)
+            try:
+                from core import repo_stocuri as _rs
+                clasa = _rs.clasa_miscarilor(cur, schema)
+                valide = [m for m in _mis if clasa.get(m["id"], "fara_nota") != "ciorna"]
+                if len(valide) != len(_mis) and corp.get("data"):
+                    tot = _m.disponibil_la_data(_mis, None, corp.get("data"), a["um"])
+                    val = _m.disponibil_la_data(valide, None, corp.get("data"), a["um"])
+                    if tot != val:
+                        from core import pdf_util as _pu
+                        mesaj += " (din el, %s sunt din mișcări în ciornă; stocul validat la acea dată: %s)" % (
+                            _pu.cantitate(tot - val, a["um"]), _pu.cantitate(max(val, 0), a["um"]))
+            except (ValueError, KeyError):
+                pass
+            return {"eroare": mesaj}
         document = document_iesire(cur, schema, corp.get("document"), z_id)
         iid = scrie_nota_iesire(cur, schema, a, corp["data"], corp["cantitate"], r["valoare"], document)
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc

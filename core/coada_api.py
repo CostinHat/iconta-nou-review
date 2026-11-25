@@ -1767,6 +1767,34 @@ def blocaj_rapoarte_z_din(rapoarte):
             "note": [{"nota_id": z["nota_id"], "data": z["data"], "eticheta": z["eticheta"]} for z in rapoarte]}
 
 
+#: [17.5-Q7, FISC.2] codul refuzului când decontul a scos din rd.9 facturi cu partener străin și cotă internă pozitivă
+COD_FACTURI_STRAINE = "FACTURI_STRAINE_COTA_INTERNA"
+
+
+def mesaj_facturi_excluse(excluse):
+    """[17.5-Q7, FISC.2 / F031] Fraza care numește fiecare factură scoasă din rd.9 (partener străin, cotă internă pozitivă). PURĂ."""
+    from decimal import Decimal as _D
+    from core.pdf_util import bani as _bani
+    lista = "; ".join("%s (partener din %s, TVA %s lei pe cotă internă)" % (x["eticheta"], x["tara"], _bani(_D(str(x["tva"])))) for x in excluse)
+    return ("Declarația nu se depune cu %s în afara decontului: %s. O operațiune intracomunitară sau un export nu poartă cotă internă; "
+            "corectează cota (0%%) sau țara partenerului pe factură, apoi generează din nou."
+            % ("factura" if len(excluse) == 1 else "%d facturi" % len(excluse), lista))
+
+
+def cu_facturi_excluse(blocaj, excluse):
+    """[17.5-Q7, FISC.2 / F031] „Decontul și blocajul au aceeași bază”: refuzul depunerii D300 (`blocaj`, al rapoartelor Z sau None) primește
+    și facturile pe care decontul le scoate din rd.9 (partener străin, cotă internă pozitivă: `facturi_straine_cota_interna`, aceeași regulă ca
+    `d300.calcul_d300` / `Rezultat.excluse_strain`), numite, cu `documente` [{factura_id, eticheta}] pentru legături. PURĂ."""
+    if not excluse:
+        return blocaj
+    fraza = mesaj_facturi_excluse(excluse)
+    documente = [{"factura_id": x["id"], "eticheta": x["eticheta"]} for x in excluse]
+    if not blocaj:
+        return {"ok": False, "cod": COD_FACTURI_STRAINE, "mesaj": fraza, "mesaj_langa_note": fraza, "note": [], "documente": documente}
+    return dict(blocaj, mesaj=blocaj["mesaj"] + " " + fraza, mesaj_langa_note=blocaj.get("mesaj_langa_note", blocaj["mesaj"]) + " " + fraza,
+                documente=documente)
+
+
 def avertisment_rapoarte_z_decont(conn, schema, perioada):
     """[17.5-W, AC184] Avertismentul rapoartelor Z în ciornă pentru generatoarele D300 și D394 (conexiunea e pe schema firmei; `perioada.luna` e ancora
     decontului): același text și aceeași fereastră ca refuzul. None fără rapoarte în ciornă (sau fără tip_decont)."""
@@ -1775,13 +1803,33 @@ def avertisment_rapoarte_z_decont(conn, schema, perioada):
         return avertisment_rapoarte_z(rapoarte_z_in_ciorna(cur, None, *fer)) if fer else None
 
 
+def facturi_straine_cota_interna(cur, schema, de_la, pana_la):
+    """[17.5-Q7, FISC.2 / F031] Facturile din fereastra decontului pe care D300 le scoate din rd.9 (`d300.calcul_d300`, `foreign_pos`): partener
+    din alt stat, fără taxare inversă, cu o linie pe cotă internă pozitivă; aceleași filtre de stare, document fiscal, bon și exigibilitate ca
+    `repo_d300.select_facturi_4`. Schema = a firmei (conexiunea cozii nu e pe ea), sau None pe conexiunea firmei. -> [{id, eticheta, tara, tva}]."""
+    from core import d300 as _d300, eticheta_nota as _et, repo_d300 as _repo
+    rows = _repo.select_facturi_straine_cota_interna(cur, _d300._STATUS_FINAL, _d300._exig_d300(), de_la, pana_la, _q(schema) if schema else "")
+    out = []
+    for r in rows:
+        r = r if isinstance(r, dict) else dict(zip(("id", "tip", "serie", "numar", "data_emitere", "tert_tara", "tva"), r))
+        out.append({"id": r["id"], "eticheta": _et.factura_din_rand(r) or "factura fără număr", "tara": r["tert_tara"], "tva": str(r["tva"] or 0)})
+    return out
+
+
 def blocaj_rapoarte_z(cur, schema, tip, an, luna, trim):
     """[17.5-W, AC184] `blocaj_rapoarte_z_din` pentru D300 / D394 pe perioada declarației, ACUM din baza de date (nu din ce s-a înghețat la
-    intrarea în coadă, ca la 329), pe fereastra decontului (`fereastra_decontului`). Alt tip, sau firmă fără tip_decont -> None."""
+    intrarea în coadă, ca la 329), pe fereastra decontului (`fereastra_decontului`). Alt tip, sau firmă fără tip_decont -> None.
+    [17.5-Q7, FISC.2] la D300 și facturile scoase din rd.9 (`cu_facturi_excluse`): pasul 2, intrarea în coadă, rândul din «De depus» și depunerea
+    citesc același refuz."""
     if (tip or "").lower() not in TIPURI_RAPOARTE_Z:
         return None
     fer = fereastra_decontului(cur, schema, an, luna, trim)
-    return blocaj_rapoarte_z_din(rapoarte_z_in_ciorna(cur, schema, *fer)) if fer else None
+    if not fer:
+        return None
+    blocaj = blocaj_rapoarte_z_din(rapoarte_z_in_ciorna(cur, schema, *fer))
+    if (tip or "").lower() == "d300":
+        blocaj = cu_facturi_excluse(blocaj, facturi_straine_cota_interna(cur, schema, *fer))
+    return blocaj
 
 
 def blocaj_declaratie(cur, schema, tip, an, luna, trim, surse=None):

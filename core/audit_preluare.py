@@ -31,6 +31,7 @@ declaratii vs solduri fiscale + PFA/RIP (coerenta interna registru). Acopera amb
 partida dubla (SRL) si partida simpla (PFA). NEVERIFICAT v1 (ramane vizibil gri prin lipsa checkului,
 nu tacut): asociati/cote, mijloace fixe, salariati, vector fiscal vs documente.
 """
+import re
 from core import afirmatii as _af  # [P8] constatarea E o afirmatie
 from core.unde import Unde as _Unde  # [P8] domeniul e PACHETUL, nu o luna
 from decimal import Decimal
@@ -111,6 +112,20 @@ CONT_DECL_FISCAL = (
 
 
 
+#: [17.5-Q8, FINAL.9 / F183] pasul din Import date care repară o divergență, numit în textul acțiunii („… (Migrare › Mijloace fixe)”,
+#: „Import date › Solduri parteneri”) -> titlul pasului din meniul firmei (`migrare.js::meniuMigrarePerFirma`, PASI)
+_PASI_IMPORT = {"Solduri inițiale": "Solduri inițiale", "Solduri parteneri": "Solduri parteneri", "Mijloace fixe": "Mijloace fixe",
+                "Istoric declarații": "Istoric declarații", "RIP": "Import RIP", "Articole și stoc inițial": "Articole și stoc inițial"}
+
+
+def _pas_import(actiune):
+    """{cod: "importa_pas", pas: <titlul pasului>} pentru acțiunea care numește un pas de import, altfel {} (butonul fiecărei divergențe
+    deschide importul care o repară). PURĂ."""
+    m = re.search(r"(?:Migrare|Import date) › ([^),.;]+)", actiune or "")
+    pas = _PASI_IMPORT.get(m.group(1).strip()) if m else None
+    return {"cod": "importa_pas", "pas": pas} if pas else {}
+
+
 def _imbraca(a, stare, eticheta, temei, remediu):
     """Afirmatia -> constatarea pe care o asteapta ecranul. Textul are o singura sursa (`motiv`)."""
     c = dict(a)
@@ -138,7 +153,7 @@ def _gri(et, temei, mesaj, actiune, cauza="Lipsește un document necesar verific
         _af.afirmatie("absenta_observatie", et, mesaj, surse_consultate=cauza),
         "gri", et, temei,
         dict({"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []},
-             **({"cod": "importa_solduri"} if actiune.startswith("Importă soldurile") else {})))   # [15.1-E3, 732] butonul „Importă soldurile” vine din catalogul de acțiuni
+             **({"cod": "importa_solduri"} if actiune.startswith("Importă soldurile") else _pas_import(actiune))))   # [15.1-E3, 732] butonul „Importă soldurile” vine din catalogul de acțiuni
 
 
 def _rosu(et, temei, mesaj, cauza, actiune, fel="investigatie"):
@@ -148,7 +163,7 @@ def _rosu(et, temei, mesaj, cauza, actiune, fel="investigatie"):
         _af.afirmatie("contradictie", et, mesaj,
                       sursele="documentele pachetului de preluare confruntate la „%s”" % et),
         "rosu", et, temei,
-        {"fel": fel, "cauza": cauza, "actiune": actiune, "facturi": []})
+        dict({"fel": fel, "cauza": cauza, "actiune": actiune, "facturi": []}, **_pas_import(actiune)))
 
 
 def _rows_solduri_initiale(conn, schema):

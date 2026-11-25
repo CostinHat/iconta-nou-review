@@ -56,11 +56,11 @@ HARTA = {
     "q": ("729.2", "F054 (5): linia 2 cu 4111, 707, 25,00 cere partenerul liniei 2"),
     "r": ("729.2", "F054 (5): după ștergerea liniei 2 Salvează e activ"),
     "s": ("729.2, 602.1", "F054 (5): data golită: Completează: data"),
-    "t": ("48", "F054 (6): nota 203 validată, nr. crt. 41, 13.800,00: Validează, Editează, Șterge inactive"),
+    "t": ("48", "F054 (6): nota 203 validată, nr. crt. 41, 13.800,00: Validează, Editează, Șterge absente de pe rând"),
     "u": ("729.2, 602.1", "F054 (7): angajat, data propusă 03.11.2026, Salvează inactiv"),
     "v": ("729.2", "F054 (7): angajat, 628 = 5121, 25,00: Salvează activ"),
     "w": ("48", "F054 (7): nota de 25,00 apare La validare în cabinet"),
-    "x": ("48", "F054 (7): Editează și Șterge inactive, motivul că nota așteaptă validarea"),
+    "x": ("48", "F054 (7): Editează și Șterge ascunse, motivul că nota așteaptă validarea"),
 }
 
 
@@ -112,7 +112,7 @@ def test_pilot_F054(browser, monkeypatch):
     shutil.rmtree(temp, ignore_errors=True)   # cheia lot/parcurgere/pas/sha/verificator nu se repetă într-o rulare nouă a plasei
     os.makedirs(temp)
     jurnal = os.path.join(temp, "jurnal_verificare.csv")
-    pasi_json = os.path.join(DOVEZI, "pasi.json")
+    pasi_json = os.path.join(RAD, "docs", "dovezi", "17_5_Q9", "pasi_F054_Q7.json")
     ctx = types.SimpleNamespace(lot=LOT, parcurgere="plasa", verificator="code", pasi_json=pasi_json, csv=jurnal, sha=sha,
                                 director=os.path.join(temp, "plasa", "code"))
     os.makedirs(ctx.director, exist_ok=True)

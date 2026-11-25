@@ -2,20 +2,20 @@
 // Banda de salut cu „Recomandă” și „Suport” (salut.js, aceeași la asistent) + cardurile pastel, fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, semnAjutor, confirmaCaseta, esc, dataRo, bani, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=7396e03327";  /* esc_nc27 */
+import { api, semnAjutor, confirmaCaseta, esc, dataRo, bani, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=76d1a3d8b0";  /* esc_nc27 */
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=f7b964095e";
-import { randeazaMigrare } from "./migrare.js?v=652c2fa3e9";
+import { randeazaListaFirme } from "./firme.js?v=320489dd29";
+import { randeazaMigrare } from "./migrare.js?v=8a2358dab7";
 import { randeazaControl } from "./control.js?v=c027ce0ad1";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=80b751d073"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=467391a7bb"; // [p28_setari]
+import { randeazaSetari } from "./setari.js?v=63fb54f44e"; // [p28_setari]
 import { randeazaRaporteaza } from "./raporteaza.js?v=1c7aa06881"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=0a8ac8ec54"; // [p63_pachete]
 import { randeazaTermene, etichetaZile } from "./termene.js?v=9e881ff3e6";
-import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=bd179794b5";
+import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=b9b2c39e46";
 import { randeazaSupervizor } from "./supervizor.js?v=900f592ab2"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=f5149c4025";
 import { randeazaCapacitate } from "./capacitate.js?v=dc89f45f4d"; // [p71_capacitate]

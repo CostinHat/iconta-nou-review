@@ -344,8 +344,11 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   box-sizing: border-box;
 }
 
-@keyframes aparitie-overlay { from { opacity: 0; } to { opacity: 1; } }
-@keyframes aparitie-fereastra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+/* [17.5-Q9, P2] apariția ferestrei nu pornește de la opacitate 0: fereastra e în pagină (cu blocurile și butoanele ei, care primesc deja clicuri) din
+   primul cadru, deci se vede din primul cadru; estomparea scurtă rămâne. Înainte, în primul cadru fereastra era complet transparentă — blocul fiscal
+   al bonului (#d-fiscal) citit atunci era „invizibil” (e2e_bon_cui_17_5_P2 pica la întâmplare, în funcție de momentul citirii). */
+@keyframes aparitie-overlay { from { opacity: .6; } to { opacity: 1; } }
+@keyframes aparitie-fereastra { from { opacity: .6; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 
 .ecran-titlu { font-size: var(--text-titlu); font-weight: 700; color: var(--ardezie); margin: 0 0 8px; }

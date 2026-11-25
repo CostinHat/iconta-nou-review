@@ -72,7 +72,7 @@ def nota_avans(suma, sursa="casa"):
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     return {"linii": [("542", "5311" if sursa == "casa" else "5121", s)]}
 
-def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_transport=None, cota_cazare=None, sursa="casa"):
+def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_transport=None, cota_cazare=None, sursa="casa", platitor_tva=True):
     """Decontul final al deplasării: 625 = 542 pe bazele cheltuielilor (fără TVA), 4426 = 542 pe TVA-ul fiecărei cheltuieli cu cota
     EI, restul de restituit (5311/5121 = 542) sau diferența de plătit salariatului (542 = 5311/5121).
 
@@ -95,9 +95,14 @@ def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_transport=None, cot
     tva_c = (Decimal(str(cota_cazare or 0)) / 100 * c).quantize(B, rounding=ROUND_HALF_UP) if c > 0 else Decimal("0.00")
     tva = tva_t + tva_c
     total = d + t + c + tva
-    linii = [("625", "542", d + t + c)]
-    if tva > 0:
-        linii.append(("4426", "542", tva))
+    # [17.5-Q8, FINAL.10b] firma neplătitoare de TVA n-are drept de deducere (CF art.297 alin.(1) leagă dreptul de deducere de persoana
+    # înregistrată în scopuri de TVA): TVA-ul de pe documentele deplasării e cheltuială (625), nu 4426
+    if platitor_tva is False:
+        linii = [("625", "542", d + t + c + tva)]
+    else:
+        linii = [("625", "542", d + t + c)]
+        if tva > 0:
+            linii.append(("4426", "542", tva))
     dif = av - total
     if dif > 0:
         linii.append((cont_banii, "542", dif))       # restituire rest

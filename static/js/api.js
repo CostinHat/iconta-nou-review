@@ -710,7 +710,8 @@ export function refuzSalvare({ camp = null, txt = "", mesaj = null } = {}) {
     box = document.createElement("div");
     box.className = "refuz-salvare";
     box.setAttribute("role", "alert");
-    box.innerHTML = '<b>NU s-a salvat.</b><ul class="refuz-salvare-lista"></ul>';
+    // [17.5-Q7, DS.5] refuzul nu mai începe cu „NU s-a salvat.”: caseta spune direct ce trebuie corectat, câte un rând pe motiv
+    box.innerHTML = '<ul class="refuz-salvare-lista"></ul>';
     _puneLangaButon(_randButon(b), box);
     b._refuz = box;
   }
@@ -1042,7 +1043,8 @@ export function campNumericRo(inp) {
   if (!_VALOARE || !inp || inp.__numarRo || inp.tagName !== "INPUT") return;
   // valoarea de până acum vine din cod (șablonul, `x.value = …`): numărul canonic; textul unui câmp deja românesc (o copie) se citește ca text
   const brut = _VALOARE.get.call(inp);
-  const canonic = inp.getAttribute("data-numar") === "ro" ? numarRo(brut).canonic : _canonicDinCod(brut);
+  const eraRo = inp.getAttribute("data-numar") === "ro";
+  const canonic = eraRo ? numarRo(brut).canonic : _canonicDinCod(brut);
   inp.__numarRo = true;
   if (inp.getAttribute("step") === "0.01") inp.setAttribute("data-suma", "");   // [15.1, 184.2] câmp de sumă: separatori automați, și la valorile puse din cod
   if (inp.type !== "text") inp.type = "text";
@@ -1055,6 +1057,9 @@ export function campNumericRo(inp) {
     // [15.1, 3a] o sumă pusă din cod (ciorna refăcută, propunerea aplicației) arată ca una tastată: puncte la mii, două zecimale
     set(v) { const c = _canonicDinCod(v); _VALOARE.set.call(this, c === null ? String(v) : (c !== "" && this.hasAttribute("data-suma") ? sumaCuDouaZecimale(_afisareRo(c)) : _afisareRo(c))); },
   });
+  // [17.5-Q8, DS.5 / F023, F043] valoarea venită din șablon (atributul `value`, ex. prețul preluat din articol „100.00”) se arată românește de la
+  // desenare („100,00”), ca orice valoare pusă din cod: înainte rămânea cu punct până la prima modificare
+  if (!eraRo && canonic) inp.value = canonic;
   if (inp.getAttribute("step") === "0.01" || inp.hasAttribute("data-suma")) {   // [15.1, 184.2] câmp de sumă: separatori automați
     inp.setAttribute("data-suma", "");
     inp.addEventListener("input", () => {

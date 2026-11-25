@@ -51,11 +51,15 @@ def luna_confruntata(an, luna):
     return (an - 1, 12) if luna == 1 else (an, luna - 1)
 
 
-def _luni_comparabile(conn_schema, schema, comparata, implicita):
+def _luni_comparabile(conn_schema, schema, comparata, implicita, preluare=None):
     """[17.5-X, 484] `luna_comparata` (luna aleasă) și `luni_comparabile` (opțiunile selectorului «Luna comparată»): de la luna celei mai vechi note a firmei până la ultima lună
-    încheiată (`implicita`), cele noi întâi; fără nicio notă, numai luna implicită. {luna_comparata: {an, luna, eticheta «LL/AAAA»}, luni_comparabile: [{…}]}."""
+    încheiată (`implicita`), cele noi întâi; fără nicio notă, numai luna implicită. {luna_comparata: {an, luna, eticheta «LL/AAAA»}, luni_comparabile: [{…}]}.
+    [17.5-Q7, FISC.8 / F022] nicio lună dinaintea preluării (luna efectivă, `luna_preluare.din_fapte`, care nu coboară sub înființare): o notă mai veche decât
+    preluarea nu mai deschide luni în care firma nu era în evidența iConta."""
     from core import control_incrucisat as _ci
     prima = _ci.luna_primei_note(conn_schema, schema)
+    if preluare and prima and tuple(prima) < tuple(preluare):
+        prima = tuple(preluare)
     eticheta = lambda a, l: {"an": a, "luna": l, "eticheta": "%02d/%d" % (l, a)}  # noqa: E731
     out, (a, l) = [], implicita
     while prima and (a, l) >= prima:
@@ -1262,7 +1266,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
         stare = pastila_firma(stare, [regim_tva_anaf] + list(reconciliere.get("constatari") or []))
 
     # [17.5-X, 484] selectorul «Luna comparată» (numai cererea cu luna aleasă sau implicită a Control fiscal; portofoliul nu o cere): luna comparată și opțiunile ei
-    comparare = _luni_comparabile(conn_schema, schema, luna_comparata, luna_confruntata(azi.year, azi.month)) if luna_comparata else {}
+    comparare = _luni_comparabile(conn_schema, schema, luna_comparata, luna_confruntata(azi.year, azi.month), preluare) if luna_comparata else {}
     return {**comparare, "stare": stare, "datorate": len(datorate), "depuse": len(depuse),
             "depuneri_fara_obligatie": depuneri_contra,
             # [P4 21.08.2026] Ce nu poate spune verificarea asta — PERMANENT, nu doar cand exista o

@@ -1866,6 +1866,13 @@ def storneaza(conn, factura_id, retur=None):
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET storno_din_id = %s WHERE id = %s", (factura_id, r["factura_id"]))
         # [C1] contorul a fost incrementat atomic de `_rezerva_numar`; nu se mai incrementeaza aici.
+        # [17.5-Q8, STOC.3 / F046, 409.1] nota de stornare (ciorna scrisă la emitere, `_conteaza_la_creare`) se numește după documentul stornat:
+        # „Stornare factura F1A nr. 20 din 13.11.2026”, nu „Contare factura <numărul stornării>”; legătura cu stornarea rămâne `factura_id`
+        from core.pdf_util import serie_nr as _snr, data_ro as _dro
+        cur.execute("UPDATE inregistrari SET descriere = %s WHERE factura_id = %s AND sursa = 'facturi' AND status = 'ciorna' "
+                    "AND descriere LIKE 'Contare factura %%'",
+                    (("Stornare factura %s din %s" % (_snr(orig.get("serie"), orig.get("numar")), _dro(orig.get("data_emitere"))))[:200],
+                     r["factura_id"]))
     r["numar"] = numar
     r["serie"] = serie   # [lotul 12, 443.1] ecranul spune „Storno creat: F1A nr. 16”, nu „F1A16” (`numarCuSerie`)
     r["storno_din_id"] = factura_id

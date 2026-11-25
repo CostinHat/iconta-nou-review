@@ -1866,7 +1866,17 @@ def perioade_istoric(tenant_id, an, luna, ctx):
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
-        return {"istoric": _ui.istoric(conn, schema, an, luna)}
+        ist = _ui.istoric(conn, schema, an, luna)
+        # [17.5-Q8, FINAL.7 / F118, 483] cine a închis / redeschis, cu numele (nu numai id-ul): fereastra Închidere lună arată istoricul perioadei
+        ids = sorted({r["cine_id"] for r in ist if r.get("cine_id")})
+        nume = {}
+        if ids:
+            with conn.cursor() as cur:
+                cur.execute("SELECT id, COALESCE(NULLIF(trim(concat_ws(' ', prenume, nume)), ''), email) FROM public.users WHERE id = ANY(%s)", (ids,))
+                nume = {r[0]: r[1] for r in cur.fetchall()}
+        for r in ist:
+            r["cine"] = nume.get(r.get("cine_id"))
+        return {"istoric": ist}
 
 
 def tenant_jurnal(tenant_id, an, luna, ctx):
@@ -2339,8 +2349,7 @@ def chitanta_emite(tenant_id, c, ctx):
                     raise _erori.CerereGresita("chitanta se emite doar pentru facturi emise")
                 client_nume, client_cui, total_fact = r[2], r[3], float(r[4] or 0)
                 # [lotul 11, 443] seria și numărul separat („factura F6 nr. 1”, nu „F61”): `pdf_util.serie_nr` taie și seria din numărul emis
-                from core.pdf_util import serie_nr as _serie_nr
-                reprezentand = "contravaloare factura %s din %s" % (_serie_nr(r[0], r[1]), data_ro(r[6]))
+                reprezentand = reprezentand_chitanta(r, data_ro(r[6]))
             serie = chitanta_serie_sau_refuz(cur, schema)
             nr = repo_casa.urmatorul_numar_chitanta(cur, schema, serie)[0]
         rez = casa_api.adauga(conn, schema, {"data": c.data,
@@ -2369,6 +2378,18 @@ def chitanta_serie_sau_refuz(cur, schema, prefix=""):
         raise _erori.CerereGresita(_uc_comun.refuz_spre_ecran(prefix + MESAJ_SERIE_CHITANTA_LIPSA, COD_SERIE_CHITANTA_LIPSA,
                                                                "date_firma", "OMFP 2634/2015 anexa 1 pct.24"))
     return serie
+
+
+def reprezentand_chitanta(r, data_doc):
+    """[17.5-Q8, FINAL.3 / F017] Textul „reprezentând” al chitanței pe un document stins (`repo_facturi.factura_pentru_chitanta`: serie, numar, …,
+    data_emitere, tip; `data_doc` = data documentului, scrisă românește). Soldul preluat la migrare (`tip = 'preluata'`, numărul „Sold la zz.ll.aaaa”)
+    nu e o factură: „contravaloare sold preluat la zz.ll.aaaa”; factura preluată cu numărul ei și factura emisă rămân „contravaloare factura <serie>
+    nr. <n> din <data>”. PURĂ."""
+    from core.pdf_util import serie_nr as _serie_nr
+    numar = str(r[1] or "").strip()
+    if len(r) > 7 and r[7] == "preluata" and numar.lower().startswith("sold la"):
+        return "contravaloare sold preluat la %s" % data_doc
+    return "contravaloare factura %s din %s" % (_serie_nr(r[0], r[1]), data_doc)
 
 
 def chitanta_scrie(cur, schema, serie, nr, data, factura_id, client_nume, client_cui, suma, reprezentand, op_id, nota_id, cota=None,
@@ -2411,7 +2432,7 @@ def chitante_pe_incasare(cur, schema, serie, rez, op=None):
         if o.get("factura_id"):
             r = repo_facturi.factura_pentru_chitanta(cur, schema, o["factura_id"])
             cid = chitanta_scrie(cur, schema, serie, nr, data_op, o["factura_id"], r[2], r[3], o["suma"],
-                                 "contravaloare factura %s din %s" % (_serie_nr(r[0], r[1]), data_ro(r[6])), o["id"],
+                                 reprezentand_chitanta(r, data_ro(r[6])), o["id"],
                                  o["inregistrare_id"], None, float(r[4] or 0))
         else:   # [lotul 12, 456 (a)] încasarea fără factură: clientul din dispoziție, „avans de la client” dacă e avans
             cid = chitanta_scrie(cur, schema, serie, nr, data_op, None, (str(op.get("partener") or "").strip() or None),
@@ -4681,10 +4702,13 @@ def facturi_primite_lista(tenant_id, ctx):
                         ["categoria produsului cu taxare inversă (D394)"] if f.get("taxare_inversa") else [])
                     info.update({"parsabila": True, "furnizor": f.get("tert_nume"), "furnizor_cod_tva": f.get("furnizor_cod_tva"),
                                  "numar": f.get("numar"), "data": str(f.get("data_emitere") or ""),
+                                 # [17.5-Q8, STOC.2 / F043] la validare se văd scadența, cumpărătorul (cel din XML) și UM-ul fiecărei linii
+                                 "scadenta": str(f.get("data_scadenta") or ""),
+                                 "cumparator": " · ".join(x for x in (f.get("cumparator_nume"), f.get("cumparator_cui")) if x),
                                  "total": str(f.get("total") or ""), "tva": str(f.get("tva") or ""),
                                  "moneda": f.get("moneda"), "taxare_inversa": bool(f.get("taxare_inversa")),
                                  "de_completat": de_completat,
-                                 "linii": [{"descriere": l["descriere"], "cantitate": str(l["cantitate"]),
+                                 "linii": [{"descriere": l["descriere"], "cantitate": str(l["cantitate"]), "um": l.get("um") or "",
                                             "pret": str(l["pret_unitar"]), "cota": str(l["cota_tva"])}
                                            for l in (f.get("linii") or [])]})
                 except Exception as e:
@@ -6943,8 +6967,12 @@ def nota_decont_deplasare(tenant_id, corp, ctx):
                         else:
                             cote[k] = _common.cota_ceruta({"cota": corp.get(k), "data": corp.get("data")})
                 er.refuza()
+                with conn.cursor() as cur:   # [17.5-Q8, FINAL.10b] firma neplătitoare de TVA: TVA-ul cheltuielilor intră în cheltuială
+                    cur.execute('SELECT platitor_tva FROM "%s".firma_profil LIMIT 1' % str(schema).strip('"'))
+                    _pr = cur.fetchone()
                 r = _dp.nota_decont(corp.get("avans") or 0, corp.get("diurna") or 0, corp.get("transport") or 0, corp.get("cazare") or 0,
-                                    cote.get("cota_transport"), cote.get("cota_cazare"), corp.get("sursa"))
+                                    cote.get("cota_transport"), cote.get("cota_cazare"), corp.get("sursa"),
+                                    platitor_tva=(False if _pr and _pr[0] is False else True))
                 with conn.cursor() as cur:
                     # [524] avansul decontat stinge 542: nu poate depăși soldul lui (note validate)
                     _os.cere_sold(cur, schema, "542", data, corp.get("avans") or 0, "debitor", "Decontul avansului",
@@ -7715,7 +7743,10 @@ def factura_pdf_ruta(tenant_id, factura_id, ctx):
         # [bilant_422_v1] refuzul motivat al generatorului de PDF (ex. linie fara cota TVA)
         # ajungea la contabil ca 500 gol. Gasit de core/test_refuz_generator_422.py.
         raise _erori.DateInvalide(str(e))
-    nume = "factura_" + str(f.get("numar") or factura_id).replace("/", "-") + ".pdf"
+    # [17.5-Q8, FINAL.5 / F045] numele fișierului poartă seria și numărul facturii, scrise separat („factura_F1A_nr_25.pdf”), ca pe document
+    from core.pdf_util import serie_nr as _serie_nr
+    import re as _re
+    nume = "factura_" + _re.sub(r"[^\w.-]+", "_", _serie_nr(f.get("serie"), f.get("numar") or factura_id).replace("nr.", "nr")).strip("_") + ".pdf"
     return pdf, nume
 
 
@@ -8502,8 +8533,41 @@ def jurnal_creeaza(tenant_id, corp, ctx):
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
+        _cere_confirmare_inainte_de_preluare(schema, corp)
         return _uc_comun._jurnal_rez(_j.creeaza(conn, schema, corp.get("descriere"), corp.get("data"), corp.get("linii"),
                                                 corp.get("document_ref")))
+
+
+COD_INAINTE_DE_PRELUARE = "INTREABA_NOTA_INAINTE_DE_PRELUARE"
+
+
+def _cere_confirmare_inainte_de_preluare(schema, corp):
+    """[17.5-Q8, FINAL.10a] O notă manuală datată înaintea preluării firmei (ziua de după soldurile inițiale, altfel luna preluării din Date firmă) nu se
+    scrie fără confirmarea explicită a contabilului (`confirma_inainte_de_preluare`): refuzul spune data preluării și cere confirmarea, nimic scris.
+    O dată de la preluare încolo trece fără avertisment."""
+    import datetime as _dt
+    if corp.get("confirma_inainte_de_preluare") or not corp.get("data"):
+        return
+    try:
+        d = _dt.date.fromisoformat(str(corp.get("data"))[:10])
+    except ValueError:
+        return
+    from core import repo_firma_profil as _rfp
+    with db.get_conn(schema) as cs, cs.cursor() as cur:
+        fp = _rfp.fapte_preluare(cur)
+    if fp.get("data_solduri"):
+        start = fp["data_solduri"] + _dt.timedelta(days=1)
+    elif fp.get("salvata"):
+        sv = fp["salvata"]
+        start = _dt.date(sv.year, sv.month, 1) if hasattr(sv, "year") else None
+    else:
+        start = None
+    if start and d < start:
+        raise _erori.CerereGresita({
+            "cod": COD_INAINTE_DE_PRELUARE, "cere_confirmare": True,
+            "mesaj": "Nota e datată %s, înainte de preluarea firmei în iConta.eu (evidența începe la %s, după soldurile inițiale). "
+                     "O notă de dinaintea preluării schimbă soldurile preluate. Confirmă numai dacă nota corectează chiar perioada "
+                     "dinaintea preluării." % (data_ro(d), data_ro(start))})
 
 
 

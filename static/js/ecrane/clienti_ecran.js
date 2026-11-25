@@ -18,8 +18,8 @@
 // parteneri_firmei`), cu căutare după nume sau cod fiscal; fișa partenerului (`ecranFisaPartener`): datele (verificarea la ANAF, ruta
 // existentă `verifica-cui`, cu propunerea numelui de la ANAF — 444), documentele lui și soldul din contabilitate, cu aceeași regulă ca balanța
 // (`clienti_api.sold_partener`: soldul de preluare + notele validate; ciornele separat). Nimic nu se recalculează în ecran.
-import { meniuActiuni } from "../ds_piese.js?v=03f816740e";
-import { api, semnAjutor, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv } from "../api.js?v=7396e03327";
+import { meniuActiuni } from "../ds_piese.js?v=91866a42f7";
+import { api, semnAjutor, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv } from "../api.js?v=76d1a3d8b0";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 640] datele aduse de la ANAF țin de CUI-ul lor
 
 const FEL = {
@@ -348,7 +348,8 @@ export async function ecranParteneriFirmei(corp, nav, t) {
     <div class="rezumat-fix" id="pt-rezumat">
       <h2 class="pf-titlu">Parteneri ${semnAjutor("F018")}</h2>
       <p class="pf-intro">Clienții și furnizorii firmei, din fișe și din toate documentele: facturi emise și primite, casă, bancă, note
-        contabile, soldurile de preluare. Deschide fișa unui partener ca să-i vezi datele, documentele și soldul din contabilitate.</p>
+        contabile, soldurile de preluare. Deschide fișa unui partener ca să-i vezi datele, documentele și soldul din contabilitate și să-i editezi datele.</p>
+      <p><button type="button" class="buton-secundar" id="pt-nou" data-actiune="POST /tenants/{tenant_id}/clienti">+ Fișă de partener</button></p>
       ${lista.length ? `<input id="pt-cauta" class="camp-input" style="max-width:420px" placeholder="Caută după nume sau cod fiscal"
         aria-label="Caută partenerul după nume sau cod fiscal" autocomplete="off">
       <span class="tip-desc" id="pt-numar" style="margin-left:8px">${esc(cate(lista.length, "partener", "parteneri"))}</span>` : ""}
@@ -377,6 +378,74 @@ export async function ecranParteneriFirmei(corp, nav, t) {
     const p = lista.find((x) => x.cheie === b.dataset.cheie);
     nav.deschide("Fișa partenerului", (c2) => ecranFisaPartener(c2, nav, t, p.cheie), { lat: "tabel" });
   }));
+  // [17.5-Q8, FINAL.4 / F018] adăugarea în registrul unic: alegerea rolului (client sau furnizor), apoi aceeași fișă nouă ca în Clienți / Furnizori
+  // eticheta nu e „+ … nou”: catalogul cadrului ar face-o acțiunea principală a registrului, a cărui acțiune rămâne „Descarcă PDF” (harta barei de jos)
+  corp.querySelector("#pt-nou").addEventListener("click", () => nav.deschide("Fișă de partener", (c2) => {
+    c2.innerHTML = `<h2 class="pf-titlu">Fișă de partener</h2><p class="pf-intro">Ce fel de partener adaugi? Fișa se poate completa apoi și cu celălalt rol.</p>
+      <p><button type="button" class="buton-secundar" id="ptn-client" data-actiune="POST /tenants/{tenant_id}/clienti">Client</button>
+        <button type="button" class="buton-secundar" id="ptn-furnizor" data-actiune="POST /tenants/{tenant_id}/furnizori">Furnizor</button></p>`;
+    const alege = (fel) => async () => {
+      let judete = [];
+      try { judete = ((await api.get(FEL[fel].url(t.id))) || {}).judete || []; } catch { judete = []; }
+      fisaNoua(c2, nav, t, fel, judete, async () => { nav.inapoi(); await ecranParteneriFirmei(corp, nav, t); });
+    };
+    c2.querySelector("#ptn-client").addEventListener("click", alege("clienti"));
+    c2.querySelector("#ptn-furnizor").addEventListener("click", alege("furnizori"));
+  }));
+}
+
+/** [17.5-Q8, FINAL.4 / F018] Formularul explicit al partenerului (deschis cu «Editează»): denumirea, localitatea, județul și, la client, bifa persoanei afiliate.
+ *  `opt.camp` aduce câmpul cerut în vedere. */
+async function editeazaPartener(corp, nav, t, cheie, f, opt = {}) {
+  const zona = corp.querySelector("#pp-editare");
+  if (!zona) return;
+  const fise = f.fise || [];
+  const cl = fise.find((x) => x.fel === "clienti"), fz = fise.find((x) => x.fel === "furnizori");
+  const baza = cl || fz || {};
+  // fără fișă: rolul din documente hotărăște fișa nouă (furnizor dacă partenerul e și furnizor, altfel client)
+  const felNou = fise.length ? null : (/furnizor/.test(f.rol || "") ? "furnizori" : "clienti");
+  const cuAfiliat = !!cl || felNou === "clienti";
+  let judete = [];
+  try { judete = ((await api.get(FEL[felNou || (cl ? "clienti" : "furnizori")].url(t.id))) || {}).judete || []; } catch { judete = []; }
+  const optJud = `<option value="">— alege —</option>` + judete.map(([c, n]) => `<option value="${esc(c)}"${c === (baza.judet || "") ? " selected" : ""}>${esc(n)}</option>`).join("");
+  zona.innerHTML = `<div class="pf-form" id="pp-formular">
+      <div class="grila-doc" style="grid-template-columns:2fr 1fr 1fr">
+        <label class="camp"><span class="camp-eticheta">Denumirea / numele<span class="oblig">*</span></span><input class="camp-input" id="pp-e-nume" value="${esc(baza.nume || f.nume || "")}" autocomplete="off"></label>
+        <label class="camp"><span class="camp-eticheta">Localitatea</span><input class="camp-input" id="pp-e-oras" value="${esc(baza.oras || "")}" autocomplete="off"></label>
+        <label class="camp"><span class="camp-eticheta">Județul</span><select class="camp-input" id="pp-e-judet">${optJud}</select></label>
+      </div>
+      ${cuAfiliat ? `<label class="camp"><span class="camp-eticheta">Persoană afiliată (Cod fiscal art.7 pct.26)<span class="oblig">*</span></span>
+        ${selectDaNu(`id="pp-e-afiliat"`, cl ? !!cl.afiliat : null, "Persoană afiliată")}</label>` : ""}
+      <p><button type="button" class="buton-primar" id="pp-e-salveaza" data-actiune="${fise.length ? "PUT /tenants/{tenant_id}/furnizori/{furnizor_id}" : "POST /tenants/{tenant_id}/furnizori"}">Salvează</button>
+        <button type="button" class="buton-secundar" id="pp-e-renunta">Renunță</button></p>
+      <div id="pp-e-mesaj"></div></div>`;
+  const q = (id) => zona.querySelector("#pp-e-" + id);
+  q("renunta").addEventListener("click", () => { zona.innerHTML = ""; });
+  const tinta = opt.camp ? q(opt.camp === "judet" ? "judet" : "oras") : q("nume");
+  if (tinta) { tinta.scrollIntoView({ block: "center" }); focusFaraSalt(tinta); }
+  q("salveaza").addEventListener("click", async () => {
+    curataEroriCamp(zona);
+    const nume = q("nume").value.trim();
+    let lipsa = false;
+    if (!nume) lipsa = eroareCamp(zona, "pp-e-nume", "Scrie denumirea sau numele partenerului.") || true;
+    if (cuAfiliat && cereAlegerile(zona, ["#pp-e-afiliat"])) lipsa = true;   // [FAPT_FISCAL_NECERUT] Da / Nu, ales de om
+    if (lipsa) return;
+    const date = { nume, oras: q("oras").value.trim() || null, judet: q("judet").value || null };
+    const af = cuAfiliat ? daNu(q("afiliat")) : null;
+    try {
+      if (fise.length) {
+        for (const x of fise) await api.put(FEL[x.fel].urlUna(t.id, x.id), x.fel === "clienti" && af !== null ? { ...date, afiliat: af } : date);
+      } else {
+        await api.post(FEL[felNou].url(t.id), { ...date, cui: f.cui || null, ...(felNou === "clienti" ? { afiliat: !!af } : {}) });
+      }
+      await ecranFisaPartener(corp, nav, t, cheie);
+      arataMesaj(corp.querySelector("#pp-mesaj"), `${nume}: datele sunt în fișă — D406 și D394 iau de aici localitatea și județul.`, "ok");
+    } catch (e) {
+      const ec = (e && e.erori_campuri) || [];
+      ec.forEach((c) => eroareCamp(zona, `pp-e-${c.camp}`, c.mesaj));
+      arataMesaj(q("mesaj"), (e && e.mesaj) || "Fișa nu s-a salvat.", "eroare");
+    }
+  });
 }
 
 /** [17.5-S, 640.1] Fișele partenerului de afișat, ca perechi [fișă, comună]: clientul și furnizorul cu aceleași date (nume, adresă, oraș, județ, email, telefon) sunt o singură
@@ -387,7 +456,7 @@ export function fiseDeAfisat(fise) {
   return laFel ? [[cl, true], ...fise.filter((x) => x !== cl && x !== fz).map((x) => [x, false])] : fise.map((x) => [x, false]);
 }
 
-export async function ecranFisaPartener(corp, nav, t, cheie) {
+export async function ecranFisaPartener(corp, nav, t, cheie, opt = {}) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let f;
   try {
@@ -415,10 +484,13 @@ export async function ecranFisaPartener(corp, nav, t, cheie) {
       <h2 class="pf-titlu">Fișa partenerului</h2>
       <p class="pf-intro" id="pp-antet"><b id="pp-nume">${esc(f.nume || "Partener")}</b> · Cod fiscal: ${esc(f.cui || "fără cod (persoană fizică sau firmă neînregistrată)")}${f.rol ? " · " + esc(f.rol) : ""}
         <button type="button" class="buton-secundar" id="pp-anaf" style="margin-left:10px"
-          data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}"${f.cui ? "" : atributeInactiv("Partenerul n-are cod fiscal: ANAF n-are ce verifica.")}>Verifică la ANAF</button></p>
+          data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}"${f.cui ? "" : atributeInactiv("Partenerul n-are cod fiscal: ANAF n-are ce verifica.")}>Verifică la ANAF</button>
+        ${(f.fise || []).length ? `<button type="button" class="buton-secundar" id="pp-sterge" data-context-q7="stare-document" data-actiune="DELETE /tenants/{tenant_id}/furnizori/{furnizor_id}"${(f.documente || []).length ? atributeInactiv("Partenerul are documente: fișa ține localitatea și județul din D394 / D406, deci nu se șterge.") : ""}>Șterge fișa</button>` : ""}
+        <button type="button" class="buton-secundar" id="pp-editeaza" data-actiune="${(f.fise || []).length ? "PUT /tenants/{tenant_id}/furnizori/{furnizor_id}" : "POST /tenants/{tenant_id}/furnizori"}">Editează</button></p>
       <div id="pp-anaf-stare"></div>
       <div id="pp-mesaj"></div>
     </div>
+    <div id="pp-editare"></div>
     <h3 class="pf-subtitlu">Datele partenerului</h3>
     ${(f.fise || []).length ? `<div class="pf-lista">${fiseDeAfisat(f.fise).map(([x, comun]) => fisaText(x, comun)).join("")}</div>`
       : `<p class="pf-intro" id="pp-fara-fisa">Partenerul n-are fișă: datele lui vin din documente. Fișa se face din Clienți sau Furnizori.</p>`}
@@ -443,6 +515,21 @@ export async function ecranFisaPartener(corp, nav, t, cheie) {
       + `${s.nedefalcat.join(", ")} nu e defalcat pe parteneri: partea partenerului din soldul de la ${dataRo(s.preluare)} nu se cunoaște, `
       + "deci soldul de mai jos cuprinde numai notele de după preluare. Importă soldurile pe parteneri (Import date).", "avert");
   }
+  // [17.5-Q8, FINAL.4 / F018] registrul unic: datele partenerului (numele, localitatea, județul) se editează și aici, la cerere («Editează»). Salvarea scrie
+  // fișele existente ale partenerului (client și / sau furnizor, `PUT`) sau, fără fișă, îi face fișa după rolul lui din documente (`POST`) — aceleași rute
+  const bS = corp.querySelector("#pp-sterge");
+  if (bS && !(f.documente || []).length) bS.addEventListener("click", () => {
+    confirmaCaseta(corp.querySelector("#pp-mesaj"), `Ștergi fișa ${esc(f.nume || f.cui || "")}? Partenerul nu are documente; fișa (cu localitatea și județul) dispare din registru.`, async () => {
+      try {
+        for (const x of f.fise) await api.del(FEL[x.fel].urlUna(t.id, x.id));
+        corp.innerHTML = `<h2 class="pf-titlu">Fișa partenerului</h2><div id="pp-mesaj"></div>`;
+        arataMesaj(corp.querySelector("#pp-mesaj"), `Fișa ${f.nume || f.cui} a fost ștearsă.`, "ok");
+      } catch (e) { arataMesaj(corp.querySelector("#pp-mesaj"), (e && e.mesaj) || "Fișa nu s-a șters.", "eroare"); }
+    }, { textOk: "Șterge fișa" });
+  });
+  const bE = corp.querySelector("#pp-editeaza");
+  if (bE) bE.addEventListener("click", () => editeazaPartener(corp, nav, t, cheie, f, opt));
+  if (opt.editeaza) editeazaPartener(corp, nav, t, cheie, f, opt);
   // [444] verificarea la ANAF, pe ruta existentă: numele de la ANAF față de fișă — dacă diferă, se spune și se propune actualizarea
   const bA = corp.querySelector("#pp-anaf");
   if (bA) bA.addEventListener("click", async () => {
@@ -464,7 +551,7 @@ export async function ecranFisaPartener(corp, nav, t, cheie) {
           for (const x of dif) {
             await api.put(x.fel === "clienti" ? `/tenants/${t.id}/clienti/${x.id}` : `/tenants/${t.id}/furnizori/${x.id}`, { nume: r2.denumire });
           }
-          await ecranFisaPartener(corp, nav, t, cheie);
+          await ecranFisaPartener(corp, nav, t, cheie, opt);
           arataMesaj(corp.querySelector("#pp-mesaj"), `Fișa are acum numele de la ANAF: „${r2.denumire}”.`, "ok");
         } catch (e) {
           arataMesaj(corp.querySelector("#pp-mesaj"), "Fișa NU s-a actualizat — " + ((e && e.mesaj) || "eroare."), "eroare");
