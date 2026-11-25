@@ -6,8 +6,8 @@ import { api, semnAjutor, confirmaCaseta, esc, dataRo, bani, ICOANE, CULORI_CARD
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=320489dd29";
-import { randeazaMigrare } from "./migrare.js?v=8a2358dab7";
+import { randeazaListaFirme } from "./firme.js?v=e7167efe76";
+import { randeazaMigrare } from "./migrare.js?v=4408029606";
 import { randeazaControl } from "./control.js?v=c027ce0ad1";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=80b751d073"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js?v=63fb54f44e"; // [p28_setari]

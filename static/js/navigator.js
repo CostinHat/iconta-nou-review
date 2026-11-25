@@ -11,8 +11,8 @@
 import { uitaFereastra, memoreazaFereastra, memoreazaCampul } from "./restaurare.js?v=2e679a8748";   // [15.1, 725; 15.1-E3, 725.3]
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo, semnAjutor } from "./api.js?v=dc526532b7";  // esc canonic (cap.10): strip-html data-lossy inlocuit
-import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
-import { baraDeJos } from "./cadru.js?v=12307d4d5a";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
+import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=12d99f0538";  // [bun_venit_v1] "?" general (ansamblu)
+import { baraDeJos } from "./cadru.js?v=d1095ef641";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
 import { puneCautarea } from "./cautare.js?v=3001002077";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
@@ -23,6 +23,9 @@ import { reimprospateazaDrepturi } from "./drepturi.js?v=34d0fb0afd";   // [265]
 function _functieAsistent(u) {
   return u.poate_valida ? "Asistent senior" : "Asistent junior";
 }
+function _numeUtilizator(u) {
+  return [u.nume, u.prenume].filter(Boolean).join(" ") || u.email || "";
+}
 function contextBara(u) {
   switch (u.rol) {
     case "client":  // [p90_client_bara] cabinet (slab) + firma clientului
@@ -30,19 +33,18 @@ function contextBara(u) {
         { text: "Cabinet de contabilitate · " + (u.nume_firma || ""), slab: true },
         { text: u.nume_tenant || u.nume || "" },
       ] };
-    case "angajat": {
-      const nume = [u.nume, u.prenume].filter(Boolean).join(" ") || u.email || "";
+    // [17.5-Q10, AC188] cabinetul și utilizatorul: „<numele cabinetului> · <utilizatorul>”, o singură verigă pe un singur rând, cu elipsă
+    // când nu încape și textul întreg la trecerea mouse-ului (`title`); căutarea și „Ieși din cont” rămân în bară, fără derulare laterală
+    case "angajat":
       return { verigi: [  // [p23_bara_fix]
-        { text: "Cabinet de contabilitate · " + (u.nume_firma || ""), slab: true },
-        { text: nume },
+        { text: (u.nume_firma || "") + " · " + _numeUtilizator(u), identitate: true },
         { text: _functieAsistent(u), slab: true, functie: true },   // [265] rescrisă la o schimbare de drepturi
       ] };
-    }
     case "superadmin": // [p37_admin_desktop]
       return { verigi: [ { text: "Admin iConta" } ] };
     default:
       return { verigi: [
-        { text: "Cabinet de contabilitate · " + (u.nume_firma || "") },
+        { text: (u.nume_firma || "") + " · " + _numeUtilizator(u), identitate: true },
       ] };
   }
 }
@@ -108,7 +110,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       <img class="bara-logo-img" src="/static/logo_simbol.png" alt="">
       <span class="bara-marca">iConta.eu</span>
       ${ctx.verigi.map((v) => `<span class="bara-chevron" aria-hidden="true">\u203a</span>` +
-        `<span class="${v.slab ? "bara-veriga-slab" : "bara-veriga"}"${v.functie ? " data-functie-asistent" : ""}>${esc(v.text)}</span>`).join("")}
+        `<span class="${v.slab ? "bara-veriga-slab" : "bara-veriga"}${v.identitate ? " bara-identitate" : ""}"${v.functie ? " data-functie-asistent" : ""}${v.identitate ? ` title="${esc(v.text)}"` : ""}>${esc(v.text)}</span>`).join("")}
       <span class="bara-spatiu"></span>
       <button class="nav-ghid" id="nav-ghid" title="Prezentarea aplicației (ansamblu)" aria-label="Prezentarea aplicației (ansamblu)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/></svg><span class="nav-ghid-q">?</span></button>
       <button class="nav-clopot" id="nav-clopot" data-deschide="notificari" title="Notificări" aria-label="Notificări"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="nav-clopot-badge" id="nav-clopot-badge"></span></button>
@@ -494,11 +496,26 @@ export function creeazaNavigator(radacina, desktopRandator) {
         if (sec) return { e: sec, dupa: false };
         return caut ? { e: caut.parentElement.tagName === "SPAN" && caut.parentElement.children.length === 1 ? caut.parentElement : caut, dupa: false } : null;
       };
-      let urm;
+      let urm, mutat = false;
       while (taiata() && zona.clientHeight < prag - 0.5 && (urm = urmatorul())) {
+        mutat = true;
         urm.e.setAttribute("data-in-zona", "");   // marcă: ce a mutat `_noteInZona` (diagnostic; stilul nu se sprijină pe ea)
+        if (!urm.e.__acasa) urm.e.__acasa = { parinte: urm.e.parentElement, urmator: urm.e.nextSibling };   // [17.5-Q10, F011/F012] locul de unde a plecat (vezi `_readuAcasa`)
         if (urm.dupa) zona.append(urm.e); else zona.prepend(urm.e);
         _marcheazaLantul(zona);
+      }
+      // [17.5-Q10, F046 / F054 / F118 — clasă] ce a mutat cadrul în capul zonei (căutarea, totalurile, explicațiile) nu împinge primul rând al listei sub
+      // marginea ei: la deschidere zona pornește cu primul rând în vedere (sub capul lipit al tabelului); ce e deasupra lui se vede derulând zona în sus
+      if (mutat && !zona.__primulRand) {
+        zona.__primulRand = true;
+        const rand = [...zona.querySelectorAll("tbody tr, .pf-frand, li")].find((r) => r.offsetParent !== null && !r.closest("[data-in-zona]"));
+        if (rand) {
+          const rz = zona.getBoundingClientRect(), rr = rand.getBoundingClientRect();
+          if (rr.bottom > rz.bottom - 1) {
+            const cap = rand.closest("table") && rand.closest("table").querySelector("thead");
+            zona.scrollTop += rr.top - rz.top - (cap ? cap.getBoundingClientRect().height : 0);
+          }
+        }
       }
       if (zona.clientHeight < prag - 0.5) {   // nu mai e nimic de mutat (sau zona nu e tăiată): pragul devine minim doar dacă încape fără să deruleze fereastra
         zona.style.setProperty("--zona-min", Math.ceil(prag) + "px");
@@ -507,7 +524,10 @@ export function creeazaNavigator(radacina, desktopRandator) {
       }
       // [17.5-K, AC082, DS cap.9] fereastra marcată `data-zona-eliberabila` (ecranul o pune numai când zona ei nu are loc): zona încă sub 40% din corp și tăiată
       // renunță la derularea proprie, iar corpul derulează (un singur loc de derulare, ca la Facturi); decizia se ia o singură dată, până la închiderea ferestrei
-      if (_corp.hasAttribute("data-zona-eliberabila") && zona.clientHeight < 0.4 * _corp.clientHeight && taiata()) {
+      // [17.5-Q10, F031 / F034 / F070 / F089 — clasă, DS cap.9: o singură derulare] zona strânsă sub 40% din corp, într-un corp care derulează și el,
+      // ar fi a doua derulare concurentă (corpul 533 în 502 și lista de 88 px): zona se eliberează la fel, iar corpul rămâne singurul care derulează
+      const douaDerulari = deruleaza() && !_corp.querySelector(".zona-derulare .zona-derulare");
+      if ((_corp.hasAttribute("data-zona-eliberabila") || douaDerulari) && zona.clientHeight < 0.4 * _corp.clientHeight && taiata()) {
         zona.classList.remove("zona-derulare");
         zona.removeAttribute("tabindex");
         zona.style.removeProperty("--zona-min");
@@ -524,7 +544,14 @@ export function creeazaNavigator(radacina, desktopRandator) {
       _corp.style.setProperty("--rezumat-h", (rez ? rez.offsetHeight : 0) + "px");
       // [lotul 11, decizia Costin 10.3: „Totalurile … fix”] rândul de total (`tfoot`) se lipește jos, deasupra barei de acțiune (DS cap.9 v2.100)
       const bara = [..._corp.querySelectorAll(".bara-fixa")].pop();
-      if (bara) _corp.style.setProperty("--bara-h", bara.offsetHeight + "px"); else _corp.style.removeProperty("--bara-h");
+      // [17.5-Q10, F031 / F034 / F078] bara lipită jos mai înaltă de 30% din corp (caseta de blocaj, rezumatul refuzului) curge în corp, fără derulare
+      // proprie (`.bara-fixa-libera`, stil.css): un singur loc de derulare; redevine lipită când scade sub 25%
+      if (bara && _corp.clientHeight > 0) {
+        const h = bara.offsetHeight, libera = bara.classList.contains("bara-fixa-libera");
+        if (!libera && h > 0.3 * _corp.clientHeight) bara.classList.add("bara-fixa-libera");
+        else if (libera && bara.scrollHeight < 0.25 * _corp.clientHeight) bara.classList.remove("bara-fixa-libera");
+      }
+      if (bara) _corp.style.setProperty("--bara-h", bara.classList.contains("bara-fixa-libera") ? "0px" : bara.offsetHeight + "px"); else _corp.style.removeProperty("--bara-h");
       _zonaDerulare();   // [lotul 14, 687]
       _noteInZona();   // [17.5-B]
       _corp.querySelectorAll(".zona-derulare").forEach((z) => { if (!z.hasAttribute("tabindex")) z.tabIndex = 0; });   // o zonă care derulează se poate parcurge de la tastatură (a11y)
@@ -566,7 +593,23 @@ export function creeazaNavigator(radacina, desktopRandator) {
         requestAnimationFrame(() => requestAnimationFrame(() => { const d = _derulant(); if (v > 0 && d.scrollTop === 0 && d.scrollHeight > v) d.scrollTop = v; }));
       }
     };
-    new MutationObserver(() => { _steaza(); _lateste(); _derulare(); }).observe(_corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });   // [lotul 14] zona întâi, apoi derularea ei; și fila care se arată / se ascunde (`hidden`)
+    // [17.5-Q10, F011/F012 — clasă: orice ecran care își rescrie lista] un element mutat de `_noteInZona` în zona de derulare (cardurile, căutarea, notele) dispărea
+    // când ecranul își rescria lista (innerHTML pe containerul zonei): la a doua redesenare ecranul nu-și mai găsea căutarea și arăta „Nu s-au putut încărca liniile.”.
+    // Elementul scos astfel din pagină se pune la loc acolo de unde l-a luat cadrul (dacă locul lui e încă în fereastră), cu tot cu conținut și ascultători; apoi
+    // `_lateste` îl mută din nou în zona nouă dacă e cazul. Un element scos odată cu locul lui (ecranul rescrie tot corpul) nu se readuce.
+    const _readuAcasa = (inregistrari) => {
+      for (const r of inregistrari) for (const n of r.removedNodes) {
+        if (n.nodeType !== 1) continue;
+        const mutate = n.matches("[data-in-zona]") ? [n] : [...n.querySelectorAll("[data-in-zona]")];
+        for (const e of mutate) {
+          const a = e.__acasa;
+          if (e.isConnected || !a || !a.parinte || !a.parinte.isConnected || !_corp.contains(a.parinte)) continue;
+          e.removeAttribute("data-in-zona");
+          if (a.urmator && a.urmator.parentElement === a.parinte) a.parinte.insertBefore(e, a.urmator); else a.parinte.appendChild(e);
+        }
+      }
+    };
+    new MutationObserver((inregistrari) => { _readuAcasa(inregistrari); _steaza(); _lateste(); _derulare(); }).observe(_corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });   // [lotul 14] zona întâi, apoi derularea ei; și fila care se arată / se ascunde (`hidden`)
     if (window.ResizeObserver) new ResizeObserver(_lateste).observe(_corp);
   }
 
@@ -899,7 +942,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=dc526532b7");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=320489dd29");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=e7167efe76");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

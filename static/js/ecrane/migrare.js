@@ -82,7 +82,7 @@ async function _existaPas(corp, firma, strat, nav = null) {
           an = z.getFullYear(); luna = z.getMonth() + 1;
         }
       } catch { /* fără dată citită: luna de lucru */ }
-      const { deschideBalanta } = await import("./firme.js?v=320489dd29");
+      const { deschideBalanta } = await import("./firme.js?v=e7167efe76");
       await deschideBalanta(nav, firma.tenant_id, an, luna);
     });
     el.append(" ", b);
@@ -1490,17 +1490,19 @@ function gateazaPreview(corp, butonId, erori) {
 // [C24 / C25, decizia Costin 14.10.2026, verbatim în DECIZII: „fără blocare la salvare; rândul problemă se arată, restul se
 // salvează”] Mijloacele fixe și istoricul declarațiilor: rândurile pe care salvarea le refuză se arată ÎNAINTE (aceeași poartă,
 // `verifica_randuri`), iar butonul salvează rândurile bune și spune câte. Numai când niciun rând nu poate intra salvarea e blocată.
-function gateazaPartial(corp, butonId, erori, total, eticheta) {
+function gateazaPartial(corp, butonId, erori, total, eticheta, opt = {}) {
   erori = erori || [];
   const buton = corp.querySelector("#" + butonId);
   if (!buton || !erori.length) return;
+  // [17.5-Q10, F085] refuzurile explicate deja în altă casetă a ferestrei (cu cifrele lor) se numără, dar nu se mai înșiră a doua oară
+  const deAratat = opt.explicateAltundeva ? erori.filter((e) => !opt.explicateAltundeva(e)) : erori;
   const nrRespinse = new Set(erori.map((e) => String(e.rand))).size;
   const bune = Math.max(0, total - nrRespinse);
   const titlu = nrRespinse === 1 ? "Un rând nu intră" : `${cate(nrRespinse, "rând", "rânduri")} nu intră`;
   const bloc = document.createElement("div");
   bloc.className = "caseta-atentie"; bloc.id = "mig-refuzuri";
   bloc.innerHTML = `<div class="ca-mesaj"><b>${esc(titlu)}</b> — ${bune ? "celelalte se salvează; corectează-le în fișier și reîncarcă-l pentru ele:" : "niciun rând nu poate fi salvat; corectează fișierul și reîncarcă-l:"}` +
-    listaRefuzuri(erori) + `</div>`;
+    (deAratat.length ? listaRefuzuri(deAratat) : (opt.trimitere ? `<p class="ca-mesaj">${esc(opt.trimitere)}</p>` : "")) + `</div>`;
   _puneRefuzul(corp, buton, bloc);   // [581] în pagină, deasupra tabelului
   if (!bune) { buton.disabled = true; return; }
   buton.textContent = `Salvează ${bune === 1 ? "rândul bun" : "cele " + cate(bune, "rând bun", "rânduri bune")} (${eticheta})`;
@@ -1585,8 +1587,11 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
   // [deficiențele 345 + 346, comanda Costin 8.2] pe fiecare cont, soldul cu care se compară (balanța de deschidere sau contabilitatea, la
   // data preluării) și ce se întâmplă: contul ale cărui parteneri nu-l dau nu intră
   const sold = (v) => `${v >= 0 ? "debitor" : "creditor"} ${bani(Math.abs(v))} lei`;
+  // [17.5-Q10, F085] rândurile din fișier ale contului nepotrivit, numite scurt („rândurile 4, 5”)
+  const randuriCont = (cont) => { const nr = [...new Set((date.erori || []).filter((e) => e.regula === "parteneri_nu_dau_soldul" && String(e.cont || "").startsWith(String(cont))).map((e) => e.rand))];
+    return nr.length ? (nr.length === 1 ? `rândul ${nr[0]}` : `rândurile ${nr.join(", ")}`) : "rândurile contului"; };
   const coerHTML = coer.map((c) => `<li><b>${esc(c.cont)}</b>: partenerii dau ${sold(c.suma_parteneri)}; ${esc(c.sursa)} la ${esc(dataRo(c.data))}: ${sold(c.sold_balanta)} · ${c.coincide
-    ? '<span class="mig-stare-ok">se potrivesc</span>' : `<span class="mig-stare-respins">diferență ${bani(Math.abs(c.diferenta))} lei — rândurile contului nu intră</span>`}</li>`);   // [lotul 13] câte un <li> pe cont: notele de mai jos aleg conturile
+    ? '<span class="mig-stare-ok">se potrivesc</span>' : `<span class="mig-stare-respins">diferență ${bani(Math.abs(c.diferenta))} lei — ${randuriCont(c.cont)} nu intră</span>`}</li>`);   // [lotul 13] câte un <li> pe cont: notele de mai jos aleg conturile
   // [lotul 13, 666: „contul care se potrivește (4111) stă în caseta roșie cu eroarea”] conturile care se potrivesc stau în nota lor (pliată,
   // cu concluzia la vedere), cele care nu se potrivesc în caseta de atenție, numai ele; [581] amândouă în pagină, nu lipite sus (rezumatul
   // lipit creștea până strângea tabelul)
@@ -1620,7 +1625,11 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
   nav.setInapoi(() => nav.reiaPasul());   // [C140] „←” = alegerea fișierului, în pasul lui
   _arataFirma(corp, date, nav);   // [599]
   _arataInlocuirea(corp, date, nav);   // [446]
-  gateazaPartial(corp, "mig-salveaza-part", date.erori, randuri.length, "parteneri");   // [decizia Costin 14.10.2026 pct.2]
+  // [17.5-Q10, F085] contul nepotrivit se explică o singură dată, cu cifrele, în caseta „Nu se potrivesc cu soldul contului” (cu rândurile lui);
+  // lista refuzurilor de sus nu mai repetă fraza, iar rândul tabelului are numai trimiterea scurtă
+  gateazaPartial(corp, "mig-salveaza-part", date.erori, randuri.length, "parteneri", {
+    explicateAltundeva: (e) => e.regula === "parteneri_nu_dau_soldul",
+    trimitere: "Motivul, cu cifrele, e în caseta „Nu se potrivesc cu soldul contului”, de mai jos." });   // [decizia Costin 14.10.2026 pct.2]
   const buton = corp.querySelector("#mig-salveaza-part");
   // [252, 12.3 pct.5] coloana „TVA la încasare” contrazice Date firmă: salvarea ar refuza tot (`solduri_parteneri_api.refuz_tva_incasare`)
   if (date.refuz_tva_incasare) {
@@ -2504,7 +2513,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=320489dd29"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=e7167efe76"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat

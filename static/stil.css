@@ -748,6 +748,10 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   border-top: 1px solid var(--linie); }
 /* o bară urmată de alt conținut (nota de subsol a declarației, jurnalul din Date firmă) nu-l acoperă cu marginea ei de jos (e2e 164) */
 .fereastra-corp .bara-fixa:not(:last-child) { margin-bottom: 0; }
+/* [17.5-Q10, F031 / F034 / F078 — clasă, DS cap.9: o singură derulare] bara lipită jos care a crescut peste 30% din corp (caseta de blocaj, rezumatul
+   refuzului) nu mai stă lipită și nu mai derulează separat: curge în corp, sub conținut, iar corpul e singurul care derulează (marca o pune `navigator.js`) */
+.fereastra-corp .bara-fixa.bara-fixa-libera { position: static; }
+.fereastra-corp .bara-fixa.bara-fixa-libera :is([id$="-mesaj"], [id$="-msg"], .msg-eroare, .msg-avert, .em-rezultat) { max-height: none; overflow-y: visible; }
 .fereastra-corp .bara-fixa .dec-bara { margin-top: 10px; }
 .fereastra-corp .bara-fixa > [id$="-mesaj"]:empty, .fereastra-corp .bara-fixa > [id$="-msg"]:empty { display: none; }
 /* [lotul 11, deficiența 436 afișare — clasa: caseta de refuz / avertisment ascunsă sub antetul lipit sus] „în D100, începutul casetei roșii
@@ -1190,6 +1194,13 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
    tare/slab se muta de pe CULOARE pe GREUTATE. Gasit la prima scanare a desktopului
    asistentului — ecran care pana azi n-avea cont activ, deci n-avea subiect. */
 .bara-veriga-slab { font-size: var(--text-mic); font-weight: 400; color: var(--alb); }
+/* [17.5-Q10, AC188] „<cabinet> · <utilizator>”: un singur rând, cu elipsă când nu încape (textul întreg în `title`); ea se strânge, nu bara:
+   căutarea și „Ieși din cont” rămân în ecran la 603 px, fără derulare laterală */
+.bara { min-width: 0; }
+.bara > :is(.bara-logo-img, .bara-marca, .bara-chevron, .nav-ghid, .nav-clopot, .nav-iesire) { flex-shrink: 0; }
+.bara > .bara-identitate, .bara > [data-functie-asistent] { flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bara > .bara-identitate { min-width: 48px; }
+.bara > .bara-spatiu { flex: 1 1 0; min-width: 0; }
 
 
 /* [p24_bara3] bara 3 motivationala (asistent) */
@@ -3299,7 +3310,7 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 /* [17.3-B] fereastra cu zonă de derulare: marginea de sus a corpului (8 px) și cea de sus a subtitlurilor (4 px în loc de 8) trec la zonă; rândurile de compoziție rupte pe 2–3 linii (17.3) ar fi coborât zona sub minimul ei de 88 px și corpul ar fi derulat cu 8 px (Fișa salariatului F5, 1366×768) */
 .fereastra.fer-tabel .fereastra-corp.cu-zona { padding-top: 0; }
 .fereastra-corp.cu-zona .grila-doc > .fd-tabel { margin: 0; }
-.fereastra-corp.cu-zona .rezumat-fix > :empty { display: none; }   /* blocul gol din rezumat (ex. `.cf-sumar` fără pastile) nu mai ia 4 px de margine */
+.fereastra-corp.cu-zona .rezumat-fix > :empty:not(input, select, textarea, button, img) { display: none; }   /* blocul gol din rezumat (ex. `.cf-sumar` fără pastile) nu mai ia 4 px de margine; [17.5-Q10, F018] un câmp (input) e mereu „:empty”: căutarea Partenerilor rămâne vizibilă */
 .fereastra.fer-tabel .fereastra-corp.cu-zona .rezumat-fix { padding-top: 5px; padding-bottom: 5px; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel thead th { top: 0; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot td, .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot th { bottom: 0; }
@@ -3811,6 +3822,8 @@ fieldset { min-width: 0; }
   table.ds-tabel-stiva > :is(tbody, tfoot) > tr > :is(td, th)[data-eticheta]::before { content: attr(data-eticheta); display: block; font-size: 12px; font-weight: 400; line-height: 16px; color: var(--gri); }
   table.ds-tabel-stiva > :is(tbody, tfoot) > tr > :is(td, th):empty { display: none; }
   table.ds-tabel-stiva > tfoot > tr { background: var(--fundal); }
+  /* [17.5-Q10, F018] câmpul de pe rând (localitatea din Clienți / Furnizori, 201 px) nu iese din celula lui de 140 px: ia lățimea celulei */
+  table.ds-tabel-stiva > :is(tbody, tfoot) > tr > :is(td, th) :is(input:not([type=checkbox]):not([type=radio]), select, textarea) { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
 }
 /* [17.5-Q4, DS-814] măsurarea tabelului De validat cu cuvintele întregi (clasa stă pe tabel numai cât `tabeleStivuiteAplica` îi citește lățimea) */
 table.ds-tabel-proba :is(th, td) { overflow-wrap: normal !important; word-break: normal !important; }

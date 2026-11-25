@@ -19,7 +19,7 @@
 // existentă `verifica-cui`, cu propunerea numelui de la ANAF — 444), documentele lui și soldul din contabilitate, cu aceeași regulă ca balanța
 // (`clienti_api.sold_partener`: soldul de preluare + notele validate; ciornele separat). Nimic nu se recalculează în ecran.
 import { meniuActiuni } from "../ds_piese.js?v=91866a42f7";
-import { api, semnAjutor, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv } from "../api.js?v=dc526532b7";
+import { api, semnAjutor, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv, inactiv, activ } from "../api.js?v=dc526532b7";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 640] datele aduse de la ANAF țin de CUI-ul lor
 
 const FEL = {
@@ -113,7 +113,8 @@ async function ecranParteneri(corp, nav, t, fel, opt) {
         ${fel === "clienti" ? `<td>${selectDaNu(`class="cl-afiliat" id="cl-afiliat-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}"`, x.afiliat,
           `Persoană afiliată (Cod fiscal art.7 pct.26): ${x.nume || x.cui || ""}`)}</td>` : ""}
         <td><button class="buton-secundar ${P}-salveaza"
-            id="${P}-salveaza-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}" disabled data-actiune="${actiune(x)}">Salvează</button>
+            id="${P}-salveaza-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}" aria-describedby="${P}-salveaza-${esc(x.cheie)}-motiv" data-actiune="${actiune(x)}">Salvează</button>
+          <div class="tip-desc ${P}-motiv-inactiv" id="${P}-salveaza-${esc(x.cheie)}-motiv" hidden></div>
           <!-- [lotul 13, 675 — DS cap.1 v2.104] fiecare rând are aceleași acțiuni, în aceeași ordine; cea care nu se aplică stă inactivă, cu
                motivul. Trei butoane pe rând -> „Salvează” (al formularului rândului) rămâne la vedere, celelalte în meniul „Acțiuni” (DS cap.9 v2.83) -->
           ${meniuActiuni([...actiuniFisa(P, F, x)], { clasa: `${P}-actiuni` })}
@@ -165,8 +166,13 @@ async function ecranParteneri(corp, nav, t, fel, opt) {
       return ch;
     };
     // rândul fără fișă se salvează (fișa nouă) și cu localitatea / județul propuse de pe factură, neschimbate
+    // [17.5-Q10, F018] „Salvează” inactiv are motivul scris sub el și legat de buton (aria-describedby), ca orice acțiune inactivă (DS cap.1)
+    const MOTIV_NIMIC = "Nimic de salvat: schimbă numele, localitatea sau județul pe rând.";
     const actualizeazaButon = (x) => {
-      el("salveaza", x).disabled = !Object.keys(schimbari(x)).length && !(x.id === null && (x.oras || x.judet));
+      const b = el("salveaza", x), m = corp.querySelector(`#${CSS.escape(b.id)}-motiv`);
+      const nimic = !Object.keys(schimbari(x)).length && !(x.id === null && (x.oras || x.judet));
+      if (nimic) inactiv(b, MOTIV_NIMIC); else activ(b);
+      if (m) { m.textContent = nimic ? MOTIV_NIMIC : ""; m.hidden = !nimic; }
     };
     randuri.forEach((x) => {
       ["nume", "oras", "judet"].forEach((c) => el(c, x).addEventListener(c === "judet" ? "change" : "input", () => actualizeazaButon(x)));
@@ -349,7 +355,7 @@ export async function ecranParteneriFirmei(corp, nav, t) {
       <h2 class="pf-titlu">Parteneri ${semnAjutor("F018")}</h2>
       <p class="pf-intro">Clienții și furnizorii firmei, din fișe și din toate documentele: facturi emise și primite, casă, bancă, note
         contabile, soldurile de preluare. Deschide fișa unui partener ca să-i vezi datele, documentele și soldul din contabilitate și să-i editezi datele.</p>
-      <p><button type="button" class="buton-secundar" id="pt-nou" data-actiune="POST /tenants/{tenant_id}/clienti">+ Fișă de partener</button></p>
+      <p><button type="button" class="buton-primar" id="pt-nou" data-actiune="POST /tenants/{tenant_id}/clienti">+ Fișă de partener</button></p>
       ${lista.length ? `<input id="pt-cauta" class="camp-input" style="max-width:420px" placeholder="Caută după nume sau cod fiscal"
         aria-label="Caută partenerul după nume sau cod fiscal" autocomplete="off">
       <span class="tip-desc" id="pt-numar" style="margin-left:8px">${esc(cate(lista.length, "partener", "parteneri"))}</span>` : ""}

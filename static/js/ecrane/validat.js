@@ -33,7 +33,7 @@ import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu }
 import { randA as randConstatare } from "./control_verdict.js?v=79e2b7d168";
 import { legaSemnale, meniuActiuni, paginareDS } from "../ds_piese.js?v=91866a42f7";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=320489dd29";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=e7167efe76";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -865,7 +865,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=455ec134b8");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=14d4a29d15");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

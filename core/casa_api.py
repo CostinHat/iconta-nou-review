@@ -60,6 +60,15 @@ def descriere_nota(op):
     return " — ".join(p for p in parti if p)[:200]
 
 
+def text_stins(serie, numar, data, preluat):
+    """[17.5-Q10, F017] Ce stinge o operațiune de casă, în registru și în explicația notei: factura cu numărul și data ei, iar documentul
+    „Sold la <data>” scris la migrare din soldurile pe parteneri (`nomenclator_status_factura.TIP_SOLD_PRELUAT`) se numește ca sold preluat,
+    cu originea lui — nu „factura Sold la …” (nu e o factură). Conturile, suma și data soldului nu se schimbă."""
+    if preluat:
+        return "soldul preluat la %s (din soldurile partenerilor, la preluarea firmei)" % _data_ro(data)
+    return "factura %s din %s" % (_ncs(serie, numar), _data_ro(data))
+
+
 def nota_numeste_chitanta(cur, schema, op_id, chitanta, scrie=True):
     """[lotul 12, deficiența 168 — „descrierea notei chitanței doar numele clientului”; retest 08.10 pct.19: „trebuie să conțină chitanța
     și factura stinsă”] Nota operațiunii de casă `op_id` pe care s-a emis chitanța `chitanta` („SERIE-NR”) o numește în descriere, cu ce
@@ -72,17 +81,19 @@ def nota_numeste_chitanta(cur, schema, op_id, chitanta, scrie=True):
     Întoarce (nota, starea, descrierea de acum, descrierea care numește chitanța, data notei), sau None (fără operațiune / altă categorie);
     scrie numai cu `scrie`, dacă diferă și nota e ciornă (`scrie=False`: planul migrării datelor existente,
     `core/migrare_descriere_nota_chitanta.py`). Cursorul: oricare (tuplu sau dicționar)."""
-    cur.execute(f"""SELECT o.categorie, o.partener, o.avans, i.id, i.status, i.descriere, i.data, f.serie, f.numar, f.data_emitere
+    from core import nomenclator_status_factura as _nsf
+    cur.execute(f"""SELECT o.categorie, o.partener, o.avans, i.id, i.status, i.descriere, i.data, f.serie, f.numar, f.data_emitere,
+                           f.tip IS NOT DISTINCT FROM %s AS preluat
                       FROM {schema}.casa_operatiuni o JOIN {schema}.inregistrari i ON i.id = o.inregistrare_id
                       LEFT JOIN {schema}.facturi f ON f.id = i.factura_id
-                     WHERE o.id = %s""", (op_id,))
+                     WHERE o.id = %s""", (_nsf.TIP_SOLD_PRELUAT, op_id))
     r = cur.fetchone()
     if not r:
         return None
-    cat, partener, avans, nid, status, vechi, data_n, serie, numar, data_f = tuple(r.values()) if isinstance(r, dict) else tuple(r)
+    cat, partener, avans, nid, status, vechi, data_n, serie, numar, data_f, preluat = tuple(r.values()) if isinstance(r, dict) else tuple(r)
     if cat != "incasare_client":
         return None
-    stinge = (("factura %s din %s" % (_ncs(serie, numar), _data_ro(data_f))) if numar is not None
+    stinge = (text_stins(serie, numar, data_f, preluat) if numar is not None
               else ("avans de la client" if avans else None))
     nou = descriere_nota({"categorie": cat, "document": chitanta, "fel_document": "chitanța", "stinge": stinge, "partener": partener})
     if scrie and nou != vechi and status == "ciorna":
@@ -396,7 +407,7 @@ def adauga(conn, schema, op, linii=None):
                 er.camp("c-facturi", "Pe factura %s rămân %s lei; nu se pot aloca %s lei." % (f["numar"], f["sold"], s_a))
                 coduri.append(COD_PESTE_SOLD)
                 continue
-            parti.append((s_a, fid, "factura %s din %s" % (f["numar"], _data_ro(f["data_emitere"])), False, None))
+            parti.append((s_a, fid, text_stins(None, f["numar"], f["data_emitere"], f.get("preluata")), False, None))
         # [405] plata unui NIR fără factură: avans acordat furnizorului pentru bunurile din NIR (4091 = 5311), legat de NIR
         de_plata = {n["id"]: n for n in niruri_neplatite(conn, schema, cat)} if aloc_nir else {}
         for a in aloc_nir:
@@ -561,7 +572,7 @@ def leaga(conn, schema, op_id, factura_id):
     if Decimal(str(op["suma"])) > Decimal(f["sold"]) + _BAN:
         return {"eroare": "Pe factura %s rămân %s lei, iar operațiunea are %s lei: alege o factură cu sold suficient." % (
             f["numar"], f["sold"], op["suma"]), "cod": COD_PESTE_SOLD}
-    stinge = "factura %s din %s" % (f["numar"], _data_ro(f["data_emitere"]))
+    stinge = text_stins(None, f["numar"], f["data_emitere"], f.get("preluata"))
     with conn.cursor() as cur:
         cur.execute(f"UPDATE {schema}.inregistrari SET factura_id = %s, descriere = %s WHERE id = %s",
                     (fid, descriere_nota(dict(op, stinge=stinge, fel_document=None)), op["inregistrare_id"]))
@@ -613,6 +624,7 @@ def _registru_luna(cur, schema, an, luna):
     # [D394 Î2] `chitanta_neclasificata`: chitanța fără factură și fără cotă legată de operațiune (de clasificat la o
     # firmă exceptată de la AMEF — D394 o refuză numită până primește cota)
     # [lotul 11, deficiența 456] `chitanta`: chitanța emisă (neanulată) pe operațiune — încasarea de la client fără ea se vede pe rând
+    from core.nomenclator_status_factura import TIP_SOLD_PRELUAT as _TIP_PRELUAT
     cur.execute(f"""SELECT o.*, (SELECT c.id FROM {schema}.chitante c WHERE c.casa_operatiune_id = o.id
                            AND c.factura_id IS NULL AND c.cota_tva IS NULL AND NOT c.anulata LIMIT 1)
                            AS chitanta_neclasificata,
@@ -620,6 +632,8 @@ def _registru_luna(cur, schema, an, luna):
                              ORDER BY c.id LIMIT 1) AS chitanta_id,
                            (SELECT ARRAY[f.serie, f.numar] FROM {schema}.inregistrari i JOIN {schema}.facturi f ON f.id = i.factura_id
                              WHERE i.id = o.inregistrare_id) AS factura_numar,
+                           (SELECT ARRAY[f.data_emitere::text, (f.tip IS NOT DISTINCT FROM '{_TIP_PRELUAT}')::text] FROM {schema}.inregistrari i
+                             JOIN {schema}.facturi f ON f.id = i.factura_id WHERE i.id = o.inregistrare_id) AS factura_fel,
                            EXISTS (SELECT 1 FROM {schema}.casa_operatiuni s WHERE s.storno_de = o.id) AS stornata,
                            (SELECT ARRAY[n.numar, n.data::text] FROM {schema}.nir n WHERE n.id = o.nir_id) AS nir_doc
                     FROM {schema}.casa_operatiuni o
@@ -688,6 +702,9 @@ def registru(conn, schema, an, luna):
                     "nota_status": r["nota_status"], "stornata": r["stornata"], "storno_de": r.get("storno_de"),
                     # [lotul 6 pct.3a, 278] factura stinsă de operațiune (numărul cu seria) și avansul
                     "factura": _ncs(*r["factura_numar"]) if r["factura_numar"] else None, "avans": bool(r.get("avans")),
+                    # [17.5-Q10, F017] ce stinge, scris pentru rând: factura sau soldul preluat la migrare (cu originea lui)
+                    "stinge": (text_stins(r["factura_numar"][0], r["factura_numar"][1], r["factura_fel"][0], r["factura_fel"][1] == "true")
+                               if r["factura_numar"] and r.get("factura_fel") else None),
                     # [405] NIR-ul plătit (avans 4091 = 5311), numit ca documentul, nu prin id
                     "nir": ("NIR nr %s din %s" % (r["nir_doc"][0], _data_ro(r["nir_doc"][1]))) if r.get("nir_doc") else None,
                     # [407] avansul acordat furnizorului (409x) nu se leagă de o factură: se compensează la factura finală

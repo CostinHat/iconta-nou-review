@@ -4707,6 +4707,8 @@ def facturi_primite_lista(tenant_id, ctx):
                                  "cumparator": " · ".join(x for x in (f.get("cumparator_nume"), f.get("cumparator_cui")) if x),
                                  "total": str(f.get("total") or ""), "tva": str(f.get("tva") or ""),
                                  "moneda": f.get("moneda"), "taxare_inversa": bool(f.get("taxare_inversa")),
+                                 # [17.5-Q10, F043] TVA-ul XML-ului care nu se reconciliază cu defalcarea pe cote: spus înainte de validare
+                                 "neconcordanta_tva": _ef.neconcordanta_tva(f),
                                  "de_completat": de_completat,
                                  "linii": [{"descriere": l["descriere"], "cantitate": str(l["cantitate"]), "um": l.get("um") or "",
                                             "pret": str(l["pret_unitar"]), "cota": str(l["cota_tva"])}
@@ -8868,7 +8870,8 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
                 # [lotul 12, C120, clasa 599] factura între alte două firme nu se validează nici dacă a ajuns deja în lista „de validat”
                 # (din SPV sau dintr-un import de dinainte de reparație): confruntarea cu CUI-ul din Date firmă, ca la import
                 _rand_cui = repo_firma_profil.cui_firma_3(cur, schema)
-                refuz = _ef.alta_firma(f, _rand_cui[0] if _rand_cui else None)
+                # [17.5-Q10, F043] TVA-ul din XML care nu se reconciliază cu defalcarea pe cote nu se contabilizează (nicio notă scrisă)
+                refuz = _ef.alta_firma(f, _rand_cui[0] if _rand_cui else None) or _ef.neconcordanta_tva(f)
             except Exception as e:
                 refuz = "XML-ul nu se poate citi: %s" % str(e)[:200]
             if refuz:   # un singur refuz: XML-ul necitibil nu mai are ce confrunta

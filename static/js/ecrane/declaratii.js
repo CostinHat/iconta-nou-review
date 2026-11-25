@@ -634,6 +634,22 @@ async function pas2(corp, nav) {
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
   legaSemnale(corp);   // [17.5-Q8, DS.6] „▾ detalii” al avertismentelor lungi
+  // [17.5-Q10, F035] documentele din spatele avertismentelor, grupate după cauză: fiecare grup cu legăturile lui (factura / nota), sub avertismente;
+  // avertismentele nu opresc depunerea (ce o oprește e caseta de lângă „Trimite în coadă”)
+  const _grupe = S.rezultat.documente_avertismente || [];
+  const _locAv = corp.querySelector(".dec-avert");
+  if (_grupe.length && _locAv) {
+    const z = document.createElement("div");
+    z.id = "dec-avert-documente";
+    z.innerHTML = `<p class="ecran-nota">Avertismentele nu opresc depunerea; documentele lor, pe cauze:</p>` + _grupe.map((g, i) =>
+      `<div class="dec-avert-grup" data-grup="${i}"><div class="dec-avert-cap">${esc(g.cauza)} (${(g.facturi || []).length + (g.note || []).length})</div></div>`).join("");
+    _locAv.appendChild(z);
+    _grupe.forEach((g, i) => {
+      const loc = z.querySelector(`[data-grup="${i}"]`);
+      if ((g.facturi || []).length) legaturiFacturi(loc, nav, S.tenant_id, g.facturi);
+      if ((g.note || []).length) legaturiNote(loc, S.tenant_id, g.note);
+    });
+  }
   // [lotul 10, 436] notele care opresc depunerea: fiecare cu drumul ei spre Registrul jurnal, în luna notei (ca refuzul porții TVA, 284)
   if (_blocaj && (_blocaj.note || []).length) legaturiNote(corp.querySelector("#dec-blocaj .ca-mesaj"), S.tenant_id, _blocaj.note);
   // [17.5-Q7, FISC.2] facturile pe care decontul le-a scos din calcul (partener străin cu cotă internă): fiecare cu drumul ei spre fișa facturii
@@ -692,7 +708,7 @@ function legaturiFacturi(zona, nav, tenantId, documente) {
   zona.appendChild(lista);
   lista.querySelectorAll("[data-factura]").forEach((b) => b.addEventListener("click", async () => {
     const d = documente[parseInt(b.dataset.factura, 10)];
-    const { deschideFactura } = await import("./facturi_ecran.js?v=bdc8349cd4");
+    const { deschideFactura } = await import("./facturi_ecran.js?v=329b15b96c");
     deschideFactura(nav, tenantId, d.factura_id);
   }));
 }

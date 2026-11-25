@@ -3176,6 +3176,27 @@ def verifica_observatii_q7(observatii):
     return abateri
 
 rap["pilot_q7"] = reguli_pilot_q7(fisiere)
+
+
+def reguli_c238_c239(css):
+    """[17.5-Q10, pct.3] C238 — fereastra e vizibilă din primul cadru al apariției: nicio animație de apariție a ferestrei / suprapunerii
+    (`@keyframes aparitie-*`) nu pornește de la opacitate 0 (blocul citit în primul cadru ar fi invizibil, DS cap.9). C239 — caseta de
+    bun-venit nu acoperă acțiunea principală: cât e deschisă o fereastră (`.fereastra-overlay`), `.sumar-toast` nu se arată. Constatările
+    (fișier, linie, regulă, text); lista goală = conform."""
+    out = []
+    kf = list(re.finditer(r"@keyframes\s+(aparitie-[\w-]+)\s*\{\s*from\s*\{([^}]*)\}", css))
+    if not kf:
+        out.append(("static/stil.css", 0, "C238", "lipsesc @keyframes aparitie-* ale ferestrei"))
+    for m in kf:
+        op = re.search(r"opacity\s*:\s*([\d.]+)", m.group(2))
+        if op and float(op.group(1)) <= 0:
+            out.append(("static/stil.css", css[:m.start()].count("\n") + 1, "C238", "%s pornește de la opacitate %s" % (m.group(1), op.group(1))))
+    if not re.search(r"body:has\(\.fereastra-overlay\)\s+\.sumar-toast\s*\{\s*display\s*:\s*none", css):
+        out.append(("static/stil.css", 0, "C239", "caseta de bun-venit (.sumar-toast) nu se ascunde cât e deschisă o fereastră"))
+    return out
+
+
+rap["c238_c239"] = reguli_c238_c239(open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read())
 if __name__ == "__main__":
     import sys
     if sys.argv[1:2] == ["--q7-probe"]:

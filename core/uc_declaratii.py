@@ -212,7 +212,26 @@ def campuri_rezultat(tip, res):
         # contor - „valid, 18 operatiuni" - iar contabilul nu putea vedea CARE 18: 0 din 92 de
         # iesiri isi aratau componentele (1c). Componentele existau pe obiectul de rezultat al
         # motorului; lipsea transportul. Ce nu se poate desface spune de ce, nu tace.
-        "componente": declaratii_componente.componente(tip, res)}
+        "componente": declaratii_componente.componente(tip, res),
+        # [17.5-Q10, F035] documentele din spatele avertismentelor, grupate după cauză, fiecare cu legătura spre sursă (factura / nota)
+        "documente_avertismente": documente_avertismente(res)}
+
+
+def documente_avertismente(res):
+    """[17.5-Q10, F034 / F035] Grupurile de documente ale avertismentelor D394 / D406 (care NU opresc depunerea; blocajul e `blocaj_declaratie`):
+    [{cauza, facturi: [{factura_id, eticheta}], note: [{nota_id, eticheta, data}]}]. PURĂ: citește numai rezultatul motorului."""
+    grupuri = [{"cauza": g["cauza"], "facturi": g["facturi"], "note": []} for g in (getattr(res, "documente_excluse", None) or [])]   # D394, F034
+    nj = [x for x in (getattr(res, "nepotriviri_jurnal", None) or []) if len(x) == 4]
+    fara = [{"factura_id": i, "eticheta": "factura %s" % nr} for nr, _fl, fn, i in nj if fn is None]
+    alte = [{"factura_id": i, "eticheta": "factura %s" % nr} for nr, _fl, fn, i in nj if fn is not None]
+    if fara:
+        grupuri.append({"cauza": "Facturi fără notă de contare validată în perioadă", "facturi": fara, "note": []})
+    if alte:
+        grupuri.append({"cauza": "Facturi cu alte conturi în notă decât în factură", "facturi": alte, "note": []})
+    note = getattr(res, "note_terti_fara_partener", None) or []
+    if note:
+        grupuri.append({"cauza": "Linii pe 401 / 4111 fără partener", "facturi": [], "note": note})
+    return grupuri
 
 
 def declaratie_genereaza(tip, date, ctx):

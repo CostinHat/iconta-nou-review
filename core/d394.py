@@ -261,7 +261,7 @@ def _op11_cod(k, categorii):
         return None, None, "fără categoria art.331 a bunului"
     bun = "21" if cod in CODPR_CEREALE else cod
     if bun == "21" and len(cod) <= 2:
-        return None, None, "cereale fără subcodul NC pe factura (ex. 1001 grau / 1005 porumb)"
+        return None, None, "cereale fără subcodul NC pe factură (ex. 1001 grâu / 1005 porumb)"
     return cod, bun, None
 
 # <rezumat2>: TOATE campurile sunt obligatorii, si cele de facturi simplificate/bonuri,
@@ -439,6 +439,8 @@ class Rezultat:
     # confrunta cu ce s-a transmis prin e-Factura FARA a reimplementa eligibilitatea: cine decide ce
     # intra ramane generatorul, iar cine confrunta doar citeste.
     facturi_incluse: dict = field(default_factory=dict)
+    # [17.5-Q10, F034] facturile operațiunilor scoase din declarație, pe cauză: [{cauza, facturi: [{factura_id, eticheta}]}]
+    documente_excluse: list = field(default_factory=list)
     # Cate operatiuni din declaratie NU au factura in spate (manuale: bonuri, borderouri). Se expune
     # fiindca fara ea confruntarea n-ar sti ca nu vede tot — v. regula "unde nu poti stabili ca vezi
     # tot, spui gri".
@@ -641,6 +643,8 @@ def calcul_d394(prof, perioada, date, manual=None):
     avert = []
     nefacturabile = []   # [lotul 11, 440] documentele facturilor excluse (cota nedeclarabilă), ca avertismentul de la capăt să le numească
     excluse_N = []   # (nume, cui, baza) operatiuni N excluse - decizie Costin 04.08 (approach b)
+    fara_cod = {}   # [17.5-Q10, F034] (motiv, regula) -> [(tip, partener, facturi)] operațiunile scoase fiindcă le lipsește codul art.331
+    excluse_documente = []   # [17.5-Q10, F034] {cauza, facturi: [id]} — facturile de corectat, pe cauză (ecranul le leagă)
 
     # [lotul 10, C69] judP al partenerului neînregistrat fără cuiP (structura D394 pct.222: „Obligatoriu pt tip_partener=2 și cuiP=null și
     # taraP=RO”): județul scris pe factură / pe operațiunea manuală, sau codul lui fiscal (pentru ANAF), pe cheia op1
@@ -860,16 +864,20 @@ def calcul_d394(prof, perioada, date, manual=None):
                 continue
         cod, _bun, motiv = _op11_cod(k, categorii)
         if cod is None:
+            # [17.5-Q10, F034] aceeași cauză, un singur avertisment (mai jos): partenerii și facturile de corectat, numite și legate pe ecran
             _regula = "R233.6" if tip == "N" else "R233.5"
             _ident = (denP or "?") + ((" (CUI %s)" % cuiP) if cuiP else "")
-            avert.append(
-                "Operațiune %s către partenerul %s %s: ar intra în declarație fără codul produsului "
-                "art.331, pe care DUK (regula %s) îl respinge. Operațiunea e în afara declarației până adaugi "
-                "categoria art.331 / subcodul NC pe factură; apoi generează din nou. Restul declarației rămâne "
-                "valid." % (tip, _ident, motiv, _regula))
+            fara_cod.setdefault((motiv, _regula), []).append((tip, _ident, sorted(incluse.get(k) or [])))
             del op1[k]
             categorii.pop(k, None)
             incluse.pop(k, None)
+    for (motiv, _regula), ops in fara_cod.items():
+        avert.append(
+            "%s în afara declarației, %s: %s. Ar intra fără codul produsului art.331, pe care DUK (regula %s) îl respinge. Adaugă "
+            "categoria art.331 / subcodul NC pe factură, apoi generează din nou. Restul declarației rămâne valid." % (
+                _cate(len(ops), "operațiune", "operațiuni"), motiv, "; ".join("%s către %s" % (t, i) for t, i, _f in ops), _regula))
+        excluse_documente.append({"cauza": "Operațiuni în afara declarației: %s" % motiv,
+                                  "facturi": [fid for _t, _i, fs in ops for fid in fs]})
 
     # rezumat1: unic pe (tip_partener, cota), CALCULAT din op1 (pct. 38-40).
     # ATENTIE: setul de atribute e ASIMETRIC si e cel din validatorul v5, nu unul
@@ -1086,6 +1094,8 @@ def calcul_d394(prof, perioada, date, manual=None):
                    rezumat2=rez2_int, op11=op11, detaliu=detaliu, serii=serii,
                    informatii=inf, total_plata_a=total_plata, op_efectuate=op_efectuate,
                    facturi_incluse=incluse_int, manuale_fara_factura=manuale_fara_factura,
+                   documente_excluse=[{"cauza": g["cauza"], "facturi": [{"factura_id": i, "eticheta": "factura"} for i in g["facturi"]]}
+                                      for g in excluse_documente if g["facturi"]],
                    op2=op2, z_incomplete=z_incomplete, i2_neclasificate=i2_neclasificate,
                    casa_nelegate=[{"id": o["id"], "data": str(o["data"]), "document": o.get("document"),
                                    "suma": o["suma"], "categorie": o["categorie"]}
@@ -1576,6 +1586,14 @@ def genereaza(conn, schema, perioada, manual=None):
     if _er:
         raise ValueError("D394 nu se poate genera: " + " ".join(_er))
     res = calcul_d394(prof, perioada, date, manual)
+    if res.documente_excluse:   # [17.5-Q10, F034] facturile de corectat numite cum le vede contabilul (seria și numărul)
+        with conn.cursor() as _cur_ex:
+            _cur_ex.execute(f"SELECT id, serie, numar FROM {schema}.facturi WHERE id = ANY(%s)",
+                            ([d["factura_id"] for g in res.documente_excluse for d in g["facturi"]],))
+            _nr = {r[0]: _serie_nr(r[1], r[2]) for r in _cur_ex.fetchall()}
+        for g in res.documente_excluse:
+            for d in g["facturi"]:
+                d["eticheta"] = "factura %s" % _nr.get(d["factura_id"], d["factura_id"])
     if res.z_incomplete:
         # [D394 op2 Î1, decizia Costin 02.10] refuz NUMIT, nu op2 pe zero: ce lipsește, pe ce raport
         _e = ValueError("D394 nu se poate genera: încasările prin casa de marcat (secțiunea Î1) cer, pentru fiecare "

@@ -439,9 +439,13 @@ def problema(cod, nivel=BLOCANT, **campuri):
     # sufixul „lei", deci bani() fără monedă. Valorile brute rămân în return (folosite programatic de
     # apelanți). Sursă unică de formatare: pdf_util.bani (DS cap.7). Orice câmp monetar NOU dintr-un
     # șablon TREBUIE adăugat aici, altfel se randează brut (garda .py nu vede șabloanele .format).
-    from core.pdf_util import bani
+    from core.pdf_util import bani, data_ro
     MONEDA_CAMP = {"gasit", "asteptat", "baza", "diferenta", "diferenta_solduri", "debit", "credit", "sold"}
-    afis = {k: (bani(v) if k in MONEDA_CAMP and v is not None else v) for k, v in campuri.items()}
+    # [17.5-Q10, F015] câmpurile de DATĂ ale șabloanelor („în ziua {zi}”, „termen {scadenta}”) se scriu ca restul ferestrei (zz.ll.aaaa,
+    # pdf_util.data_ro — sursa unică), nu ISO („2026-11-25”); valoarea brută rămâne în return
+    DATA_CAMP = {"zi", "scadenta"}
+    afis = {k: (bani(v) if k in MONEDA_CAMP and v is not None else data_ro(v) if k in DATA_CAMP and v is not None else v)
+            for k, v in campuri.items()}
     try:
         mesaj = sablon.format(**afis)
     except KeyError as e:

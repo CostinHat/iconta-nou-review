@@ -413,7 +413,12 @@ export function baraDeJos(fer, corp, { renunta }) {
       // motivul pus de ecran pe buton (`title`), dacă nu e deja scris în fereastră (același mesaj o singură dată pe ecran); altfel cel general
       const dinEcran = principal.title || principal.getAttribute("aria-description") || "";
       const scrisDeja = dinEcran && [...corp.children].some((x) => x !== bara && !x.contains(principal) && (x.innerText || "").includes(dinEcran));
-      text = dinEcran && !scrisDeja ? dinEcran : "Completează datele cerute în fereastră, ca să poți continua.";
+      // [17.5-Q10, F031 / F034] fără `title`, motivul e textul legat de buton (`aria-describedby`, ex. caseta de blocaj a declarației): prima lui
+      // propoziție, nu fraza generală „Completează datele…”, când nu e nimic de completat
+      const legat = (principal.getAttribute("aria-describedby") || "").split(/\s+/).filter((id) => id && id !== "fj-motiv-text")
+        .map((id) => document.getElementById(id)).find((e) => e && (e.textContent || "").trim());
+      const dinLegat = legat ? ((legat.textContent || "").replace(/\s+/g, " ").trim().match(/^.{1,220}?[.!?](?=\s|$)/) || [(legat.textContent || "").replace(/\s+/g, " ").trim().slice(0, 220)])[0] : "";
+      text = dinEcran && !scrisDeja ? dinEcran : dinLegat || "Completează datele cerute în fereastră, ca să poți continua.";
     }
     let sp = motiv.querySelector(".fj-text");
     if (text) {

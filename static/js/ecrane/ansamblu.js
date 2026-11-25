@@ -13,7 +13,7 @@
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
 import { api, esc, semnAjutor, inchidereDialog, cate } from "../api.js?v=dc526532b7";
-import { STRATURI } from "./migrare.js?v=8a2358dab7";
+import { STRATURI } from "./migrare.js?v=4408029606";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";
@@ -125,11 +125,27 @@ async function _corpAnsamblu(corp) {
 // [deficiența 4, retestul Costin 09.10] fereastra se închide și cu Esc, prin mecanismul unic al dialogurilor (`inchidereDialog`):
 // e o fereastră de citit, fără nimic de pierdut; X-ul ei rămâne cel al navigatorului
 // [lotul 13, 562] singurul drum spre prezentare (nu se mai deschide singură la prima logare); prima deschidere o marchează văzută
+// [17.5-Q10, X02] Esc, X și butonul de jos închid prezentarea și după „Primii pași” → „← Înapoi”: navigatorul redesenează fereastra la întoarcere
+// (alt element), deci închiderea prin Esc se leagă de fereastra fiecărei desenări, nu numai de prima. Butonul de jos „Închide prezentarea”
+// e secundar (`data-in-bara`): prezentarea n-are acțiune principală.
+function _legaInchiderea(corp) {
+  const fer = corp.closest(".fereastra");
+  if (!fer || fer.__inchidereAnsamblu) return;
+  fer.__inchidereAnsamblu = true;
+  inchidereDialog(fer, () => { if (fer.isConnected) window._navGlobal.inapoi(); });
+}
+function _butonInchide(corp) {
+  const fer = corp.closest(".fereastra");
+  if (!fer || !corp.isConnected || corp.querySelector("#ans-inchide") || fer.querySelector("#ans-inchide")) return;
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "buton-secundar"; b.id = "ans-inchide"; b.setAttribute("data-in-bara", "");
+  b.textContent = "Închide prezentarea";
+  b.addEventListener("click", () => { if (fer.isConnected) window._navGlobal.inapoi(); });
+  corp.appendChild(b);
+}
 export function deschideAnsamblu() {
   if (!window._navGlobal) return;
-  window._navGlobal.deschide("Prezentarea aplicației", (corp) => { _corpAnsamblu(corp); }, { nivel: "cabinet", lat: "larg" });   // [200] o hartă: lată, ca grupele să stea pe coloane
-  const fer = [...document.querySelectorAll(".fereastra")].pop();
-  if (fer) inchidereDialog(fer, () => { if (fer.isConnected) window._navGlobal.inapoi(); });
+  window._navGlobal.deschide("Prezentarea aplicației", (corp) => { _legaInchiderea(corp); _corpAnsamblu(corp).then(() => _butonInchide(corp)); }, { nivel: "cabinet", lat: "larg" });   // [200] o hartă: lată, ca grupele să stea pe coloane
   const u = sesiune.user();
   if (u && u.bun_venit_vazut === false) {
     api.post("/cont/bun-venit-vazut", {}).then(() => sesiune.marcheazaBunVenit()).catch(() => {});

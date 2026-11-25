@@ -40,17 +40,17 @@ import { fluxConcediu } from "./flux_concediu.js?v=ed753c72f9";  /* cm_flux_v1 *
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=dc526532b7";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=bdc8349cd4";   // [lotul 13, 543] seria chitanțelor pe loc
-import { cautaInLista } from "./emitere_ecran.js?v=e4db4f2679";   /* [lotul 12, 488] căutarea în listele lungi de articole */
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=329b15b96c";   // [lotul 13, 543] seria chitanțelor pe loc
+import { cautaInLista } from "./emitere_ecran.js?v=4c864c130d";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=b26ef32cac";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=41cf75f2de";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=49b400e0ca";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=8fea268f83";
-import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=8a2358dab7";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=4408029606";  // [p96_import_firma] + [Q4] import in masa
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [17.5-J, AC052] refuzul care trimite la ce lipsește
-import { declaratiiPerFirma } from "./declaratii.js?v=455ec134b8";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=14d4a29d15";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=79e2b7d168";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=f1efa2b688";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=b44ae564c9";  // [wc_extras_v1]
@@ -58,7 +58,7 @@ import { randeazaDateFirma } from "./date_firma.js?v=b4b224cb24";  // [date_firm
 import { ecranMijloace } from "./mijloace_ecran.js?v=6352708e1f";  // [ecran_mf_v1]
 import { ecranReevaluareValuta } from "./reevaluare_ecran.js?v=05ef5e9265";  // [lotul 10, 429]
 import { ecranCompensari } from "./compensari_ecran.js?v=30126917dc";  // [lotul 10, 428 — decizia Costin „Construiesc acum”]
-import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=19949a9cc9";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
+import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=a0e77946ee";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";  // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
 import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
@@ -4478,7 +4478,7 @@ function motiveCasa(o) {
   }
   m.leaga = o.se_leaga && o.stare_coada !== "la_senior" ? null
     : !["incasare_client", "plata_furnizor"].includes(o.categorie) ? "Numai încasarea de la client și plata furnizorului se leagă de o factură."
-    : o.factura ? `Operațiunea e legată de factura ${o.factura}.`
+    : o.factura ? `Operațiunea e legată de ${o.stinge || "factura " + o.factura}.`
     : o.storno_de || o.stornata ? "Operațiunea stornată nu se mai leagă."
     : o.stare_coada === "la_senior" ? laValidare
     : o.nota_status === "validata" ? "Nota e validată: legătura cu factura se face înainte de validare."
@@ -4543,10 +4543,12 @@ async function ecranCasa(corp, nav, t) {
       const o = r.o, m = motiveCasa(o), k = esc(r.cheie);
       const deschis = deschise.has(r.cheie);
       const suma = `${Number(o.suma) < 0 ? "−" : ""}${bani(Math.abs(Number(o.suma)))}`;
+      // [17.5-Q10, F015] soldul pe minus se scrie cu același semn ca suma („−6.000,00”), nu cu cratima din toLocaleString („-58,00”)
+      const sold = o.sold === null || o.sold === undefined || o.sold === "" ? "" : `${Number(o.sold) < 0 ? "−" : ""}${bani(Math.abs(Number(o.sold)))}`;
       const obs = [
         o.partener || o.cui ? `Partener: ${esc(o.partener || "")}${o.cui ? " · CUI " + esc(o.cui) : ""}` : "",
         o.document ? `Document: ${esc(o.document)}` : "Document: nescris pe operațiune",
-        o.factura ? `Stinge factura ${esc(o.factura)}` : "", o.avans ? "Avans (fără factură stinsă)" : "", o.nir ? `Plata pentru ${esc(o.nir)}` : "",
+        o.factura ? `Stinge ${esc(o.stinge || "factura " + o.factura)}` : "", o.avans ? "Avans (fără factură stinsă)" : "", o.nir ? `Plata pentru ${esc(o.nir)}` : "",
         o.storno_de ? "Rândul stornează o operațiune validată." : "", o.stornata ? "Operațiunea e stornată." : "",
         o.fara_chitanta ? "Încasare fără chitanță emisă în aplicație." : "",
         `Nota: ${esc(stareNotaCasa(o, t))}`,
@@ -4562,10 +4564,10 @@ async function ecranCasa(corp, nav, t) {
         <tr class="tn-rand${deschis ? " tn-deschis" : ""}">
           <td><button type="button" class="btn-link tn-deschide" aria-expanded="${deschis}" aria-controls="c-det-${k}" aria-label="Detaliul operațiunii din ${dataRo(o.data)}">${dataRo(o.data)}</button></td>
           <td>${o.document ? esc(o.document) : `<span class="tip-desc">fără document</span>`}</td>
-          <td>${esc(o.partener || "")}<div class="tip-desc">${esc(o.categorie_eticheta || "")}${o.factura ? " · factura " + esc(o.factura) : ""}${o.avans ? " · avans" : ""}${o.nir ? " pentru " + esc(o.nir) : ""}</div></td>
+          <td>${esc(o.partener || "")}<div class="tip-desc">${esc(o.categorie_eticheta || "")}${o.factura ? " · " + esc(o.stinge || "factura " + o.factura) : ""}${o.avans ? " · avans" : ""}${o.nir ? " pentru " + esc(o.nir) : ""}</div></td>
           <td class="fd-td-num">${o.tip !== "plata" ? suma : ""}</td>
           <td class="fd-td-num">${o.tip === "plata" ? suma : ""}</td>
-          <td class="fd-td-num">${bani(o.sold)}</td>
+          <td class="fd-td-num">${sold}</td>
           <td><span style="color:${culoare[r.fel]};font-weight:600">● ${esc(r.respinsa ? "notă respinsă la validare" : stareNotaCasa(o, t))}</span>${r.semne.filter((s) => s.fel !== "respinsa").map((s) => `<div class="tip-desc tn-semn" data-semn="${esc(s.fel)}">${esc(s.text)}</div>`).join("")}</td>
           <td class="tn-actiuni">${meniuActiuni([butonRand("buton-secundar", `data-storno="${o.id || ""}" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni/{op_id}/storneaza"`, "Stornează", m.storno),
               butonRand("buton-secundar", `data-del="${o.id || ""}" data-actiune="DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}"`, "Șterge", m.sterge)])}</td>
@@ -5148,7 +5150,12 @@ async function ecranBanca(corp, nav, t) {
     const motivCont = l.status === "contat" ? "Linia e contată: nota ei e în Registrul jurnal."
       : l.status === "ignorat" ? "Linia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru."
       : l.status === "potrivit" || contPropus ? null : "Linia nu s-a potrivit pe nicio factură: alege facturile.";
-    const motivAlege = l.status === "contat" ? "Linia e contată: facturile ei sunt stinse."
+    // [17.5-Q10, F073] linia contată: motivul spune ce a fost contat — facturile stinse (numite) sau operațiunea băncii (comision, dobândă…), care n-are facturi
+    const stinse = ((l.alocari || {}).alocari || []).map((a) => (a.factura && a.factura.numar ? numarCuSerie(a.factura.serie, a.factura.numar) : "")).filter(Boolean);
+    const motivAlege = l.status === "contat"
+      ? (stinse.length ? `Linia e contată: a stins ${stinse.length === 1 ? "factura" : "facturile"} ${stinse.join(", ")}.`
+        : opBanca(l) ? `Linia e o operațiune a băncii (${textScurt(l.descriere || "comision", 40)}), contată pe nota ${np.debit} = ${np.credit}: n-are facturi de ales.`
+        : "Linia e contată fără facturi: nota ei e în Registrul jurnal.")
       : l.status === "ignorat" ? "Linia e pusă deoparte: „Readu” (în detaliul ei) o întoarce la lucru."
       : opBanca(l) ? `Linia e o operațiune a băncii (nota propusă ${np.debit} = ${np.credit}), nu plata unei facturi: se contează pe nota propusă.` : null;   // [607]
     // [17.5-Q3, 761] „Contează” e acțiunea liniei, secundară: principalul ferestrei e „Importă extras”, în bară (decizia arhitectului, decizii_bara_17_5_Q3.txt)
@@ -5230,7 +5237,8 @@ async function ecranBanca(corp, nav, t) {
       if (z) z.textContent = filtru.text || filtru.stare ? textNumar(v, tot, "linie", "linii") : "";
     };
     aplicaFiltru();
-    const cCauta = corp.querySelector("#bk-cauta"), cStare = corp.querySelector("#bk-stare");
+    // [17.5-Q10, F011/F012] căutarea se ia din locul ei, nu din fereastră: cadrul poate s-o fi mutat în zona listei rescrise mai sus (o readuce după redesenare)
+    const cCauta = loc.querySelector("#bk-cauta"), cStare = loc.querySelector("#bk-stare");
     if (cCauta) cCauta.addEventListener("input", () => { filtru.text = cCauta.value; aplicaFiltru(); });
     if (cStare) cStare.addEventListener("change", () => { filtru.stare = cStare.value; aplicaFiltru(); });
     zonaLista.querySelectorAll("[data-cont]").forEach((b) =>
@@ -5723,11 +5731,12 @@ async function ecranRaportZ(corp, nav, t) {
     // [lotul 12, C139] Z-ul validat nu se șterge (a intrat în evidență: corectura e stornarea, OMFP 1802/2014 pct.69); [lotul 13, 675] butoanele
     // rândului stau la locul lor, inactive, cu motivul
     const validatZ = "Raportul Z e validat: a intrat în evidență.";
+    // [17.5-Q10, F003] „Validează raportul Z” e acțiunea rândului, secundară: principalul ferestrei rămâne „Generează notă” (o singură acțiune principală)
     const randValidat = (z) => `
       <div class="pf-frand" style="display:block" data-z-validat="${z.id}">
         <div class="pf-frand-nume">${esc(numeZ(z))} · ${dataRo(z.data)} · încasat ${bani(z.incasat)} lei · validat</div>
         <div class="pf-frand-sub">${esc((z.stergere && z.stergere.refuz) || "Validat: a intrat în evidență.")}</div>
-        <p style="margin:8px 0 0;display:flex;gap:8px;flex-wrap:wrap">${t.regim_contabil !== "simpla" && poateValidaZ ? butonRand("buton-primar", `data-z="${z.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza"`, "Validează raportul Z", validatZ) : ""}
+        <p style="margin:8px 0 0;display:flex;gap:8px;flex-wrap:wrap">${t.regim_contabil !== "simpla" && poateValidaZ ? butonRand("buton-secundar", `data-z="${z.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza"`, "Validează raportul Z", validatZ) : ""}
           ${butonRand("buton-sters buton-mic", `data-z="${z.id}" data-actiune="DELETE /tenants/{tenant_id}/horeca/raport-z/{nota_id}"`, "Șterge raportul Z", (z.stergere && z.stergere.refuz) || validatZ)}</p>
         <div id="zd-msg-${z.id}"></div>
       </div>`;
@@ -5741,7 +5750,7 @@ async function ecranRaportZ(corp, nav, t) {
           ${!cv ? "" : z.iesiri ? `<div class="caseta-info"><span class="ci-mesaj" id="zd-valoare-${z.id}">Descărcat: ${cate(z.iesiri, "ieșire din stoc legată", "ieșiri din stoc legate")} de acest Z, în valoare de ${bani(z.valoare_descarcata)} lei (la cost). Se poate valida.</span></div>`
             : z.fara_marfa ? `<div class="caseta-info"><span class="ci-mesaj">Declarat fără marfă din stoc. Se poate valida.</span></div>`
             : `<div class="caseta-atentie"><div class="ca-mesaj">Nedescărcat: Z-ul nu se validează până nu descarci marfa vândută (sau declari că n-a fost).</div></div>`}
-          ${poateValidaZ ? `<p style="margin:8px 0 0">${butonRand("buton-primar zd-valideaza", `id="zd-val-${z.id}" data-z="${z.id}" data-zd-valideaza="1" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza"`, "Validează raportul Z",
+          ${poateValidaZ ? `<p style="margin:8px 0 0">${butonRand("buton-secundar zd-valideaza", `id="zd-val-${z.id}" data-z="${z.id}" data-zd-valideaza="1" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza"`, "Validează raportul Z",
               !cv || z.iesiri || z.fara_marfa ? null : "Descarcă întâi marfa vândută din stoc (sau declară „fără marfă din stoc”), apoi validează.")}</p>`
             : t.regim_contabil !== "simpla" ? `<p class="ecran-nota" style="margin:8px 0 0">Validarea o face un coleg cu dreptul „Poate valida”, din Registru jurnal.</p>` : ""}
           ${!cv ? "" : `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px">
@@ -5863,9 +5872,22 @@ async function ecranRaportZ(corp, nav, t) {
     const zona = corp.querySelector("#z-rezultat");   // [lotul 13, 605 — clasa 45] confirmarea sub butonul care a cerut-o, nu deasupra formularului
     curataEroriCamp(corp);
     const nrBonuri = parseInt(corp.querySelector("#z-bonuri").value, 10) || 0;
-    if (nrBonuri <= 0) {
-      // [D394 op2 Î1, decizia B] UX preventiv; refuzul autoritar e pe server (MESAJ_Z_FARA_BONURI)
-      eroareCamp(corp, "z-bonuri", "Trece numărul de bonuri fiscale de pe raportul Z — intră în D394.");
+    // [17.5-Q10, F003] formularul gol sau parțial: toate câmpurile obligatorii încă lipsă se spun deodată, fiecare lângă câmpul lui (și în lista
+    // „NU s-a salvat” de lângă buton), cu aceleași reguli ca serverul (`uc_tenants.horeca_raport_z`); nimic nu se trimite cât lipsește ceva
+    const lipsa = [];
+    const gol = (id) => !String(corp.querySelector(id).value || "").trim();
+    if (gol("#z-data")) lipsa.push(["z-data", "Alege data raportului Z."]);
+    if (gol("#z-nui")) lipsa.push(["z-nui", "Trece NUI-ul casei de marcat, din antetul raportului Z."]);
+    if (gol("#z-nr")) lipsa.push(["z-nr", "Trece numărul raportului Z, din antetul lui."]);
+    if (!(v("#z-11") + v("#z-21") > 0)) lipsa.push(["z-11", "Trece totalul pe cote (11% și / sau 21%), cu TVA inclus."]);
+    else if (Math.round((v("#z-11") + v("#z-21")) * 100) !== Math.round((v("#z-num") + v("#z-card")) * 100))
+      lipsa.push(["z-num", `Numerar + card trebuie să dea totalul pe cote (${bani(v("#z-11") + v("#z-21"))} lei).`]);
+    // [D394 op2 Î1, decizia B] UX preventiv; refuzul autoritar e pe server (MESAJ_Z_FARA_BONURI)
+    if (nrBonuri <= 0) lipsa.push(["z-bonuri", "Trece numărul de bonuri fiscale de pe raportul Z — intră în D394."]);
+    if (lipsa.length) {
+      lipsa.forEach(([id, txt]) => eroareCamp(corp, id, txt));
+      const prim = corp.querySelector("#" + lipsa[0][0]);
+      if (prim) focusFaraSalt(prim);   // primul câmp lipsă primește focusul (eroareCamp l-a adus deja în vedere)
       return;
     }
     try {

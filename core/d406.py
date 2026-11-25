@@ -737,8 +737,9 @@ class Rezultat:
     plati: list = field(default_factory=list)             # Payments
     avertismente: list = field(default_factory=list)
     sinteza: list = field(default_factory=list)   # [08.10.2026, decizia Costin V5] un rezumat nu e avertisment
-    nepotriviri_jurnal: list = field(default_factory=list)   # [380] (factura, conturile din factură, conturile din notă | None)
+    nepotriviri_jurnal: list = field(default_factory=list)   # [380] (factura, conturile din factură, conturile din notă | None, id-ul facturii)
     terti_fara_partener: list = field(default_factory=list)   # [381] (nota, cont, suma)
+    note_terti_fara_partener: list = field(default_factory=list)   # [17.5-Q10, F035] notele lor: {nota_id, eticheta, data}
     # [R165] fereastra REALA a raportarii (perioada fiscala TVA). None -> antetul cade pe
     # luna-ancora, ca inainte: apelantii directi (`d406_active`, `d406_stocuri`) n-o dau.
     data_inceput: object = None
@@ -1763,7 +1764,7 @@ def pull(conn, schema, an, luna):
                 # [17.5-Q8, FISC.5 / F254] factura emisă pe baza bonului fiscal n-are notă de vânzare prin construcție (vânzarea e în nota Z):
                 # nu e „factură fără notă”
                 if _in_nota != _in_linii and not din_bon:
-                    nepotriviri_jurnal.append((r["numar"] or str(r["id"]), _in_linii, _in_nota))
+                    nepotriviri_jurnal.append((r["numar"] or str(r["id"]), _in_linii, _in_nota, r["id"]))   # [17.5-Q10, F035] și id-ul facturii (legătura)
                 parteneri_perioadei["4111" if este_v else "401"].setdefault(pid, (r["tert_nume"] or "", r["tert_cui"] or ""))   # [486]
                 f = Factura(nr=r["numar"] or str(r["id"]), data=r["data_emitere"],
                             partener_id=pid, partener_nume=r["tert_nume"] or "",
@@ -2040,16 +2041,29 @@ def genereaza(conn, schema, an, luna):
                                        _cate_t(len(terti_fara_partener), "linie", "linii"),
                                        "; ".join("%s, %s, %s lei" % (_nume_nota(nid), ct, _bani_t(s)) for nid, ct, s in terti_fara_partener[:20])))
         res.terti_fara_partener = terti_fara_partener
+        # [17.5-Q10, F035] notele acestor linii, cu eticheta și data lor (legătura spre Registrul jurnal, în luna notei)
+        with conn.cursor() as _cur_tn:
+            _cur_tn.execute(f"SELECT id, data FROM {schema}.inregistrari WHERE id = ANY(%s)", ([int(nid) for nid, _c, _s in terti_fara_partener],))
+            _date_tn = {int(i): str(d)[:10] for i, d in _cur_tn.fetchall()}
+        res.note_terti_fara_partener = [{"nota_id": int(nid), "eticheta": _nume_nota(nid), "data": _date_tn.get(int(nid), "")}
+                                        for nid in dict.fromkeys(nid for nid, _c, _s in terti_fara_partener) if _date_tn.get(int(nid))]
     if nepotriviri_jurnal:
         from core.common import cate as _cate
         # [deficiența 380, comanda Costin 8.2: „nepotrivirea jurnal–facturi se semnalează înainte de «Pune în De depus»”] factura din
         # „Facturi de vânzare / cumpărare” și nota ei de contare din jurnal (GeneralLedgerEntries) trebuie să spună același cont
-        _detj = "; ".join("factura %s: în factură %s, în nota contabilă %s" % (
-            nr, ", ".join(fl) or "—", (", ".join(fn) or "—") if fn is not None else "nicio notă de contare validată în perioadă")
-            for nr, fl, fn in nepotriviri_jurnal)
+        # [17.5-Q10, F035] grupate după cauză: facturile fără notă de contare validată în perioadă (o singură frază, numerele lor), apoi
+        # cele cu alte conturi în notă decât în factură (fiecare cu conturile ei); fiecare factură are legătura ei pe ecran (`documente_avertismente`)
+        fara_nota = [nr for nr, _fl, fn, _id in nepotriviri_jurnal if fn is None]
+        alte = [(nr, fl, fn) for nr, fl, fn, _id in nepotriviri_jurnal if fn is not None]
+        _parti = []
+        if fara_nota:
+            _parti.append("%s fără notă de contare validată în perioadă (%s)" % (_cate(len(fara_nota), "factură", "facturi"), ", ".join(fara_nota)))
+        if alte:
+            _parti.append("%s cu alte conturi în notă decât în factură (%s)" % (_cate(len(alte), "factură", "facturi"), "; ".join(
+                "%s: în factură %s, în notă %s" % (nr, ", ".join(fl) or "—", ", ".join(fn) or "—") for nr, fl, fn in alte)))
         res.avertismente.insert(0, "Atenție (D406): %s din „Facturi de vânzare / cumpărare” nu se potrivesc cu nota lor din jurnal: %s. "
                                    "Contabilizează factura (sau validează-i nota) și generează din nou." % (
-                                       _cate(len(nepotriviri_jurnal), "factură", "facturi"), _detj))
+                                       _cate(len(nepotriviri_jurnal), "factură", "facturi"), "; ".join(_parti)))
         res.nepotriviri_jurnal = nepotriviri_jurnal
     # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 4/6): balanta de rulaje per cont
     # INDEPENDENTA din inregistrari_linii, legata de SAF-T emis + invariant Sdebit=Scredit.

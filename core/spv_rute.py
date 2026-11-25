@@ -121,7 +121,11 @@ def monteaza(app, dep_context):
             if st.get("conectat"):
                 # [289, decizia Costin 17.10.2026] CUI-urile verificate cu tokenul activ — cu drept / fără drept (ce faci, la cele fără)
                 st["cuiuri"] = spv_conector.cuiuri_verificate(conn, principal)
-                st["explicatie_fara_drept"] = spv_conector.explicatie_fara_drept(st["cuiuri"])   # [315] o dată, nu pe fiecare firmă
+                # [17.5-Q10, F176] de la două firme fără drept în sus, fiecare firmă își are rândul ei cu răspunsul ANAF (mesajul-sursă) în Conectare SPV:
+                # explicația comună (temeiul și ce faci) se spune o singură dată, fără să mai înșire răspunsurile ANAF ale tuturor firmelor
+                fara = [c for c in st["cuiuri"] if c.get("are_drept") is False]
+                st["explicatie_fara_drept"] = (spv_conector.EXPLICATIE_FARA_DREPT.format(eroare="") if len(fara) >= 2
+                                               else spv_conector.explicatie_fara_drept(st["cuiuri"]))   # [315] o dată, nu pe fiecare firmă
             conn.rollback()
             return st
 

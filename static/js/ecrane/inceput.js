@@ -10,7 +10,7 @@ import { api, semnAjutor, esc, arataMesaj } from "../api.js?v=dc526532b7";
 // [320] butoanele cardurilor: fiecare deschide ecranul REAL (aceleași funcții ca meniul aplicației)
 async function deschide(cheie, nav, laSchimbare) {
   if (cheie === "migrare") {
-    const { randeazaMigrare } = await import("./migrare.js?v=8a2358dab7");
+    const { randeazaMigrare } = await import("./migrare.js?v=4408029606");
     nav.deschide("Migrare cabinet", (c) => randeazaMigrare(c, nav), { nivel: "cabinet" });
   } else if (cheie === "suport_import") {
     // banda „Suport” de pe pagina principală, apoi fila „Cerere import din altă aplicație”
@@ -26,7 +26,7 @@ async function deschide(cheie, nav, laSchimbare) {
     const { randeazaAsistenti } = await import("./asistenti.js?v=f5149c4025");
     nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" });
   } else if (cheie === "firme") {
-    const { randeazaListaFirme } = await import("./firme.js?v=320489dd29");
+    const { randeazaListaFirme } = await import("./firme.js?v=e7167efe76");
     nav.deschide("Firmele tale alocate", (c) => randeazaListaFirme(c, nav, null), { nivel: "cabinet" });
   }
 }

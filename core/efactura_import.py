@@ -240,6 +240,8 @@ def parseaza_xml(continut, cui_firma):
         "cumparator_tara": (_txt(root, "cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode")
                             or "").strip().upper() or None,
         "total": total, "tva": tva, "moneda": moneda,
+        # [17.5-Q10, F043] BT-109 (totalul fără TVA), pentru confruntarea totalurilor (`neconcordanta_tva`)
+        "total_fara_tva": _txt(root, "cac:LegalMonetaryTotal/cbc:TaxExclusiveAmount") or None,
         # [lotul 11, C79] TVA-ul FACTURII pe cote (BG-23), cum l-a scris furnizorul — sursa TVA-ului deductibil (`tva_cote_din_xml`)
         "tva_cote": tva_cote_din_xml(root),
         # [lotul 11, C81] BT-111: TVA-ul facturii în lei, scris de furnizor (factura în valută cu BT-6 = RON), sau None
@@ -248,6 +250,37 @@ def parseaza_xml(continut, cui_firma):
         "taxare_inversa": any(l["categorie_tva"] == "AE" for l in linii),
         "linii": linii, "xml": continut,
     }
+
+def neconcordanta_tva(f):
+    """[17.5-Q10, F043] Factura al cărei TVA nu se reconciliază în propriul XML: BT-110 (`TaxTotal/TaxAmount`) față de Σ BT-117 (TVA-ul
+    defalcării BG-23, pe cote) — EN 16931 BR-CO-14: „Invoice total VAT amount (BT-110) = Σ VAT category tax amount (BT-117)” — și BT-112
+    (totalul cu TVA) față de BT-109 + Σ BT-117 (BR-CO-15: „Invoice total amount with VAT (BT-112) = Invoice total amount without VAT (BT-109)
+    + Invoice total VAT amount (BT-110)”). Întoarce motivul (text, cu cifrele) sau None; fără defalcare (BG-23) nu are ce confrunta.
+    O factură neconciliată nu se contabilizează: contabilul cere furnizorului factura corectă (sau o storno și o factură nouă). PURĂ."""
+    from decimal import Decimal, InvalidOperation
+    from core.pdf_util import bani
+    cote = [c for c in (f.get("tva_cote") or []) if c.get("sursa") == "BG-23"]
+    if not cote:
+        return None
+    try:
+        tva = Decimal(str(f.get("tva") or "0"))
+        sub = [Decimal(str(c.get("tva") or "0")) for c in cote]
+        total = Decimal(str(f.get("total") or "0"))
+        net = Decimal(str(f["total_fara_tva"])) if f.get("total_fara_tva") not in (None, "") else None
+    except (InvalidOperation, ValueError):
+        return None
+    suma = sum(sub, Decimal(0))
+    motive = []
+    if abs(tva - suma) > Decimal("0.005"):
+        motive.append("TVA-ul facturii (TaxTotal) e %s lei, dar defalcarea pe cote dă %s = %s lei (diferență %s lei)" % (
+            bani(tva), " + ".join(bani(x) for x in sub), bani(suma), bani(tva - suma)))
+    if net is not None and abs(total - (net + suma)) > Decimal("0.005"):
+        motive.append("totalul cu TVA e %s lei, dar baza %s + TVA pe cote %s = %s lei" % (bani(total), bani(net), bani(suma), bani(net + suma)))
+    if not motive:
+        return None
+    return ("Factura %s nu se poate contabiliza: în XML-ul ei %s. Cere furnizorului factura corectă; până atunci nu se scrie nicio notă."
+            % (f.get("numar") or "", "; ".join(motive)))
+
 
 def alta_firma(f, cui_firma):
     """[clasa deficienței 599, comanda Costin 12.1: „compară firma din fișier cu firma aleasă […] la toate importurile”] Refuzul facturii

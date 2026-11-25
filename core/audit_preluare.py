@@ -296,11 +296,16 @@ def verifica_mijloace_fixe(conn, schema):
     fara_prel = sum(1 for m in mf if m["amortizat_preluat"] is None)
     out = []
     dif = [c for c in rec if c["diferenta"] is not None and abs(c["diferenta"]) > 0.005]
-    for c in dif:
-        out.append(_rosu(et, temei, "Contul %s (%s): registrul %s, balanța %s — %s." % (
+    # [17.5-Q10, F183] divergențele registrului pe conturi (2131 valoarea de intrare, 2813 amortizarea) au aceeași cauză și același import
+    # care le repară: o singură constatare, cu fiecare cont pe rândul lui (suma și felul soldului păstrate) și instrucțiunea comună o dată,
+    # cu butonul care deschide direct pasul Mijloace fixe al firmei
+    if dif:
+        out.append(_rosu(et, temei, " ".join("Contul %s (%s): registrul %s, balanța %s — %s." % (
             c["cont"], "valoarea de intrare" if c["fel"] == "imobilizare" else "amortizarea preluată", _lei(c["registru"]),
-            sold_pe_natura(c["balanta"], "debitor" if c["fel"] == "imobilizare" else "creditor"), text_diferenta("în registru", c["diferenta"])),
-            cauza="Registrul mijloacelor fixe și balanța de deschidere nu spun același lucru despre contul %s." % c["cont"],
+            sold_pe_natura(c["balanta"], "debitor" if c["fel"] == "imobilizare" else "creditor"), text_diferenta("în registru", c["diferenta"]))
+            for c in dif),
+            cauza="Registrul mijloacelor fixe și balanța de deschidere nu spun același lucru despre %s %s." % (
+                "contul" if len(dif) == 1 else "conturile", ", ".join(c["cont"] for c in dif)),
             actiune="Verifică registrul și balanța primite de la contabilul anterior (mijloace lipsă, cont greșit, amortizare necompletată) "
                     "și reimportă (Migrare › Mijloace fixe)."))
     if fara_prel:
