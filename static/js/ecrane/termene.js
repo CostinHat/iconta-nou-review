@@ -4,7 +4,7 @@
 import { api, semnAjutor, cate, dupaNumar, dataRo, esc } from "../api.js?v=a84ae6966b";
 import { tabelDS } from "../ds_piese.js?v=e7221f7987";   // [15.1-E3] lista scadențelor pe tabelul DS
 import { deschideFirma } from "./firme.js?v=2c318eb87d";
-import { randeazaDeclaratii } from "./declaratii.js?v=e5f9d837be";   // [17.5-M, AC014] „Deschide declarația” din Detaliu termen; declaratii.js nu importă termene.js (fără ciclu)   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { randeazaDeclaratii } from "./declaratii.js?v=cac48ec690";   // [17.5-M, AC014] „Deschide declarația” din Detaliu termen; declaratii.js nu importă termene.js (fără ciclu)   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();

@@ -3528,8 +3528,10 @@ function etPerioada() {
   const per = S.periodicitate[S.tip];
   if (per === "anual") return `anul ${S.an}`;
   if (per === "trimestrial") return `T${S.trim}/${S.an} (${LUNI_TRIM[S.trim - 1]})`;   // [Retest 2 pct.14] DS cap.4 v2.85: „T3/2026”
-  // [17.5-Q12, F028] luna are în titlul pasului 2 aceeași formă ca în lista pasului 1 și în rezumat: „09/2026” (nu „septembrie 2026”)
-  return dataRo(`${S.an}-${String(S.luna).padStart(2, "0")}-01`, "luna_an_numeric");
+  // [17.5-Q12, F028] luna are în titlul pasului 2 și forma listei pasului 1 și a rezumatului, „09/2026”; numele lunii rămâne înaintea ei, fiindcă
+  // testul fix al plasei 727.2 (`e2e_pilot_17_5_X.py:139`) cere în titlu „D300 · septembrie 2026” (conflictul, arhivat în DECIZII «Lotul 17.5-Q12»)
+  const d = `${S.an}-${String(S.luna).padStart(2, "0")}-01`;
+  return `${dataRo(d, "luna_an")} (${dataRo(d, "luna_an_numeric")})`;
 }
 
 // audit_cab_lot1_v1
