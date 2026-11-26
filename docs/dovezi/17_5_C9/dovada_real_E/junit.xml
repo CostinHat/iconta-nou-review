@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="10.332" timestamp="2026-11-26T18:43:01.012702+02:00" hostname="iconta-prod"><testcase classname="frontend_test.e2e.e2e_fundatie_17_5_C9" name="test_fundatie_17_5_C9" time="9.753"><failure message="AssertionError: C9_EMITENT_SPV&#10;assert False&#10; +  where False = all(&lt;generator object test_fundatie_17_5_C9.&lt;locals&gt;.&lt;genexpr&gt; at 0x72078e155620&gt;)">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7207919b19d0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7207919b1ca0&gt;
+
+    def test_fundatie_17_5_C9(browser, capsys, monkeypatch):
+        from conftest import BAZA, CAPTURI, Ecran, sesiune, sql
+        from core.ceas_proba import MOMENT_REF
+        from e2e_ferestre_17_5_Q5 import TOP, F1, firma, origine_proba
+    
+        origine_proba(BAZA)
+        director = Path(CAPTURI) / LOT
+        director.mkdir(parents=True, exist_ok=True)
+        tenant = sql("SELECT schema_name, cui FROM public.tenants WHERE nume = %s", (F1,))
+        assert F1 == FIRMA and len(tenant) == 1, "firma de probă F1 lipsește, e dublă sau are alt nume"
+        schema, cui = tenant[0][0], cifre(tenant[0][1])
+        assert re.fullmatch(r"tenant_[0-9]+", schema) and cui == CUI_F1, "identitatea firmei F1 diferă de fixtură"
+        sql('DELETE FROM "%s".efactura_primite WHERE id_mesaj_anaf = %%s' % schema, (INDEX,))
+        try:
+            descarcate = importa(monkeypatch, schema, cui)
+            dupa_import = randuri(sql, schema)
+            descarcate += importa(monkeypatch, schema, cui)
+            dupa_reluare = randuri(sql, schema)
+            alte = in_alte_firme(sql, schema)
+            martor_db = {"dupa_import": dupa_import, "dupa_reluare": dupa_reluare, "alte_firme": alte, "cui_firma": cui,
+                         "sha_xml": sha_xml_proba(), "descarcari": descarcate, "raspuns": RASPUNS, "mesaj": mesaj_proba()}
+            masuri = {i: {} for i in IDS}
+            per_dim = []
+            for w, h in DIM:
+                z = f"{w}x{h}"
+                ctx = browser.new_context(viewport={"width": w, "height": h})
+                try:
+                    ctx.clock.set_fixed_time(MOMENT_REF)
+                    ctx.add_init_script(sesiune(CONT_PROBA))
+                    pg = ctx.new_page()
+                    Ecran(pg, "c9").acasa()
+                    firma(pg, F1, "#fa-facturi")
+                    pg.locator(TOP + "#fac-primite").click()
+                    pg.locator(TOP + "#fp-actiuni").wait_for(state="attached")
+                    sel = TOP + ".fac-primita-btn[data-id='%s']" % (dupa_import[0][0] if dupa_import else "lipsa")
+                    buton = pg.locator(sel)
+                    buton.first.wait_for(state="visible", timeout=20000)
+                    buton.first.scroll_into_view_if_needed()
+                    pg.evaluate("() =&gt; new Promise(ok =&gt; requestAnimationFrame(() =&gt; requestAnimationFrame(ok)))")
+                    lista = buton.first.evaluate("""el =&gt; {
+                        const r = el.getBoundingClientRect(), p = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+                        return {text: el.innerText.trim(), vizibil: el.checkVisibility({checkOpacity: true, checkVisibilityCSS: true})
+                                  &amp;&amp; r.width &gt; 0 &amp;&amp; r.height &gt; 0, clicabil: !!p &amp;&amp; el.contains(p)};
+                    }""")
+                    lista["butoane"] = buton.count()
+                    pg.screenshot(path=str(director / f"lista_{z}.png"))
+                    buton.first.click()
+                    camp = pg.locator(TOP + 'input[aria-label="Furnizor"]')
+                    camp.wait_for(state="visible", timeout=20000)
+                    camp.scroll_into_view_if_needed()
+                    pg.evaluate("() =&gt; new Promise(ok =&gt; requestAnimationFrame(() =&gt; requestAnimationFrame(ok)))")
+                    fer = camp.evaluate("""el =&gt; {
+                        const f = el.closest('.fereastra'), r = el.getBoundingClientRect();
+                        return {titlu: (f &amp;&amp; f.querySelector('h2') ? f.querySelector('h2').innerText.trim() : ''),
+                                furnizor: el.value, vizibil: el.checkVisibility({checkOpacity: true, checkVisibilityCSS: true})
+                                  &amp;&amp; r.width &gt; 0 &amp;&amp; r.height &gt; 0, trunchiat: el.scrollWidth &gt; el.clientWidth,
+                                titlu_camp: el.getAttribute('title') || ''};
+                    }""")
+                    pg.screenshot(path=str(director / f"validare_{z}.png"))
+                finally:
+                    ctx.close()
+                date = {"db": martor_db, "ui": {"viewport": [w, h], "lista": lista, "fereastra": fer}}
+                per_dim.append(valideaza(date, (w, h)))
+                for i, poza in zip(IDS, ("lista", "validare", "lista")):
+                    masuri[i][z] = date
+                    continut = (director / f"{poza}_{z}.png").read_bytes()
+                    (director / f"{i}_{z}.png").write_bytes(continut)
+                    if w == 1366:
+                        (director / f"{i}.png").write_bytes(continut)
+            (director / "masuri.json").write_text(json.dumps(masuri, ensure_ascii=False))
+            for nume in ("erori.json", "partiale.json"):
+                (director / nume).write_text("{}")
+            with capsys.disabled():
+                for i in IDS:
+                    print("VERDICT", i, "trece" if all(x[i] for x in per_dim) else "pica", flush=True)
+&gt;           assert all(all(x.values()) for x in per_dim), "C9_EMITENT_SPV"
+E           AssertionError: C9_EMITENT_SPV
+E           assert False
+E            +  where False = all(&lt;generator object test_fundatie_17_5_C9.&lt;locals&gt;.&lt;genexpr&gt; at 0x72078e155620&gt;)
+
+frontend_test/e2e/e2e_fundatie_17_5_C9.py:300: AssertionError</failure></testcase></testsuite></testsuites>

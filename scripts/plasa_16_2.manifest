@@ -36,3 +36,4 @@ frontend_test/e2e/e2e_ajutor_17_5_R2.py	2608920d04a6ae0b0567fb535a151ca7f3ef0f94
 frontend_test/e2e/e2e_fundatie_17_5_Q9.py	80d4f3c71c40e7cebfffdb716e0ecb5ce6916e51ffeba5cd83e6043a6338f1cc	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_Q9.py
 frontend_test/e2e/e2e_fundatie_17_5_Q10.py	726bcb9f5a01955970c5c18e947bf8f03b9f9573334d148e3e0b5fd13346eb92	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_Q10.py
 frontend_test/e2e/e2e_fundatie_17_5_Q12.py	5e4bd285a83d34a7ed2d1dac0bd99c201ca9749faf48df380b0acdef28880b1c	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_Q12.py
+frontend_test/e2e/e2e_fundatie_17_5_C9.py	d361557ea4f7921c02dd6750f6b83e94363e0e4786b47266d0a87c80c360a6bb	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_C9.py

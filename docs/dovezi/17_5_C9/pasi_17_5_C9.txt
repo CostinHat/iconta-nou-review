@@ -1,0 +1,3 @@
+PASI 17.5-C9 — Parteneri F1, contul nativ de probă, 1366×768.
+f.1 | parteneri | Parteneri | egal | + Fișă de partener | Butonul de adăugare afișează „+ Fișă de partener” | #pt-nou
+f.2 | parteneri | Parteneri | nr_randuri | 1 | Registrul Parteneri este prezent o singură dată | #pt-tabel
