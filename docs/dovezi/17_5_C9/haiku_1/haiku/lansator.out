@@ -1,0 +1,10 @@
+[lacat_test] lacăt preluat de la pid 3587259 (mort sau refolosit)
+([('f.1', 'trece', ''), ('f.2', 'trece', '')], 'trece')
+[haiku, instanța 1] cod 0
+Ambele capturi arată ecranul Parteneri, iar verificarea se face doar pe ce se vede în ele.
+
+- **f.1:** Butonul din colțul dreapta-jos spune „+ Fișă de partener”, deci corespunde descrierii.
+- **f.2:** Pe ecran apare un singur tabel de parteneri, cu titlul „Parteneri” și rândurile partenerilor. Captura arată doar fereastra modală, așa că nu pot vedea ce e în spatele ei. Pe baza a ceea ce se vede, corespunde.
+
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Butonul de adăugare din colțul dreapta-jos afișează „+ Fișă de partener”, exact cum cere descrierea."}, {"id": "f.2", "raspuns": "corespunde", "motiv": "Pe ecran apare un singur tabel de parteneri cu titlul „Parteneri”; captura arată doar fereastra modală, deci nu se vede dacă există și alte registre în afara ei."}]
+răspunsuri: f.1=corespunde; f.2=corespunde | nejudecabile: 0 din 2
