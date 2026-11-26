@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="21.895" timestamp="2026-11-26T11:58:08.518819+02:00" hostname="iconta-prod"><testcase classname="frontend_test.e2e.e2e_fundatie_17_5_Q12" name="test_fundatie_17_5_Q12" time="21.400"><failure message="AssertionError: Q12_F018_IERARHIE&#10;assert False&#10; +  where False = all(&lt;generator object test_fundatie_17_5_Q12.&lt;locals&gt;.&lt;genexpr&gt; at 0x7b7e57458120&gt;)">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x7b7e5ad2bf20&gt;
+
+    def test_fundatie_17_5_Q12(browser, capsys):
+        from conftest import BAZA, CAPTURI, Ecran, sesiune
+        from core.ceas_proba import MOMENT_REF
+        from e2e_ferestre_17_5_Q5 import TOP, F1, firma, origine_proba
+    
+        origine_proba(BAZA)
+        director = Path(CAPTURI) / "17_5_Q12"
+        director.mkdir(parents=True, exist_ok=True)
+        masuri = {i: {} for i in IDS}
+        per_dim = []
+        for dim in DIM:
+            w, h = dim
+            z = f"{w}x{h}"
+            date = {}
+            for indice, (nume, intrare, selector, _) in enumerate(ECRANE):
+                ctx = browser.new_context(viewport={"width": w, "height": h})
+                try:
+                    ctx.clock.set_fixed_time(MOMENT_REF)
+                    ctx.add_init_script(sesiune("dovada.71507@sesiuneab.test"))
+                    pg = ctx.new_page()
+                    Ecran(pg, "q12").acasa()
+                    firma(pg, F1, intrare)
+                    buton = pg.locator(TOP + selector)
+                    buton.wait_for(state="visible")
+                    buton.scroll_into_view_if_needed()
+                    neutru = buton.evaluate("""el =&gt; {
+                        for (const y of [0, innerHeight-1]) for (const x of [0, innerWidth-1])
+                            if (!el.contains(document.elementFromPoint(x,y))) return [x,y];
+                        throw Error('Niciun punct neutru');
+                    }""")
+                    pg.mouse.move(*neutru)
+                    pg.evaluate("""() =&gt; new Promise((ok, rau) =&gt; {
+                        const t = setTimeout(() =&gt; rau(Error('pagina nedesenata')), 1500);
+                        requestAnimationFrame(() =&gt; requestAnimationFrame(() =&gt; {clearTimeout(t);ok()}));
+                    })""")
+                    date[nume] = buton.evaluate("""(el, selector) =&gt; {
+                        const r = el.getBoundingClientRect(), css = getComputedStyle(el);
+                        const punct = document.elementFromPoint(r.x+r.width/2, r.y+r.height/2);
+                        const fereastra = el.closest(".fereastra-overlay:not(.fundal) .fereastra");
+                        if (!fereastra) throw Error("Fereastra activă lipsește");
+                        const vizibil = b =&gt; {
+                            const s = getComputedStyle(b), r = b.getBoundingClientRect();
+                            return s.visibility === "visible" &amp;&amp; s.display !== "none" &amp;&amp;
+                                r.width &gt; 0 &amp;&amp; r.height &gt; 0 &amp;&amp; !b.closest("[hidden], [inert]");
+                        };
+                        const butoane = [...fereastra.querySelectorAll("button")].filter(vizibil);
+                        const principale = butoane.filter(b =&gt; b.matches(".buton-primar, .fj-principal"))
+                            .map(b =&gt; ({text:b.innerText.trim(), adaugare:b === el,
+                                in_bara:b.matches(".fj-butoane .fj-principal"),
+                                clasa_primara:b.classList.contains("buton-primar")}));
+                        const pdf = butoane.filter(b =&gt; b.innerText.trim() === "Descarcă PDF")
+                            .map(b =&gt; ({primar:b.matches(".buton-primar, .fj-principal"),
+                                secundar:b.classList.contains("buton-secundar"),
+                                activ:!b.disabled &amp;&amp; b.getAttribute("aria-disabled") !== "true"}));
+                        return {principale, pdf, selector, viewport:[innerWidth,innerHeight], text:el.innerText.trim(),
+                            clase:[...el.classList], hover:el.matches(':hover'), latime:r.width, inaltime:r.height,
+                            activ:!el.disabled &amp;&amp; el.getAttribute('aria-disabled') !== 'true',
+                            clicabil:!!punct &amp;&amp; el.contains(punct), fundal:css.backgroundColor,
+                            culoare:css.color};
+                    }""", selector)
+                    img = pg.screenshot(path=str(director / f"{nume}_{z}.png"))
+                    aid = IDS[indice]
+                    (director / f"{aid}_{z}.png").write_bytes(img)
+                    if w == 1366:
+                        (director / f"{aid}.png").write_bytes(img)
+                finally:
+                    ctx.close()
+            per_dim.append(valideaza(date, dim))
+            for i in IDS:
+                masuri[i][z] = date
+        (director / "masuri.json").write_text(json.dumps(masuri, ensure_ascii=False))
+        for nume in ("erori.json", "partiale.json"):
+            (director / nume).write_text("{}")
+        with capsys.disabled():
+            for i in IDS:
+                print("VERDICT", i, "trece" if all(x[i] for x in per_dim) else "pica", flush=True)
+&gt;       assert all(all(x.values()) for x in per_dim), "Q12_F018_IERARHIE"
+E       AssertionError: Q12_F018_IERARHIE
+E       assert False
+E        +  where False = all(&lt;generator object test_fundatie_17_5_Q12.&lt;locals&gt;.&lt;genexpr&gt; at 0x7b7e57458120&gt;)
+
+frontend_test/e2e/e2e_fundatie_17_5_Q12.py:152: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,95 @@
+VERDICT e.1 trece
+VERDICT e.2 pica
+VERDICT e.3 trece
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________________________ test_fundatie_17_5_Q12 ____________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+capsys = <_pytest.capture.CaptureFixture object at 0x7b7e5ad2bf20>
+
+    def test_fundatie_17_5_Q12(browser, capsys):
+        from conftest import BAZA, CAPTURI, Ecran, sesiune
+        from core.ceas_proba import MOMENT_REF
+        from e2e_ferestre_17_5_Q5 import TOP, F1, firma, origine_proba
+    
+        origine_proba(BAZA)
+        director = Path(CAPTURI) / "17_5_Q12"
+        director.mkdir(parents=True, exist_ok=True)
+        masuri = {i: {} for i in IDS}
+        per_dim = []
+        for dim in DIM:
+            w, h = dim
+            z = f"{w}x{h}"
+            date = {}
+            for indice, (nume, intrare, selector, _) in enumerate(ECRANE):
+                ctx = browser.new_context(viewport={"width": w, "height": h})
+                try:
+                    ctx.clock.set_fixed_time(MOMENT_REF)
+                    ctx.add_init_script(sesiune("dovada.71507@sesiuneab.test"))
+                    pg = ctx.new_page()
+                    Ecran(pg, "q12").acasa()
+                    firma(pg, F1, intrare)
+                    buton = pg.locator(TOP + selector)
+                    buton.wait_for(state="visible")
+                    buton.scroll_into_view_if_needed()
+                    neutru = buton.evaluate("""el => {
+                        for (const y of [0, innerHeight-1]) for (const x of [0, innerWidth-1])
+                            if (!el.contains(document.elementFromPoint(x,y))) return [x,y];
+                        throw Error('Niciun punct neutru');
+                    }""")
+                    pg.mouse.move(*neutru)
+                    pg.evaluate("""() => new Promise((ok, rau) => {
+                        const t = setTimeout(() => rau(Error('pagina nedesenata')), 1500);
+                        requestAnimationFrame(() => requestAnimationFrame(() => {clearTimeout(t);ok()}));
+                    })""")
+                    date[nume] = buton.evaluate("""(el, selector) => {
+                        const r = el.getBoundingClientRect(), css = getComputedStyle(el);
+                        const punct = document.elementFromPoint(r.x+r.width/2, r.y+r.height/2);
+                        const fereastra = el.closest(".fereastra-overlay:not(.fundal) .fereastra");
+                        if (!fereastra) throw Error("Fereastra activă lipsește");
+                        const vizibil = b => {
+                            const s = getComputedStyle(b), r = b.getBoundingClientRect();
+                            return s.visibility === "visible" && s.display !== "none" &&
+                                r.width > 0 && r.height > 0 && !b.closest("[hidden], [inert]");
+                        };
+                        const butoane = [...fereastra.querySelectorAll("button")].filter(vizibil);
+                        const principale = butoane.filter(b => b.matches(".buton-primar, .fj-principal"))
+                            .map(b => ({text:b.innerText.trim(), adaugare:b === el,
+                                in_bara:b.matches(".fj-butoane .fj-principal"),
+                                clasa_primara:b.classList.contains("buton-primar")}));
+                        const pdf = butoane.filter(b => b.innerText.trim() === "Descarcă PDF")
+                            .map(b => ({primar:b.matches(".buton-primar, .fj-principal"),
+                                secundar:b.classList.contains("buton-secundar"),
+                                activ:!b.disabled && b.getAttribute("aria-disabled") !== "true"}));
+                        return {principale, pdf, selector, viewport:[innerWidth,innerHeight], text:el.innerText.trim(),
+                            clase:[...el.classList], hover:el.matches(':hover'), latime:r.width, inaltime:r.height,
+                            activ:!el.disabled && el.getAttribute('aria-disabled') !== 'true',
+                            clicabil:!!punct && el.contains(punct), fundal:css.backgroundColor,
+                            culoare:css.color};
+                    }""", selector)
+                    img = pg.screenshot(path=str(director / f"{nume}_{z}.png"))
+                    aid = IDS[indice]
+                    (director / f"{aid}_{z}.png").write_bytes(img)
+                    if w == 1366:
+                        (director / f"{aid}.png").write_bytes(img)
+                finally:
+                    ctx.close()
+            per_dim.append(valideaza(date, dim))
+            for i in IDS:
+                masuri[i][z] = date
+        (director / "masuri.json").write_text(json.dumps(masuri, ensure_ascii=False))
+        for nume in ("erori.json", "partiale.json"):
+            (director / nume).write_text("{}")
+        with capsys.disabled():
+            for i in IDS:
+                print("VERDICT", i, "trece" if all(x[i] for x in per_dim) else "pica", flush=True)
+>       assert all(all(x.values()) for x in per_dim), "Q12_F018_IERARHIE"
+E       AssertionError: Q12_F018_IERARHIE
+E       assert False
+E        +  where False = all(<generator object test_fundatie_17_5_Q12.<locals>.<genexpr> at 0x7b7e57458120>)
+
+frontend_test/e2e/e2e_fundatie_17_5_Q12.py:152: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_fundatie_17_5_Q12.py::test_fundatie_17_5_Q12 - A...
+1 failed in 21.88s
