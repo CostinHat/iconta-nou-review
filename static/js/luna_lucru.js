@@ -3,7 +3,7 @@
 // luna de azi (în ianuarie, luna dinainte = decembrie al anului trecut). O singură definiție, pentru toate ecranele lunare (DESIGN_SYSTEM.md,
 // „Luna propusă la deschidere”). Lunile blocate se cer o dată pe firmă (GET /tenants/{id}/perioade-blocate) și se țin cât trăiește pagina;
 // după orice blocare sau deblocare din interfață se cheamă `uitaLunaDeLucru`. O cerere căzută sau un răspuns fără „blocate” = nicio lună blocată.
-import { api } from "./api.js?v=dc526532b7";
+import { api } from "./api.js?v=a84ae6966b";
 
 export function lunaDeLucruDin(blocate, azi = new Date()) {
   const an = azi.getFullYear(), luna = azi.getMonth() + 1;

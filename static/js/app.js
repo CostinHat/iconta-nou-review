@@ -52,9 +52,9 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { api, arataMesaj, esc } from "./api.js?v=dc526532b7";
+import { api, arataMesaj, esc } from "./api.js?v=a84ae6966b";
 import { ecranLogin } from "./ecrane/login.js?v=147107c39f";
-import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=20c3b70c83";
+import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=ac61e0c5f4";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=b663db48e5";
 import { desktopAsistent } from "./ecrane/asistent.js?v=4d62696ccb";
 import { desktopPortal } from "./ecrane/portal.js?v=343b1f065e";

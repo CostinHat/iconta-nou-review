@@ -185,13 +185,26 @@ def citeste_firma(schema, stat=None, _dormi=None):
     if eroare and not fara_mesaje:
         print("  %s: lista fara mesaje/eroare: %s" % (schema, eroare))
         return {"cif": cif, "zile": zile, "mesaje": 0, "eroare": eroare, "de_la_anaf": de_la_anaf}
+    inainte = dict(stat)
+    erori_import = 0
     for msg in mesaje:
         try:
             importa_mesaj(schema, principal, cif, msg, stat)
         except Exception as e:
+            erori_import += 1
             print("  EROARE import %s/%s: %s" % (schema, msg.get("id"), e), file=sys.stderr)
         _dormi(INTERVAL_SEC)
-    return {"cif": cif, "zile": zile, "mesaje": len(mesaje), "eroare": None}
+    return {"cif": cif, "zile": zile, "mesaje": len(mesaje), "eroare": None, "pe_rezultat": pe_rezultat(inainte, stat, len(mesaje), erori_import)}
+
+
+def pe_rezultat(inainte, dupa, gasite, erori_import=0):
+    """[17.5-Q12, F179 Simplitate] Ce s-a întâmplat cu mesajele găsite la o citire, pe rezultat (PURĂ): `importate` (intrate în lista de validat,
+    ciornă sau descărcate neparsabile), `duplicate` (deja în listă: aceeași citire repetată / reîncercarea aceluiași index), `refuzate` (garda
+    beneficiarului: alt CUI, absent sau ambiguu în documentul autentic) și `neimportate` (descărcarea n-a mers / fără XML / fără drept / eroare).
+    Suma lor = `gasite`."""
+    d = lambda k: dupa.get(k, 0) - inainte.get(k, 0)
+    return {"gasite": gasite, "importate": d("ciorna") + d("descarcata"), "duplicate": d("deja"), "refuzate": d("scurgere_evitata"),
+            "neimportate": d("skip_auth") + d("descarca_esec") + d("fara_xml") + erori_import}
 
 
 def refuz_beneficiar(xml, cif_tenant):

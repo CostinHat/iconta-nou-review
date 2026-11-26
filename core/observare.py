@@ -147,6 +147,25 @@ def refuz_dezabonare(catre):
     return ("adresa %s s-a dezabonat de la emailurile informative iConta.eu" % _dez.normalizeaza(catre)) if d else None
 
 
+#: [17.5-Q12, AC192] Domeniile rezervate pentru teste și documentație (RFC 2606, RFC 6761): `.test`, `.example`, `.invalid`, `.localhost` și numele
+#: însele, plus example.com / .net / .org — cu orice subdomeniu, indiferent de majuscule. Un email către ele NU încearcă niciun transport extern
+#: (Postmark, Brevo — nici ca rezervă); pe instanța de probă trece numai prin cutia de test (`ICONTA_EMAIL_CUTIE`).
+DOMENII_REZERVATE = ("test", "example", "invalid", "localhost", "example.com", "example.net", "example.org")
+
+
+def adresa_rezervata(catre):
+    """True dacă adresa are un domeniu rezervat (sau e fără domeniu valid). PURĂ."""
+    dom = str(catre or "").strip().rsplit("@", 1)[-1].strip().rstrip(".").lower() if "@" in str(catre or "") else ""
+    if not dom:
+        return True
+    return any(dom == r or dom.endswith("." + r) for r in DOMENII_REZERVATE)
+
+
+def _domeniu(catre):
+    """Numai domeniul adresei, pentru jurnal (fără partea personală)."""
+    return str(catre or "").rsplit("@", 1)[-1].lower() if "@" in str(catre or "") else "?"
+
+
 def _in_cutia_de_test(director, catre, subiect, html, antete):
     """[15.10.2026, lotul 4] CUTIA POȘTALĂ DE TEST: pe instanța de probă (`ICONTA_EMAIL_CUTIE`, pus numai de `scripts/e2e_poarta.py`)
     emailul se scrie ca fișier JSON în director, în loc să plece — probele își iau de acolo linkul de confirmare a înregistrării, pe
@@ -247,6 +266,9 @@ def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
     cutie = cfg("ICONTA_EMAIL_CUTIE")
     if cutie:
         return _in_cutia_de_test(cutie, catre, subiect, html, antete)
+    if adresa_rezervata(catre):   # [17.5-Q12, AC192] înaintea oricărui transport extern, și a rezervei
+        print("[email netrimis, domeniu rezervat de test: %s] %s" % (_domeniu(catre), subiect), flush=True)
+        return False
     # [14.2, 268.2] Orice email TRANZACȚIONAL (tot ce nu e `informativ`) pleacă pe Postmark când există tokenul, fără steag pe fiecare apel:
     # înainte, numai apelurile cu `postmark=True` (cele ale contului) — suspendarea cabinetului, răspunsul clientului, notificările, pachetele
     # rămâneau pe Brevo, cu antetul lui List-Unsubscribe. Cu atașamente, pe Brevo (cererea Postmark de aici nu le trimite).
@@ -302,6 +324,8 @@ def trimite_email_html_sau_semnaleaza(eticheta, catre, subiect, html, alerta=Fal
     except Exception as e:  # noqa: BLE001 — eșecul se semnalează mai jos, operația principală continuă
         esec_secundar(eticheta, e, alerta=alerta)
         return False
+    if not ok and adresa_rezervata(catre) and not cfg("ICONTA_EMAIL_CUTIE"):
+        return False   # [17.5-Q12, AC192] oprit intenționat (domeniu rezervat de test): nu e un eșec de semnalat
     if not ok:
         esec_secundar(eticheta, RuntimeError("emailul către %s nu a plecat (adresa dezabonată, Brevo a refuzat, lipsește cheia sau rețeaua — "
                                                   "motivul e în rândul de jurnal de dinainte)" % catre),

@@ -955,6 +955,22 @@ def facturi_storno(tenant_id, factura_id, ctx, corp=None):
     raise _erori.DateInvalide(refuz)
 
 
+def facturi_operatiune_n(tenant_id, factura_id, corp, ctx):
+    """[P7 · use-case] [17.5-Q12, F034] Corpul rutei `/tenants/{tenant_id}/facturi/{factura_id}/operatiune-n`: corectarea trasabilă a
+    borderoului de achiziție (subcodul NC, județul vânzătorului), ca D394 să declare operațiunea N."""
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        try:
+            r = facturi_api.corecteaza_operatiune_n(conn, schema, factura_id, (corp or {}).get("cod_nc"), (corp or {}).get("judet"),
+                                                    ctx["uid"], tenant_id)
+        except facturi_api.FacturaRefuzata as e:
+            raise _erori.DateInvalide(e.detaliu())
+        except ValueError as e:
+            raise _erori.DateInvalide(str(e))
+        conn.commit()
+    return r
+
+
 def vector_citeste(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/vector`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
@@ -7848,6 +7864,7 @@ def facturi_emite(tenant_id, date, ctx):
                 # „Pleacă marfa acum?”); „Nu” emite, cu avertisment. Câmpul `EmitereIn.dovada_transport` (main.py)
                 intreaba_dovada=True, dovada_transport=getattr(date, "dovada_transport", None),
                 vies=_vies,   # [lotul 13, C199] răspunsul VIES, cerut înaintea tranzacției
+                cere_adresa=bool(getattr(date, "cere_adresa_beneficiar", False)),   # [17.5-Q12, F045] numai ecranul de emitere
                 # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
                 # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
                 curs_manual_de="utilizator %s" % ctx["uid"])
@@ -7855,8 +7872,11 @@ def facturi_emite(tenant_id, date, ctx):
             # [R139] Rezumatul poarta MOTIVELE, nu doar numele campurilor, si nu mai spune
             # „Completează" despre un camp care e completat gresit. Mesajele per camp ajung tot
             # langa casetele lor (api.js:41 -> eroareCamp); asta e doar rezumatul de deasupra.
+            # [17.5-Q12, F045] refuzul adresei beneficiarului nu e al unei linii: rezumatul spune „Factura nu s-a emis” când îl cuprinde
+            _cap = ("Factura nu s-a emis: " if any(x.get("cod") == facturi_api.COD_ADRESA_BENEFICIAR for x in e.campuri)
+                    else "Liniile facturii nu sunt bune: ")
             raise _erori.DateInvalide({"cod": "LINII_INCOMPLETE",
-                "mesaj": "Liniile facturii nu sunt bune: " + "; ".join(
+                "mesaj": _cap + "; ".join(
                     "%s — %s" % (x["eticheta"], x.get("mesaj") or "") for x in e.campuri),
                 "campuri": e.campuri})
         except ValueError as e:

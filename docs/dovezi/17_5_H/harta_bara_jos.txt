@@ -35,7 +35,7 @@ Control fiscal | Rerulează auditul | activ   [măsurat pe main 463aaca7 de Code
 Închidere lună | Blochează luna | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
 Clienți | + Client nou | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
 Furnizori | + Furnizor nou | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
-Parteneri | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Parteneri | + Fișă de partener | activ   [17.5-Q12 r2, decizia lui Costin din 26.11.2026; Descarcă PDF rămâne secundar]
 Contracte | + Șablon nou | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
 Date firmă | Salvează | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
 Rapoarte comerciale | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]

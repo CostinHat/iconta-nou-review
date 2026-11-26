@@ -36,6 +36,30 @@ ACTIUNI = {
     "curs_bnr": "verifică de pe server că https://curs.bnr.ro/files/xml/years/nbrfxrates<an>.xml răspunde (Panou Admin → Sănătate "
                 "server arată zilele lipsă); aplicația reîncearcă singură la 10 minute, iar contabilul vede pe factură ce curs se folosește",
 }
+#: [17.5-Q12, AC191] numele cauzei în anunțul de rezolvare („Rezolvat: discul …”)
+ETICHETE = {"p2_infrastructura": "infrastructura P2 a contoarelor firmelor", "disc": "discul", "ram": "memoria RAM",
+            "conexiuni_db": "conexiunile la baza de date", "erori": "erorile aplicației (500)", "load": "încărcarea serverului",
+            "curs_bnr": "cursul BNR al zilei"}
+
+
+def episoade(constatari, incepe, se_incheie):
+    """[17.5-Q12, AC191, decizia: o notificare la apariție și una la rezolvare pentru fiecare episod; starea stabilă nu trimite] Din constatările
+    ciclului (`constatari` = {categorie: textul constatării, sau None = măsurat și normal}; o categorie lipsă = nemăsurată în ciclu, nu se
+    închide) -> (rândurile de apariție, rândurile de rezolvare). `incepe(cat)` / `se_incheie(cat)` sunt tranzițiile atomice ale episodului
+    (`repo_notificari_livrare`): numai cine câștigă tranziția o anunță. PURĂ în afara celor două funcții primite."""
+    aparute, rezolvate = [], []
+    for cat in ACTIUNI:
+        if cat not in constatari:
+            continue
+        text = constatari[cat]
+        if text:
+            if incepe(cat):
+                aparute.append(rand(cat, text))
+        elif se_incheie(cat):
+            rezolvate.append("Rezolvat: %s a revenit la normal." % ETICHETE.get(cat, cat))
+    return aparute, rezolvate
+
+
 #: condițiile trecătoare: alertă numai dacă rămân (`tinut`)
 TINUTE = ("ram", "conexiuni_db", "load")
 

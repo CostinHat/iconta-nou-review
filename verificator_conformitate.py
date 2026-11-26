@@ -153,7 +153,7 @@ for nume, t in fisiere.items():
         # BANI: ${expr} imediat urmat de RON/lei/EUR fara formator cunoscut in expresie
         for bm in re.finditer(r'\$\{([^}]*)\}\s*(RON|lei|EUR|\$\{[^}]*moneda)', lin):
             expr = bm.group(1)
-            if not re.search(r'_bani|toLocaleString|fmt|bani\(|pretUnitar\(', expr):   # pretUnitar = costul unitar canonic (DS cap.4 v2.69)
+            if not re.search(r'_bani|toLocaleString|fmt|bani\(|baniSemn\(|pretUnitar\(', expr):   # pretUnitar = costul unitar canonic (DS cap.4 v2.69); [17.5-Q12, F015] baniSemn = bani cu minusul real
                 rap["bani_neformatati"].append((nume, i, expr[:22], lin.strip()[:60]))
         # SPATIERE: cuvant lipit direct de ${ (ex: Total${...})
         for sm in re.finditer(r'>([A-Za-z\u00c0-\u024f]{3,})\$\{', lin):

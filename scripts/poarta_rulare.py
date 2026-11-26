@@ -115,6 +115,35 @@ def remasoara_g2(lot, lotf, rad, faza, f):
     return True
 
 
+#: [17.5-Q12, AC197] fazele porții ale căror durate se judecă imediat după o poartă roșie
+FAZE_CANDIDAT = ("poarta_verificator", "poarta_pytest", "poarta_plasa")
+
+
+def depasiri_dupa_rosu(rulari, sha, praguri, de_la=None):
+    """[17.5-Q12, AC197, decizia lui Costin] Imediat după o poartă roșie, înaintea oricărei corecturi sau a unei noi porți: duratele treptelor porții ale
+    candidatului `sha` (rulările lui terminate, fără «intrerupt» / «infra» / «infra_g2»; `de_la` = numai cele începute după acest moment ISO) față de
+    pragurile lotului (`praguri` = {faza: secunde}). PURĂ. -> [mesaj] (gol = sub praguri; prag egal = sub prag)."""
+    out = []
+    for faza in FAZE_CANDIDAT:
+        prag = praguri.get(faza)
+        if prag is None:
+            continue
+        d = [x["secunde"] for x in rulari if x["faza"] == faza and x.get("sha", "")[:12] == sha[:12] and x["secunde"] is not None
+             and x["rezultat"] not in ("intrerupt", "infra", "infra_g2", "in_curs") and (de_la is None or x["inceput"] >= de_la)]
+        if d and max(d) > prag:
+            out.append("pragul „%s” depășit: %ss > %ss" % (faza, max(d), prag))
+    return out
+
+
+def opreste_candidat(stare, sha, motive):
+    """[17.5-Q12, AC197] Candidatul `sha` cu prag depășit după roșu se oprește: nicio reluare și nicio rulare completă nouă pe el; un commit corectiv
+    distinct poate folosi poarta completă rămasă (limita pe lot rămâne: două complete, două reluări, cu rulările commiturilor înlocuite). PURĂ: copia nouă."""
+    st = copy.deepcopy(stare)
+    if motive:
+        st.setdefault("candidati_opriti", {})[sha] = "; ".join(motive)
+    return st
+
+
 def e_rulare_infra(rez):
     """«Rulare infra» (U.2): clasa infra nu e goală și are numai nume terminate în `::sesiune`, iar nicio altă clasă din `poarta_clasifica.CURAT` nu are intrări, în afară de regresiile cu sufixul
     «(a dispărut din rulare)» (consecința unei trepte fără raport). Cazul mixt (o picătură reală, o regresie fără sufix, o picătură infra cu raport) NU e rulare infra."""
@@ -238,6 +267,8 @@ def _main(argv):
         return refuz("proba_contract: " + "; ".join(ref_contract))
     if stare["oprit"]:
         return refuz("lotul e OPRIT: %s." % stare["oprit"])
+    if sha in stare.get("candidati_opriti", {}):   # [17.5-Q12, AC197] candidatul oprit după roșu nu mai primește nicio rulare
+        return refuz("candidatul %s e oprit după poarta roșie (AC197): %s. Un commit corectiv distinct poate folosi poarta completă rămasă." % (sha[:12], stare["candidati_opriti"][sha]))
     jv = os.path.join(comun, "poarta_verdicte.log")
     if os.path.exists(jv) and any(ln.split()[1:2] == [sha] and ln.split()[0] in ("VERDE", "ROSU") for ln in open(jv, encoding="utf-8")):
         return refuz("%s are deja verdict." % sha[:8])
@@ -310,6 +341,18 @@ def _main(argv):
     motiv_infra = _o_linie("; ".join((t["mesaj"] if t.get("tip") else "%s: %s" % (t["nume"], t.get("mesaj", ""))) for t in cand if t["nume"] in rez["infra"]))   # proba de mediu: motivul ei, fără numele treptei
     tip_infra = next((t["tip"] for t in cand if t["nume"] in rez["infra"] and t.get("tip")), "")
     d = decide(stare, rez, reia, noi, sha, acum, motiv_infra, rosu if reia else None, tip_infra)
+    if not d["infra"] and not d["curat"]:
+        # [17.5-Q12, AC197] după roșu, imediat: pragurile treptelor acestei rulări; o depășire oprește candidatul (rămâne în jurnal, cu duratele lui)
+        _t0 = datetime.datetime.fromtimestamp(T0).astimezone().isoformat(timespec="seconds")
+        _rl = [dict(x, sha=next((r[4] for r in JL._citeste(JL.cale_jurnal()) if len(r) > 6 and r[6] == x["id"] and r[2] == "inceput"), ""))
+               for x in JL.rulari(JL._citeste(JL.cale_jurnal()), lot)]
+        _pr = {f_: prag_faza(RAD, lotf, f_) for f_ in FAZE_CANDIDAT}
+        _dep = depasiri_dupa_rosu(_rl, sha, {k: v for k, v in _pr.items() if v is not None}, de_la=_t0)
+        if _dep:
+            d["stare"] = opreste_candidat(d["stare"], sha, _dep)
+            print("[poarta] CANDIDAT OPRIT (AC197) %s: %s" % (sha[:12], "; ".join(_dep)))
+        else:
+            print("[poarta] pragurile după roșu (AC197): sub praguri pe %s" % sha[:12])
     stare = d["stare"]
     curat, v, oprire = d["curat"], d["verdict"], d["oprit"] if not d["infra"] else None
     scrie_stare(d, f_stare, f_picate, sha, picate_acum, rez)

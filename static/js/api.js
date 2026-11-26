@@ -499,13 +499,14 @@ let _ultimaActiuneOm = 0;
 document.addEventListener("pointerdown", () => { _ultimaActiuneOm = Date.now(); }, true);
 document.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") _ultimaActiuneOm = Date.now(); }, true);
 let _deAdus = [];
-export function aduInVedere(el) {
+export function aduInVedere(el, dinRefuz = false) {
   if (!el || !el.isConnected) return;
   // [lotul 12, 171 redeschisă la e2e 25.10.2026] o linie de STARE a ecranului (citită la deschidere și la fiecare redesenare, ex. starea
   // SPV a firmei) nu e rezultatul butonului apăsat: în cele 3 s de după clic ea trăgea fereastra după ea (Control fiscal sărea la
   // „Salvează”). Zona ei poartă `data-stare-ecran`. DS cap.6.
   if (el.closest("[data-stare-ecran]")) return;
-  if (Date.now() - _ultimaActiuneOm > FEREASTRA_ACTIUNE_MS) return;
+  // [17.5-Q12, F045] caseta „NU s-a salvat.” e răspunsul la apăsarea omului oricât ar întârzia serverul: se aduce în vedere și după cele 3 s
+  if (!dinRefuz && Date.now() - _ultimaActiuneOm > FEREASTRA_ACTIUNE_MS) return;
   _deAdus.push(el);
   if (_deAdus.length > 1) return;   // același cadru: se alege cel mai de sus, o singură derulare
   requestAnimationFrame(() => {
@@ -513,13 +514,37 @@ export function aduInVedere(el) {
     _deAdus = [];
     if (!vii.length) return;
     vii.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
-    const t = vii[0], r = t.getBoundingClientRect();
-    const c = t.closest(".fereastra-corp");
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    const sus = Math.max(0, c ? c.getBoundingClientRect().top : 0), jos = Math.min(vh, c ? c.getBoundingClientRect().bottom : vh);
-    if (r.top >= sus && r.bottom <= jos) return;   // deja în vedere: nu se mișcă nimic
+    // [17.5-Q12, F045] la un refuz de salvare, caseta lui de lângă buton („NU s-a salvat.”, cu fiecare câmp ca trimitere) e mesajul de adus în vedere,
+    // nu eroarea cea mai de sus de lângă un câmp: la 603×590 caseta rămânea sub vedere cât eroarea câmpului CUI era deja la vedere sus
+    const t = vii.find((e) => e.matches(".refuz-salvare")) || vii[0];
+    // [17.5-Q12, F045] așezarea casetei de refuz se poate schimba după ce apare (bara lipită care o ține trece în corp, `.bara-fixa-libera`, iar caseta
+    // coboară la capătul lui, sub bara de jos): se reverifică o dată, după ce cadrul s-a stabilizat, și se aduce din nou în vedere
+    if (t.matches(".refuz-salvare")) setTimeout(() => { if (t.isConnected && t.getClientRects().length && !_inVedere(t)) _aduDeasupraBarei(t); }, 700);
+    if (_inVedere(t)) return;   // deja în vedere: nu se mișcă nimic
     t.scrollIntoView({ block: "nearest", behavior: "smooth" });
   });
+}
+// derularea până la element, apoi încă atât cât îl acoperă bara de jos a ferestrei (lipită peste capătul corpului), fără să-i scoată începutul din vedere
+function _aduDeasupraBarei(t) {
+  t.scrollIntoView({ block: "nearest" });
+  const c = t.closest(".fereastra-corp"), fer = t.closest(".fereastra");
+  const bara = fer ? [...fer.querySelectorAll(".fereastra-jos")].find((b) => !b.contains(t) && getComputedStyle(b).position !== "static") : null;
+  if (!c || !bara) return;
+  const r = t.getBoundingClientRect(), bt = bara.getBoundingClientRect().top, sus = c.getBoundingClientRect().top;
+  if (r.bottom > bt) c.scrollTop += Math.max(0, Math.min(r.bottom - bt + 8, r.top - sus));
+}
+// elementul e întreg între marginea de sus a corpului ferestrei și marginea de jos a vederii: corpul, ecranul și bara de jos a ferestrei
+// (`.fereastra-jos`, lipită peste corp) — un rezultat acoperit de bara de jos nu e „în vedere”
+function _inVedere(t) {
+  const r = t.getBoundingClientRect();
+  const c = t.closest(".fereastra-corp");
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  const sus = Math.max(0, c ? c.getBoundingClientRect().top : 0);
+  let jos = Math.min(vh, c ? c.getBoundingClientRect().bottom : vh);
+  const fer = t.closest(".fereastra");
+  const bara = fer ? [...fer.querySelectorAll(".fereastra-jos")].find((b) => !b.contains(t) && getComputedStyle(b).position !== "static") : null;
+  if (bara) { const bt = bara.getBoundingClientRect().top; if (bt > sus) jos = Math.min(jos, bt); }
+  return r.top >= sus && r.bottom <= jos;
 }
 // [lotul 12, deficiența 45 — clasa „mesajul scris direct”] o zonă de mesaj care EXISTĂ deja și primește textul după buton
 // (`rez.textContent = …; rez.className = "em-rezultat em-rau"`, `eroare.textContent = …`) nu e un nod adăugat: observatorul vede acum și
@@ -564,6 +589,7 @@ export function eroareCamp(root, idCamp, txt) {
   // [lotul 13, 655] un număr scris greșit („1.5o0”): orice ar spune ecranul despre valoare („Suma trebuie să fie mai mare ca 0.”) presupune
   // un număr citit; cauza e scrierea, iar omul află cum se scrie (plasa lotului 13: Casă spunea „Suma trebuie …” peste „Scrie numărul …”)
   if (numarScrisGresit(inp)) txt = MESAJ_NUMAR_RO;
+  txt = minusReal(txt);   // [17.5-Q12, F015] suma negativă din refuzul lângă câmp are minusul ca în tabele („−96.951,54”), nu cratima
   // [fieldmark 18.08.2026] marcaj VIZUAL pe campul vinovat (contur rosu + aria-invalid), nu doar mesaj
   // ancorat: la un formular lung, mesajul rosu nu spune singur CARE input e problema. Regula 14 pct.4.
   inp.classList.add("camp-invalid");
@@ -730,7 +756,8 @@ export function refuzSalvare({ camp = null, txt = "", mesaj = null } = {}) {
     li._text = t;
     lista.appendChild(li);
     _ascundeDuplicatele(box, t);
-    aduInVedere(box);
+    aduInVedere(box, true);
+    _aduRefuzul(box);
     return;
   }
   const a = document.createElement("button");
@@ -771,7 +798,14 @@ export function refuzSalvare({ camp = null, txt = "", mesaj = null } = {}) {
     if (camp) focusFaraSalt(camp);
   });
   lista.appendChild(li);
-  aduInVedere(box);
+  aduInVedere(box, true);
+  _aduRefuzul(box);
+}
+// [17.5-Q12, F045] caseta refuzului, după ce cadrul s-a așezat (și după ce bara care o ține a trecut în corp): întreagă în vedere, deasupra barei de jos
+function _aduRefuzul(box) {
+  const f = () => { if (box.isConnected && box.getClientRects().length && !_inVedere(box)) _aduDeasupraBarei(box); };
+  requestAnimationFrame(() => requestAnimationFrame(f));
+  setTimeout(f, 700);
 }
 function _scoateDinRefuz(camp) {
   // după ce zona de refuz a formularului s-a golit (`stergeEroriDupaCorectare`): iese câmpul corectat și orice mesaj rămas gol
@@ -1622,6 +1656,18 @@ export function bani(v) {
   const n = Number(v);
   if (v === null || v === undefined || v === "" || !isFinite(n)) return v ?? "";
   return n.toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+/* [17.5-Q12, F015, decizia lui Costin] MINUSUL AFIȘAT: o singură reprezentare a semnului „minus” în textul pe care îl citește contabilul, semnul
+   tipografic U+2212 („−6.000,00”), nu cratima pe care o pune `toLocaleString` („-6.000,00”). `baniSemn` = `bani` cu minusul real (zero și valorile
+   pozitive rămân ca la `bani`); `minusReal` aduce la aceeași formă o sumă negativă dintr-un text gata scris (refuzul serverului: „casa ar ajunge
+   la -96.951,54 lei”): numai cratima lipită de cifre, la început de text sau după spațiu / paranteză / ghilimea (nu datele „2026-11-26”, nu „1 - 2”). */
+export const MINUS = "\u2212";
+export function baniSemn(v) {
+  const t = bani(v);
+  return typeof t === "string" ? t.replace(/^-/, MINUS) : t;
+}
+export function minusReal(text) {
+  return String(text == null ? "" : text).replace(/(^|[\s(«„"])-(?=\d)/g, "$1" + MINUS);
 }
 /* baniRotund — cifre de ansamblu rotunjite la leu (cockpit cabinet, cifrele firmei client). 1.234 (fara zecimale) */
 export function baniRotund(v) {

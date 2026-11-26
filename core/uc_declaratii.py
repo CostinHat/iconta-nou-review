@@ -160,6 +160,7 @@ def declaratie_valideaza(tip, date, ctx):
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
             poarta_cererii(conn, schema, tip, body, xml, res)   # [lotul 12, C19] rectificativa D394 numai confirmată
             blocaj = blocaj_depunere(conn, schema, tip, body)
+            fata = fata_de_balanta(conn, schema, tip, res)   # [17.5-Q12, F031] la același moment, în aceeași tranzacție
     except ValueError as e:   # [lotul 10, 431] refuzul cu trimitere (`RefuzGenerare`) ajunge la ecran ca obiect, celelalte ca text
         raise _erori.DateInvalide(e.detaliu() if isinstance(e, _erori.RefuzGenerare) else str(e))
     # an/luna OBLIGATORII pentru D406 (27.07.2026): SAF-T se valideaza cu
@@ -181,8 +182,21 @@ def declaratie_valideaza(tip, date, ctx):
     return {"tip": tip, "stare": rez["stare"], "erori": rez["erori"],
             "severitate": rez.get("severitate"),  # [A2] E:(eroare) vs A:(atentionare) - frontendul il citeste
             "temei": rez["temei"], "limita": rez["limita"],
-            **campuri_rezultat(tip, res), "blocaj_depunere": blocaj,
+            **campuri_rezultat(tip, res), "blocaj_depunere": blocaj, "fata_de_balanta": fata,
             "xml_b64": _b64.b64encode(xml.encode()).decode()}
+
+
+def fata_de_balanta(conn, schema, tip, res):
+    """[17.5-Q12, F031] D300: cifrele decontului de pe pasul 2 față de notele validate ale aceleiași perioade, citite la același moment, cu
+    notele în ciornă care explică fiecare diferență (`control_incrucisat.fata_de_balanta`). Celelalte declarații: None. O eroare a comparației
+    nu oprește pasul 2 (comparația e o explicație, nu o condiție a generării): None."""
+    if tip != "d300":
+        return None
+    from core import control_incrucisat as _ci
+    try:
+        return _ci.fata_de_balanta(conn, schema, res)
+    except Exception:
+        return None
 
 
 def blocaj_depunere(conn, schema, tip, body):
@@ -195,6 +209,16 @@ def blocaj_depunere(conn, schema, tip, body):
         return _coada.blocaj_declaratie(cur, schema, tip, body.get("an"), body.get("luna"), body.get("trim"))
 
 
+_LUNA_O_CIFRA = __import__("re").compile(r"\bluna (\d)/(\d{4})\b")
+
+
+def luna_doua_cifre(text):
+    """[17.5-Q12, F028] Luna din rezumatul declarației are forma listei și a titlului pasului 2: „luna 09/2026”, nu „luna 9/2026”
+    (o singură formă a lunii în același flux). Motorul D112 (`core/d112.py`, în afara perimetrului lotului) scrie luna fără zero;
+    rezumatul se aduce aici la forma comună, o dată, pentru toate declarațiile care trec prin această asamblare."""
+    return _LUNA_O_CIFRA.sub(lambda m: "luna 0%s/%s" % (m.group(1), m.group(2)), str(text))
+
+
 def campuri_rezultat(tip, res):
     """Ce spune rezultatul motorului despre declarație — O SINGURĂ asamblare pentru validare și pentru generare.
     [retest 08.10 pct.16] „D406: caseta «Rezumat» nu se vede”: `sinteza` (V5) intrase numai în răspunsul generării, iar
@@ -202,7 +226,7 @@ def campuri_rezultat(tip, res):
     return {
         "avertismente": getattr(res, "avertismente", None),
         "note_rezultat": getattr(res, "note_rezultat", None) or [],   # canal neutru (fapte despre rezultat); [] pt declaratiile fara canal
-        "sinteza": getattr(res, "sinteza", None) or [],               # [08.10, V5] rezumatul, pe canalul lui (nu avertisment)
+        "sinteza": [luna_doua_cifre(x) for x in (getattr(res, "sinteza", None) or [])],   # [08.10, V5] rezumatul, pe canalul lui (nu avertisment); [17.5-Q12, F028] luna „09/2026”
         "rectificativa": getattr(res, "rectificativa", None),   # [lotul 11, C77] „Rectificativă la declarația depusă …”
         # [poarta_gol_v1 27.07.2026] cate operatiuni are declaratia; None = nu se poate
         # numara (d101/d112). Ecranul pune o poarta la 0, ca declaratia goala legitima
@@ -251,6 +275,7 @@ def declaratie_genereaza(tip, date, ctx):
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
             poarta_cererii(conn, schema, tip, body, xml, res)   # [lotul 12, C19] rectificativa D394 numai confirmată
             blocaj = blocaj_depunere(conn, schema, tip, body)
+            fata = fata_de_balanta(conn, schema, tip, res)   # [17.5-Q12, F031]
     except ValueError as e:   # [lotul 10, 431] refuzul cu trimitere (`RefuzGenerare`) ajunge la ecran ca obiect, celelalte ca text
         raise _erori.DateInvalide(e.detaliu() if isinstance(e, _erori.RefuzGenerare) else str(e))
-    return {"tip": tip, "xml": xml, **campuri_rezultat(tip, res), "blocaj_depunere": blocaj}
+    return {"tip": tip, "xml": xml, **campuri_rezultat(tip, res), "blocaj_depunere": blocaj, "fata_de_balanta": fata}

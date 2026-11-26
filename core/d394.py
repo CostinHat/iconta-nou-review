@@ -873,8 +873,10 @@ def calcul_d394(prof, perioada, date, manual=None):
             incluse.pop(k, None)
     for (motiv, _regula), ops in fara_cod.items():
         avert.append(
-            "%s în afara declarației, %s: %s. Ar intra fără codul produsului art.331, pe care DUK (regula %s) îl respinge. Adaugă "
-            "categoria art.331 / subcodul NC pe factură, apoi generează din nou. Restul declarației rămâne valid." % (
+            # [17.5-Q12, F034 Design] literalul protejat „EXCLUSE” rămâne la începutul rezumatului (prima propoziție, la vedere); corectarea se face
+            # în fișa documentului (subcodul NC, județul: `facturi_api.corecteaza_operatiune_n`), apoi D394 se generează din nou
+            "EXCLUSE din D394: %s, %s: %s. Ar intra fără codul produsului art.331, pe care DUK (regula %s) îl respinge. Deschide documentul și "
+            "completează categoria art.331 / subcodul NC, apoi generează din nou. Restul declarației rămâne valid." % (
                 _cate(len(ops), "operațiune", "operațiuni"), motiv, "; ".join("%s către %s" % (t, i) for t, i, _f in ops), _regula))
         excluse_documente.append({"cauza": "Operațiuni în afara declarației: %s" % motiv,
                                   "facturi": [fid for _t, _i, fs in ops for fid in fs]})

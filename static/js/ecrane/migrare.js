@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, semnAjutor, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=dc526532b7";
+import { api, semnAjutor, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=a84ae6966b";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -82,7 +82,7 @@ async function _existaPas(corp, firma, strat, nav = null) {
           an = z.getFullYear(); luna = z.getMonth() + 1;
         }
       } catch { /* fără dată citită: luna de lucru */ }
-      const { deschideBalanta } = await import("./firme.js?v=e7167efe76");
+      const { deschideBalanta } = await import("./firme.js?v=2c318eb87d");
       await deschideBalanta(nav, firma.tenant_id, an, luna);
     });
     el.append(" ", b);
@@ -1561,6 +1561,16 @@ function facturiDeschise(r) {
   const deIncasat = cont === "4111" ? Number(r.debit) - Number(r.credit) : (cont === "401" ? Number(r.credit) - Number(r.debit) : 0);
   return deIncasat > 0.005 ? "soldul întreg" : "—";
 }
+// [17.5-Q12, F085, decizia lui Costin] scadența fiecărui sold preluat se ia numai din document (coloana „scadență” / „termen de plată” a fișierului):
+// cu termen documentat, data lui; fără termen documentat (soldul întreg al partenerului sau factura fără scadență în fișier) exact „termen necunoscut”
+// — aplicația nu calculează o scadență din data preluării și un termen pe care nu-l dovedește nimic (conflictul cu cerința 738, decis așa)
+const TERMEN_NECUNOSCUT = "termen necunoscut";
+function scadentaDeschise(r) {
+  if (facturiDeschise(r) === "—") return "—";
+  if (!Array.isArray(r.documente)) return TERMEN_NECUNOSCUT;
+  const de = r.documente.filter((d) => Number(d.suma) > 0);
+  return esc(de.map((d) => `${d.numar}: ${d.scadenta ? dataRo(d.scadenta) : TERMEN_NECUNOSCUT}`).join("; "));
+}
 function mesajFacturiPreluate(doc) {
   if (!doc || !doc.n) return "";
   const parti = [doc.emise ? `de încasat ${bani(doc.total_emise)} lei` : "", doc.primite ? `de plătit ${bani(doc.total_primite)} lei` : ""].filter(Boolean);
@@ -1617,6 +1627,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
       { titlu: "Debit", num: true, celula: (r) => bani(r.debit) },
       { titlu: "Credit", num: true, celula: (r) => bani(r.credit) },
       { titlu: "Facturi deschise", celula: facturiDeschise },
+      { titlu: "Scadență", celula: scadentaDeschise },   // [17.5-Q12, F085] scadența documentată sau „termen necunoscut”
       ...(areColoanaTvai(randuri) ? [{ titlu: "TVA la încasare", celula: tvaIncasare }] : []),   // [252, 12.3 pct.5] numai cu coloana în fișier
       ...(areColoanaTva(randuri) ? [{ titlu: "TVA din rest", celula: tvaFisier }] : []),   // [lotul 13, 252] numai cu coloana „TVA” în fișier
     ], randuri),
@@ -2513,7 +2524,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=e7167efe76"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=2c318eb87d"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat

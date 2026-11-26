@@ -6,7 +6,7 @@
 // fără meniu lateral. Un singur loc o scrie (aici), deci cele două pagini nu mai pot diverge; gard `PAGINA_PRINCIPALA_UNA`
 // (verificator) + `frontend_test/e2e/e2e_comanda_1210.py`.
 
-import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=dc526532b7";
+import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=a84ae6966b";
 import { randeazaRecomanda } from "./recomanda.js?v=e5354ffd52"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=1c7aa06881"; // [p34_raporteaza]
 import { marcheazaSesiuneInterna } from "./admin_analytics.js?v=e2cdc3d028";   // [lotul 13, 649] sesiunea deschisă: vizitele publice nu se numără

@@ -906,11 +906,11 @@ def _verifica_drift_p2():
             st = _fr_h.verifica_drift(conn)
     except Exception as _e:
         _obs.esec_secundar("verificare drift P2", _e)   # înghițit, dar nu tăcut
-        return None
-    if st["ok"] is False and _poate_alerta("p2_infrastructura"):
+        return NEMASURAT
+    if st["ok"] is False:   # [17.5-Q12, AC191] episodul (apariția / rezolvarea) îl hotărăște `_verifica_si_alerta`, nu o fereastră de o oră
         return ("Infrastructura P2 a derivat: %s"
                 % " · ".join("%s %s" % (p["cod"], p["ce"]) for p in st["probleme"]))
-    return None
+    return None if st["ok"] is True else NEMASURAT
 
 
 def _verifica_curs_bnr():
@@ -925,26 +925,34 @@ def _verifica_curs_bnr():
             st = _cb_s.stare_curs_zilei(conn)
     except Exception as _e:
         _obs.esec_secundar("curs BNR: completare / stare", _e)   # înghițit, dar nu tăcut
-        return None
+        return NEMASURAT
     if not st["lipsa"]:
         return None
     return ("Cursul BNR comunicat pe %s (de care au nevoie facturile în valută de azi) lipsește din aplicație; ultimul curs din "
             "aplicație e din %s" % (st["asteptat"], st["ultima_zi"] or "—"))
 
 
+#: [17.5-Q12, AC191] o verificare care n-a putut măsura (eroare): nici anomalie, nici normal — episodul ei rămâne cum era
+NEMASURAT = object()
+
+
 def _verifica_si_alerta():
+    """[17.5-Q12, AC191, decizia lui Costin] Alerta de sănătate pe EPISOADE: o notificare când o anomalie apare și una când se rezolvă; cât
+    anomalia rămâne (oricâte verificări, după o repornire, din două procese deodată) nu mai pleacă nimic. Starea episodului e în bază
+    (`repo_notificari_livrare.episod_*`, tranziții atomice), deci un singur câștigător pe cauză. Pragurile și regula „ținut, fără rulări de
+    teste” rămân cele de dinainte (`core/alerta_load.py`); se schimbă numai când se trimite."""
     m = _citeste_metrici_pentru_alerte()
-    alerte = []
-    _drift = _verifica_drift_p2()
-    if _drift:
-        alerte.append(_alerta_load.rand("p2_infrastructura", _drift))
-    _bnr = _verifica_curs_bnr()      # [460] cursul zilei lipsă: alertă pentru administratorul platformei
-    if _bnr and _poate_alerta("curs_bnr"):
-        alerte.append(_alerta_load.rand("curs_bnr", _bnr))
-    if m["disc_procent"] is not None and m["disc_procent"] >= _PRAG_DISC_PROCENT and _poate_alerta("disc"):
-        alerte.append(_alerta_load.rand("disc", f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)"))
-    if m["erori_noi"] and m["erori_noi"] > 0 and _poate_alerta("erori"):
-        alerte.append(_alerta_load.rand("erori", f"{_cate(m['erori_noi'], 'eroare', 'erori')} ale aplicației (500) în ultimele 10 minute"))
+    constatari = {}   # categorie -> textul constatării (anomalie) sau None (măsurat, normal); lipsă = nemăsurat în ciclu
+    for _cat, _fn in (("p2_infrastructura", _verifica_drift_p2), ("curs_bnr", _verifica_curs_bnr)):   # [460] cursul zilei lipsă
+        _v = _fn()
+        if _v is not NEMASURAT:
+            constatari[_cat] = _v or None
+    if m["disc_procent"] is not None:
+        constatari["disc"] = (f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)"
+                              if m["disc_procent"] >= _PRAG_DISC_PROCENT else None)
+    if m["erori_noi"] is not None:
+        constatari["erori"] = (f"{_cate(m['erori_noi'], 'eroare', 'erori')} ale aplicației (500) în ultimele 10 minute"
+                               if m["erori_noi"] > 0 else None)
     # ICRD_ISTORIC_SANATATE_V1 - salveaza instantaneu pentru grafice
     try:
         with db.get_conn() as conn:
@@ -962,29 +970,36 @@ def _verifica_si_alerta():
         if istoric:
             acum = istoric[-1][0]
             alerta, motiv = _alerta_load.de_alertat([(r[0], r[1], r[2]) for r in istoric], m["cpu_count"], acum)
-            if alerta and _poate_alerta("load"):
-                alerte.append(_alerta_load.rand("load", "Load: " + motiv))
+            constatari["load"] = ("Load: " + motiv) if alerta else None
             alerta, motiv = _alerta_load.tinut([(r[0], r[3], r[2]) for r in istoric], _PRAG_RAM_PROCENT, acum, "RAM folosită", "%.0f%%")
-            if alerta and _poate_alerta("ram"):
-                alerte.append(_alerta_load.rand("ram", motiv))
+            constatari["ram"] = motiv if alerta else None
             alerta, motiv = _alerta_load.tinut([(r[0], r[4], r[2]) for r in istoric], _PRAG_CONEXIUNI_DB, acum, "Conexiunile DB active")
-            if alerta and _poate_alerta("conexiuni_db"):
-                alerte.append(_alerta_load.rand("conexiuni_db", motiv))
+            constatari["conexiuni_db"] = motiv if alerta else None
     except Exception as _e:
         _obs.esec_secundar("metrici sanatate: alerte tinute", _e)  # inghitit, dar nu tacut
-
-    if not alerte:
+    try:
+        from core import repo_notificari_livrare as _rnl
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                alerte, rezolvate = _alerta_load.episoade(constatari, lambda c: _rnl.episod_incepe(cur, c), lambda c: _rnl.episod_se_incheie(cur, c))
+            conn.commit()
+    except Exception as _e:
+        # fără starea episoadelor nu se poate ști dacă alt proces anunță chiar acum: nu se trimite „ca să fim siguri” (consemnat)
+        _obs.esec_secundar("alerta sanatate: episoade", _e)
+        return
+    if not alerte and not rezolvate:
         return
     email = _email_superadmin()
     if not email:
         return
     html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
-            "<p>Alertă sănătate server iConta.eu:</p><ul>" +
-            "".join("<li>" + _esc_html(p) + "</li>" for p in alerte) +
-            "</ul><p>Fiecare rând spune ce faci. Vârfurile trecătoare (RAM, conexiuni, încărcare care scad singure) nu se trimit: le vezi "
-            "în panoul „Sănătate server” din Panou Admin.</p></div>")
+            + ("<p>Alertă sănătate server iConta.eu:</p><ul>" + "".join("<li>" + _esc_html(p) + "</li>" for p in alerte) + "</ul>" if alerte else "")
+            + ("<p>Rezolvate:</p><ul>" + "".join("<li>" + _esc_html(p) + "</li>" for p in rezolvate) + "</ul>" if rezolvate else "")
+            + "<p>Fiecare rând spune ce faci. O anomalie se anunță o dată, când apare, și o dată, când se rezolvă; vârfurile trecătoare "
+              "(RAM, conexiuni, încărcare care scad singure) nu se trimit: le vezi în panoul „Sănătate server” din Panou Admin.</p></div>")
     # fara alerta: chiar asta e alerta (acelasi canal, Brevo) — esecul ramane in jurnal
-    _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alertă iConta.eu — sănătate server", html)
+    _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email,
+                                           "Alertă iConta.eu — sănătate server" if alerte else "iConta.eu — sănătate server: rezolvat", html)
 
 def _ciclu_sanatate():
     """Un ciclu al buclei de sanatate, cu mai multe procese in minte.
@@ -1503,6 +1518,9 @@ class EmitereIn(BaseModel):
     bon_fiscal_data: Optional[str] = None
     categorie_331: Optional[str] = None  # [274b] categoria produsului cu taxare inversă (codul D394), cerută când o linie e „AE”
     tert_oras: Optional[str] = None      # [274b] localitatea clientului din afara României (BT-77 la livrarea intracomunitară)
+    # [17.5-Q12, F045] ecranul „Emite factură” cere adresa beneficiarului (Cod fiscal art.319 alin.(20) lit.f): refuzul ei vine cu celelalte
+    # refuzuri ale facturii, de pe server, înainte de emitere. Căile fără ecran (recurente, WooCommerce, API) nu-l trimit și rămân neschimbate.
+    cere_adresa_beneficiar: bool = False
     tert_judet: Optional[str] = None     # [274b] regiunea clientului din afara României (BT-79)
     dovada_transport: Optional[bool] = None  # [lotul 12, C84] răspunsul la „Ai dovada transportului?” (livrarea intracomunitară de bunuri)
 
@@ -3252,6 +3270,14 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_drept(_drept
 def facturi_storno(tenant_id: int, factura_id: int, corp: dict = Body(default={}), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.facturi_storno(tenant_id, factura_id, ctx, corp)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+@app.post("/tenants/{tenant_id}/facturi/{factura_id}/operatiune-n")
+# [17.5-Q12, F034] corectarea trasabilă a borderoului de achiziție (operațiune N în D394): subcodul NC al cerealelor, județul vânzătorului
+def facturi_operatiune_n(tenant_id: int, factura_id: int, corp: dict = Body(default={}), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_tenants.facturi_operatiune_n(tenant_id, factura_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

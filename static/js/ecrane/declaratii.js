@@ -6,8 +6,8 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { listaCuCautare, cardRezumat, tabelDS, semnalHtml, legaSemnale } from "../ds_piese.js?v=91866a42f7";   // [15.1, 722] lista cu căutare
-import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=dc526532b7";
+import { listaCuCautare, cardRezumat, tabelDS, semnalHtml, legaSemnale } from "../ds_piese.js?v=e7221f7987";   // [15.1, 722] lista cu căutare
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=a84ae6966b";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=b26ef32cac";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
@@ -612,6 +612,7 @@ async function pas2(corp, nav) {
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
         <ul>${avertHtml}</ul>
       </div>` : ""}
+    ${_blocFataDeBalanta(S.rezultat.fata_de_balanta)}
     ${_blocComponente(S.rezultat.componente)}
     <details class="dec-xml">
       <summary>Vezi XML-ul generat</summary>
@@ -652,6 +653,11 @@ async function pas2(corp, nav) {
   }
   // [lotul 10, 436] notele care opresc depunerea: fiecare cu drumul ei spre Registrul jurnal, în luna notei (ca refuzul porții TVA, 284)
   if (_blocaj && (_blocaj.note || []).length) legaturiNote(corp.querySelector("#dec-blocaj .ca-mesaj"), S.tenant_id, _blocaj.note);
+  // [17.5-Q12, F031] notele în ciornă care explică fiecare diferență față de contabilitate: legăturile spre Registrul jurnal, sub explicația lor
+  corp.querySelectorAll("#dec-fata-balanta [data-fb]").forEach((z) => {
+    const c = ((S.rezultat.fata_de_balanta || {}).constatari || [])[Number(z.dataset.fb)];
+    if (c && (c.ciorne || []).length) legaturiNote(z, S.tenant_id, c.ciorne.map((n) => ({ nota_id: n.nota_id, data: n.data, eticheta: n.eticheta_nota })));
+  });
   // [17.5-Q7, FISC.2] facturile pe care decontul le-a scos din calcul (partener străin cu cotă internă): fiecare cu drumul ei spre fișa facturii
   if (_blocaj && (_blocaj.documente || []).length) legaturiFacturi(corp.querySelector("#dec-blocaj .ca-mesaj"), nav, S.tenant_id, _blocaj.documente);
   const _bt = corp.querySelector("#dec-trimite");
@@ -708,7 +714,7 @@ function legaturiFacturi(zona, nav, tenantId, documente) {
   zona.appendChild(lista);
   lista.querySelectorAll("[data-factura]").forEach((b) => b.addEventListener("click", async () => {
     const d = documente[parseInt(b.dataset.factura, 10)];
-    const { deschideFactura } = await import("./facturi_ecran.js?v=329b15b96c");
+    const { deschideFactura } = await import("./facturi_ecran.js?v=8af932d572");
     deschideFactura(nav, tenantId, d.factura_id);
   }));
 }
@@ -3503,12 +3509,27 @@ function pas3Gata(corp, nav, r) {
   corp.querySelector("#dec-gata-ok").addEventListener("click", () => nav.acasa());
 }
 
+// [17.5-Q12, F031] Pasul 2 al D300 spune, pe document, fiecare diferență față de contabilitatea aceluiași moment: rândul fiecărui cont (rd.19 → 4427,
+// rd.30 → 4426, rezultatul → 4423 / 4424) cu cifra decontului și a notelor validate, iar sub el reconcilierea până la rest și notele în ciornă,
+// fiecare cu locul ei față de decont (în decont, raport Z nevalidat, factură exclusă nominal — ex. F1A nr. 17 —, fără document de decont)
+const LOC_NOTA = { in_decont: "în decont", raport_z: "raport Z nevalidat — nu e în decont", exclusa: "factură exclusă din decont", fara_document: "fără document de decont" };
+function _blocFataDeBalanta(fb) {
+  if (!fb || !(fb.constatari || []).length) return "";
+  const rand = (c, i) => {
+    const note = c.ciorne || [];
+    const detalii = (c.reconciliere_ciorne ? `<p class="pe-randuri">${esc(c.reconciliere_ciorne)}</p>` : (c.explicatie_ciorne ? `<p class="pe-randuri">${esc(c.explicatie_ciorne)}</p>` : ""))
+      + (note.length ? `<ul class="dec-fb-lista">${note.map((n) => `<li>${esc(n.document || n.descriere || "")} · ${esc(n.sens || "")} ${esc(bani(n.suma))} lei · ${esc(LOC_NOTA[n.fel] || "")}</li>`).join("")}</ul><div data-fb="${i}"></div>` : "");
+    return semnalHtml({ ton: c.stare === "verde" ? "ok" : "info", text: c.mesaj || "", detaliiHtml: detalii });
+  };
+  return `<div class="dec-avert" id="dec-fata-balanta"><div class="dec-avert-cap">Față de contabilitate — notele validate ale perioadei ${esc(fb.perioada || "")}, citite acum</div>${fb.constatari.map(rand).join("")}</div>`;
+}
+
 function etPerioada() {
   const per = S.periodicitate[S.tip];
   if (per === "anual") return `anul ${S.an}`;
   if (per === "trimestrial") return `T${S.trim}/${S.an} (${LUNI_TRIM[S.trim - 1]})`;   // [Retest 2 pct.14] DS cap.4 v2.85: „T3/2026”
-  // [G3] eticheta luna-an prin dataRo canonic (nu LUNI[S.luna-1] local); LUNI ramane pentru picker
-  return dataRo(`${S.an}-${String(S.luna).padStart(2, "0")}`, "luna_an");
+  // [17.5-Q12, F028] luna are în titlul pasului 2 aceeași formă ca în lista pasului 1 și în rezumat: „09/2026” (nu „septembrie 2026”)
+  return dataRo(`${S.an}-${String(S.luna).padStart(2, "0")}-01`, "luna_an_numeric");
 }
 
 // audit_cab_lot1_v1

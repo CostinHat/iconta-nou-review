@@ -28,12 +28,12 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, semnAjutor, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=dc526532b7";
+import { api, semnAjutor, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=a84ae6966b";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=79e2b7d168";
-import { legaSemnale, meniuActiuni, paginareDS } from "../ds_piese.js?v=91866a42f7";   // [15.1-E3] pliarea semnalelor constatărilor
+import { randA as randConstatare } from "./control_verdict.js?v=c7ab39f407";
+import { legaSemnale, meniuActiuni, paginareDS } from "../ds_piese.js?v=e7221f7987";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=e7167efe76";
+import { deschideFirma, ecranJurnal, textSoldPreluat } from "./firme.js?v=2c318eb87d";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -445,7 +445,8 @@ function randNotaCoada(c, firme, perm) {
       ${meniuActiuni([`<button class="buton-sters val-btn val-respinge" data-act="respinge-nota" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`])}`;
     selectabila = true;
   }
-  const descr = (n.descrieri && n.descrieri.length > 1) ? [...new Set(n.descrieri.filter(Boolean))].join(" · ") : n.descriere;
+  // [17.5-Q12, F017] soldul preluat se numește ca atare și aici (aceeași funcție ca Registrul jurnal)
+  const descr = textSoldPreluat((n.descrieri && n.descrieri.length > 1) ? [...new Set(n.descrieri.filter(Boolean))].join(" · ") : n.descriere);
   return {
     cheie: c.id, atribute: { "coada-ids": (c.membri_ids || [c.id]).join(",") },   // [lotul 07.10 pct.8-9] documentul, cu toate notele lui
     data: n.data, firma: numeFirma(firme, c.tenant_id), explicatie: descr || c.eticheta, document: n.document_ref || "",
@@ -457,7 +458,7 @@ function randNotaCoada(c, firme, perm) {
     cautaInPlus: `${c.eticheta || ""} ${c.creat_de_nume || ""} ${n.stinge || ""}`,
     inainte: selectabila ? `<input type="checkbox" class="val-sel" data-nota="${c.id}" aria-label="Selectează ${esc(c.eticheta || "nota")}" data-actiune="POST /coada/aproba-mai-multe"> ` : "",
     actiuni,
-    detaliu: `<p class="pf-frand-sub">${esc(c.eticheta || "Notă")} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</p>
+    detaliu: `<p class="pf-frand-sub">${esc(c.eticheta || "Notă")} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}${n.stinge ? " · stinge " + esc(textSoldPreluat(n.stinge)) : ""}</p>
       ${c.retrimisa ? `<p class="pf-frand-sub">Retrimisă după respingere · motivul anterior: „${esc(c.retrimisa.motiv_respingere || "fără motiv")}” · ${c.retrimisa.schimbata === true ? "nota s-a schimbat față de cea respinsă" : c.retrimisa.schimbata === false ? "nota nu s-a schimbat față de cea respinsă" : "nu se poate spune dacă nota s-a schimbat: cea respinsă e mai veche decât compararea notelor"}</p>` : ""}
       <p class="pf-frand-sub">${rulajNota(n)}</p>`,   // [lotul 12] „rulaj X lei” o dată (era „Rulaj: rulaj X lei”)
   };
@@ -473,7 +474,7 @@ function randCiornaMea(f, n, valideaza) {
     b.push(`<button class="buton-secundar val-ciorna-trimite" data-trimite-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite">${respinsa ? "Trimite din nou la validare" : "Trimite la validare"}</button>`);
   return {
     cheie: `c${f.tenant_id}-${n.id}`, atribute: { ciorna: n.id, tenant: f.tenant_id }, tenant: f.tenant_id, notaId: n.id,
-    data: n.data, firma: f.firma, explicatie: n.descriere, document: n.document_ref || "", rulaj: n.rulaj, storno: n.rulaj_storno, linii: null, conturi: n.conturi,
+    data: n.data, firma: f.firma, explicatie: textSoldPreluat(n.descriere), document: n.document_ref || "", rulaj: n.rulaj, storno: n.rulaj_storno, linii: null, conturi: n.conturi,
     stare: n.in_coada === "la_senior" ? { fel: "la_validare", text: "Trimisă la validare", culoare: "var(--galben-text)" }
       : respinsa ? { fel: "respinsa", text: "Respinsă la validare", culoare: "var(--rosu)" }
       : { fel: "ciorna", text: "Nevalidată, netrimisă", culoare: "var(--galben-text)" },
@@ -865,7 +866,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=14d4a29d15");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=e5f9d837be");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

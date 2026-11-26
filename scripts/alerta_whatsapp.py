@@ -6,7 +6,8 @@
   python scripts/alerta_whatsapp.py fara-secrete <cale>...                REFUZ (ieșire 1) dacă o cale conține o valoare secretă
 
 Lanțul unei alerte, în ordine: șablonul `iconta_alerta_lot`; mesajul text liber (merge numai în fereastra de 24 de ore după ce Costin a scris
-numărului); emailul (ca ~/alerta_veghe.sh) — dacă WhatsApp a căzut sau dacă lotul s-a oprit nepublicat. O alertă nu poate opri niciodată un lot:
+numărului); emailul (ca ~/alerta_veghe.sh) — numai dacă WhatsApp a căzut (eroare de transport). [17.5-Q12, AC194] Anunțurile pe WhatsApp sunt numai
+PORNIT și OPRIT (sfârșitul lotului: publicat / nepublicat); copia pe e-mail a anunțului OPRIT (nepublicat) a fost scoasă. O alertă nu poate opri niciodată un lot:
 orice situație în afară de argumente greșite (ieșire 2) iese cu 0. Destinatarul: ALERTA_WA_CATRE din ~/.iconta/api_keys.env. Nimic secret nu se
 tipărește și nu se scrie în jurnal (~/alerte_lot.log, sau fișierul din ALERTA_WA_LOG).
 """
@@ -171,7 +172,7 @@ def _lant(v1, v2, stare):
         _jurnal(v1, v2, "sablon", "destinatar lipsă" if not cfg("ALERTA_WA_CATRE").strip() else "destinatar invalid")
     else:
         trimis = _incercare_wa("sablon", _trimite_sablon, dest, v1, v2) or _incercare_wa("text", _trimite_text, dest, v1, v2)
-    if not trimis or stare == "nepublicat":
+    if not trimis:   # [17.5-Q12, AC194] numai rezerva la eroarea de transport; fără copia pe e-mail a anunțului OPRIT
         _email(v1, v2)
 
 

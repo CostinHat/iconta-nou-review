@@ -944,6 +944,9 @@ def detalii_factura(conn, factura_id):
             l["categorie_tva_eticheta"] = (_ct.CATEGORII.get(l.get("categorie_tva")) or {}).get("eticheta")
         f["tert_cod_eticheta"], f["tert_cod"] = _fp.cod_fiscal_pe_factura(f.get("tert_cui"), f.get("tert_platitor_tva"), f.get("tert_tara"))
         f["tert_adresa_completa"] = _fp.adresa_tert(f.get("tert_adresa"), f.get("tert_oras"), f.get("tert_judet"), f.get("tert_tara"))
+        # [17.5-Q12, F034] borderoul de la persoană fizică pe care D394 nu-l poate declara: ce lipsește și listele formularului de corectare
+        if f.get("tip") == "borderou" and not str(f.get("tert_cui") or "").strip():
+            f["corectare_operatiune_n"] = optiuni_operatiune_n(f.get("categorie_331"), f.get("tert_judet"))
         _cu_stare_contare(cur, [f])
         _cu_stare_incasare(cur, [f])
         _cu_stare_spv(cur, [f])   # [lotul 6 pct.5b, 275]
@@ -1525,6 +1528,78 @@ def _potriveste_linii(conn, linii, platitor_tva=True, raspunsuri_ai=None):
     return out
 
 
+#: [17.5-Q12, F034] corectarea operațiunii N de pe un borderou existent (achiziție de la persoană fizică): ce îi lipsește ca să intre în D394
+MESAJ_N_FARA_OBIECT = "Corectarea operațiunii N se face pe un borderou de achiziție de la o persoană fizică (fără cod fiscal)."
+
+
+def lipsuri_operatiune_n(categorie_331, judet):
+    """[17.5-Q12, F034] Ce lipsește operațiunii N ca s-o declare D394: subcodul NC (categoria generică „cereale” nu e valid la op11, regula DUK
+    R233.6) și județul vânzătorului (judP, obligatoriu la partenerul fără cod). PURĂ; [] = nimic."""
+    from core import d394 as _d394
+    out = []
+    if str(categorie_331 or "").strip().lower() == "cereale":
+        out.append("subcodul NC al cerealelor (ex. 1001 grâu / 1005 porumb)")
+    if str(judet or "").strip().upper() not in _d394.JUDETE_SIRUTA:
+        out.append("județul vânzătorului")
+    return out
+
+
+def optiuni_operatiune_n(categorie_331, judet):
+    """[17.5-Q12, F034] Listele formularului de corectare: subcodurile NC (HG 1/2016 pct.109 alin.(7), `produse_api.NC_CEREALE`) numai la
+    cereale și județele (codul de pe factură, numele întreg). None când operațiunea n-are ce corecta."""
+    lips = lipsuri_operatiune_n(categorie_331, judet)
+    if not lips:
+        return None
+    from core import produse_api as _pa, factura_pdf as _fp, d394 as _d394
+    return {"lipsuri": lips,
+            "coduri_nc": [[c, d] for c, d in _pa.NC_CEREALE.items()] if str(categorie_331 or "").strip().lower() == "cereale" else [],
+            "judete": [[c, _fp.JUDETE_NUME.get(c, c)] for c in _d394.JUDETE_SIRUTA] if str(judet or "").strip().upper() not in _d394.JUDETE_SIRUTA else []}
+
+
+def corecteaza_operatiune_n(conn, schema, factura_id, cod_nc, judet, user_id, tenant_id):
+    """[17.5-Q12, F034] Borderoul de achiziție (operațiune N) scris înaintea regulii subcodului NC / fără județul vânzătorului: contabilul îi dă
+    subcodul NC al cerealelor (din lista HG 1/2016, nu dedus din descriere) și județul, documentul se corectează trasabil (`public.audit_log`:
+    valoarea veche și cea nouă), iar D394 generat din nou îl declară. Refuzurile, lângă câmpuri: `FacturaRefuzata`. {ok, categorie_331, judet}."""
+    from core import d394 as _d394, repo_facturi as _rf
+    with conn.cursor() as cur:
+        r = _rf.operatiune_n(cur, schema, factura_id)
+        if not r or r[0] != "borderou" or str(r[1] or "").strip():
+            raise ValueError(MESAJ_N_FARA_OBIECT)
+        _tip, _cui, cat, jud, serie, numar = r
+        erori = []
+        cod = str(cod_nc or "").strip()
+        jd = str(judet or "").strip().upper()
+        cat_noua, jud_nou = cat, jud
+        if str(cat or "").strip().lower() == "cereale":
+            if cod not in _d394.CODPR_CEREALE:
+                erori.append(("fd-n-cod", "Alege subcodul NC al cerealelor din listă (HG 1/2016 pct.109 alin.(7)): D394 nu primește categoria generică."))
+            else:
+                cat_noua = cod
+        elif cod:
+            erori.append(("fd-n-cod", "Subcodul NC se cere numai la cereale; categoria acestui borderou e alta."))
+        if str(jud or "").strip().upper() not in _d394.JUDETE_SIRUTA:
+            if jd not in _d394.JUDETE_SIRUTA:
+                erori.append(("fd-n-judet", "Alege județul vânzătorului din listă: D394 îl cere pentru partenerul fără cod fiscal."))
+            else:
+                jud_nou = jd
+        elif jd and jd != str(jud).strip().upper():
+            erori.append(("fd-n-judet", "Județul vânzătorului e deja pe borderou; corectarea completează numai ce lipsește."))
+        if erori:
+            raise FacturaRefuzata(erori)
+        if (cat_noua, jud_nou) == (cat, jud):
+            raise ValueError("Borderoul are deja subcodul NC și județul vânzătorului: nimic de corectat.")
+        _rf.corecteaza_operatiune_n(cur, schema, factura_id, cat_noua, jud_nou, user_id, tenant_id, {
+            "document": "%s%s" % (serie or "", numar or ""), "motiv": "D394, operațiune N: " + "; ".join(lipsuri_operatiune_n(cat, jud)),
+            "vechi": {"categorie_331": cat, "judet": jud}, "nou": {"categorie_331": cat_noua, "judet": jud_nou}})
+    return {"ok": True, "categorie_331": cat_noua, "judet": jud_nou}
+
+
+#: [17.5-Q12, F045] refuzul facturii fără adresa beneficiarului (Cod fiscal art.319 alin.(20) lit.f), cerut de ecranul de emitere
+COD_ADRESA_BENEFICIAR = "ADRESA_BENEFICIAR"
+MESAJ_ADRESA_BENEFICIAR = ("Scrie adresa beneficiarului: Codul fiscal (art. 319 alin. (20) lit. f) cere pe factură denumirea și adresa lui. "
+                           "„Verifică” o aduce de la ANAF, iar pentru un client din listă o iei din fișa lui.")
+
+
 def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=None, tert_cui=None, tert_adresa=None,
                   data_emitere=None, data_scadenta=None, moneda="RON",
                   platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
@@ -1532,7 +1607,7 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
                   data_curs_manual=None, curs_manual_de=None, axa_ic=None,
                   bon_fiscal_nr=None, bon_fiscal_data=None, tert_platitor_tva=None, pleaca_marfa=None,
                   raspunsuri_ai=None, categorie_331=None, tert_oras=None, tert_judet=None,
-                  intreaba_dovada=False, dovada_transport=None, vies=None):
+                  intreaba_dovada=False, dovada_transport=None, vies=None, cere_adresa=False):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator / raspunsurile modelului, cerute INAINTEA conexiunii:
@@ -1567,6 +1642,12 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
     if not _rele and not categorie_331 and any(_l.get("categorie_tva") == "taxare_inversa" for _l in linii):
         _rele = [{"camp": "em-c331", "eticheta": "Categoria produsului (art.331)", "cod": "CATEGORIE_331_DE_COMPLETAT",
                   "mesaj": "Factura are linii cu taxare inversă (art.331): alege categoria produsului (D394 o declară cu codul ei)."}]
+    if cere_adresa and tip == "factura" and not str(tert_adresa or "").strip() and not str(tert_oras or "").strip():
+        # [17.5-Q12, F045] factura obișnuită cuprinde denumirea ȘI adresa beneficiarului (Cod fiscal art.319 alin.(20) lit.f): fără adresă (nici
+        # stradă, nici localitate) nu se emite. Refuzul vine cu celelalte refuzuri ale facturii (după ale liniilor, ex. „țara clientului: RO”,
+        # 304), lângă câmpul adresei, înaintea oricărei întrebări și a rezervării numărului. Proforma și avizul nu o cer.
+        _rele = list(_rele) + [{"camp": "em-adresa", "eticheta": "Adresă beneficiar (art. 319)", "cod": COD_ADRESA_BENEFICIAR,
+                                "mesaj": MESAJ_ADRESA_BENEFICIAR}]
     if _rele:
         raise LiniiIncomplete(_rele)
     if intreaba_marfa and pleaca_marfa is None:

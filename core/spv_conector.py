@@ -186,8 +186,44 @@ def cripteaza(text):
 
 
 def decripteaza(text):
-    """ciphertext (str) -> text (str)."""
-    return _fernet().decrypt(text.encode()).decode()
+    """ciphertext (str) -> text (str). [17.5-Q12, AC195] Cât ține rotația cheii (`SPV_FERNET_KEY_VECHE` pus lângă cheia nouă), un text criptat
+    cu cheia veche se citește la fel (MultiFernet: întâi cheia nouă, apoi cea veche); scrierea folosește numai cheia nouă."""
+    from cryptography.fernet import Fernet, MultiFernet
+    veche = os.environ.get("SPV_FERNET_KEY_VECHE", "")
+    if not veche:
+        return _fernet().decrypt(text.encode()).decode()
+    return MultiFernet([_fernet(), Fernet(veche.encode())]).decrypt(text.encode()).decode()
+
+
+#: [17.5-Q12, AC195] coloanele criptate ale tokenurilor SPV (recriptate la rotația cheii)
+COLOANE_CRIPTATE = ("access_token", "refresh_token")
+
+
+def recripteaza_tokenuri(conn, cheie_veche, cheie_noua):
+    """[17.5-Q12, AC195] Rotația cheii Fernet a tokenurilor SPV, într-o singură tranzacție a apelantului: fiecare valoare criptată cu cheia
+    veche se citește, se criptează cu cheia nouă și se verifică (decriptată cu cheia nouă = textul inițial) înainte de scriere; orice eroare
+    (cheie greșită, întrerupere) ridică, iar apelantul face rollback — baza rămâne întreagă pe cheia veche (recuperarea). Nu tipărește și nu
+    întoarce nicio valoare de token. -> {"randuri": n, "valori": m} (numărul înregistrărilor și al valorilor recriptate)."""
+    from cryptography.fernet import Fernet
+    v, n = Fernet(cheie_veche.encode() if isinstance(cheie_veche, str) else cheie_veche), Fernet(cheie_noua.encode() if isinstance(cheie_noua, str) else cheie_noua)
+    randuri = valori = 0
+    with conn.cursor() as cur:
+        cur.execute("SELECT id, " + ", ".join(COLOANE_CRIPTATE) + " FROM public.spv_token ORDER BY id FOR UPDATE")
+        for r in cur.fetchall():
+            noi = []
+            for c in r[1:]:
+                if c is None:
+                    noi.append(None)
+                    continue
+                clar = v.decrypt(c.encode())
+                nou = n.encrypt(clar).decode()
+                if n.decrypt(nou.encode()) != clar:
+                    raise EroareSpv("recriptarea tokenului %s nu se verifică" % r[0])  # invariant-intern-ok: proba rotației
+                noi.append(nou)
+                valori += 1
+            cur.execute("UPDATE public.spv_token SET " + ", ".join("%s = %%s" % c for c in COLOANE_CRIPTATE) + " WHERE id = %s", (*noi, r[0]))
+            randuri += 1
+    return {"randuri": randuri, "valori": valori}
 
 
 # ============================================================

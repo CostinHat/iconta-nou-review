@@ -18,8 +18,8 @@
 // parteneri_firmei`), cu căutare după nume sau cod fiscal; fișa partenerului (`ecranFisaPartener`): datele (verificarea la ANAF, ruta
 // existentă `verifica-cui`, cu propunerea numelui de la ANAF — 444), documentele lui și soldul din contabilitate, cu aceeași regulă ca balanța
 // (`clienti_api.sold_partener`: soldul de preluare + notele validate; ciornele separat). Nimic nu se recalculează în ecran.
-import { meniuActiuni } from "../ds_piese.js?v=91866a42f7";
-import { api, semnAjutor, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv, inactiv, activ } from "../api.js?v=dc526532b7";
+import { meniuActiuni, tiparesteTabel } from "../ds_piese.js?v=e7221f7987";
+import { api, semnAjutor, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv, inactiv, activ } from "../api.js?v=a84ae6966b";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 640] datele aduse de la ANAF țin de CUI-ul lor
 
 const FEL = {
@@ -355,7 +355,10 @@ export async function ecranParteneriFirmei(corp, nav, t) {
       <h2 class="pf-titlu">Parteneri ${semnAjutor("F018")}</h2>
       <p class="pf-intro">Clienții și furnizorii firmei, din fișe și din toate documentele: facturi emise și primite, casă, bancă, note
         contabile, soldurile de preluare. Deschide fișa unui partener ca să-i vezi datele, documentele și soldul din contabilitate și să-i editezi datele.</p>
-      <p><button type="button" class="buton-secundar" id="pt-nou" data-actiune="POST /tenants/{tenant_id}/clienti">+ Fișă de partener</button></p>
+      <!-- [17.5-Q12, F018, decizia lui Costin r2] adăugarea e acțiunea principală unică a registrului (bara de jos), ca în Clienți și Furnizori;
+           „Descarcă PDF” (tipărirea listei, „Salvează ca PDF”) rămâne acțiune secundară, vizibilă și utilizabilă -->
+      <p><button type="button" class="buton-primar" id="pt-nou" data-actiune-principala data-actiune="POST /tenants/{tenant_id}/clienti">+ Fișă de partener</button>
+        <button type="button" class="buton-secundar" id="pt-pdf" data-fara-actiune="export al listei de parteneri (tipărire), fără cerere la server"${lista.length ? "" : atributeInactiv("Nu există parteneri de exportat.")}>Descarcă PDF</button></p>
       ${lista.length ? `<input id="pt-cauta" class="camp-input" style="max-width:420px" placeholder="Caută după nume sau cod fiscal"
         aria-label="Caută partenerul după nume sau cod fiscal" autocomplete="off">
       <span class="tip-desc" id="pt-numar" style="margin-left:8px">${esc(cate(lista.length, "partener", "parteneri"))}</span>` : ""}
@@ -384,8 +387,10 @@ export async function ecranParteneriFirmei(corp, nav, t) {
     const p = lista.find((x) => x.cheie === b.dataset.cheie);
     nav.deschide("Fișa partenerului", (c2) => ecranFisaPartener(c2, nav, t, p.cheie), { lat: "tabel" });
   }));
+  const pdf = corp.querySelector("#pt-pdf");
+  if (pdf) pdf.addEventListener("click", () => tiparesteTabel(corp));
   // [17.5-Q8, FINAL.4 / F018] adăugarea în registrul unic: alegerea rolului (client sau furnizor), apoi aceeași fișă nouă ca în Clienți / Furnizori
-  // eticheta nu e „+ … nou”: catalogul cadrului ar face-o acțiunea principală a registrului, a cărui acțiune rămâne „Descarcă PDF” (harta barei de jos)
+  // [17.5-Q12, F018] marcată `data-actiune-principala`: cadrul o mută în bara de jos ca acțiunea principală (harta barei de jos, rândul Parteneri, decizia r2)
   corp.querySelector("#pt-nou").addEventListener("click", () => nav.deschide("Fișă de partener", (c2) => {
     c2.innerHTML = `<h2 class="pf-titlu">Fișă de partener</h2><p class="pf-intro">Ce fel de partener adaugi? Fișa se poate completa apoi și cu celălalt rol.</p>
       <p><button type="button" class="buton-secundar" id="ptn-client" data-actiune="POST /tenants/{tenant_id}/clienti">Client</button>

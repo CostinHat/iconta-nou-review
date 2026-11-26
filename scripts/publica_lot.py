@@ -19,6 +19,7 @@ Oracolul pașilor (16.1-C3, pct.1): ~/ghid_incoming/pasi_<lot>.txt (al arhitectu
 STOP „oracol modificat”. Lotul de produs cere fișierul; lotul de unelte fără fișier nu are oracol.
 Ieșire: 0 = PASS, 1 = STOP (nepublicat, cu cifra sau motivul)."""
 import csv
+import datetime
 import json
 import os
 import re
@@ -463,7 +464,11 @@ def verifica(lot, sha, comun, sirul_zip):
     # praguri numerice: `max <faza> <secunde>`; în lotul de unelte nu sunt
     infra = {}
     g2 = {}
-    depasiri, intrerupte = depasiri_praguri(JL.durate(lot), open(praguri, encoding="utf-8").read().splitlines(), infra, g2, JL.marcaje_g2(lot))
+    # [17.5-Q12, AC197] pragurile se judecă pe rulările eligibile ale SHA-ului final C (fazele porții), cu toate celelalte faze ale lotului
+    depasiri, intrerupte = depasiri_praguri(eligibile_sha_final(durate_cu_sha(lot), c), open(praguri, encoding="utf-8").read().splitlines(), infra, g2, JL.marcaje_g2(lot))
+    oprit_c = (stare or {}).get("candidati_opriti", {}).get(c)
+    if oprit_c:
+        stop.append("candidatul %s a fost oprit după poarta roșie (AC197): %s" % (c[:12], oprit_c))
     if infra:
         print("[publica_lot] rulări „infra” pe fază (nu se numără la praguri): %s" % ", ".join("%s=%d" % kv for kv in sorted(infra.items())))
     if g2:
@@ -472,6 +477,42 @@ def verifica(lot, sha, comun, sirul_zip):
     if os.path.exists(raport) and "Rulări „intrerupt” pe fază" not in open(raport, encoding="utf-8").read():
         stop.append("raportul nu dă numărul rulărilor „intrerupt” pe fază (%s)" % (", ".join("%s=%d" % kv for kv in sorted(intrerupte.items())) or "niciuna"))
     return stop
+
+
+#: [17.5-Q12, AC197] fazele porții judecate pe candidat: rulările lor pe un SHA înlocuit (alt commit al lotului, cunoscut) nu mai judecă SHA-ul final
+FAZE_CANDIDAT = ("poarta_verificator", "poarta_pytest", "poarta_plasa")
+
+
+def durate_cu_sha(lot, cale=None):
+    """[17.5-Q12, AC197] Ca `jurnal_lot.durate` (aceeași pereche început/sfârșit, ultimul «sfarsit» al id-ului), cu SHA-ul rulării (coloana 5 a
+    rândului «inceput», prefix de 12): [(faza, id, început, sfârșit, rezultat, secunde, sha)]."""
+    cale = cale or JL.cale_jurnal()
+    JL.marcheaza_intrerupte(cale)
+    rows = [r for r in JL._citeste(cale) if r[0] == lot and len(r) > 6]
+    sf = {r[6]: r for r in rows if r[2] == "sfarsit"}
+    out = []
+    for r in rows:
+        if r[2] != "inceput":
+            continue
+        s = sf.get(r[6])
+        sec = round((datetime.datetime.fromisoformat(s[3]) - datetime.datetime.fromisoformat(r[3])).total_seconds()) if s else ""
+        out.append((r[1], r[6], r[3], s[3] if s else "-", s[5] if s else "intrerupt", sec, r[4]))
+    return out
+
+
+def eligibile_sha_final(durate, sha_final):
+    """[17.5-Q12, AC197, decizia lui Costin] Rulările judecate la publicare: pe fazele porții, numai ale SHA-ului final (toate: o reluare sau o rulare
+    ulterioară pe același SHA nu șterge o depășire); o rulare pe un SHA cunoscut și diferit (candidatul înlocuit, oprit la roșu) rămâne în jurnal
+    și în raport, dar nu judecă SHA-ul final. SHA lipsă sau ambiguu (gol, «-», sub 7 caractere) NU exclude rularea. Celelalte faze (hook, …): toate.
+    PURĂ. -> rândurile în forma lui `jurnal_lot.durate` (fără SHA)."""
+    def eligibil(x):
+        if x[0] not in FAZE_CANDIDAT:
+            return True
+        r = (x[6] or "").strip()
+        if len(r) < 7 or not re.fullmatch(r"[0-9a-f]+", r):
+            return True
+        return sha_final.startswith(r) or r.startswith(sha_final)
+    return [x[:6] for x in durate if eligibil(x)]
 
 
 def depasiri_praguri(durate, linii_praguri, infra=None, g2=None, marcaje=None):

@@ -1,12 +1,12 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=91866a42f7";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
-import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=dc526532b7";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=e7221f7987";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=a84ae6966b";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
-import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=dc526532b7";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
-import { arataRefuzul, cereCompletate, ultimaCerere, pastreazaCampulActiv } from "../api.js?v=dc526532b7";  /* [lotul 11, 440] refuzul serverului / câmpurile goale: toate deodată */
-import { inactiv, activ } from "../api.js?v=dc526532b7";  /* [16.2-A, 729.1] „Adaugă” inactiv, cu „Completează: …” */
+import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=a84ae6966b";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
+import { arataRefuzul, cereCompletate, ultimaCerere, pastreazaCampulActiv, baniSemn, minusReal } from "../api.js?v=a84ae6966b";  /* [lotul 11, 440] refuzul serverului / câmpurile goale: toate deodată */
+import { inactiv, activ } from "../api.js?v=a84ae6966b";  /* [16.2-A, 729.1] „Adaugă” inactiv, cu „Completează: …” */
 // [lotul 11, 440] „Corectează datele” salariatului (PUT /salariati): numele câmpurilor din refuzul serverului (`valideaza_salariat`, corpul
 // cererii) -> id-ul de pe ecran, pentru `arataRefuzul`
 const CAMPURI_ED_SALARIAT = { nume: "ed-nume", prenume: "ed-pren", cnp: "ed-cnp", data_angajare: "ed-ang", tip_norma: "ed-norma", ore_zi: "ed-orezi",
@@ -38,27 +38,27 @@ import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=ed753c72f9";  /* cm_flux_v1 */
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
-import { MESAJ_NUMAR_RO } from "../api.js?v=dc526532b7";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
+import { MESAJ_NUMAR_RO } from "../api.js?v=a84ae6966b";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=329b15b96c";   // [lotul 13, 543] seria chitanțelor pe loc
-import { cautaInLista } from "./emitere_ecran.js?v=e4db4f2679";   /* [lotul 12, 488] căutarea în listele lungi de articole */
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=8af932d572";   // [lotul 13, 543] seria chitanțelor pe loc
+import { cautaInLista } from "./emitere_ecran.js?v=561fef2973";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=b26ef32cac";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=41cf75f2de";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=49b400e0ca";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=8fea268f83";
-import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=4408029606";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=46924d17c6";  // [p96_import_firma] + [Q4] import in masa
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [17.5-J, AC052] refuzul care trimite la ce lipsește
-import { declaratiiPerFirma } from "./declaratii.js?v=14d4a29d15";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=79e2b7d168";  // renderer unic verdict control fiscal (DS cap.20)
+import { declaratiiPerFirma } from "./declaratii.js?v=e5f9d837be";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=c7ab39f407";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=f1efa2b688";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=b44ae564c9";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b4b224cb24";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=6352708e1f";  // [ecran_mf_v1]
 import { ecranReevaluareValuta } from "./reevaluare_ecran.js?v=05ef5e9265";  // [lotul 10, 429]
 import { ecranCompensari } from "./compensari_ecran.js?v=30126917dc";  // [lotul 10, 428 — decizia Costin „Construiesc acum”]
-import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=2320a19b51";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
+import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=c0842ec709";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";  // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
 import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
@@ -4524,7 +4524,7 @@ async function ecranCasa(corp, nav, t) {
       const semne = [o.fara_chitanta && { fel: "fara_chitanta", text: "fără chitanță" }, o.alt_modul && { fel: "alt_modul", text: "din alt ecran" },
         o.stornata && { fel: "stornata", text: "stornată" }, respinsa && { fel: "respinsa", text: "motivul în detaliu" },
         // [17.5-X, F015] rândul cu sold negativ spune scris că Casa rămâne pe minus (semnul − și suma în formatul aplicației)
-        Number(o.sold) < 0 && { fel: "sold_negativ", text: `Casa rămâne pe minus (−${bani(Math.abs(Number(o.sold)))} lei)` }].filter(Boolean);
+        Number(o.sold) < 0 && { fel: "sold_negativ", text: `Casa rămâne pe minus (${baniSemn(o.sold)} lei)` }].filter(Boolean);
       return { cheie: o.id != null ? "op" + o.id : "n" + (o.inregistrare_id || i), o, fel, respinsa, semne,
         data: o.data, explicatie: o.categorie_eticheta || "", document: o.document || "", partener: `${o.partener || ""} ${o.cui || ""}`,
         rulaj: Math.abs(Number(o.suma)), stare: { text: stareNotaCasa(o, t) }, stari: [fel, fel === "respinsa" ? "ciorna" : ""].filter(Boolean),
@@ -4542,9 +4542,10 @@ async function ecranCasa(corp, nav, t) {
     const randHtml = (r) => {
       const o = r.o, m = motiveCasa(o), k = esc(r.cheie);
       const deschis = deschise.has(r.cheie);
-      const suma = `${Number(o.suma) < 0 ? "−" : ""}${bani(Math.abs(Number(o.suma)))}`;
-      // [17.5-Q10, F015] soldul pe minus se scrie cu același semn ca suma („−6.000,00”), nu cu cratima din toLocaleString („-58,00”)
-      const sold = o.sold === null || o.sold === undefined || o.sold === "" ? "" : `${Number(o.sold) < 0 ? "−" : ""}${bani(Math.abs(Number(o.sold)))}`;
+      // [17.5-Q10, F015] soldul pe minus se scrie cu același semn ca suma („−6.000,00”), nu cu cratima din toLocaleString („-58,00”);
+      // [17.5-Q12, F015] prin funcția comună `baniSemn` (aceeași în refuzul de sold, `minusReal`, și în Istoric facturi)
+      const suma = baniSemn(o.suma);
+      const sold = o.sold === null || o.sold === undefined || o.sold === "" ? "" : baniSemn(o.sold);
       const obs = [
         o.partener || o.cui ? `Partener: ${esc(o.partener || "")}${o.cui ? " · CUI " + esc(o.cui) : ""}` : "",
         o.document ? `Document: ${esc(o.document)}` : "Document: nescris pe operațiune",
@@ -4940,7 +4941,7 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
         ...(r.avertismente || []).map((a) => (a.mesaj || a.cod || "") + (a.temei ? " · " + a.temei : ""))];
       zPrev.innerHTML = linii.length ? `<div class="caseta-atentie" id="c-previz-avert">${linii.map((x) => `<div class="ca-mesaj">${esc(x)}</div>`).join("")}</div>` : "";
       // [deficiența 406] plata care ar duce casa sub zero: refuzul salvării, spus înainte de „Adaugă”
-      if (r.refuz) { zPrev.insertAdjacentHTML("afterbegin", "<div id=\"c-previz-refuz\"></div>"); arataMesaj(zPrev.querySelector("#c-previz-refuz"), r.refuz, "eroare"); }
+      if (r.refuz) { zPrev.insertAdjacentHTML("afterbegin", "<div id=\"c-previz-refuz\"></div>"); arataMesaj(zPrev.querySelector("#c-previz-refuz"), minusReal(r.refuz), "eroare"); }   // [17.5-Q12, F015] minusul ca în tabel
     }, 250);
   });
   zCampuri.addEventListener("input", programeazaPreviz);
@@ -6315,6 +6316,14 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
   deseneaza();
 }
 
+// [17.5-Q12, F017] documentul „Sold la <data>” scris la migrare din soldurile pe parteneri nu e o factură: în explicația notei și în documentul
+// justificativ se numește soldul preluat, cu originea lui (aceeași formulă ca `casa_api.text_stins`). Nota ciornă scrisă înaintea reparației
+// 17.5-Q10 („factura Sold la 31.08.2026 din 31.08.2026”, „preluata Sold la 31.08.2026 din 31.08.2026”) nu se rescrie: textul ei original rămâne pe
+// notă (trasabil, în `title` pe rând), iar ecranul îl spune cu numele corect. Semnătura e unică: numai documentul preluat are numărul „Sold la …”.
+const _RE_SOLD_PRELUAT = /\b(?:factura|preluata) Sold la (\d{2}\.\d{2}\.\d{4}) din \d{2}\.\d{2}\.\d{4}/g;
+export function textSoldPreluat(t) {
+  return String(t == null ? "" : t).replace(_RE_SOLD_PRELUAT, "soldul preluat la $1 (din soldurile partenerilor, la preluarea firmei)");
+}
 export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda în browser + „nota #…” din detaliul facturii
   const cheie = "jurnal:" + t.id;
   const azi = new Date();   // [817] „azi” rămâne pentru „Notă nouă”; luna de pornire vine din `lunaDeLucru`
@@ -6333,7 +6342,7 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
   // „stiu ca nu" (interdictia 32).
   // [lotul 13, 602] „«Document justificativ: nederivat» e termen de programator”: textul spune ce lipsește și de unde se completează
   const docJustificativ = (n) => `Document justificativ: ${n.document
-    ? esc(n.document) + (n.stinge ? " · stinge " + esc(n.stinge) : "")   // [08.10, U5] chitanța: factura pe care o stinge
+    ? esc(n.document) + (n.stinge ? " · stinge " + esc(textSoldPreluat(n.stinge)) : "")   // [08.10, U5] chitanța: factura pe care o stinge; [17.5-Q12, F017] sau soldul preluat
     : "lipsește — nota n-are documentul scris pe ea și nu e legată de o factură"}`;   // [lotul 11, pct.23] nu „nederivat”: cuvânt din cod
 
   // [05.10.2026, comanda Costin pct.6] „Validarea unei note fără document justificativ trece fără niciun avertisment —
@@ -6455,8 +6464,9 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
       const { rulaj, storno } = rulajLinii(n.linii);
       const stari = [stare.fel, n.status === "ciorna" ? "ciorna" : "", !n.document ? "fara_doc" : ""].filter(Boolean);
       return {
-        cheie: n.id, atribute: { "nota-id": n.id }, nrCrt: n.nr_curent, data: n.data, explicatie: n.descriere || n.numar,
-        document: n.document ? n.document + (n.stinge ? " · stinge " + n.stinge : "") : "", partener: parteneri.join(" "),
+        cheie: n.id, atribute: { "nota-id": n.id, ...(textSoldPreluat(n.descriere) !== (n.descriere || "") ? { "text-original": n.descriere } : {}) },
+        nrCrt: n.nr_curent, data: n.data, explicatie: textSoldPreluat(n.descriere || n.numar),
+        document: n.document ? n.document + (n.stinge ? " · stinge " + textSoldPreluat(n.stinge) : "") : "", partener: parteneri.join(" "),
         linii: n.linii, rulaj, storno, stare, semne,
         stari,
         actiuni: `${bVal} ${bRetrimite}`,

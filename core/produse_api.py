@@ -150,6 +150,53 @@ def _erori_produs(er, denumire, um, pret_unitar, cere_denumirea):
     return er
 
 
+# [17.5-Q12, F070] Temeiul cotei venit fără diacritice (răspunsul brut al clasificării AI, păstrat în `produse.justificare` înainte de 17.5-Q12,
+# ex. „Painea alba … fara zahar adaugat … cota redusa … se aplica”) se arată contabilului cu diacritice, pe rând și în formular, și pentru datele
+# deja existente. Valoarea păstrată nu se rescrie (temeiul aprobat și cota rămân ale produsului; originalul vine alături, `justificare_originala`).
+# Refacerea e deterministă: numai cuvinte întregi din dicționarul fix de mai jos, fiecare cu o singură scriere corectă în limbajul temeiurilor
+# fiscale; un cuvânt din afara lui rămâne cum e (nu se ghicește). Necesitatea corectării sursei istorice: DECIZII.md, lotul 17.5-Q12.
+_DIACRITICE_TEMEI = {
+    "painea": "pâinea", "paine": "pâine", "painii": "pâinii", "alba": "albă", "incadrandu": "încadrându", "incadreaza": "încadrează",
+    "incadrata": "încadrată", "incadrat": "încadrat", "fara": "fără", "zahar": "zahăr", "adaugat": "adăugat", "adaugata": "adăugată",
+    "redusa": "redusă", "aplica": "aplică", "carti": "cărți", "carte": "carte", "bauturi": "băuturi", "bautura": "băutură",
+    "alimentara": "alimentară", "alimentare": "alimentare", "destinata": "destinată", "destinate": "destinate", "si": "și", "in": "în",
+    "insotite": "însoțite", "masa": "masă", "lapte": "lapte", "faina": "făină", "fainoase": "făinoase", "conditiile": "condițiile",
+    "conditii": "condiții", "prevazuta": "prevăzută", "prevazute": "prevăzute", "prevazut": "prevăzut", "legislatia": "legislația",
+    "legii": "legii", "taxa": "taxa", "taxei": "taxei", "valoarea": "valoarea", "adaugata": "adăugată", "acesta": "acesta", "aceasta": "aceasta",
+    "categoria": "categoria", "produsului": "produsului", "standard": "standard", "livrarea": "livrarea", "livrari": "livrări",
+    "prestari": "prestări", "servicii": "servicii", "scutita": "scutită", "scutit": "scutit", "inversa": "inversă", "intra": "intră",
+    "intrand": "intrând", "fiind": "fiind", "considerat": "considerat", "considerata": "considerată", "ca": "ca", "atat": "atât",
+    "cat": "cât", "dupa": "după", "potrivit": "potrivit", "pana": "până", "doar": "doar", "panificatie": "panificație",
+    "specialitati": "specialități", "carne": "carne", "oua": "ouă", "legume": "legume", "fructe": "fructe", "proaspete": "proaspete",
+    "apa": "apă", "potabila": "potabilă", "medicamente": "medicamente", "ingrasaminte": "îngrășăminte", "seminte": "semințe",
+}
+_RE_CUVANT = __import__("re").compile(r"[A-Za-z]+")
+
+
+def cu_diacritice(text):
+    """Temeiul cu diacritice, pentru afișare (PURĂ). Majuscula inițială a cuvântului se păstrează; restul textului, neatins."""
+    if not text:
+        return text
+
+    def _cuvant(m):
+        w = m.group(0)
+        nou = _DIACRITICE_TEMEI.get(w.lower())
+        if not nou or nou == w.lower():
+            return w
+        return nou[0].upper() + nou[1:] if w[0].isupper() else nou
+    return _RE_CUVANT.sub(_cuvant, text)
+
+
+def _temei_afisat(d):
+    """[17.5-Q12, F070] `justificare` = temeiul de citit (cu diacritice); `justificare_originala` = textul păstrat, numai când diferă."""
+    j = d.get("justificare")
+    nou = cu_diacritice(j)
+    if nou != j:
+        d["justificare_originala"] = j
+        d["justificare"] = nou
+    return d
+
+
 def lista(conn, doar_confirmate=False):
     """Toate produsele firmei, ordonate alfabetic."""
     import psycopg2.extras as _E
@@ -169,7 +216,7 @@ def lista(conn, doar_confirmate=False):
             # din ecranul de NIR, dar in Python - clasa pe care R26 o declarase golita.
             d["cota_tva"] = float(d["cota_tva"]) if d["cota_tva"] is not None else None
             d["ultima_corectare"] = corectari.get(d["id"])   # [472] corectura cotei, consemnată
-            out.append(d)
+            out.append(_temei_afisat(d))   # [17.5-Q12, F070] temeiul cu diacritice, originalul alături
         if not doar_confirmate:
             out = sorted(out + _din_stoc_fara_produs(cur), key=lambda x: (x["denumire"] or "").lower())
     return out
@@ -253,7 +300,10 @@ def propunere_pentru_linie(conn, denumire, platitor_tva=True, raspunsuri=None):
     UM tot din nomenclator."""
     p = cauta_dupa_denumire(conn, denumire)
     if not p:
-        return cote_tva.raspuns(raspunsuri, denumire, platitor_tva)
+        r = cote_tva.raspuns(raspunsuri, denumire, platitor_tva)
+        if isinstance(r, dict) and r.get("justificare"):   # [17.5-Q12, F070] propunerea nouă, cu același dicționar de diacritice
+            r = dict(r, justificare=cu_diacritice(r["justificare"]))
+        return r
     cota = p["cota_tva"] if platitor_tva else 0
     # [lotul 11, 449] categoria cotei 0% a produsului (taxare inversă / scutit cu sau fără drept / neimpozabil) și, la taxarea inversă,
     # categoria bunului din D394: factura le propune pe linie (`categorie_tva`) și pe document (`categorie_331`). La neplătitor nu se
@@ -261,7 +311,7 @@ def propunere_pentru_linie(conn, denumire, platitor_tva=True, raspunsuri=None):
     return {"ok": True, "cota": int(cota) if float(cota).is_integer() else cota, "categorie": p.get("categorie"),
             "categorie_tva": p.get("categorie_tva") if platitor_tva else None,
             "categorie_331": p.get("categorie_331") if platitor_tva else None,
-            "justificare": p.get("justificare"), "sursa": "nomenclator", "produs_id": p["id"],
+            "justificare": cu_diacritice(p.get("justificare")), "sursa": "nomenclator", "produs_id": p["id"],
             "um": p.get("um"), "pret_unitar": p["pret_unitar"]}
 
 

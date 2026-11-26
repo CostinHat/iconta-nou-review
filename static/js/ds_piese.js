@@ -2,7 +2,7 @@
 // grupurile formularului (Document, Furnizor / Client, Sume, Descriere), lățimea câmpului după rol (XS 9, S 16, M 38, L jumătate, XL
 // toată lățimea) și cardul-rezumat de un rând cu detaliile pliate. Dimensiunile sunt în stil.css (`.ds-*`); aici stă numai alegerea
 // clasei, ca ecranele să nu mai aleagă singure lățimi și grupuri.
-import { esc, focusFaraSalt, cate } from "./api.js?v=dc526532b7";
+import { esc, focusFaraSalt, cate } from "./api.js?v=a84ae6966b";
 
 export const GRUPURI_FORMULAR = ["Document", "Furnizor / Client", "Sume", "Descriere"];
 
@@ -166,12 +166,35 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
 
 /** [15.1-E5, 740] Textul unui semnal: prima propoziție ÎNTREAGĂ, pe cel mult două rânduri (până la 200 de caractere); o propoziție mai lungă se rupte la
  *  ultimul cuvânt dinainte de limită, fără „…”, iar restul trece în detalii (textul întreg). */
+// [17.5-Q12, decizia lui Costin, corecția comună 1 — F034 Design, D406, Control fiscal › E-Factura] Prima propoziție nu se termină la punctul unei
+// prescurtări («ex. 1001 grâu», «nota nr. crt. 34», «F1A nr. 17», «art. 331», «lit.E pct.10»): propoziția se încheie la „. ” urmat de majusculă
+// (sau de ghilimele / paranteză deschisă), iar cuvântul dinaintea punctului nu e o prescurtare din lista de mai jos și nu e o singură literă.
+const PRESCURTARI = new Set(["ex", "nr", "crt", "art", "alin", "lit", "pct", "etc", "cca", "str", "jud", "loc", "tel", "ș.a", "d-l", "d-na", "dl", "dna",
+  "sc", "srl", "sa", "pfa", "ii", "cf", "cod", "rd", "col", "cap", "anexa", "h.g", "hg", "o.u.g", "oug", "omfp", "ord", "pag", "vol", "max", "min", "aprox"]);
+export function primaPropozitie(t) {
+  const s = String(t == null ? "" : t);
+  const rx = /\.\s+(?=[A-ZĂÂÎȘȚ„«"(])/g;
+  let m;
+  while ((m = rx.exec(s))) {
+    const inainte = s.slice(0, m.index).match(/([\p{L}.-]+)$/u);
+    const cuv = inainte ? inainte[1].toLowerCase() : "";
+    if (cuv.length === 1 || PRESCURTARI.has(cuv) || PRESCURTARI.has(cuv.split(".").pop())) continue;
+    return s.slice(0, m.index + 1);
+  }
+  return s;
+}
 export function textSemnal(t) {
-  const prima = String(t).split(/(?<=\.)\s/)[0];
+  const prima = primaPropozitie(t);
   if (prima.length <= 200) return prima;
   const taiat = prima.slice(0, 200);
   const sp = taiat.lastIndexOf(" ");
   let c = (sp > 120 ? taiat.slice(0, sp) : taiat);
+  // [17.5-Q12, corecția comună 1] tăietura nu se oprește după o prescurtare («… F1A nr.»): se taie la separatorul listei dinaintea ei (virgulă, punct și virgulă)
+  const ultim = (c.match(/([\p{L}.-]+)$/u) || [])[1];
+  if (ultim && /\.$/.test(ultim) && (PRESCURTARI.has(ultim.slice(0, -1).toLowerCase()) || ultim.length <= 2)) {
+    const sep = Math.max(c.lastIndexOf(", "), c.lastIndexOf("; "));
+    if (sep > 60) c = c.slice(0, sep);
+  }
   // [17.5-Q8, FISC.8 / F022] tăietura nu se oprește în mijlocul unei paranteze („… și (2) D300 depus (rândurile”): se taie înaintea parantezei
   // deschise și rămase neînchise, iar „…” spune că textul întreg e în detalii
   const deschise = (x) => (x.match(/\(/g) || []).length - (x.match(/\)/g) || []).length;

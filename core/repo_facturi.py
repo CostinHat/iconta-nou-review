@@ -61,6 +61,22 @@ SQL_STORNARI = "COALESCE((SELECT SUM(st.total) FROM {s}facturi st WHERE st.storn
 TOLERANTA_STORNATA = Decimal("0.005")
 
 
+def operatiune_n(cur, schema, factura_id):
+    """[17.5-Q12, F034] (tip, tert_cui, categorie_331, tert_judet, serie, numar) ale documentului `factura_id`, sau None."""
+    cur.execute(f"SELECT tip, tert_cui, categorie_331, tert_judet, serie, numar FROM {schema}.facturi WHERE id = %s", (factura_id,))
+    r = cur.fetchone()
+    return (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None
+
+
+def corecteaza_operatiune_n(cur, schema, factura_id, categorie_331, judet, user_id, tenant_id, detalii):
+    """[17.5-Q12, F034] Corectarea trasabilă a operațiunii N de pe un borderou de achiziție (subcodul NC al cerealelor, județul vânzătorului):
+    documentul primește valorile noi, iar `public.audit_log` păstrează cine, când, valoarea veche și cea nouă (`detalii`)."""
+    cur.execute(f"UPDATE {schema}.facturi SET categorie_331 = %s, tert_judet = %s WHERE id = %s AND tip = 'borderou'",
+                (categorie_331, judet, factura_id))
+    cur.execute("INSERT INTO public.audit_log (user_id, tenant_id, actiune, entitate, entitate_id, detalii) VALUES (%s, %s, %s, %s, %s, %s::jsonb)",
+                (user_id, tenant_id, "corectie_operatiune_n", "factura", factura_id, __import__("json").dumps(detalii, ensure_ascii=False)))
+
+
 def seteaza_act_identitate(cur, schema, factura_id, act):
     """[402] actul de identitate al vânzătorului persoană fizică, pe borderoul de achiziție."""
     cur.execute(f"UPDATE {schema}.facturi SET tert_act_identitate = %s WHERE id = %s", (act, factura_id))

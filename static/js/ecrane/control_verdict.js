@@ -6,8 +6,8 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
-import { api, semnAjutor, ultimaCerere, pastreazaCampulActiv, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=dc526532b7";
-import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=91866a42f7";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
+import { api, semnAjutor, ultimaCerere, pastreazaCampulActiv, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=a84ae6966b";
+import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=e7221f7987";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=200eda21e4";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=aab0f8253f";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
 import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
@@ -94,7 +94,15 @@ function semnalConstatare(c) {
   const semnal = semnalHtml({ ton: TON_STARE[st] || "avertisment", text: c.diferenta_neexplicata ? `${String(c.mesaj || "").replace(/\.\s*$/, "")} · ${c.diferenta_neexplicata}.` : (c.mesaj || ""), detaliiHtml: detalii, actiuneHtml: cod ? butonActiune(cod, r) : "" });
   // [17.5-W, AC185] câte note în ciornă ating contul comparat (`explicatie_ciorne`, textul îl face serverul): rând informativ imediat sub constatare, ca să nu
   // schimbe numărul rândurilor non-info; prima propoziție (cifrele) se vede fără deschiderea detaliilor. Cu note în ciornă rândul rămâne separat, neschimbat.
-  return semnal + (c.explicatie_ciorne && !c.diferenta_neexplicata ? semnalHtml({ ton: "info", text: c.explicatie_ciorne }) : "");
+  // [17.5-Q12, F169 / F031] cu notele în ciornă numite: fiecare notă (sensul, suma, documentul, locul față de decont) cu legătura ei spre Registrul jurnal,
+  // iar prima propoziție a rândului informativ e reconcilierea până la rest (`reconciliere_ciorne`, serverul), nu numai numărul și suma ciornelor
+  const note = (c.ciorne || []);
+  const loc = { in_decont: "în decont", raport_z: "raport Z nevalidat — nu e în decont", exclusa: "factură exclusă din decont", fara_document: "fără document de decont" };
+  const lista = note.length ? `<ul class="cf-ciorne-lista">${note.map((n) => `<li><button type="button" class="btn-link cf-nota" data-nota="${esc(String(n.nota_id))}" data-an="${esc(String(n.an || ""))}" data-luna="${esc(String(n.luna || ""))}"
+      data-fara-actiune="deschide nota în Registrul jurnal">${esc(n.eticheta_nota || "nota")}</button> · ${esc(n.document || n.descriere || "")} · ${esc(n.sens || "")} ${esc(bani(n.suma))} lei · ${esc(loc[n.fel] || "")}</li>`).join("")}</ul>` : "";
+  // rândul vizibil rămâne explicația ciornelor (prima propoziție: câte note, ce sumă); reconcilierea și notele, una câte una, stau în detaliile lui
+  return semnal + (c.explicatie_ciorne && !c.diferenta_neexplicata ? semnalHtml({ ton: "info", text: c.explicatie_ciorne,
+    detaliiHtml: (c.reconciliere_ciorne ? `<p class="cf-incr-temei pe-randuri">${esc(c.reconciliere_ciorne)}</p>` : "") + lista }) : "");
 }
 
 // constatările aceleiași acțiuni repetate (statul de plată necontabilizat, câte una pe contribuție) devin UN SINGUR card-rezumat cu butonul lui;
@@ -330,9 +338,29 @@ export function randeazaCorpVerdict(d, opt = {}) {
     const np = t.nepotrivire;
     const ok = (t.suma === 0 || !!t.rezultat) && !np;
     const la = t.la_data ? ` la ${dataRo(t.la_data)}` : "";
-    const det = `${t.rezultat === "de_plata" ? "de plată" : (t.rezultat === "de_recuperat" ? "de recuperat" : "")} ${bani(t.suma || 0)} lei`
-      + (np ? ` — decontul D300 ${np.perioada ? np.perioada + " " : ""}declară ${np.rezultat === "de_plata" ? "de plată" : "de recuperat"} ${bani(np.declarat)} lei: perioade diferite sau diferență de regularizat` : "");
-    return grup("Coerență TVA (balanță)", `<div class="cf-decl">${semnalHtml({ ton: ok ? "ok" : "avertisment", text: `TVA vs sold balanță${la}: ${det}`.replace(/\s+/g, " ").trim() })}</div>`);
+    const fel = (r) => (r === "de_plata" ? "de plată" : (r === "de_recuperat" ? "de recuperat" : ""));
+    // [17.5-Q12, F022] cele două cifre ale TVA de plată se spun ÎMPREUNĂ, cu perioada, baza de comparație și proveniența fiecăreia — nu două verdicte
+    // care se contrazic. Balanța: notele validate până la data ei, cumulat (4427 credit − 4426 debit: `nota.suma` = cea mai mică, `suma` = diferența);
+    // decontul: documentele perioadei lui (D300 depus sau generat azi). Din balanță se desparte rulajul perioadei decontului (rândurile 4427 / 4426
+    // din «Declarație vs contabilitate») de soldul rămas din perioadele dinainte, nereglat (fără nota de regularizare a TVA, 4423 / 4424 rămân 0).
+    const incr = (vc.tva_incrucisat && vc.tva_incrucisat.constatari) || [];
+    const pe = (cont) => incr.find((c) => c.cont === cont);
+    const c27 = pe("4427"), c26 = pe("4426");
+    const min = t.nota && t.nota.suma != null ? Number(t.nota.suma) : null;
+    const col = min == null ? null : (t.rezultat === "de_plata" ? min + Number(t.suma || 0) : min);
+    const ded = min == null ? null : (t.rezultat === "de_plata" ? min : min + Number(t.suma || 0));
+    const per = (vc.tva_incrucisat && vc.tva_incrucisat.perioada) || (np && np.perioada) || "";
+    const sursa = c27 && c27.sursa_declarat === "depus" ? "depus (rândurile salvate la depunere)" : "generat azi din documentele perioadei";
+    const rand = (x) => `<p class="cf-incr-temei pe-randuri">${x}</p>`;
+    const detalii = np && col != null && c27 && c26 ? [
+      rand(`Balanța${la} (note validate, cumulat): 4427 credit ${esc(bani(col))} lei − 4426 debit ${esc(bani(ded))} lei = ${fel(t.rezultat)} ${esc(bani(t.suma || 0))} lei.`),
+      rand(`D300 ${esc(per)} (${esc(sursa)}): colectată ${esc(bani(c27.declarat))} lei (rd.19), deductibilă ${esc(bani(c26.declarat))} lei (rd.30), rezultat ${fel(np.rezultat)} ${esc(bani(np.declarat))} lei.`),
+      rand(`În balanță, perioada ${esc(per)}: 4427 ${esc(bani(c27.contabil))} lei, 4426 ${esc(bani(c26.contabil))} lei; din perioadele dinainte, nereglat prin nota de regularizare a TVA: 4427 ${esc(bani(col - Number(c27.contabil)))} lei, 4426 ${esc(bani(ded - Number(c26.contabil)))} lei. Contul 4423 / 4424 primește rezultatul abia la închiderea lunii.`),
+      rand(`Diferența pe perioadă (decont față de notele validate) se închide cu notele în ciornă numite la rândurile 4427 și 4426 din «Declarație vs contabilitate».`),
+    ].join("") : "";
+    const det = `${fel(t.rezultat)} ${bani(t.suma || 0)} lei`
+      + (np ? ` — decontul D300 ${np.perioada ? np.perioada + " " : ""}declară ${fel(np.rezultat)} ${bani(np.declarat)} lei; cifrele, cu perioada și proveniența fiecăreia, în detalii` : "");
+    return grup("Coerență TVA (balanță)", `<div class="cf-decl">${semnalHtml({ ton: ok ? "ok" : "avertisment", text: `TVA vs sold balanță${la}: ${det}`.replace(/\s+/g, " ").trim(), detaliiHtml: detalii })}</div>`);
   })();
 
   // «Documente pozate» — vc.documente_pozate (bonuri/note de casa confirmate de client, necontate).
@@ -460,21 +488,39 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=e7167efe76");
+    const { deschideInchidereLuna } = await import("./firme.js?v=2c318eb87d");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
-  corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {
+  // [17.5-Q12, F183] ascultarea e delegată pe corp: secțiunea „Audit de preluare” își desenează divergențele (cu butoanele lor spre import) DUPĂ
+  // legare, la încărcarea istoricului sau la o rulare nouă — butoanele ei nu primeau ascultătorul și nu făceau nimic. Un clic se tratează o
+  // singură dată, de cel mai apropiat corp legat (`__destinatie` pe eveniment), iar un corp nu se leagă de două ori.
+  if (!corp.__destinatieLegata) corp.addEventListener("click", (ev) => {
+    const b = ev.target instanceof Element ? ev.target.closest("button[data-ecran-destinatie]") : null;
+    if (!b || !corp.contains(b) || ev.__destinatie) return;
+    ev.__destinatie = true;
     const e = ECRANE_DESTINATIE[b.dataset.ecranDestinatie];
     if (b.dataset.ecranDestinatie === "import_pas") {   // [17.5-Q8, FINAL.9 / F183] meniul Import date al firmei, deschis direct pe pasul care repară divergența
+      // [17.5-Q12, F183] pasul se deschide direct o singură dată: la «←» fereastra își reia desenarea, iar meniul importului (și de acolo auditul)
+      // nu mai redeschide același pas — altfel contabilul nu se putea întoarce la auditul de preluare ca să-l ruleze din nou
+      let pasCerut = b.dataset.pas || null;
       nav.deschide("Import date", async (c2) => {
-        const { meniuMigrarePerFirma } = await import("./migrare.js?v=4408029606");
+        const { meniuMigrarePerFirma } = await import("./migrare.js?v=46924d17c6");
         const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === firma.tenant_id);
         if (!t) { c2.innerHTML = `<p class="ecran-nota">Firma nu a fost găsită sau nu mai ai acces la ea.</p>`; return; }
-        return meniuMigrarePerFirma(c2, nav, { tenant_id: t.id, nume: t.nume, tip_firma: t.tip_firma, deschide_pas: b.dataset.pas || null });
+        const pas = pasCerut;
+        pasCerut = null;
+        return meniuMigrarePerFirma(c2, nav, { tenant_id: t.id, nume: t.nume, tip_firma: t.tip_firma, deschide_pas: pas });
       });
       return;
     }
     if (e) e.deschide(nav, firma.tenant_id, null, null);
+  });
+  corp.__destinatieLegata = true;
+  // [17.5-Q12, F169] nota în ciornă numită sub constatare: Registrul jurnal al firmei, pe luna notei, cu nota evidențiată
+  corp.querySelectorAll("button.cf-nota").forEach((b) => b.addEventListener("click", async () => {
+    const { ecranJurnal } = await import("./firme.js?v=2c318eb87d");
+    const an = Number(b.dataset.an) || undefined, luna = Number(b.dataset.luna) || undefined;
+    nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: firma.tenant_id }, { an, luna, evidentiaza: Number(b.dataset.nota) }), { lat: "tabel" });
   }));
   corp.querySelectorAll(".cf-inainte-btn").forEach((b) => b.addEventListener("click", () => {
     nav.deschide("Înainte de preluare în iConta.eu", (cc, nn) => {

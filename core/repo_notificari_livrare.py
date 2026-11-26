@@ -51,3 +51,23 @@ def textul(cur, nid):
     cur.execute("SELECT text FROM public.notificari WHERE id = %s", (nid,))
     r = cur.fetchone()
     return r[0] if r else None
+
+
+# [17.5-Q12, AC191] EPISODUL unei alerte de sănătate: rândul `episod:<categorie>` din `public.alerte_cooldown` există cât ține anomalia. Începutul și
+# sfârșitul sunt câte o singură instrucțiune atomică: din două verificări concurente pe aceeași cauză (sau din două procese, sau după o repornire)
+# exact una primește rândul înapoi și trimite; anomalia care rămâne nu mai trimite nimic.
+PREFIX_EPISOD = "episod:"
+
+
+def episod_incepe(cur, categorie):
+    """True = anomalia `categorie` tocmai a apărut (rândul episodului s-a creat acum); False = episodul era deja deschis."""
+    cur.execute("INSERT INTO public.alerte_cooldown (categorie, ultima_trimitere) VALUES (%s, now()) ON CONFLICT (categorie) DO NOTHING "
+                "RETURNING categorie", (PREFIX_EPISOD + categorie,))
+    return cur.fetchone() is not None
+
+
+def episod_se_incheie(cur, categorie):
+    """True = anomalia `categorie` tocmai s-a rezolvat (rândul episodului s-a șters acum); False = nu era niciun episod deschis."""
+    cur.execute("DELETE FROM public.alerte_cooldown WHERE categorie = %s RETURNING categorie", (PREFIX_EPISOD + categorie,))
+    return cur.fetchone() is not None
+

@@ -127,7 +127,53 @@ def _explicatie_ciorne(nr, suma, cont, diferenta):
             "validează-%s și reia verificarea." % (cont, nr, _lei(suma), "ea" if nr == 1 else "ele", "o" if nr == 1 else "le"))
 
 
-def ciorne_care_explica(conn, schema, data_de, data_pana, constatari):
+#: [17.5-Q12, F169 / F031] sursele notelor în ciornă care nu intră în decontul generat (motivul, pe grupe), în ordinea în care se spun
+_MOTIV_IN_AFARA = (
+    ("raport_z", "rapoarte Z nevalidate — intră în decont abia după validare"),
+    ("exclusa", "facturi excluse din decont"),
+    ("fara_document", "note fără factură sau raport Z (ex. liste de inventariere) — decontul se generează din facturi și rapoarte Z"),
+)
+
+
+def _fel_ciorna(r, excluse):
+    """[17.5-Q12, F169] Unde stă nota în ciornă față de decontul generat: `in_decont` (nota unei facturi pe care decontul o cuprinde, deci
+    validată ar închide diferența), `raport_z` (raportul Z în ciornă: decontul nu-l ia până la validare), `exclusa` (factura exclusă nominal din
+    decont, ex. partener străin cu cotă internă: `d300.Rezultat.excluse_strain`), `fara_document` (altă sursă: inventar, notă manuală)."""
+    if (r.get("sursa") or "") in ("horeca_z", "amef"):
+        return "raport_z"
+    if r.get("f_numar") is not None:
+        return "exclusa" if r.get("_document") in excluse else "in_decont"
+    return "fara_document"
+
+
+def _reconciliere_ciorne(cont, diferenta, note):
+    """[17.5-Q12, F169 / F031] Fraza care leagă notele în ciornă de diferența constatată, până la rest: suma notelor din decont închide diferența
+    (restul sub 1 leu = rotunjirea decontului la leu întreg; peste = rest neexplicat de note, spus cu cifra), iar notele din afara decontului
+    se spun separat, pe motive — de aceea suma tuturor ciornelor nu e egală cu diferența. PURĂ."""
+    dif = _d(diferenta)
+    din = [n for n in note if n["fel"] == "in_decont"]
+    s_in = sum((_d(n["suma"]) for n in din), Decimal(0))
+    total = sum((_d(n["suma"]) for n in note), Decimal(0))
+    rest = dif - s_in
+    parti = ["Diferența de %s pe contul %s: notele în ciornă ale documentelor din decont (%d, %s), validate, o închid" % (
+        _lei(dif), cont, len(din), _lei(s_in))]
+    if rest == 0:
+        parti[0] += " exact."
+    elif abs(rest) < TOLERANTA:
+        parti[0] += "; rămân %s din rotunjirea decontului la leu întreg." % _lei(rest)
+    else:
+        parti[0] += " numai în parte; rest neexplicat de note: %s." % _lei(rest)
+    afara = [(cheie, motiv, [n for n in note if n["fel"] == cheie]) for cheie, motiv in _MOTIV_IN_AFARA]
+    afara = [(m, ns) for _c, m, ns in afara if ns]
+    if afara:
+        s_out = sum((_d(n["suma"]) for _m, ns in afara for n in ns), Decimal(0))
+        parti.append("Celelalte note în ciornă pe cont (%s) nu intră în decont: %s. De aceea suma tuturor ciornelor (%s) nu e egală cu diferența (%s)." % (
+            _lei(s_out), "; ".join("%s: %s" % (m, _lei(sum((_d(n["suma"]) for n in ns), Decimal(0)))) for m, ns in afara),
+            _lei(total), _lei(dif)))
+    return " ".join(parti)
+
+
+def ciorne_care_explica(conn, schema, data_de, data_pana, constatari, excluse=()):
     """[deficiența 284, comanda Costin 16.10.2026, completarea 1 la lotul 6, verbatim în DECIZII] „refuzul [...] numește nota sau notele
     care explică diferența (aici nr. crt. 21, factura F1A4, 42 lei), cu link spre ele, nu doar «4 note nevalidate».”
     Pe fiecare constatare ROȘIE pe 4427 / 4426 pune `ciorne`: notele nevalidate din fereastră care mișcă acel cont, în sensul rulajului
@@ -160,9 +206,55 @@ def ciorne_care_explica(conn, schema, data_de, data_pana, constatari):
                              "descriere": r["descriere"] or "", "suma": "%.2f" % suma,
                              "document": _j.document_justificativ(r["document_ref"], r["f_tip"], r["f_serie"], r["f_numar"], r["f_data"],
                                                                   r["sursa"], r["numar"])})
+        # [17.5-Q12, F169 / F031] fiecare notă: sensul (al rulajului comparat), locul față de decont și motivul; apoi reconcilierea până la rest
+        excl = set(excluse or ())
+        for n, r in zip(note, [r for r in randuri if _d(r[col])]):
+            n["sens"] = "credit 4427" if c["cont"] == "4427" else "debit 4426"
+            n["fel"] = _fel_ciorna(dict(r, _document=n["document"]), excl)
+            n["an"], n["luna"] = r["data"].year, r["data"].month
         c["ciorne"] = note
         c["ciorne_explica"] = bool(note) and abs(sum(_d(n["suma"]) for n in note) - _d(c["diferenta"])) <= TOLERANTA
+        if note:
+            c["reconciliere_ciorne"] = _reconciliere_ciorne(c["cont"], c["diferenta"], note)
     return constatari
+
+
+def fata_de_balanta(conn, schema, res):
+    """[17.5-Q12, F031] Pasul 2 al D300: cifrele decontului GENERAT ACUM (rd.19 colectată, rd.30 deductibilă, rezultatul) față de conturile lor
+    în notele validate ale aceleiași perioade fiscale, citite în aceeași tranzacție (același moment) — aceeași comparație ca în Control fiscal
+    (`compara_tva`), dar pe decontul de pe ecran, nu pe cel depus; fiecare diferență cu notele în ciornă numite și reconcilierea până la rest
+    (`ciorne_care_explica`, cu facturile excluse nominal din decont). {perioada, constatari} sau None (fără rânduri / neplătitor)."""
+    from core.common import Perioada, fereastra_tva, perioada_tva_tip
+    R = res["R"] if isinstance(res, dict) else getattr(res, "R", None)
+    an, luna = getattr(res, "an", None), getattr(res, "luna", None)
+    if not R or not an or not luna:
+        return None
+    with conn.cursor() as cur:
+        _row = _repo.select_firma_profil(cur, schema)
+    prof = {"platitor_tva": _row[0], "tip_decont": _row[1] if len(_row) > 1 else None} if _row is not None else {}
+    if prof.get("platitor_tva") is False:
+        return None
+    try:
+        _inc, _sf = fereastra_tva(Perioada(an, luna=luna), perioada_tva_tip(prof))
+    except ValueError:
+        return None
+    _de, _pana = _inc.isoformat(), _sf.isoformat()
+    necontate = facturi_necontabilizate(conn, schema, _de, _pana)
+    rulaje = rulaje_interval(conn, schema, _de, _pana, ("4427", "4426", "4423", "4424", "4428"))
+    with conn.cursor() as _c:
+        _aj = _repo.select_ajustari_taxa_4427(_c, schema, _de, _pana)
+    cs = compara_tva(R, rulaje, an, luna, necontate, sursa_declarat="regenerat", ajustari_4427=_aj, patru_ochi=_patru_ochi_activ(conn, schema))
+    excl = [x.get("eticheta") for x in (getattr(res, "excluse_strain", None) or []) if isinstance(x, dict)]
+    cs = ciorne_care_explica(conn, schema, _de, _pana, cs, excluse=excl)
+    for c in cs:
+        # pe pasul 2 rezultatul nu e „diferență neexplicată”: contul rezultatului se formează abia la închiderea lunii
+        if c.get("cont") in ("4423", "4424") and c.get("stare") == "rosu" and _d(c.get("contabil")) == 0:
+            c.pop("diferenta_neexplicata", None)
+            c["explicatie_ciorne"] = ("Contul %s primește rezultatul decontului abia la închiderea lunii, din nota de regularizare a TVA (4427 = 4426 + %s); "
+                                      "până atunci rezultatul (rd.19 colectată − rd.30 deductibilă, cu ajustările de la rd.34) se confruntă prin conturile 4427 și "
+                                      "4426, cu notele de mai sus." % (c["cont"], c["cont"]))
+    return {"perioada": "%02d/%d" % (luna, an) if _sf.month - _inc.month in (1, -11) else "%s – %s" % (_inc.isoformat(), _sf.isoformat()),
+            "constatari": [c for c in cs if c.get("cont") in ("4427", "4426", "4423", "4424")]}
 
 
 def luna_primei_note(conn, schema):
@@ -817,7 +909,9 @@ def verifica_tva(conn, schema, an, luna):
     constatari = compara_tva(R, rulaje, an, luna, necontate,
                              sursa_declarat=sursa_declarat, ajustari_4427=_aj_4427,
                              patru_ochi=_patru_ochi_activ(conn, schema))
-    constatari = ciorne_care_explica(conn, schema, _de, _pana, constatari)   # [deficiența 284]
+    # [deficiența 284]; [17.5-Q12, F169] cu facturile pe care decontul le exclude nominal (eticheta lor, aceeași cu documentul justificativ al notei)
+    _excluse = [x.get("eticheta") for x in (getattr(res, "excluse_strain", None) or []) if isinstance(x, dict)]
+    constatari = ciorne_care_explica(conn, schema, _de, _pana, constatari, excluse=_excluse)
     # [R35, 28.08.2026] A DOUA INSTANTA, in aceeasi functie, si nu se vede din prima: agregarea
     # era `rosu if any(rosu) else verde` - fara ramura de GRI. Orice constatare gri (semnalul pe
     # 4428 exista de dinainte, iar de azi si verdele-peste-necunoscut) se COLAPSA in verde la

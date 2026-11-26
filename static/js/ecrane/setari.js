@@ -1,7 +1,7 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=dc526532b7";
+import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=a84ae6966b";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { cardRezumat } from "../ds_piese.js?v=91866a42f7";   // [17.5-Q6, 867] sumarul firmelor fără drept în SPV
+import { cardRezumat } from "../ds_piese.js?v=e7221f7987";   // [17.5-Q6, 867] sumarul firmelor fără drept în SPV
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";   // [lotul 11, decizia 10.3] întocmitorul bilanțului, sub Date cabinet
 
 export async function randeazaSetari(corp, nav) {
