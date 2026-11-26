@@ -1,0 +1,10 @@
+[haiku, instanța 1] cod 0
+**f.1:** Butonul „+ Fișă de partener” apare în captură, în colțul stânga-sus al zonei Parteneri, cu textul exact cerut.
+
+**f.2:** Pe ecran există un singur registru de parteneri (un tabel cu antet Partener, Cod fiscal, Rol, Documente, Are fișă, Acțiune și 8 rânduri). Nu se vede un al doilea tabel.
+
+```json
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Butonul de adăugare afișează textul „+ Fișă de partener”, exact cum cere descrierea."}, {"id": "f.2", "raspuns": "corespunde", "motiv": "Pe ecran apare un singur registru Parteneri, cu cele 8 rânduri, iar al doilea tabel nu există în captură."}]
+```
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: a.1=nejudecabil; f.1=corespunde; f.2=corespunde | nejudecabile: 1 din 3
