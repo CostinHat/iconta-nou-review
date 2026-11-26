@@ -1,0 +1,21 @@
+## 1. Înainte — baza 31181eecad62 cu verificatorul C9
+rc poartă 1, TOTAL 2
+  emitere_ecran.js:1276 C9-MINUS suma formatată în afara lui bani/baniSemn (minusul ar fi cratimă): .toLocaleString("ro-RO", {minimumFractionDigits:2
+  pachete.js:13 C9-MINUS suma formatată în afara lui bani/baniSemn (minusul ar fi cratimă): .toLocaleString("ro-RO",{minimumFractionDigits:2
+
+## 2. Negative — candidat 41c51c894c1f cu mutațiile minime
+rc poartă 1, TOTAL 9
+  N-MINUS-1 → C9-MINUS în pachete.js: CONSTATAT  [pachete.js:14 suma formatată în afara lui bani/baniSemn (minusul ar fi cratimă): .toLocaleString("ro-RO"]
+  N-MINUS-2 → C9-MINUS în emitere_ecran.js: CONSTATAT  [emitere_ecran.js:1276 suma formatată în afara lui bani/baniSemn (minusul ar fi cratimă): "-" + bani(]
+  N-REZUMAT → C9-REZUMAT în control_verdict.js: CONSTATAT  [control_verdict.js:697 prima propoziție tăiată de mână, nu cu primaPropozitie: .split(". ")[0]]
+  N-F018-a → C9-F018 în clienti_ecran.js: CONSTATAT  [clienti_ecran.js:360 Parteneri: adăugarea «+ Fișă de partener» nu e butonul primar marcat ca acțiune principală; clienti_ecran.js:360 Parteneri: «Descarcă PDF» nu mai e secundar]
+  N-F018-b → C9-F018 în clienti_ecran.js: CONSTATAT  [clienti_ecran.js:360 Parteneri: adăugarea «+ Fișă de partener» nu e butonul primar marcat ca acțiune principală; clienti_ecran.js:360 Parteneri: «Descarcă PDF» nu mai e secundar]
+  N-F019 → C9-F019 în ds_piese.js: CONSTATAT  [ds_piese.js:276 paginareDS nu are 8 documente pe pagină implicit (10)]
+  N-NOU → C9-MINUS în proba_c9/ecran_nou.js: CONSTATAT  [proba_c9/ecran_nou.js:3 suma formatată în afara lui bani/baniSemn (minusul ar fi cratimă): .toLocaleString("ro-RO"]
+  N-SIMILAR → C9-MINUS în ds_piese.js: CONSTATAT  [ds_piese.js:834 suma formatată în afara lui bani/baniSemn (minusul ar fi cratimă): .toLocaleString("ro-RO"]
+  exceptat api.js (sursa canonică, EXCEPTII_C9): NICIO CONSTATARE (corect)
+  ecranul nou în inventar: DA
+## 3. Revenire — exemplarul bun la loc
+rc poartă 0, TOTAL 0, constatări C9: 0
+
+NECONFORME: 0

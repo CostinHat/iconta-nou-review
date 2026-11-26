@@ -69,6 +69,7 @@ def ruleaza(d, iesire, eticheta):
 
 
 def main(baza, cand, iesire):
+    iesire = os.path.abspath(iesire)
     os.makedirs(iesire, exist_ok=True)
     rap = []
     # 1. «inainte»: baza, cu verificatorul C9

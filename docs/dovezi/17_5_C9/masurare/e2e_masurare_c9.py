@@ -3,6 +3,7 @@
 Rulat numai prin lansatorul nativ al probelor pe 8019 (docs/dovezi/17_5_Q12/rulare_8019.sh … scripts/e2e_poarta.py --doar=…), care
 restaurează baza înainte și după. Gestul: Firme › F1 › Parteneri; măsura fiecărei celule: `scripts/masurare_pilot.py::masoara_celula`
 (cheia `dom:` citită prin `verifica_pas.observa_pagina`), cu captura și manifestul martorilor. Judecata o face apoi unealta:
+  MASURARE_COMMIT=$(git rev-parse HEAD) sh docs/dovezi/17_5_Q12/rulare_8019.sh --restaureaza <iesire> --doar=../../docs/dovezi/17_5_C9/masurare/e2e_masurare_c9.py
   ./venv/bin/python scripts/masurare_pilot.py judeca docs/dovezi/17_5_C9/masurare/inventar_F018_exemplu.tsv <capturi>/17_5_C9_masurare <commit> <iesire.tsv>"""
 import os
 import subprocess
@@ -11,16 +12,37 @@ from pathlib import Path
 
 RAD = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(RAD / "scripts"))
+RAD_E2E = RAD / "frontend_test" / "e2e"
+sys.path.insert(0, str(RAD_E2E))
+sys.path.insert(0, str(RAD_E2E.parent))
+import importlib.util as _iu  # noqa: E402
+_spec = _iu.spec_from_file_location("conftest_e2e_c9", RAD_E2E / "conftest.py")   # același bootstrap ca proba Q12 (docs/dovezi/17_5_Q12/e2e_probe_q12.py)
+conftest_e2e = _iu.module_from_spec(_spec)
+_spec.loader.exec_module(conftest_e2e)
+if getattr(sys.modules.get("conftest"), "sesiune", None) is None:
+    sys.modules["conftest"] = conftest_e2e
 
 
-def test_masurare_c9_F018(browser):
+def test_masurare_c9_F018():
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        try:
+            _masoara(browser)
+        finally:
+            browser.close()
+
+
+def _masoara(browser):
     from conftest import BAZA, CAPTURI, Ecran, sesiune
     from core.ceas_proba import MOMENT_REF
     from e2e_ferestre_17_5_Q5 import TOP, F1, firma, origine_proba
     import masurare_pilot as mp
 
     origine_proba(BAZA)
-    commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
+    # commitul măsurat: lansatorul servește un export al indexului (fără .git), deci apelantul îl dă (`MASURARE_COMMIT=$(git rev-parse HEAD)`)
+    commit = os.environ.get("MASURARE_COMMIT") or subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
+    assert len(commit) == 40, "commitul măsurat lipsește (MASURARE_COMMIT)"
     director = Path(CAPTURI) / "17_5_C9_masurare"
     director.mkdir(parents=True, exist_ok=True)
     randuri = mp.citeste_tsv(str(Path(__file__).with_name("inventar_F018_exemplu.tsv")))
