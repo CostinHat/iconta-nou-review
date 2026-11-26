@@ -1,0 +1,4 @@
+{"asertiuni":[
+{"id":"f.1","pas":"parteneri","operator":"egal","valoare":"+ Fișă de partener","cheie":"dom:.fereastra-overlay:not(.fundal) #pt-nou|text"},
+{"id":"f.2","pas":"parteneri","operator":"nr_randuri","valoare":"1","cheie":"dom:.fereastra-overlay:not(.fundal) #pt-tabel|numar"},
+{"id":"a.1","pas":"parteneri","operator":"interval_px","valoare":"1-768","cheie":"dom:.fereastra-overlay:not(.fundal) #pt-cauta|inaltime_px"}]}

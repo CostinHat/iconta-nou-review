@@ -1,0 +1,60 @@
+produs
+lot: 17.5-Q11
+max hook 146
+max poarta_verificator 105
+max poarta_pytest 730
+max poarta_plasa 3702
+runde_verificator_max: 2
+sursa pragurilor 17.5-Q11: generate de scripts/praguri_automate.py la 2026-11-26T00:47:57+02:00 din .lot_jurnal.log; loturi folosite: 17.5-Q6, 17.5-R2, 17.5-Q9 (3)
+  hook: maxim 121 s (lotul 17.5-Q9, rularea 1961809-1795586300828) din 18 rulari complete, 0 rulari «intrerupt» ignorate, prag 146 s
+  poarta_verificator: maxim 87 s (lotul 17.5-Q9, rularea 2306755-1795592530821) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 105 s
+  poarta_pytest: maxim 608 s (lotul 17.5-Q9, rularea 2306755-1795592617520) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 730 s
+  poarta_plasa: maxim 3085 s (lotul 17.5-Q9, rularea 2306755-1795593225338) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 3702 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  DECIZII.md (registru)
+  DEFICIENTE.md (registru)
+  DESIGN_SYSTEM.md (moștenire Q10, conținut și mod înghețate la E10)
+  PREDARE_LANT.md (registru)
+  core/audit_preluare.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/casa_api.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/common.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/d394.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/d406.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/efactura_import.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/spv_receive.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/spv_rute.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/test_fluxuri_17_5_Q10.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/uc_declaratii.py (moștenire Q10, conținut și mod înghețate la E10)
+  core/uc_tenants.py (moștenire Q10, conținut și mod înghețate la E10)
+  docs/dovezi/17_5_Q10/ (moștenire Q10, conținut și mod înghețate la E10)
+  frontend_test/e2e/e2e_fundatie_17_5_Q10.py (nou) (față de E_Q9, înghețat la C2)
+  scripts/plasa_16_2.manifest (rând moștenit pentru e2e_fundatie_17_5_Q10.py, identic cu C2)
+  scripts/praguri_17_5_Q10.txt (moștenire Q10, conținut și mod înghețate la E10)
+  static/index.html (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/app.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/cadru.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/cautare.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/ansamblu.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/asistent.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/borderou_ecran.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/cabinet.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/clienti_ecran.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/coada_trimite.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/control_verdict.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/declaratii.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/ecran_destinatie.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/facturi_ecran.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/firme.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/inceput.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/migrare.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/operatiuni_ecran.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/portal.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/termene.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/ecrane/validat.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/js/navigator.js (moștenire Q10, conținut și mod înghețate la E10)
+  static/spv_callback.html (moștenire Q10, conținut și mod înghețate la E10)
+  static/stil.css (moștenire Q10, conținut și mod înghețate la E10)
+  verificator_conformitate.py (moștenire Q10, conținut și mod înghețate la E10)
+  docs/dovezi/17_5_Q11/ (dovezile Q11)
+  scripts/praguri_17_5_Q11.txt (nou, fișierul înghețat de coadă)
