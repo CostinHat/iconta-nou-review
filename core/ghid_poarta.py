@@ -442,9 +442,9 @@ def _verifica_exemple(corp, reg):
             cota = Decimal(mi.group(1))
             imp = _num(mi.group(2))
             impozite.append(imp)
-            asteptat = (brut * cota / 100).quantize(Decimal("0.01"), ROUND_HALF_UP)
-            if imp != asteptat:
-                abateri.append({"afirmatie": fraza, "perioada": "exemplu", "asteptat": "impozit %s lei" % _lei(asteptat),
+            impozit_asteptat = (brut * cota / 100).quantize(Decimal("0.01"), ROUND_HALF_UP)   # impozitul pe dividende al exemplului (nu TVA)
+            if imp != impozit_asteptat:
+                abateri.append({"afirmatie": fraza, "perioada": "exemplu", "asteptat": "impozit %s lei" % _lei(impozit_asteptat),
                                 "gasit": "impozit %s lei" % _lei(imp)})
             mn = re.search(r"(?:net|primește|primeste)\D{0,40}?" + _RE_SUMA + r"\s*lei", fraza[mi.end():])
             if mn and _num(mn.group(1)) != brut - imp:
