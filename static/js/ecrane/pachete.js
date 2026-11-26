@@ -3,14 +3,15 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, semnAjutor, ultimaCerere, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=a84ae6966b";
+import { api, semnAjutor, ultimaCerere, dataRo, esc, arataMesaj, cate, confirmaCaseta, baniSemn } from "../api.js?v=a84ae6966b";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
 
 let S = null;
-function bani(x){ try { return Number(x).toLocaleString("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}) + " lei"; } catch { return x; } }
+// [17.5-C9, C9-MINUS / F015] suma prin formatorul comun: rezultatul negativ (pierdere) se scrie cu minusul real U+2212, ca în Casă
+function bani(x){ return baniSemn(x) + " lei"; }
 
 export async function randeazaPachete(corp, nav) {
   if (nav && nav.setInapoi) nav.setInapoi(undefined);

@@ -66,7 +66,25 @@ def test_317_emailul_de_alerta_are_diacritice(monkeypatch):
     monkeypatch.setattr(main, "_verifica_drift_p2", lambda: None)
     monkeypatch.setattr(main, "_poate_alerta", lambda cod: True)
     monkeypatch.setattr(main, "_email_superadmin", lambda: "alerta@exemplu.test")
-    monkeypatch.setattr(main.db, "get_conn", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("fără bază în test")))
+    # [17.5-C9] actualizat la AC191 (decizii_17_5_Q12.txt / acceptare_AC_17_5_Q12.tsv rândul AC191; decizia D3 a C9): alerta pleacă pe
+    # episoade, iar starea episodului e în bază; fără bază nu se trimite nimic („ca să fim siguri”). Testul dă o bază falsă în care
+    # episodul „erori” abia începe (câștigătorul tranziției), deci emailul pleacă o dată, cu același subiect și același rând.
+    import contextlib
+    from core import repo_notificari_livrare as _rnl
+
+    class _Cur:
+        def execute(self, *a, **k):
+            raise RuntimeError("fără bază în test")
+
+    class _Conn:
+        def cursor(self):
+            return contextlib.nullcontext(_Cur())
+
+        def commit(self):
+            pass
+    monkeypatch.setattr(main.db, "get_conn", lambda *a, **k: contextlib.nullcontext(_Conn()))
+    monkeypatch.setattr(_rnl, "episod_incepe", lambda cur, cat: cat == "erori")
+    monkeypatch.setattr(_rnl, "episod_se_incheie", lambda cur, cat: False)
     monkeypatch.setattr(main._obs, "esec_secundar", lambda *a, **k: None)
     monkeypatch.setattr(main._alerta_load, "rand", lambda cod, text: randuri.append((cod, text)) or text)
     # [lotul 12, 12.2] alerta e tranzacțională: fără steag de furnizor (îl alege `observare`, 14.2)

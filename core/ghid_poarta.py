@@ -267,7 +267,232 @@ def verifica_ghid(cale, acte_corpus=None, registru=None):
     rele = _gc.neregasite(txt)
     if len(rele) > _gc.permise(slug):
         mesaje += ["CITAT care nu se regăsește literal în sursele oficiale locale: „%s”" % c[:120] for c in rele]
+    # [17.5-C9, C-ghid pct.4] valoarea fiscală datată și exemplul ei, față de registru (`verifica_valori_fiscale`)
+    mesaje += [_mesaj_valoare(slug, a) for a in verifica_valori_fiscale(corp)]
     return (not mesaje, mesaje)
+
+
+# ---------------------------------------------------------------- 3: valorile fiscale datate (17.5-C9, C-ghid pct.4)
+#
+# Regula (CLAUDE.md §10): pentru orice ghid cu valoare fiscală datată se identifică regimul, evenimentul fiscal, perioada și cheia din
+# registru (`core.common.COTE`); valoarea și exemplul se compară cu registrul; diferența oprește publicarea. Cheia judecată aici:
+# `impozit_dividend` (cota după data DISTRIBUIRII: hotărârea fixează anul). O frază intră în judecată când e despre dividende
+# (`dividend` / `distribu`) și are o cotă; nu intră frazele despre lichidare (art.97 alin.(5), altă cheie) și cele despre art.78.
+# Anul frazei: primul an de după «distribu…» / «hotăr…» (anul profitului sau al plății nu fixează cota); fără cuvântul-cheie, singurul
+# an al frazei. Interimarele urmează aceeași regulă (cota anului distribuirii interimare, păstrată la regularizare: OUG 156/2024
+# art.LXV alin.(5), Legea 141/2025 art.VII alin.(2)). Mai multe cote într-o frază: fiecare cu anul cel mai apropiat.
+# Trei verificări în plus: o frază care neagă o cotă din registru („niciodată 10%”), lista cotelor istorice fără ani (trebuie să fie
+# exact mulțimea registrului) și aritmetica exemplului (impozit = brut × cotă, net = brut − impozit, diferența dintre impozite).
+# LIMITE DECLARATE: o cotă scrisă în litere („zece la sută”) și o frază fără an nu se judecă; regimul PJ scutit nu se recunoaște
+# (ghidul îl spune ca verificare separată).
+
+_CHEIE_DIVIDEND = "impozit_dividend"
+_RE_ACT = re.compile(r"\b\d{1,5}/\d{4}\b")                                   # „156/2024”: anul actului nu e perioada afirmației
+_RE_MO = re.compile(r"\([^)]*Monitorul[^)]*\)")
+_RE_AN = re.compile(r"\b(20[0-4]\d)\b")
+_RE_COTA = re.compile(r"(?<![\d.,])(\d{1,2})(?:[,.]\d+)?\s*%")
+_RE_CONTEXT = re.compile(r"dividend|distribu", re.I)
+_RE_EXCLUS = re.compile(r"lichidar|partaj|dob[âa]nd|reinvest|elemente similare|impozitul pe profit|impozitare (?:integral|de \d)|art\.\s*(?:78|53|224)\b|nerezident", re.I)
+#: frazele care descriu o greșeală („se aplică din inerție cota veche…”) citează intenționat cota greșită: nu se judecă (limită declarată)
+_RE_GRESEALA = re.compile(r"ignor|gre[șs]|confund|iner[țt]ie|cota veche|[îi]n loc de|eroare|capcan|nu presupune|nu recalcul|f[ăa]r[ăa] s[ăa] (?:se )?verific", re.I)
+#: lista cotelor istorice („cotele au fost 5%, 8% și 16%”) se judecă numai ca istoric al dividendelor, nu când fraza amestecă alte impozite
+_RE_ISTORIC = re.compile(r"istoric|au fost|cotele|valori", re.I)
+_RE_ALTE_IMPOZITE = re.compile(r"micro|venitur|profit", re.I)
+_RE_INTERIMAR = re.compile(r"interimar|regulariz", re.I)
+#: anul legat strâns de cotă: „16% în 2026”, „8% (de la 2023)”, „5% (2016–2022)”, „10% pentru distribuirile din 2025”; „2025 (10%)”
+_RE_AN_DUPA = re.compile(r"^\s*\)?\s*(?:\(|—|–|-|,)?\s*(?:de la|[îi]n|din|pentru|[îi]ncep[âa]nd cu|pentru distribuirile din)?\s*"
+                         r"(?:\d{1,2}\s+[a-zăâîșț]+\s+|\d{2}\.\d{2}\.)?(20[0-4]\d)\b")
+_RE_AN_INAINTE = re.compile(r"(20[0-4]\d)(?:\s*[–-]\s*20[0-4]\d)?\s*(?:\(|:|→|->)?\s*$")
+_RE_CHEIE_AN = re.compile(r"distribu|hot[ăa]r[âa]", re.I)
+_RE_NEGARE = re.compile(r"niciodat[ăa]|nu a existat|n-a existat|nu exist[ăa]", re.I)
+_RE_SUMA = r"(\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?"
+
+
+def _fraze(corp):
+    """Frazele corpului: liniile (și elementele de listă), tăiate la sfârșit de propoziție. Fără marcajul Markdown."""
+    out = []
+    for linie in corp.split("\n"):
+        t = re.sub(r"[*_`]", "", linie).strip(" -\t")
+        if not t:
+            continue
+        out += [f.strip() for f in re.split(r"(?<=[.!?])\s+(?=[A-ZĂÂÎȘȚ„])", t) if f.strip()]
+    return out
+
+
+def _curata(fraza):
+    return _RE_ACT.sub(" ", _RE_MO.sub(" ", fraza))
+
+
+def _cote_registru(cote=None):
+    from core import common as _c
+    return sorted((cote if cote is not None else _c.COTE)[_CHEIE_DIVIDEND], key=lambda r: r[0])
+
+
+def _cota_la(an, cote):
+    """Cota registrului (procent întreg ca text, ex. „10”) pentru o distribuire din anul `an`, sau None când anul e înaintea registrului."""
+    from datetime import date
+    val = None
+    for din, v, _t in cote:
+        if date(an, 12, 31) >= din:
+            val = v
+    if val is None:
+        return None
+    return format((val * 100).normalize(), "f")
+
+
+def _an_strans(cur, cote_f, i):
+    """Anul legat strâns de a i-a cotă a frazei (imediat după ea sau imediat înainte), fără să treacă peste altă cotă; None altfel."""
+    p = cote_f[i][1]
+    m_c = _RE_COTA.match(cur, p)
+    sfarsit = m_c.end() if m_c else p
+    urm = cote_f[i + 1][1] if i + 1 < len(cote_f) else len(cur)
+    m = _RE_AN_DUPA.match(cur[sfarsit:min(urm, sfarsit + 45)])
+    if m:
+        return int(m.group(1))
+    prec = (_RE_COTA.match(cur, cote_f[i - 1][1]).end()) if i > 0 else 0
+    m = _RE_AN_INAINTE.search(cur[max(prec, p - 16):p])
+    return int(m.group(1)) if m else None
+
+
+def _an_frazei(fraza, ani):
+    m = _RE_CHEIE_AN.search(fraza)
+    if m:
+        dupa = [a for a in ani if a[1] >= m.start()]
+        inainte = [a for a in ani if a[1] < m.start()]
+        if dupa:
+            return dupa[0][0]
+        if inainte:
+            return inainte[-1][0]
+    distincti = {a[0] for a in ani}
+    return next(iter(distincti)) if len(distincti) == 1 else None
+
+
+def verifica_valori_fiscale(corp, cote=None):
+    """[17.5-C9, C-ghid pct.4] Afirmațiile din ghid care contrazic registrul cheii `impozit_dividend`: listă de dict-uri
+    {afirmatie, perioada, asteptat, gasit} (goală = conform). PURĂ (registrul se poate da, pentru probe pe copie)."""
+    reg = _cote_registru(cote)
+    valori = {format((v * 100).normalize(), "f") for _d, v, _t in reg}
+    abateri = []
+    for fraza in _fraze(corp):
+        if not _RE_CONTEXT.search(fraza) or _RE_EXCLUS.search(fraza):
+            continue
+        cur = _curata(fraza)
+        cote_f = [(m.group(1), m.start()) for m in _RE_COTA.finditer(cur)]
+        if not cote_f:
+            continue
+        ani = [(int(m.group(1)), m.start()) for m in _RE_AN.finditer(cur)]
+        neg = _RE_NEGARE.search(cur)
+        if neg:
+            for c, _p in cote_f:
+                if c in valori and 0 <= _p - neg.end() <= 15:
+                    abateri.append({"afirmatie": fraza, "perioada": "-", "asteptat": "cota de %s%% există în registru" % c,
+                                    "gasit": "fraza neagă cota de %s%%" % c})
+            continue
+        if not ani:
+            distincte = {c for c, _p in cote_f}
+            if len(distincte) >= 3 and _RE_ISTORIC.search(cur) and not _RE_ALTE_IMPOZITE.search(cur) and distincte != valori:
+                abateri.append({"afirmatie": fraza, "perioada": "toate", "asteptat": "cotele registrului: %s" % ", ".join(
+                    "%s%%" % v for v in sorted(valori, key=float)), "gasit": ", ".join("%s%%" % v for v in sorted(distincte, key=float))})
+            continue
+        if _RE_GRESEALA.search(cur):
+            continue
+        perechi = []
+        for i, (c, p) in enumerate(cote_f):
+            an = _an_strans(cur, cote_f, i)
+            if an is None and len(cote_f) == 1:
+                an = _an_frazei(cur, ani)
+            if an is not None:
+                perechi.append((an, c))
+        interimar = bool(_RE_INTERIMAR.search(cur))
+        for an, c in perechi:
+            asteptat = _cota_la(an, reg)
+            # interimarele păstrează cota anului situațiilor interimare la regularizarea din anul următor
+            if interimar and c == _cota_la(an - 1, reg):
+                continue
+            if asteptat != c:
+                abateri.append({"afirmatie": fraza, "perioada": "distribuire %d" % an,
+                                "asteptat": ("%s%%" % asteptat) if asteptat else "perioadă fără valoare în registru", "gasit": "%s%%" % c})
+    abateri += _verifica_exemple(corp, reg)
+    return abateri
+
+
+def _num(s):
+    from decimal import Decimal
+    return Decimal(s.replace(".", "").replace(",", "."))
+
+
+def _verifica_exemple(corp, reg):
+    """Aritmetica exemplelor cu dividende din blocurile `::: ghid-exemplu`: impozit = brut × cotă (cota anului din linie, din registru),
+    net = brut − impozit, diferența spusă = diferența impozitelor."""
+    from decimal import Decimal, ROUND_HALF_UP
+    abateri = []
+    for bloc in re.findall(r":::\s*ghid-exemplu(.*?):::", corp, re.S):
+        if not _RE_CONTEXT.search(bloc):
+            continue
+        b = re.sub(r"[*_`]", "", bloc)
+        mb = re.search(_RE_SUMA + r"\s*lei(?:\s+brut|\s+profit)", b)
+        if not mb:
+            continue
+        brut = _num(mb.group(1))
+        impozite = []
+        for fraza in _fraze(b):
+            mi = re.search(r"impozit(?:ul)?\s+(\d{1,2})\s*%\s*=\s*" + _RE_SUMA + r"\s*lei", fraza)
+            if not mi:
+                continue
+            cota = Decimal(mi.group(1))
+            imp = _num(mi.group(2))
+            impozite.append(imp)
+            asteptat = (brut * cota / 100).quantize(Decimal("0.01"), ROUND_HALF_UP)
+            if imp != asteptat:
+                abateri.append({"afirmatie": fraza, "perioada": "exemplu", "asteptat": "impozit %s lei" % _lei(asteptat),
+                                "gasit": "impozit %s lei" % _lei(imp)})
+            mn = re.search(r"(?:net|primește|primeste)\D{0,40}?" + _RE_SUMA + r"\s*lei", fraza[mi.end():])
+            if mn and _num(mn.group(1)) != brut - imp:
+                abateri.append({"afirmatie": fraza, "perioada": "exemplu", "asteptat": "net %s lei" % _lei(brut - imp),
+                                "gasit": "net %s lei" % _lei(_num(mn.group(1)))})
+        for fraza in _fraze(b):
+            md = re.search(r"diferen\w*.*?" + _RE_SUMA + r"\s*lei", fraza)
+            if md and len(impozite) == 2 and _num(md.group(1)) != abs(impozite[0] - impozite[1]):
+                abateri.append({"afirmatie": fraza, "perioada": "exemplu", "asteptat": "diferența %s lei" % _lei(abs(impozite[0] - impozite[1])),
+                                "gasit": "diferența %s lei" % _lei(_num(md.group(1)))})
+    return abateri
+
+
+def _lei(d):
+    from decimal import Decimal
+    d = Decimal(d)
+    intreg = "{:,}".format(int(d)).replace(",", ".")
+    return intreg if d == int(d) else intreg + "," + ("%.2f" % (d - int(d)))[2:]
+
+
+def _mesaj_valoare(slug, a):
+    return "VALOARE FISCALĂ diferită de registru (%s) — pagina %s, %s: așteptat %s, găsit %s: „%s”" % (
+        _CHEIE_DIVIDEND, slug, a["perioada"], a["asteptat"], a["gasit"], a["afirmatie"][:160])
+
+
+def ghiduri_afectate(director=None, cote=None):
+    """[17.5-C9, C-ghid pct.4] {slug: [abateri]} pe TOATE ghidurile din `ghid/` (și cele vechi, din afara clichetului de citări) care au
+    cel puțin o afirmație judecată pentru cheia `impozit_dividend`; abaterile goale = conform. Folosită de garda de publicare."""
+    d = director or os.path.join(RADACINA, "ghid")
+    out = {}
+    for f in sorted(os.listdir(d)):
+        if not f.endswith(".md"):
+            continue
+        _m, corp = _frontmatter(io.open(os.path.join(d, f), encoding="utf-8").read())
+        if not _judecate(corp):
+            continue
+        out[f[:-3]] = verifica_valori_fiscale(corp, cote)
+    return out
+
+
+def _judecate(corp):
+    """True când ghidul are cel puțin o frază despre dividende cu cotă și an (sau un exemplu cu dividende)."""
+    for fraza in _fraze(corp):
+        if _RE_CONTEXT.search(fraza) and not _RE_EXCLUS.search(fraza):
+            cur = _curata(fraza)
+            if _RE_COTA.search(cur) and (_RE_AN.search(cur) or _RE_NEGARE.search(cur)):
+                return True
+    return bool(re.search(r":::\s*ghid-exemplu(?:(?!:::).)*dividend", corp, re.S | re.I))
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
 import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=e7221f7987";   // [15.1, F-A.1] caseta SPV de după emitere
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=a84ae6966b";
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, baniSemn, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=a84ae6966b";
 import { inactiv, activ } from "../api.js?v=a84ae6966b";   // [17.5-Q3, F172 / F252] starea butonului de emitere, cu motivul scris în bară de cadru
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";
 import { textStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6, 275c] */
@@ -1273,7 +1273,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       // SPV) nu mai are derulare proprie (285): butonul nu mai are nimic de făcut, deci nu trebuie ținut vizibil sub mesaj.
       const notaTvai = esc(textTvaIncasare(r.contare));   // [lotul 11, 428] factura în sistemul TVA la încasare: unde e TVA-ul
       // [lotul 12, 443.1] „Factura F62 emisă” / „Factura F1A14 emisă”: seria și numărul separat, ca în Istoric („F1A nr. 14”)
-      rez2.innerHTML = `✓ Factura <b>${esc(numarCuSerie(r.serie, r.numar))}</b> emisă · total ${Number(r.total).toLocaleString("ro-RO", {minimumFractionDigits:2})} ${monedaSel}${notaStoc}${notaTvai}.${sesiune.rol() === "client" ? " A fost trimisă către contabil." : ""}`;
+      rez2.innerHTML = `✓ Factura <b>${esc(numarCuSerie(r.serie, r.numar))}</b> emisă · total ${baniSemn(r.total)} ${monedaSel}${notaStoc}${notaTvai}.${sesiune.rol() === "client" ? " A fost trimisă către contabil." : ""}`;
       rez2.className = "em-rezultat em-bun em-emisa";
       arataAvertismenteEmitere(rez2, r.avertismente);   // [lotul 12, C157 / C84] emisă, cu ce trebuie știut
       if (r.vies_de_reverificat) reverificaVies(rez2, r.vies_de_reverificat);   // [lotul 13, C199 / 550] VIES n-a răspuns: reîncercarea

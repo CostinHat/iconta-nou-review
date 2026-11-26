@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.133 · 26 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.134 · 26 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -197,6 +197,10 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   (citesc formularul din `anaf_surse/`). Diferențele porților de reconciliere se scriu prin `pdf_util.diferenta` („în declarație
   9.999,00 lei, recalculat 1.500,00 lei (diferență 8.499,00 lei)”), nu „generator=9999 vs cale2=1500”.
 
+**Reguli Pilot consolidate (v2.134, lotul 17.5-C9; matricea `docs/dovezi/17_5_C9/matrice/matrice_C9.tsv`).**
+- **[PC9-01] Minusul unei sume.** O sumă negativă se scrie cu «−» (U+2212) prin formatorul comun: `baniSemn` (api.js) pentru o valoare, `minusReal` pentru un text gata scris de server; zero și pozitivele ca `bani`. Nicio sumă nu se formatează în ecran cu `toLocaleString(…, 2 zecimale)` și nicio cratimă nu se lipește în fața formatorului. Origine: decizia Q12 (corecția 2, F015 și Istoric facturi), changelog v2.133 (1). Gardă: `verificator_conformitate.py` C9-MINUS (sursa canonică api.js exceptată, numită în `EXCEPTII_C9`); celula F015/Design în grila Pilot.
+
+
 ## 5. Casete de atenționare, confirmări și INPUT
 
 - Stil unic pentru atenționare și refuz: `.caseta-atentie` — fundal #fdf3f3, bordură 2px #d98c8c, mesaj în `.ca-mesaj`. Butoanele stau SUB casetă, pe clase canonice.
@@ -214,6 +218,9 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 `intrebarePleacaMarfa` din `ecrane/emitere_ecran.js` (casetă-poartă, v2.14); o folosesc emiterea din formular și „Transformă în factură”
 (detaliul proformei / avizului, în `#fd-act-rez`). Serverul o cere prin refuzul `INTREABA_PLEACA_MARFA`, după aceeași condiție
 (`facturi_api.poarta_marfa_ceruta`). Un drum nou care emite o factură cu articol de stoc refolosește funcția; nu reproduce caseta.
+
+**Reguli Pilot consolidate (v2.134, 17.5-C9).** **[PC9-17]** Avertismentul are un sumar scurt; inventarul și motivele integrale se citesc în detalii, dintr-o singură acțiune (secțiunea «Pilot 17.5-Q9» pct.6; gardă: `verificator_conformitate.py --q7-probe`, cazul «avertisment»).
+
 
 ## 6. Mesaje de stare, câmpuri obligatorii și ghidaj
 
@@ -387,6 +394,14 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 fundal se validează automat; starea ei se spune central, prin `stareNota` / `pasNota` (api.js): „notă internă — Poartă TVA-ul pentru D300 /
 D394; evidența PFA e registrul de încasări și plăți.” (`TEXT_NOTA_INTERNA`, o singură definiție); refuzul validării automate se spune cu
 motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o spune sub titlu (`#j-interne`).
+
+**Reguli Pilot consolidate (v2.134, 17.5-C9).**
+- **[PC9-02] Prima propoziție.** Un rezumat se taie la primul punct de sfârșit de propoziție numai prin `primaPropozitie` / `textSemnal` (ds_piese.js), care nu se opresc după «ex.», «nr.», «art.», «F1A nr.» ș.a. Origine: decizia Q12 (corecția comună 1; D394, D406, Control fiscal › E-Factura), changelog v2.133 (2). Gardă: C9-REZUMAT (tăietura de mână `.split(". ")[0]` / `indexOf(". ")` în afara ds_piese.js).
+- **[PC9-13] Refuzul de salvare** nu mai poartă «NU s-a salvat.» (DS.5, deciziile Q8/Q9 pct.11); gardă: `Q7_TEXT_REFUZ` în `verificator_conformitate.py`.
+- **[PC9-16] Toate erorile la o încercare;** motivul rămas după o alegere = câmpurile încă necompletate; căutarea fără rezultate arată starea goală (secțiunea «Pilot 17.5-Q9» pct.4; gardă: `--q7-probe`).
+- **[PC9-19] Motivul unui control inactiv** se citește în același context, fără hover sau focus (855, 863; deciziile Q3/Q5); piesa `atributeInactiv`.
+- Reguli de domeniu, nu stil general: **[PC9-11]** D394 păstrează literal «EXCLUSE» (Q9; `core/test_d394.py`:201, :619); **[PC9-12]** soldul preluat fără termen documentat spune exact «termen necunoscut» (`TERMEN_NECUNOSCUT`, migrare.js), iar scadența se calculează numai cu termen dovedit (decizia Q12 F085; facturile 66, 71 și FB-7 neschimbate); **[PC9-55]** titlul D112 «septembrie 2026 (09/2026)», lista și rezumatul «09/2026» (decizia D1 a C9: numai D112).
+
 
 ## 7. Documente PDF
 
@@ -686,6 +701,14 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
 ### Luna propusă la deschidere
 
   [v2.112, lotul 17.5-C, deficiențele 817, 818; deciziile Costin 08.11.2026] **Un ecran lunar al firmei pornește pe luna de lucru.** „Luna de lucru” = luna dinaintea lunii de azi cât timp nu e blocată, altfel luna de azi (în ianuarie, luna dinainte e decembrie al anului trecut). O singură definiție: `static/js/luna_lucru.js` (`lunaDeLucruDin`, `lunaDeLucru`, `uitaLunaDeLucru`); ecranul nu o calculează. Ordinea la deschidere: luna cerută de apelant (`opt.an` / `opt.luna`) > luna păstrată la redesenare sau la întoarcerea dintr-o fereastră deschisă din ecran > luna ferestrei din care vii (`nav.lunaCurenta` / `nav.lunaParinte`) > luna de lucru; „azi” nu mai e treaptă. Stat de plată ține luna pe firmă (`LUNA_STAT`), inițializată o singură dată cu luna de lucru. Lunile blocate se cer o dată pe firmă și se țin cât trăiește pagina; după orice blocare sau deblocare reușită din interfață se cheamă `uitaLunaDeLucru`; la o cerere căzută sau la un răspuns fără „blocate” ecranul lucrează ca și cum nicio lună nu e blocată, fără mesaj. Un ecran lunar nou folosește aceeași piesă. Ciorna unui formular cu dată, redeschisă într-o zi mai târziu, nu mai păstrează data veche: factura ia data de azi, iar cardul ciornei spune, la început (cardul DS taie textul la 90 de caractere), „Data facturii din ciornă era DD.MM.YYYY; am pus data de azi.” (și „Scadența a fost propusă din nou.” când scadența scrisă de om rămăsese înaintea noii date). Gard: `frontend_test/e2e/e2e_luna_lucru_17_5_C.py`.
+
+**Reguli Pilot consolidate (v2.134, 17.5-C9).** Generale (pe orice fereastră de lucru): **[PC9-14]** acțiunea principală unică și vizibilă la intrare pe ambele rezoluții, acțiunile de rând secundare («Pilot 17.5-Q9» pct.2; 857–862; gardă: `scripts/verificator_design.py` RANDURI rândul b); **[PC9-15]** pe 603×590 rândul tabelului de lucru se citește în bloc, o singură zonă de derulare (pct.1; `--q7-probe` «tabel»).
+De domeniu (numai ecranul numit, nu stil generic):
+- **[PC9-03] Parteneri, Clienți, Furnizori:** adăugarea cu eticheta proprie («+ Fișă de partener», «+ Client nou», «+ Furnizor nou») e unica acțiune principală, în bara de jos; în Parteneri «Descarcă PDF» rămâne secundar și funcțional (decizia lui Costin, Q12 r2; changelog v2.133 (7)). Salariați și Registru jurnal își păstrează acțiunile aprobate. Gardă: C9-F018 (`#pt-nou`, `#pt-pdf` în `clienti_ecran.js`); oracolul B4 al C9 (f.1, f.2); grila F018. **[PC9-04]** Registrul de parteneri e unic: Clienți și Furnizori îl filtrează, cu «Salvează» pe rând (FINAL.4, Q8/Q9; core/test_randuri_17_5.py:94–108).
+- **[PC9-06] «De validat»:** «Note de validat» are 8 documente pe pagină (modelul DS-F019 aprobat în Q4, SHA ae47e340…; gardă C9-F019). **[PC9-07]** Lista 742 arată cel puțin 8 rânduri reale complet vizibile la 1366×768 când are cel puțin 8 (regulă dinamică: grila). **[PC9-08]** Excepția DS-814 privește numai antetele acelei liste, la lățimi ≤ 700 px.
+- **[PC9-05] Bancă:** un singur principal «Importă extras»; «Contează» secundar pe fiecare linie din API, inclusiv cea contată («Pilot 17.5-Q9» pct.3; `e2e_ferestre_17_5_Q5.py`). **[PC9-09]** F025: un singur buton după stare (decizia lui Costin, Q6 pct.3). **[PC9-18]** Declarații: grupul «Datorate înainte de preluare» desfăcut, «Continuă →» la vedere după alegere («Pilot 17.5-Q9» pct.7). **[PC9-20]** Solduri inițiale: «Încarcă balanța» din bară e singurul declanșator al selectorului; zona #mig-drop pasivă (F084, C236).
+Propuneri după Pilot, nu reguli: data din viitor în Control fiscal, «Generează notă» la Raport Z la 603 și bara globală la ResizeObserver (decizia Q12). Observația de derulare la Bancă F1 603 a fost retrasă după remăsurarea pe pagina desenată.
+
 
 ## 10. Escape și securitate
 
@@ -1605,6 +1628,8 @@ verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
 ## Componenta: semnul "?" de ajutor contextual (v_ajutor, 11.08.2026)
 .ajutor-btn - buton mic circular (20px) cu "?", plasat langa titlul unei functionalitati DOAR unde exista ceva de spus dincolo de eticheta (reguli fiscale, preconditii, consecinte). Deschide un modal cu textul de folosire din coloana ajutor (FUNCTIONALITATI.csv), via api.js semnAjutor(fid) + handler global. NU se pune peste tot (Salveaza/Cauta/Inapoi/camp Denumire = zgomot).
 
+**(v2.134, lotul 17.5-C9)** Consolidarea regulilor Pilot: fiecare decizie Pilot aplicabilă e trecută în capitolul ei (4, 5, 6, 9) cu ancora PC9-nn, originea și garda; matricea sursă → decizie → regulă → probă: `docs/dovezi/17_5_C9/matrice/`. Regulile de flux, contabile și operaționale (AC197, AC200, AC201, F085, F028) rămân în domeniul lor. Verificatorul (`verificator_conformitate.py`) inventariază recursiv `static/js/ecrane` și aplică C9-MINUS, C9-REZUMAT, C9-F018, C9-F019.
+
 **(v2.133, lotul 17.5-Q12)** (1) **Minusul afișat (F015, decizia lui Costin).** O sumă negativă se scrie cu semnul tipografic «−» (U+2212), nu cu cratima: `baniSemn` (api.js) în tabele, solduri și Istoric facturi («−121,00 RON»), `minusReal` pentru refuzul gata scris al serverului (câmpul cu eroarea, previzualizarea Casei); zero și valorile pozitive ca la `bani`. (2) **Prima propoziție a unui semnal (decizia lui Costin, corecția comună 1).** `textSemnal` / `primaPropozitie` (ds_piese.js) nu încheie propoziția la punctul unei prescurtări («ex.», «nr.», «art.», «alin.», «lit.», «pct.», …) sau al unei singure litere: rezumatele D394, D406 și Control fiscal › E-Factura se văd întregi până la primul punct de sfârșit de propoziție. (3) **Antetul unei coloane numerice (F139).** Textul antetului se rupe între cuvinte și se citește întreg; cifrele coloanei rămân pe un rând. (4) **Rândul-buton al unei liste (F126, AC196).** Rândul unei liste care e el însuși buton (Istoric facturi) crește cu conținutul (numele pe mai multe rânduri), de la 44 px în sus; nimic nu iese peste rândul următor. (5) **Bara liberă fără derulări proprii (F078).** În bara care curge în corp (`.bara-fixa-libera`), rezumatul refuzului (`.refuz-salvare`), erorile importului și casetele de atenție nu mai au derulare proprie: corpul e singurul loc de derulare. (6) **Titlul fișei cu semnele lui (F252).** Pe ecranul scund, semnele de ajutor ale titlului urcă cu el în rândul lipit sus și nu se strâng; centrul fiecăruia primește clic, înainte și după derulare. (7) **Adăugarea în registre (F018, decizia lui Costin r2).** În Parteneri, Clienți și Furnizori adăugarea cu eticheta proprie e unica acțiune principală, în bara de jos; în Parteneri «Descarcă PDF» (tipărirea listei) rămâne acțiune secundară, vizibilă și activă.
 
 **(v2.132, lotul 17.5-Q10, pct.3)** (1) **C238 — fereastra se vede din primul cadru.** Apariția ferestrei de lucru și a suprapunerii ei (`@keyframes aparitie-overlay`, `aparitie-fereastra`) nu pornește de la opacitate 0: fereastra e în pagină din primul cadru, cu blocurile și butoanele ei, deci se vede din primul cadru (estomparea scurtă pornește de la 0,6). Gard: `verificator_conformitate.py::reguli_c238_c239`. (2) **C239 — caseta de bun-venit nu acoperă acțiunea principală.** Cât e deschisă o fereastră (`.fereastra-overlay`), caseta de bun-venit (`.sumar-toast`) nu se arată; aceleași cifre rămân pe clopoțel și pe carduri. Gard: același. (3) **O singură derulare (F031, F034, F070, F078, F089).** Bara lipită jos (`.bara-fixa`) mai înaltă de 30% din corp (caseta de blocaj, rezumatul refuzului) nu mai stă lipită și nu derulează separat (`.bara-fixa-libera`); zona de derulare strânsă sub 40% din corp, într-un corp care derulează și el, se eliberează: corpul rămâne singurul loc de derulare (previzualizarea XML își păstrează derularea internă). (4) **Primul rând în vedere (F046, F054, F118).** Ce mută cadrul în capul zonei (căutarea, totalurile, explicațiile) nu împinge primul rând al listei sub marginea zonei: la deschidere zona pornește cu primul rând în vedere. (5) **Ce mută cadrul în zonă nu se pierde (F011, F012).** Un element mutat de cadru în zona de derulare se pune la loc când ecranul își rescrie lista, cu conținut și ascultători. (6) **Antetul (AC188).** Veriga din bara de sus arată «<numele cabinetului> · <utilizatorul>», pe un singur rând, cu «…» când nu încape și textul întreg la trecerea mouse-ului; căutarea și «Ieși din cont» rămân în ecran, fără derulare laterală.
@@ -1635,6 +1660,8 @@ Bara obișnuită are 72 px. Când motivul vizibil și grupul cu o acțiune secun
 La capătul derulării corpului, bara pe două rânduri rămâne la marginea inferioară a ferestrei. Dacă formularul cuprinde o zonă derulabilă și mesaje, înălțimea lui în flux cuprinde ultimul control și mesajele. Ambele se văd integral deasupra barei, iar ultimul control poate fi apăsat.
 
 ## Pilot 17.5-Q9
+
+*(v2.134, 17.5-C9) Punctele de mai jos sunt preluate în capitolele lor, cu ancore: pct.1 → PC9-15 (cap.9), pct.2 → PC9-14 (cap.9), pct.3 → PC9-05 / PC9-04 (cap.9), pct.4 → PC9-16 (cap.6), pct.5 → PC9-11 (cap.6), pct.6 → PC9-17 (cap.5), pct.7 → PC9-18 (cap.9). Textul rămâne aici ca origine.*
 
 1. Pe 603×590 fiecare rând al unui tabel de lucru se poate citi în bloc, cu etichetele, valorile și acțiunile sale. Fereastra încape orizontal și are o singură zonă verticală de derulare activă. Previzualizarea XML poate avea derulare proprie. În Registru jurnal înălțimea utilă pe mobil depășește 88 px.
 2. Într-o fereastră de lucru cu acțiune principală, aceasta e unică și vizibilă la intrare pe ambele rezoluții. Acțiunile locale de rând rămân accesibile cu aspect secundar.

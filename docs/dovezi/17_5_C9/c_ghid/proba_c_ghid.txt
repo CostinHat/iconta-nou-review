@@ -1,0 +1,59 @@
+## P1 — ghidul publicat, neatins
+rc așteptat 0, rc real 0 → CONFORM
+✓ /tmp/c_ghid_y21s49lk/impozit-dividende-2026.md — poarta VERDE
+
+## P2 — 8% legitim pentru distribuirile din 2024 (frază adăugată)
+rc așteptat 0, rc real 0 → CONFORM
+✓ /tmp/c_ghid_y21s49lk/impozit-dividende-2026.md — poarta VERDE
+
+## P3 — interimare 2025 regularizate în 2026 la 10% (frază adăugată)
+rc așteptat 0, rc real 0 → CONFORM
+✓ /tmp/c_ghid_y21s49lk/impozit-dividende-2026.md — poarta VERDE
+
+## P4 — alt 10% în context nesupus regulii dividendelor (salarii, art. 78)
+rc așteptat 0, rc real 0 → CONFORM
+✓ /tmp/c_ghid_y21s49lk/impozit-dividende-2026.md — poarta VERDE
+
+## N1 — 2025 → 8%
+rc așteptat 1, rc real 1 → CONFORM
+✗ /tmp/c_ghid_y21s49lk/impozit-dividende-2026.md — poarta ROȘIE (1):
+    - VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2025: așteptat 10%, găsit 8%: „Dividend distribuit în 2025 → 8%.”
+
+## N2 — 2026 → 10% pentru o distribuire nouă
+rc așteptat 1, rc real 1 → CONFORM
+✗ /tmp/c_ghid_y21s49lk/impozit-dividende-2026.md — poarta ROȘIE (1):
+    - VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2026: așteptat 16%, găsit 10%: „Dividend distribuit de la 1 ianuarie 2026 → 10%”
+
+## N3 — text corect, exemplu numeric greșit (net 92.000 în loc de 90.000)
+rc așteptat 1, rc real 1 → CONFORM
+✗ /tmp/c_ghid_y21s49lk/impozit-dividende-2026.md — poarta ROȘIE (1):
+    - VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, exemplu: așteptat net 90.000 lei, găsit net 92.000 lei: „Hotărâre de distribuire în decembrie 2025: impozit 10% = 10.000 lei, dividend net 92.000 lei.”
+
+## N4 — afirmația că 10% nu a existat la dividende
+rc așteptat 1, rc real 1 → CONFORM
+✗ /tmp/c_ghid_y21s49lk/impozit-dividende-2026.md — poarta ROȘIE (1):
+    - VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, -: așteptat cota de 10% există în registru, găsit fraza neagă cota de 10%: „Pe dividende cotele au fost 5%, 8% și 16% — niciodată 10%.”
+
+## N6 — valoare fiscală nouă fără corespondent în registru (2027 → 18%)
+rc așteptat 1, rc real 1 → CONFORM
+✗ /tmp/c_ghid_y21s49lk/impozit-dividende-2026.md — poarta ROȘIE (1):
+    - VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2027: așteptat 16%, găsit 18%: „Un dividend distribuit în 2027 are cota de 18%.”
+
+## N5 — schimbare numai în registru (2025 → 8%), ghid rămas în urmă
+abateri: 7 → CONFORM
+VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2025: așteptat 8%, găsit 10%: „O distribuire din decembrie 2025 a avut cota de 10%.”
+VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2025: așteptat 8%, găsit 10%: „10% — pentru distribuirile din 2025.”
+VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2025: așteptat 8%, găsit 10%: „Dividend distribuit în 2025 → 10%.”
+VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2025: așteptat 8%, găsit 10%: „Dividendele distribuite pe baza [situațiilor financiare interimare întocmite în 2025](/ghid/impozit-dividende-2026-exceptia-interimare) păstrează 10% la regular”
+VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2025: așteptat 8%, găsit 10%: „Hotărâre de distribuire în decembrie 2025: impozit 10% = 10.000 lei, dividend net 90.000 lei.”
+VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2025: așteptat 8%, găsit 10%: „Dacă hotărârea este din decembrie 2025 și asociatul încasează dividendele în martie 2026, cota rămâne 10%.”
+VALOARE FISCALĂ diferită de registru (impozit_dividend) — pagina impozit-dividende-2026, distribuire 2025: așteptat 8%, găsit 10%: „Pentru o distribuire din 2025, cota standard de 10% rezultă din dispozițiile specifice dividendelor.”
+
+## P5 — registrul de pe disc, după revenire
+abateri: 0 → CONFORM
+
+## Revenire — ghidul de pe disc prin CLI
+rc 0
+✓ /home/costin/iconta_lot17_5c9/ghid/impozit-dividende-2026.md — poarta VERDE
+
+NECONFORME: 0

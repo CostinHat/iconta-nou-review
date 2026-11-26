@@ -14,7 +14,7 @@ import { randeazaTermene } from "./termene.js?v=9e881ff3e6";
 import { randeazaValidat } from "./validat.js?v=98dd52b282";
 import { randeazaListaFirme } from "./firme.js?v=2c318eb87d";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
-import { randeazaPachete } from "./pachete.js?v=0a8ac8ec54"; // [p63_pachete]
+import { randeazaPachete } from "./pachete.js?v=2fb690d91e"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js?v=cac48ec690"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=63fb54f44e"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 

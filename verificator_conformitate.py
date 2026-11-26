@@ -29,11 +29,21 @@ fisiere = {}
 # (app.js/navigator.js/sesiune.js/api.js) intra sub aceleasi reguli DS. api.js = SURSA canonica
 # (esc/ICOANE/paleta culori) -> exceptata la regulile de registru (redef-esc/strip-html/icoane/culoare_card_hex).
 _DIRS_FRONTEND = [BAZA, os.path.join(_RAD, "static/js")]
-for _d in _DIRS_FRONTEND:
-    for f in sorted(os.listdir(_d)):
-        if f.endswith(".js") and ".bak" not in f and f not in fisiere:
-            with open(os.path.join(_d, f), encoding="utf-8") as h:
-                fisiere[f] = h.read()
+# [17.5-C9, pct.4] ecranele se inventariază RECURSIV (un ecran nou într-un subdirector al lui static/js/ecrane intră sub aceleași reguli);
+# cheia rămâne numele fișierului pentru ecranele de pe primul nivel (excepțiile existente sunt scrise pe nume), iar pentru un subdirector
+# e calea relativă la static/js/ecrane („sub/nou.js”). static/js rămâne pe primul nivel (ecrane/ e citit mai sus).
+for _r, _ds, _fs in os.walk(BAZA):
+    _ds.sort()
+    for f in sorted(_fs):
+        if f.endswith(".js") and ".bak" not in f:
+            _cheie = os.path.relpath(os.path.join(_r, f), BAZA)
+            if _cheie not in fisiere:
+                with open(os.path.join(_r, f), encoding="utf-8") as h:
+                    fisiere[_cheie] = h.read()
+for f in sorted(os.listdir(_DIRS_FRONTEND[1])):
+    if f.endswith(".js") and ".bak" not in f and f not in fisiere:
+        with open(os.path.join(_DIRS_FRONTEND[1], f), encoding="utf-8") as h:
+            fisiere[f] = h.read()
 
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
@@ -3197,6 +3207,120 @@ def reguli_c238_c239(css):
 
 
 rap["c238_c239"] = reguli_c238_c239(open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read())
+
+
+# ───────────────────────── [17.5-C9, pct.4] inventarul ecranelor și regulile Pilot pe toate ecranele ─────────────────────────
+# Inventarul: fiecare fișier din static/js/ecrane (recursiv), cu SHA-256, ferestrele pe care le deschide (`nav.mergi` / `nav.deschide`),
+# rutele serverului pe care le cheamă (`api("…")`, `data-actiune="METODĂ /ruta"`) și piesele comune din care primește interfața (importurile
+# din static/js). Regulile C9 (matricea docs/dovezi/17_5_C9/matrice/) se aplică pe TOATE fișierele frontendului în care condiția lor se
+# verifică; cele de domeniu (F018, F019) numai pe ecranul domeniului, numit prin conținut (identificatorii ferestrei), nu prin listă.
+_RX_FEREASTRA = re.compile(r"""nav\.(?:mergi|deschide)\(\s*["'`]([^"'`$]+)["'`]""")
+_RX_RUTA = re.compile(r"""(?:api\(\s*|data-actiune=\\?["'])(?:["'`])?(?:(GET|POST|PUT|PATCH|DELETE)\s+)?(/[A-Za-z_][\w/{}$.-]*)""")
+_RX_PIESA = re.compile(r"""(?:from|import\()\s*["']\.{1,2}/([\w/.-]+?\.js)""")
+
+
+def inventar_ecrane(baza=None):
+    """[17.5-C9, pct.4] Lista ecranelor (recursiv): {fisier, sha256, linii, ferestre, rute, piese}. PURĂ pe disc."""
+    import hashlib as _hl
+    baza = baza or BAZA
+    out = []
+    for r, ds, fs in os.walk(baza):
+        ds.sort()
+        for f in sorted(fs):
+            if not f.endswith(".js") or ".bak" in f:
+                continue
+            cale = os.path.join(r, f)
+            t = open(cale, encoding="utf-8").read()
+            out.append({"fisier": os.path.relpath(cale, baza), "sha256": _hl.sha256(t.encode("utf-8")).hexdigest(),
+                        "linii": t.count("\n") + 1,
+                        "ferestre": sorted(set(_RX_FEREASTRA.findall(t))),
+                        "rute": sorted(set(re.sub(r"\$\{[^}]*\}", "{…}", m[1]).split("?")[0] for m in _RX_RUTA.findall(t))),
+                        "piese": sorted(set(os.path.basename(p) for p in _RX_PIESA.findall(t)))})
+    return out
+
+
+#: excepțiile regulilor C9, fiecare cu decizia ei (fișierul, motivul); un fișier exceptat aici e numit, nu exclus tăcut
+EXCEPTII_C9 = {
+    "C9-MINUS": {"api.js": "sursa canonică a formatării sumelor (`bani`, `baniSemn`, `minusReal`), decizia F015 Q12"},
+}
+
+#: [Q12 corecția 2 / F015] suma afișată cu formatarea locală directă (minusul ar ieși cratimă) sau cu cratima lipită în fața formatorului
+_RX_C9_MINUS = (re.compile(r"""\.toLocaleString\(\s*["']ro-RO["']\s*,\s*\{[^}]*minimumFractionDigits\s*:\s*2"""),
+                re.compile(r"""["'`]\s*-\s*["'`]\s*\+\s*(?:bani|baniSemn|sumaCuMoneda)\(|[`>\s]-\$\{\s*(?:bani|baniSemn|sumaCuMoneda)\("""))
+#: [Q12 corecția 1] rezumatul tăiat la „. ” de mână, în afara piesei comune `primaPropozitie` (ds_piese.js), care știe prescurtările
+_RX_C9_REZUMAT = re.compile(r"""\.split\(\s*["']\.\s+["']\s*\)\s*\[\s*0\s*\]|\.indexOf\(\s*["']\.\s+["']\s*\)""")
+
+
+def reguli_pilot_c9(fisiere):
+    """[17.5-C9, pct.4] Constatările regulilor Pilot statice: (fisier, linie, ID regulă, motiv). Lista goală = conform.
+    C9-MINUS (F015, Q12 corecția 2): o sumă se formatează prin `bani` / `baniSemn` din api.js, nu cu toLocaleString(…2 zecimale) și nu cu
+    cratimă lipită în fața formatorului. C9-REZUMAT (Q12 corecția 1): prima propoziție a unui text se ia cu `primaPropozitie` (ds_piese.js).
+    C9-F018 (Q12 r2, Q8/Q9 FINAL.4): în fereastra Parteneri (`#pt-nou`) adăugarea «+ Fișă de partener» e principala marcată, iar «Descarcă
+    PDF» (`#pt-pdf`) rămâne secundar; Clienți și Furnizori au fiecare adăugarea proprie («+ Client nou», «+ Furnizor nou») ca buton primar.
+    C9-F019 (Q4 pct.2, Q6 pct.5): lista «Note de validat» are 8 documente pe pagină (`paginareDS` cu 8 implicit, fără altă valoare la
+    apelul lui `val-n`). Partea dinamică a regulilor mixte (vizibil, în bară, la 1366×768 și 603×590) o judecă grila Pilot (pct.5)."""
+    out = []
+    for nume, cod in sorted(fisiere.items()):
+        baz = os.path.basename(nume)
+        for nr, linie in enumerate(cod.splitlines(), 1):
+            s = linie.lstrip()
+            if s.startswith(("//", "/*", "*", "<!--")):
+                continue
+            if baz not in EXCEPTII_C9["C9-MINUS"]:
+                for rx in _RX_C9_MINUS:
+                    m = rx.search(linie)
+                    if m:
+                        out.append((nume, nr, "C9-MINUS", "suma formatată în afara lui bani/baniSemn (minusul ar fi cratimă): " + m.group(0)[:60]))
+            if baz != "ds_piese.js":
+                m = _RX_C9_REZUMAT.search(linie)
+                if m:
+                    out.append((nume, nr, "C9-REZUMAT", "prima propoziție tăiată de mână, nu cu primaPropozitie: " + m.group(0)))
+        # C9-F018: domeniul = fișierul care desenează registrul Parteneri (identificatorul #pt-nou), oricare ar fi numele lui
+        if 'id="pt-nou"' in cod:
+            nr = next(i for i, l in enumerate(cod.splitlines(), 1) if 'id="pt-nou"' in l)
+            tag = re.search(r"<button\b[^>]*\bid=\"pt-nou\"[^>]*>([^<]*)<", cod)
+            if not tag or "buton-primar" not in tag.group(0) or "data-actiune-principala" not in tag.group(0) \
+                    or tag.group(1).strip() != "+ Fișă de partener":
+                out.append((nume, nr, "C9-F018", "Parteneri: adăugarea «+ Fișă de partener» nu e butonul primar marcat ca acțiune principală"))
+            pdf = re.search(r"<button\b[^>]*\bid=\"pt-pdf\"[^>]*>", cod)
+            if not pdf or "buton-secundar" not in pdf.group(0) or "data-actiune-principala" in pdf.group(0):
+                out.append((nume, nr, "C9-F018", "Parteneri: «Descarcă PDF» nu mai e secundar"))
+            for et in ("+ Client nou", "+ Furnizor nou"):
+                if not re.search(r'nou:\s*"%s"' % re.escape(et), cod):
+                    out.append((nume, nr, "C9-F018", "lipsește adăugarea proprie «%s»" % et))
+            if not re.search(r'<button\b[^>]*class="buton-primar"[^>]*id="\$\{P\}-nou"', cod):
+                out.append((nume, nr, "C9-F018", "Clienți / Furnizori: adăugarea proprie nu e buton primar"))
+        # C9-F019: piesa paginării și apelul din «Note de validat»
+        if "export function paginareDS(" in cod:
+            m = re.search(r"export function paginareDS\([^)]*\bpePagina\s*=\s*(\d+)", cod)
+            if not m or m.group(1) != "8":
+                nr = next(i for i, l in enumerate(cod.splitlines(), 1) if "export function paginareDS(" in l)
+                out.append((nume, nr, "C9-F019", "paginareDS nu are 8 documente pe pagină implicit (%s)" % (m.group(1) if m else "lipsă")))
+        for m in re.finditer(r"paginareDS\([^;]*?pre:\s*\"val-n\"[^;]*\)", cod):
+            if re.search(r"pePagina\s*:\s*(?!8\b)\d+", m.group(0)):
+                out.append((nume, cod[:m.start()].count("\n") + 1, "C9-F019", "«Note de validat» cu alt număr de documente pe pagină decât 8"))
+    return out
+
+
+def inventar_neacoperit(fisiere, inventar):
+    """[17.5-C9, pct.4] Ecranele din inventar care nu intră în setul judecat de verificator (o excludere tăcută): (fisier, 0, motiv)."""
+    return [(e["fisier"], 0, "C9-INVENTAR", "ecran inventariat, nejudecat de verificator") for e in inventar if e["fisier"] not in fisiere]
+
+
+_INVENTAR = inventar_ecrane()
+rap["pilot_c9"] = reguli_pilot_c9(fisiere)
+rap["inventar_ecrane"] = inventar_neacoperit(fisiere, _INVENTAR)
+if __name__ == "__main__":
+    import sys as _sys_c9
+    if _sys_c9.argv[1:2] == ["--inventar"]:
+        import csv as _csv_c9
+        with open(_sys_c9.argv[2], "w", encoding="utf-8", newline="") as _h:
+            _w = _csv_c9.writer(_h, delimiter="\t", lineterminator="\n")
+            _w.writerow(["fisier", "sha256", "linii", "ferestre", "rute", "piese"])
+            for _e in _INVENTAR:
+                _w.writerow([_e["fisier"], _e["sha256"], _e["linii"], " | ".join(_e["ferestre"]), " | ".join(_e["rute"]), " | ".join(_e["piese"])])
+        print("### INVENTAR ECRANE: %d fișiere, %d ferestre, %d rute -> %s" % (
+            len(_INVENTAR), sum(len(e["ferestre"]) for e in _INVENTAR), len({r for e in _INVENTAR for r in e["rute"]}), _sys_c9.argv[2]))
 if __name__ == "__main__":
     import sys
     if sys.argv[1:2] == ["--q7-probe"]:

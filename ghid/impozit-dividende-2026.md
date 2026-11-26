@@ -2,63 +2,66 @@
 title: Impozit pe dividende în 2026: cota de 16% (Legea 141/2025)
 description: Cota de impozit pe dividende este 16% pentru dividendele distribuite de la 1 ianuarie 2026, potrivit Legii 141/2025. Contează data distribuirii, nu anul profitului.
 published: 2026-08-12
-modified: 2026-08-13
+modified: 2026-11-26
 ---
 
 # Ce cotă de impozit se aplică dividendelor în 2026 și după ce dată se stabilește?
 
-Cota a urcat la 16% de la 1 ianuarie 2026. Întrebarea care produce cele mai scumpe greșeli nu e „cât", ci „de când": un profit realizat în 2025 și distribuit în 2026 se impozitează cu 16%, nu cu 8%. Ce contează este data la care asociații hotărăsc distribuirea, nu anul în care s-a câștigat banul.
+Pentru un dividend distribuit în 2026 în regimul standard, cota este 16%, inclusiv când profitul provine din 2025. O distribuire din decembrie 2025 a avut cota de 10%. Hotărârea de distribuire fixează cota.
 
 ## Temeiul legal
 
 ::: ghid-temei
-Cota de impozit pe dividende — reținere la sursă, impozit final — a trecut prin trei valori în ultimul deceniu:
+Pentru beneficiarii impozabili în regimul standard, cota a avut patru valori în perioada 2016–2026.
 
 **5%** — de la 1 ianuarie 2016. Codul fiscal (Legea 227/2015), art. 97 alin. (7) pentru persoane fizice; data de aplicare coborâtă la 2016 prin **OUG 50/2015**.
 
-**8%** — de la 1 ianuarie 2023. **OG 16/2022** (Monitorul Oficial nr. 716 din 15 iulie 2022) modifică art. 43 alin. (2) din Codul fiscal: *„Impozitul pe dividende se stabilește prin aplicarea unei cote de impozit de 8% asupra dividendului brut plătit unei persoane juridice române."* Se aplică dividendelor **distribuite** începând cu 1 ianuarie 2023.
+**8%** — pentru distribuirile din 2023 și 2024, potrivit OG 16/2022. Dividendele distribuite pe baza situațiilor interimare din 2024 își păstrează cota la regularizare (OUG 156/2024, art. LXV alin. (5)).
 
-**16%** — de la 1 ianuarie 2026. **Legea nr. 141/2025** majorează cota la 16% asupra dividendului brut, aplicabilă dividendelor **distribuite** începând cu 1 ianuarie 2026.
+**10%** — pentru distribuirile din 2025. OUG 156/2024, art. LXIV pct. 9, modifică art. 97 alin. (7) pentru persoane fizice. Pct. 1 modifică art. 43 alin. (2) pentru persoane juridice române. Aplicarea la distribuiri este reglementată de art. LXV alin. (4).
 
-Aceeași cotă se aplică și persoanelor fizice (art. 97 alin. (7)), și persoanelor juridice române (art. 43).
+**16%** — pentru distribuirile începând cu 1 ianuarie 2026. Legea 141/2025, art. II pct. 5 și art. VII alin. (1) lit. c) pentru persoane fizice, respectiv art. II pct. 1 și art. VII alin. (1) lit. a) pentru persoane juridice române, cu regulile aplicabile anului fiscal modificat.
+
+Pentru o persoană juridică română beneficiară, verifică și condițiile de scutire din art. 43 al Codului fiscal.
 :::
 
 ## Regula concretă
 
-Cota se determină după **data distribuirii** — data hotărârii adunării generale prin care dividendul devine datorie certă către asociat. Nu după exercițiul din care provine profitul și nu după data plății efective.
+Cota se determină la **data distribuirii**, când hotărârea adunării generale sau decizia asociatului unic aprobă distribuirea. Anul în care firma a obținut profitul și data plății pot fi diferite de această dată.
 
-- Dividend distribuit până la 31 decembrie 2025 → **8%**
+- Dividend distribuit în 2023 sau 2024 → **8%**.
+- Dividend distribuit în 2025 → **10%**.
 - Dividend distribuit de la 1 ianuarie 2026 → **16%**
 
-O singură excepție păstrează cota de **10%** în 2026: dividendele distribuite pe baza [situațiilor financiare interimare întocmite în 2025](/ghid/impozit-dividende-2026-exceptia-interimare). Regularizarea lor din 2026 nu schimbă cota aplicată la distribuirea inițială.
+Dividendele distribuite pe baza [situațiilor financiare interimare întocmite în 2025](/ghid/impozit-dividende-2026-exceptia-interimare) păstrează **10%** la regularizarea anuală, potrivit art. VII alin. (2) din Legea 141/2025. O sumă suplimentară distribuită în 2026 se judecă separat.
 
-Impozitul se **reține la sursă în momentul plății** și este final: asociatul primește suma netă, iar firma virează impozitul la buget. Distribuirea fixează cota; plata declanșează reținerea.
+Pentru asociatul persoană fizică, societatea reține în mod obișnuit impozitul la plată și îl virează până la 25 inclusiv a lunii următoare. Pentru dividendele distribuite și încă neplătite la sfârșitul anului distribuirii, art. 97 alin. (7) stabilește termenul de virare la 25 ianuarie inclusiv al anului următor, cu aplicarea regulilor calendarului fiscal.
 
-Pentru persoanele fizice rezidente, dividendele intră și în baza de calcul a CASS dacă veniturile totale din surse extrasalariale depășesc pragurile din Codul fiscal — impozitul de 16% nu e singura sarcină fiscală asupra lor.
+Pentru o persoană fizică rezidentă, verifică separat CASS. La plafonul anual contează dividendele plătite, diminuate cu impozitul reținut, împreună cu celelalte venituri cumulabile potrivit art. 170 din Codul fiscal. Obligația poate apărea chiar la atingerea pragului.
 
 ## Un exemplu
 
 ::: ghid-exemplu
-O firmă are **100.000 lei** profit de repartizat către asociatul unic, persoană fizică.
+O firmă distribuie **100.000 lei brut** asociatului unic persoană fizică rezidentă. Sumele nete de mai jos sunt calculate după impozitul pe dividende, înaintea eventualei CASS anuale.
 
-- **Hotărâre de distribuire în decembrie 2025:** impozit 8% = **8.000 lei**; asociatul primește **92.000 lei** net.
+- **Hotărâre de distribuire în decembrie 2025:** impozit 10% = **10.000 lei**, dividend net **90.000 lei**.
 - **Aceeași sumă, hotărâre în ianuarie 2026:** impozit 16% = **16.000 lei**; asociatul primește **84.000 lei** net.
 
-Același profit, aceeași firmă, același asociat — dar data hotărârii schimbă impozitul cu **8.000 lei**.
+Între cele două distribuiri, diferența de impozit pentru același brut este de **6.000 lei**.
 
-Atenție la o capcană: dacă hotărârea a fost luată în decembrie 2025 iar plata s-a făcut în martie 2026, cota rămâne **8%** — distribuirea a fixat-o. Data plății decide când se virează impozitul, nu cât e.
+Dacă hotărârea este din decembrie 2025 și asociatul încasează dividendele în martie 2026, cota rămâne **10%**. Pentru suma încă neplătită la 31 decembrie se aplică termenul de virare din ianuarie indicat mai sus.
 :::
 
 ## Ce se greșește în practică
 
 - **Se aplică cota după anul profitului.** Un profit al anului 2025 distribuit în 2026 se impozitează cu 16%. Anul din care provine banul nu contează.
-- **Se confundă cu impozitul pe venit de 10%.** Cota de 10% e cea generală pentru veniturile din salarii și alte surse (art. 78). Pe dividende cotele au fost 5%, 8% și 16% — niciodată 10%.
-- **Se leagă cota de data plății.** Plata declanșează reținerea și virarea, dar cota e cea de la data distribuirii.
-- **Se uită CASS.** Pentru asociatul persoană fizică, dividendele pot atrage și contribuție de sănătate peste anumite praguri de venit anual — se verifică separat de impozitul de 16%.
+- **Se omite treapta de 10%.** Pentru o distribuire din 2025, cota standard de 10% rezultă din dispozițiile specifice dividendelor.
+- **Se confundă distribuirea și plata.** Hotărârea stabilește cota. Plata și existența unui sold distribuit, neplătit la sfârșit de an, determină termenul de virare aplicabil.
+- **Se uită CASS.** Pentru beneficiarul persoană fizică, verifică și atingerea pragului anual aplicabil din venituri cumulabile.
 
 ## Ce face iConta.eu
 
-Cota se aplică după perioada operațiunii, dintr-un registru intern de valori verificate la sursă: 8% pentru distribuirile de până la 31 decembrie 2025, 16% de la 1 ianuarie 2026. Nu trebuie să ții minte pragul.
+Registrul iConta conține cotele istorice de 5%, 8%, 10% și 16%, cu perioadele lor de aplicare. Când distribuirea și înregistrarea notei cad în ani diferiți, confruntă rezultatul cu data hotărârii și cu perioada fiscală indicată mai sus.
 
 Impozitul reținut alimentează automat declarația **D205** — informativa privind impozitul reținut la sursă — din dividendele înregistrate pe asociați și din notele contabile validate. Peste asta, o verificare independentă recalculează baza și impozitul pe fiecare beneficiar din rulajul contului 457 și le confruntă cu ce iese în declarație; dacă cele două nu coincid, generarea se oprește și îți sunt numite ambele valori.
 

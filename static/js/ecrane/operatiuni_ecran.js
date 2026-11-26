@@ -739,7 +739,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     };
     const btnSpre = corp.querySelector("#op-spre-emitere-buton");
     if (btnSpre) btnSpre.addEventListener("click", async () => {   // [C84] peste formular: „←” readuce operațiunea
-      const { randeazaEmitere } = await import("./emitere_ecran.js?v=561fef2973");
+      const { randeazaEmitere } = await import("./emitere_ecran.js?v=f751f434e7");
       nav.deschide("Emite factură", (c2) => randeazaEmitere(c2, nav, t.id, { inapoi: () => nav.inapoi() }));
     });
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
@@ -796,7 +796,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         zonaRefuz.innerHTML = "";
         zonaRefuz.appendChild(cardRezumat({ text: "Firma aplică TVA la încasare: factura furnizorului se înregistrează în Facturi primite.", ton: "eroare",
           detalii: r.refuz, actiune: { eticheta: "Deschide Facturi primite", laClic: async () => {
-            const { primiteSPV } = await import("./facturi_ecran.js?v=8af932d572");
+            const { primiteSPV } = await import("./facturi_ecran.js?v=c79325fde2");
             nav.deschide("Facturi primite", (c2) => primiteSPV(c2, nav, t.id, {}));
           } } }));
         inactiv(btn, "Nota nu se poate genera: factura se înregistrează în Facturi primite.");

@@ -243,6 +243,11 @@ R8. Nicio reparație de aspect cu stil scris direct în ecran (inline style, sed
   folosire; niciodată din memorie. Pentru declarații, validatorul DUK e judecătorul final. Valorile
   fiscale noi se aprobă prin verificarea independentă a arhitectului.
 - Înainte de a declara ceva inexistent sau de a construi, grep pe tot ~/iconta_nou.
+- Ghidurile cu valoare fiscală datată (17.5-C9, C-ghid): pentru orice ghid se identifică beneficiarul/regimul, evenimentul fiscal, perioada
+  și cheia din registru (`core.common.COTE`); valoarea și exemplul se compară cu registrul și cu sursa oficială din anaf_surse/, iar o diferență
+  oprește publicarea. Garda: `core/ghid_poarta.py::verifica_valori_fiscale` (în `verifica_ghid`, CLI-ul de publicare a unui ghid) și
+  `core/test_impozit_dividend.py::test_ghidurile_cheii_impozit_dividend_urmeaza_registrul`, pe toate ghidurile atinse de cheie, nu numai pe cel editat;
+  o schimbare numai în registru, cu ghidurile rămase în urmă, pică la fel.
 - Rotunjirea sumelor fiscale: Decimal cu ROUND_HALF_UP, niciodată round() din Python.
 - CUI/CNP de test numai cu cifra de control verificată.
 - Proba funcțională reală (apel cu date), nu doar verificare de sintaxă; SQL testat pe Postgres.

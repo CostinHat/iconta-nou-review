@@ -165,11 +165,13 @@ def test_lant_totul_refuzat_ajunge_la_email(amb):
 
 
 def test_lant_nepublicat_trimite_si_email_dupa_whatsapp(amb):
+    """[17.5-C9] actualizat la AC194 (decizii_17_5_Q12.txt / acceptare_AC_17_5_Q12.tsv rândul AC194; decizia D3 a C9): anunțul OPRIT pleacă
+    numai pe WhatsApp, fără copia pe e-mail; numele testului rămâne (identitatea lui în poartă)."""
     A = amb
     A.alerta("17.2", "nepublicat", "-", "poarta roșie", acum=ACUM)
-    assert len(A.fals.cereri) == 1 and len(A.fals.emailuri) == 1
-    assert A.fals.emailuri[0][1] == "[iConta.eu] Lotul 17.2: OPRIT 10:48: poarta roșie"
-    assert _canale(A) == ["sablon", "email"]
+    assert len(A.fals.cereri) == 1 and len(A.fals.emailuri) == 0
+    assert A.fals.cereri[0][1]["type"] == "template"
+    assert _canale(A) == ["sablon"]
 
 
 def test_lant_publicat_reusit_nu_trimite_email(amb):

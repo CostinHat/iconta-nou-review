@@ -101,16 +101,148 @@ def importa_mesaj(schema, principal, cif_tenant, msg, stat):
         status = "ciorna"
     except Exception:
         status = "descarcata"                # fallback: descarcata, neparsabila (om o vede oricum)
+    # [17.5-C9, AC201] emitentul: din metadate când e valabil, altfel din partea furnizorului a XML-ului autentic (`emitent_din_surse`)
+    emitent, sursa_emitent, motiv_emitent = emitent_din_surse(msg, xml, cif_tenant)
+    if motiv_emitent:
+        stat["emitent_nedovedit"] = stat.get("emitent_nedovedit", 0) + 1
+    # [17.5-C9, AC200] t_SPV = data_creare a listei ANAF (AAAALLZZHHmm, ora României, la minut); necunoscută = NULL, nu se inventează
+    t_spv = data_creare_spv(msg.get("data_creare"))
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.efactura_primite
-                (id_mesaj_anaf, id_solicitare, cif_emitent, cif_beneficiar, tip,
+                (id_mesaj_anaf, id_solicitare, cif_emitent, cif_beneficiar, data_creare, tip,
                  xml_brut, xml_sha256, status)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT (id_mesaj_anaf) DO NOTHING""",
-                (id_mesaj, msg.get("id_solicitare"), _digits(msg.get("cif_emitent")), cif_ben,
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT (id_mesaj_anaf) DO NOTHING RETURNING id, importat_la""",
+                (id_mesaj, msg.get("id_solicitare"), emitent or "", cif_ben, t_spv,
                  msg.get("tip"), xml_txt, sha, status))
+            nou = cur.fetchone()
+    # [17.5-C9, AC200] două procesări concurente ale aceluiași index: numai inserarea reală se numără ca importată; cealaltă e duplicat
+    if not nou:
+        stat["deja"] += 1
+        _jurnal_receptie(schema, id_mesaj, msg, "duplicat", None, None, sursa_emitent, motiv_emitent)
+        return
     stat[status] += 1
+    _jurnal_receptie(schema, id_mesaj, msg, status, nou[0], nou[1], sursa_emitent, motiv_emitent)
+
+
+#: [17.5-C9, AC200] precizia lui data_creare din lista ANAF: AAAALLZZHHmm = la minut (forma răspunsului folosit de conector și a probei
+#: arhitectului, «202611261630»); fusul: ora României (Europe/Bucharest), ca orele ANAF. Altă formă = necunoscută (NULL), nu se ghicește.
+PRECIZIE_DATA_CREARE_SEC = 60
+FUS_ANAF = "Europe/Bucharest"
+#: [17.5-C9, AC200] intervalul cerut între disponibilitatea în SPV și apariția ciornei: 0 ≤ Δ ≤ 30:00 (inclusiv)
+INTERVAL_MAX_SEC = 30 * 60
+
+
+def data_creare_spv(v):
+    """[17.5-C9, AC200] `data_creare` din lista ANAF -> datetime cu fus (Europe/Bucharest), sau None când lipsește, nu are exact
+    12 cifre (AAAALLZZHHmm) ori e o dată imposibilă. PURĂ."""
+    import re
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    t = str(v or "").strip()
+    if not re.fullmatch(r"[0-9]{12}", t):
+        return None
+    try:
+        return datetime.strptime(t, "%Y%m%d%H%M").replace(tzinfo=ZoneInfo(FUS_ANAF))
+    except ValueError:
+        return None
+
+
+def interval_spv_ciorna(t_spv, t_ciorna, precizie_sec=PRECIZIE_DATA_CREARE_SEC):
+    """[17.5-C9, AC200] Judecata intervalului SPV -> ciornă (PURĂ). `t_spv` = data_creare (trunchiată la precizia ei), `t_ciorna` =
+    prima apariție persistentă ca ciornă; ambele cu fus. Δ real ∈ [t_ciorna − (t_spv + precizie − 1 s), t_ciorna − t_spv].
+    Întoarce {"verdict": "in_interval" | "depasire" | "nedovedit", "delta_sec": Δ observat sau None, "motiv": text}."""
+    from datetime import timedelta
+    if t_spv is None:
+        return {"verdict": "nedovedit", "delta_sec": None, "motiv": "interval nedovedit: data_creare din SPV lipsește"}
+    if t_ciorna is None:
+        return {"verdict": "nedovedit", "delta_sec": None, "motiv": "interval nedovedit: momentul ciornei lipsește"}
+    if t_spv.tzinfo is None or t_ciorna.tzinfo is None:
+        return {"verdict": "nedovedit", "delta_sec": None, "motiv": "interval nedovedit: fus orar necunoscut"}
+    maxim = (t_ciorna - t_spv).total_seconds()                       # disponibil la începutul minutului
+    minim = (t_ciorna - (t_spv + timedelta(seconds=max(precizie_sec - 1, 0)))).total_seconds()
+    if maxim < 0:
+        return {"verdict": "nedovedit", "delta_sec": maxim,
+                "motiv": "interval nedovedit: ciorna e înaintea disponibilității în SPV (inversat)"}
+    if minim >= 0 and maxim <= INTERVAL_MAX_SEC:
+        return {"verdict": "in_interval", "delta_sec": maxim, "motiv": "în interval (≤ 30:00)"}
+    if minim > INTERVAL_MAX_SEC:
+        return {"verdict": "depasire", "delta_sec": maxim, "motiv": "depășire: peste 30:00"}
+    return {"verdict": "nedovedit", "delta_sec": maxim,
+            "motiv": "interval nedovedit: precizia datei din SPV (%d s) nu permite judecarea pragului" % precizie_sec}
+
+
+def interval_rand(data_creare, importat_la, status_la_import):
+    """[17.5-C9, AC200] Intervalul unui rând persistent: t_ciornă = `importat_la` numai când rândul a intrat direct ca ciornă (nicio cale
+    nu trece un rând «descarcata» în «ciorna»; `importat_la` nu se rescrie la validare, respingere sau reluare). Starea la import
+    necunoscută (rândul e acum validat / respins) = interval nedovedit. PURĂ."""
+    if status_la_import != "ciorna":
+        return {"verdict": "nedovedit", "delta_sec": None,
+                "motiv": "interval nedovedit: rândul n-a apărut ca ciornă" if status_la_import == "descarcata"
+                else "interval nedovedit: starea la import nu e păstrată"}
+    return interval_spv_ciorna(data_creare, importat_la)
+
+
+def emitent_din_surse(msg, xml, cif_tenant):
+    """[17.5-C9, AC201] Emitentul unui mesaj SPV (PURĂ): (cod în forma păstrată sau None, sursa, motivul când nu e cert).
+    Ordinea: metadatele mesajului (`cif_emitent`) când sunt valabile; altfel partea furnizorului din XML-ul autentic (aceleași căi ca
+    parserul UBL al aplicației, `efactura_import._parte`: PartyTaxScheme/CompanyID și PartyLegalEntity/CompanyID). Valabil = cod românesc
+    cu cifra de control bună (`identitate.valideaza_cui`), cu sau fără «RO»; se păstrează fără «RO» (`cui_forma.stocare`, decizia 10.3).
+    Gol, «-/-/-», două coduri valabile diferite în XML, codul cumpărătorului sau contradicția metadate–XML = niciun emitent (politica:
+    nu se atribuie automat un furnizor nedovedit; diferența se spune în motiv și în jurnalul recepției)."""
+    from core import cui_forma
+    from core.identitate import valideaza_cui
+    import re
+    import xml.etree.ElementTree as _ET
+
+    def _cod(v):
+        s = cui_forma.stocare(v) or ""
+        return s if re.fullmatch(r"[0-9]{2,10}", s) and valideaza_cui(s)[0] else None
+
+    tenant = _digits(cif_tenant)
+    meta = _cod(msg.get("cif_emitent"))
+    din_xml, motiv_xml = None, None
+    try:
+        root = _ET.fromstring(xml if isinstance(xml, (bytes, bytearray)) else str(xml or "").encode("utf-8"))
+        p = root.find("cac:AccountingSupplierParty/cac:Party", efi.NS)
+        brute = [] if p is None else [e.text for e in p.findall("cac:PartyTaxScheme/cbc:CompanyID", efi.NS)
+                                       + p.findall("cac:PartyLegalEntity/cbc:CompanyID", efi.NS)]
+        coduri = {c for c in (_cod(b) for b in brute) if c}
+        if len(coduri) > 1:
+            motiv_xml = "furnizorul din XML are coduri diferite (%s): ambiguu" % ", ".join(sorted(coduri))
+        elif coduri:
+            din_xml = next(iter(coduri))
+        else:
+            motiv_xml = "furnizorul din XML nu are un cod fiscal valabil"
+    except _ET.ParseError:
+        motiv_xml = "XML-ul nu se poate citi"
+    if din_xml and din_xml == tenant:
+        din_xml, motiv_xml = None, "codul furnizorului din XML e al firmei (cumpărătorul)"
+    if meta and meta == tenant:
+        meta = None
+    if meta and din_xml and meta != din_xml:
+        return None, "contradictie", "metadatele SPV spun %s, XML-ul spune %s: emitent nedovedit" % (meta, din_xml)
+    if meta:
+        return meta, "metadate", None
+    if din_xml:
+        return din_xml, "xml", None
+    return None, "niciuna", motiv_xml or "emitentul lipsește"
+
+
+def _jurnal_receptie(schema, id_mesaj, msg, rezultat, rand_id, importat_la, sursa_emitent, motiv_emitent):
+    """[17.5-C9, AC200] Rândul jurnalului recepției (stderr -> jurnalul serviciului spv-receive): identificatorii de corelare (schema,
+    indexul, cererea, rândul), cele două momente și Δ, sursa emitentului. Fără token, fără XML."""
+    from datetime import datetime, timezone
+    t_spv = data_creare_spv(msg.get("data_creare"))
+    j = interval_spv_ciorna(t_spv, importat_la) if rezultat == "ciorna" else None
+    print("  RECEPTIE %s mesaj=%s solicitare=%s rezultat=%s rand=%s data_creare=%s t_spv=%s t_ciorna=%s delta_sec=%s interval=%s "
+          "emitent_sursa=%s%s la=%s" % (
+              schema, id_mesaj, msg.get("id_solicitare") or "-", rezultat, rand_id or "-", msg.get("data_creare") or "-",
+              t_spv.isoformat() if t_spv else "-", importat_la.isoformat() if importat_la else "-",
+              ("%d" % j["delta_sec"]) if j and j["delta_sec"] is not None else "-", j["verdict"] if j else "-",
+              sursa_emitent, (" emitent_motiv=" + motiv_emitent) if motiv_emitent else "",
+              datetime.now(timezone.utc).isoformat()), file=sys.stderr)
 
 
 #: [lotul 6, 273 / comanda Costin pct.2b] prima citire a unui CUI pe tokenul activ cuprinde toată fereastra oficială: o firmă nou adăugată

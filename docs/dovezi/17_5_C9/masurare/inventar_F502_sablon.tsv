@@ -1,0 +1,13 @@
+cod	criteriu	rezolutie	firma	rol	ruta	stare	document_perioada	gest	dimensiune	cheie	operator	asteptat
+F502	Funcțional	1366x768	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Funcțional	603x590	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Aspect	1366x768	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Aspect	603x590	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Design	1366x768	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Design	603x590	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Simplitate	1366x768	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Simplitate	603x590	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Conformitate	1366x768	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Conformitate	603x590	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Stabilitate	1366x768	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>
+F502	Stabilitate	603x590	<firma de probă>	<rol>	<ruta ferestrei>	<starea>	<documentul / perioada>	<gestul>	<ce se măsoară>	dom:<selector>|<măsură>	egal	<așteptat, scris de arhitect>

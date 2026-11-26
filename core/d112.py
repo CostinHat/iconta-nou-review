@@ -828,7 +828,8 @@ def calcul_d112(prof, salariati, an, luna):
               "r07": _c2row(("07",))}   # [cod07] carantina - rand C2 propriu (prevenire imbolnavire, FNUASS)
         # carantina e deja in r2[5]=C2_26 (nu se dubleaza)
         c2["t6"] = sum(c2[k][5] for k in ("r1", "r2", "r3", "r4", "r41", "r5"))
-    sinteza = ["D112: %s - impozit %s, CAS %s, CASS %s, CAM %s lei (luna %d/%d)."
+    # [17.5-C9, decizia D2 / F028] luna rezumatului la sursă în forma listei: „luna 09/2026” (titlul pasului 2: «septembrie 2026 (09/2026)», D1)
+    sinteza = ["D112: %s - impozit %s, CAS %s, CASS %s, CAM %s lei (luna %02d/%d)."
                % (_cate(n, "salariat", "salariați"), bani(sum_imp), bani(sum_cas), bani(sum_cass), bani(cam_total), luna, an)]   # [08.10, V5] nu e avertisment
     return CalculD112(
         rezultat=RezultatD112(an=an, luna=luna, prof=prof, obligatii=obligatii, asigurati=asigurati,

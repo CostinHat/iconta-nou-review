@@ -714,7 +714,7 @@ function legaturiFacturi(zona, nav, tenantId, documente) {
   zona.appendChild(lista);
   lista.querySelectorAll("[data-factura]").forEach((b) => b.addEventListener("click", async () => {
     const d = documente[parseInt(b.dataset.factura, 10)];
-    const { deschideFactura } = await import("./facturi_ecran.js?v=8af932d572");
+    const { deschideFactura } = await import("./facturi_ecran.js?v=c79325fde2");
     deschideFactura(nav, tenantId, d.factura_id);
   }));
 }

@@ -9,7 +9,7 @@ import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?
 import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=561fef2973";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=f751f434e7";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=200eda21e4";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
@@ -257,7 +257,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
     ${!p.parsabila ? `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">XML neparsabil — verifică XML-ul brut înainte de validare.</div></div>` : ""}
     ${p.neconcordanta_tva ? `<div class="caseta-atentie" id="pr-neconcordanta" style="margin:0 0 12px"><div class="ca-mesaj">${esc(p.neconcordanta_tva)}</div></div>` : ""}
     <div class="grila-doc" style="grid-template-columns:2fr 1fr 1fr 1fr">
-      <label class="camp"><span class="camp-eticheta">Furnizor</span><input class="camp-input" value="${esc((p.furnizor || "") + (p.cif_emitent ? " · " + p.cif_emitent : ""))}" readonly aria-label="Furnizor"></label>
+      <label class="camp"><span class="camp-eticheta">Furnizor</span><input class="camp-input" value="${esc((p.furnizor || "") + (p.cif_emitent ? " · " + p.cif_emitent : ""))}" title="${esc((p.furnizor || "") + (p.cif_emitent ? " · " + p.cif_emitent : ""))}" readonly aria-label="Furnizor"></label>
       <label class="camp"><span class="camp-eticheta">Data</span><input class="camp-input" value="${p.data ? dataRo(p.data) : ""}" readonly aria-label="Data"></label>
       <label class="camp"><span class="camp-eticheta">TVA</span><input class="camp-input" id="pr-tva" value="${esc(sumaCuMoneda(p.tva, p.moneda))}" readonly aria-label="TVA"></label>
       <label class="camp"><span class="camp-eticheta">Total</span><input class="camp-input" id="pr-total" value="${esc(sumaCuMoneda(p.total, p.moneda))}" readonly aria-label="Total"></label>

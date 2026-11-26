@@ -36,16 +36,30 @@ def _corp_alerte():
 
 
 def test_296_fiecare_rand_de_alerta_are_actiunea_lui():
-    """MUTAȚIE: `alerte.append(_alerta_load.rand("disc", …))` -> `alerte.append(f"Disc folosit …")` -> pică."""
+    """[17.5-C9] actualizat la AC191 (decizii_17_5_Q12.txt / acceptare_AC_17_5_Q12.tsv rândul AC191; decizia D3 a C9): alertele se trimit pe
+    episoade, iar rândurile de apariție le compune numai `alerta_load.episoade`, prin `rand` (categoria cu acțiunea ei). Se păzește la fel:
+    `_verifica_si_alerta` nu mai adaugă singur niciun rând (orice `append` de text propriu ar ocoli acțiunea), măsoară cel puțin 6 categorii
+    și trece prin `episoade`; `episoade` adaugă la apariție numai `rand(...)`. MUTAȚIE: `aparute.append(text)` -> pică."""
     fn = _corp_alerte()
     adaugari = [n for n in ast.walk(fn) if isinstance(n, ast.Call) and getattr(n.func, "attr", "") == "append"]
-    assert len(adaugari) >= 6
-    fara = [ast.unparse(a)[:80] for a in adaugari
-            if not (isinstance(a.args[0], ast.Call) and ast.unparse(a.args[0].func) == "_alerta_load.rand")]
+    assert adaugari == [], [ast.unparse(a)[:80] for a in adaugari]
+    categorii = {ast.unparse(t.slice) for n in ast.walk(fn) if isinstance(n, ast.Assign) for t in n.targets
+                 if isinstance(t, ast.Subscript) and ast.unparse(t.value) == "constatari"}
+    assert len(categorii) >= 5 and any(ast.unparse(n.func) == "_alerta_load.episoade" for n in ast.walk(fn) if isinstance(n, ast.Call))
+    src = io.open(os.path.join(RAD, "core", "alerta_load.py"), encoding="utf-8").read()
+    ep = [n for n in ast.walk(ast.parse(src)) if isinstance(n, ast.FunctionDef) and n.name == "episoade"][0]
+    aparitii = [n for n in ast.walk(ep) if isinstance(n, ast.Call) and ast.unparse(n.func) == "aparute.append"]
+    assert len(aparitii) >= 1
+    fara = [ast.unparse(a)[:80] for a in aparitii if not (isinstance(a.args[0], ast.Call) and ast.unparse(a.args[0].func) == "rand")]
     assert fara == [], fara
-    categorii = {a.args[0].args[0].value for a in adaugari}
+    # fiecare categorie cu acțiune e măsurată (literal sau din bucla p2 / curs BNR) și niciuna fără acțiune; rezervarea pe categorie
+    # (`_poate_alerta`, cooldown) e înlocuită de tranziția atomică a episodului (`repo_notificari_livrare.episod_*`)
+    categorii = {t.slice.value for n in ast.walk(fn) if isinstance(n, ast.Assign) for t in n.targets
+                 if isinstance(t, ast.Subscript) and ast.unparse(t.value) == "constatari" and isinstance(t.slice, ast.Constant)}
+    categorii |= {e.elts[0].value for n in ast.walk(fn) if isinstance(n, ast.For) and isinstance(n.iter, ast.Tuple)
+                  for e in n.iter.elts if isinstance(e, ast.Tuple) and isinstance(e.elts[0], ast.Constant)}
     rezervate = {n.args[0].value for n in ast.walk(fn) if isinstance(n, ast.Call) and getattr(n.func, "id", "") == "_poate_alerta"}
-    assert categorii == set(al.ACTIUNI) and rezervate == categorii - {"p2_infrastructura"}, (categorii, rezervate)
+    assert categorii == set(al.ACTIUNI) and rezervate == set(), (categorii, rezervate)
     with pytest.raises(KeyError):
         al.rand("fara_actiune", "x")
 

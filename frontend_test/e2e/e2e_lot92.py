@@ -99,8 +99,10 @@ def test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare(patron, firma_sr
     pg.click("#c-adauga")
     pg.wait_for_function("() => (document.querySelector('#c-sold-final') || {}).textContent === '142,00 lei'", timeout=20000)
     _dispozitie("plata_furnizor", 200, "DP406", avans_dest="servicii")
+    # [17.5-T] actualizat la F015 (decizii_17_5_Q12.txt, corecția comună 2; decizia D3 a C9): refuzul serverului afișat în câmp și în
+    # previzualizarea Casei trece prin `minusReal` (static/js/api.js:1669), deci minusul e U+2212, nu cratima; restul textului neschimbat
     asteptat = ("Plată către furnizor de 200,00 lei nu încape în casă (contul 5311): soldul casei pe %s, în registru, e 142,00 lei, iar "
-                "după ea casa ar ajunge la -58,00 lei pe %s. Numerarul din casă nu poate fi negativ. Înregistrează întâi încasarea sau "
+                "după ea casa ar ajunge la \u221258,00 lei pe %s. Numerarul din casă nu poate fi negativ. Înregistrează întâi încasarea sau "
                 "ridicarea de numerar din care s-a plătit.")
     zi = pg.eval_on_selector("#c-data", "e => e.value.split('-').reverse().join('.')")
     # refuzul previzualizării, cu textul întreg (așteptat pe text, nu pe element: tastarea golește zona refuzului până la răspuns — 290)
