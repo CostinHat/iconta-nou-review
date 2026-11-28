@@ -45,6 +45,9 @@ _BASELINE = {
     # (`migrare.randeazaPreluareFirma`), care deschide „Import date” al firmei — ecranul `fa-import`, deja scanat (`nav_ecrane`). Butonul
     # îl probează e2e-ul `frontend_test/e2e/e2e_lot13_migr.py` (pașii 662).
     "fa-preluare",
+    # [17.5-F5, funcția 502, decizia Costin 26.11.2026 14:31] «Consultanță fiscală», ultimul card al grupului «Contabilitate»; probat de
+    # proba REAL (e.4) și de e2e_tinte_17_5_F5.py — DATORIE de scanat vizual (nav_ecrane), ca celelalte din baseline
+    "fa-consultanta",
 }
 
 

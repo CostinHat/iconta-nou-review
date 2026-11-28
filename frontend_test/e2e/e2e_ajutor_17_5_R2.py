@@ -75,6 +75,10 @@ def id_semne(repo):
         cod = re.sub(r"/\*.*?\*/", "", p.read_text(encoding="utf-8"), flags=re.S)
         cod = "\n".join(l.split("//", 1)[0] if "//" in l and "://" not in l else l for l in cod.splitlines())
         ids = set(re.findall(r"""\bsemnAjutor\(\s*["'`](F\d{3})["'`]\s*\)""", cod))
+        # [17.5-T] actualizat la AC202 (comanda_17_5_F5.txt:120, pct.17): o zonă cu mai multe funcționalități are UN semn,
+        # `semnAjutorGrup([…], zona)`; fiecare ID din listă are semn (același buton), în fișierul lui
+        for lista in re.findall(r"""\bsemnAjutorGrup\(\s*\[([^\]]*)\]""", cod):
+            ids.update(re.findall(r"""["'`](F\d{3})["'`]""", lista))
         for d in re.findall(r"\b(?:_DECL_AJUTOR|_OP_AJUTOR)\s*=\s*\{([^{}]*)\}", cod, re.S):
             ids.update(re.findall(r"""["'`](F\d{3})["'`]""", d))
         for ident in ids:
@@ -215,26 +219,31 @@ def deschide(pg, baza, card):
 
 
 MASOARA = """(fer, ids) => {
+ // [17.5-T] actualizat la AC202 (comanda_17_5_F5.txt:120, pct.17): un semn de grup poartă ID-urile zonei în data-ajutor („F081,F093”);
+ // fiecare ID se găsește o singură dată, în ordinea din semn, iar butonul de grup se numără o dată la suprapuneri
  const toate = Array.from(fer.querySelectorAll('button.ajutor-btn[data-ajutor]'));
- const alese = toate.filter(b=>ids.includes(b.dataset.ajutor));
+ const idsDe = b=>b.dataset.ajutor.split(',').map(x=>x.trim());
+ const alese = toate.filter(b=>idsDe(b).some(x=>ids.includes(x)));
  const drept = b=>b.getBoundingClientRect(), f=drept(fer);
  const titlu=fer.querySelector('.fereastra-corp h2');
  const zonaTitlu=b=>titlu && (titlu.contains(b) || (titlu.nextElementSibling===b.parentElement));
  const intersect=(a,b)=>a.left<b.right && b.left<a.right && a.top<b.bottom && b.top<a.bottom;
  const viz=b=>{const r=drept(b),s=getComputedStyle(b);return r.width>1&&r.height>1&&s.visibility==='visible'&&s.display!=='none';};
  const butoane={}; for(const id of ids){
-   const a=alese.filter(b=>b.dataset.ajutor===id), b=a[0], r=b&&drept(b);
+   const a=alese.filter(b=>idsDe(b).includes(id)), b=a[0], r=b&&drept(b);
    const randAI=b?.closest('p, .cap-nota, .tip-ai-intro');
    const eticheta=randAI && Array.from(randAI.querySelectorAll('b,strong')).find(e=>/^analiz[ăa] AI$/i.test(e.textContent.trim()));
    const loc=b && (id==='F120' ? !!eticheta && !!(eticheta.compareDocumentPosition(b)&4) : zonaTitlu(b));
    butoane[id]={numar:a.length,vizibil:!!b&&viz(b),incadrat:!!r && r.left>=Math.max(0,f.left)-1 && r.right<=Math.min(innerWidth,f.right)+1 && r.top>=Math.max(0,f.top)-1 && r.bottom<=Math.min(innerHeight,f.bottom)+1,loc:!!loc};
  }
  let suprapuneri=0; for(const a of alese) for(const b of toate) if(a!==b&&viz(a)&&viz(b)&&intersect(drept(a),drept(b))) suprapuneri++;
- return {viewport:[innerWidth,innerHeight],ordine:alese.map(b=>b.dataset.ajutor),suprapuneri,butoane};
+ return {viewport:[innerWidth,innerHeight],ordine:alese.flatMap(b=>idsDe(b).filter(x=>ids.includes(x))),suprapuneri,butoane};
 }"""
 
 
 def test_ajutor_17_5_R2(browser, capsys):
+    # [17.5-T] actualizat la AC202 (comanda_17_5_F5.txt:120–131, pct.17, R14): Termene are un singur semn pentru F081 și F093; măsura
+    # din browser (MASOARA) și extragerea statică (id_semne) citesc semnul de grup; aserțiunile, textele și plasarea rămân neschimbate
     from conftest import BAZA, CAPTURI, sesiune
     from core.ceas_proba import MOMENT_REF
     repo = Path(__file__).resolve().parents[2]

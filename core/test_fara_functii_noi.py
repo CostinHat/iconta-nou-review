@@ -73,6 +73,15 @@ EXCEPTII = {
     # [lotul 13, 536] centrul de cost pe salariați, mijloace fixe și (decizia Costin 26.10.2026, varianta (a)) articolele de stoc —
     # comanda 13.1 la 536: „Centrul se poate pune pe liniile facturilor, NIR-urilor, salariilor și pe mijloacele fixe”
     "PUT /tenants/{tenant_id}/centre-cost/alocari": "536",
+    # [17.5-F5, decizia Costin 26.11.2026: funcțiile 501 și 502 se implementează în F5] hotărârea de distribuire a dividendelor (Word / PDF)
+    # și consultanța fiscală a firmei (M1–M5); ambele numai citesc
+    "POST /tenants/{tenant_id}/hotarare-dividende/{fel}": "501",
+    "GET /tenants/{tenant_id}/consultanta-fiscala": "502",
+    # [17.5-F6, Cabinet 1–5 ale funcției 502, pct.16 al comenzii F5] secțiunea «Consultanță» a paginii cabinetului: cardurile 501 și 502 cu lista
+    # firmelor, din rezumatele pe firmă; numai citește
+    "GET /cabinet/consultanta": "502",
+    # [17.5-F6, C243] ruta lotului 17.5-Q12 (operațiunea N a facturii), intrată fără excepție: garda era roșie pe baza C9
+    "POST /tenants/{tenant_id}/facturi/{factura_id}/operatiune-n": "C243",
     # [lotul 13, 681] rândul din registru al căutării funcțiilor (ruta GET /eu/cautare are deja excepția 681)
     "F268": "681",
     "LIVE F268": "681",

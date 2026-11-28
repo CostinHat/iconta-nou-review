@@ -983,7 +983,9 @@ def test_def_202_prezentarea_trimite_la_cardul_care_exista(patron, asistent):
 #: [deficiența 203] ordinea cardurilor cabinetului după lucrul zilnic: întâi ce cere acțiune azi (de validat, restanțe, scadențe), apoi
 #: lucrul pe firme și ziua, apoi lunarul, apoi echipa și contul, la urmă sesizările
 ORDINE_CABINET = ["validat", "control", "termene", "firme", "brief", "setari", "activitate", "pachete", "supervizor", "capacitate",
-                  "consolidare", "asistenti"]   # „Suport” (raport) e banda de sus din 12.10.2026 (deficiența 225)
+                  "consolidare", "asistenti",   # „Suport” (raport) e banda de sus din 12.10.2026 (deficiența 225)
+                  # [17.5-F6, pct.4] secțiunea «Consultanță», după secțiunea șefului: funcțiile 501 și 502, în această ordine
+                  "hotarari_aga", "consultanta"]
 
 
 def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
@@ -992,17 +994,27 @@ def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
     Pașii: contabilul-șef -> pagina principală: există cardul „Raportează”; cardurile sunt în ordinea lucrului zilnic (de validat,
     control fiscal, termene, firme …, la urmă Suport) -> cifra cardului Firme = firmele active din ecranul Firme; „N note de validat”
     = „Note de validat (N)” din fereastra cozii (cifrele cardului Control fiscal: `e2e_comanda_1010.py::test_def_224_…`)."""
+    # [17.5-T] actualizat la comanda 17.5-F6 pct.4 (secțiunea «Consultanță» a cabinetului, static/js/ecrane/cabinet.js:CARDURI_CONSULTANTA): pe fixture-ul
+    # administratorului, cele 12 chei istorice urmate de hotarari_aga și consultanta, fiecare o singură dată, în secțiunea ei; grila exactă
     import re as _r
     pg = patron.pg
     patron.acasa()
     pg.wait_for_function("() => !document.querySelector('.cab-grila').innerText.includes('se încarcă')", timeout=60000)
+    pg.wait_for_selector(".cab-grila > section.cab-consultanta #fgc-consultanta [data-cheie='consultanta']", state="attached", timeout=60000)
     pg.wait_for_timeout(1500)
     card = pg.evaluate("""() => [...document.querySelectorAll('.cab-grila button.cab-card')].map(b => ({
         cheie: (b.querySelector('[data-cheie]') || {}).dataset ? b.querySelector('[data-cheie]').dataset.cheie : null,
-        titlu: (b.querySelector('.cab-card-titlu') || {}).innerText, sinteza: (b.querySelector('.cab-card-sinteza') || {}).innerText}))""")
+        titlu: (b.querySelector('.cab-card-titlu') || {}).innerText, sinteza: (b.querySelector('.cab-card-sinteza') || {}).innerText,
+        sectiune: (b.closest('section.firme-grup') || {}).id || ((b.closest('section.firme-grup') || {}).className || ''),
+        continut: (b.parentElement || {}).id || ''}))""")
     patron.captura("desktop")
     chei = [c["cheie"] for c in card]
     assert [k for k in chei if k in ORDINE_CABINET] == [k for k in ORDINE_CABINET if k in chei], chei
+    assert chei == ORDINE_CABINET, ("grila exactă a administratorului", chei)
+    for k in ("hotarari_aga", "consultanta"):
+        loc = [c["continut"] for c in card if c["cheie"] == k]
+        assert loc == ["fgc-consultanta"], (k, loc)   # o singură dată, în secțiunea «Consultanță»
+    assert all(c["continut"] != "fgc-consultanta" for c in card if c["cheie"] not in ("hotarari_aga", "consultanta")), card
     assert "raport" not in chei and pg.inner_text("[data-banda='raport']").strip().startswith("Suport"), chei   # [225, 12.10.2026] banda
     sint = {c["cheie"]: c["sinteza"] for c in card}
     firme_card = int(_r.search(r"(\d+) firm", sint["firme"]).group(1))

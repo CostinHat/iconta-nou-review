@@ -25,6 +25,9 @@ sys.path.insert(0, RAD)
 
 LOT = "17.1"
 DOVEZI = os.path.join(RAD, "docs", "dovezi", "17_1")
+# [17.5-T] actualizat la comanda 17.5-F6 pct.2 (cardul 502 «Consultanță fiscală», ultimul al grupului Contabilitate, firme.js:557): oracolul lotului 17.1 rămâne neatins,
+# parcursul și inventarul verdictelor folosesc aceeași copie F6, cu a.1 = 38 și a.14 = lista veche urmată de „,Consultanță fiscală”
+PASI_X06 = os.path.join(RAD, "docs", "dovezi", "17_5_F6", "x06_pasi.json")
 ADMIN = "dovada.71507@sesiuneab.test"
 DEFICIENTE_PROBATE = ("788", "790")   # numerele dovedite de test (praguri_17_1.txt: „numere: 788, 790”); core/test_deficiente.py::plasa_e2e citește tuplul ca literal
 
@@ -35,7 +38,7 @@ CHEI = ["zilnic", "personal", "contabilitate", "registre", "termene", "parteneri
 
 # pasul -> (deficiențele dovedite, ce se vede)
 HARTA = {
-    "a": ("17.1", "X06 (1): F1, 7 grupuri în ordine, 37 de carduri, deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu descrierea nouă"),
+    "a": ("17.1", "X06 (1): F1, 7 grupuri în ordine, 38 de carduri (37 istorice + „Consultanță fiscală”, ultimul din „Contabilitate”), deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu descrierea nouă"),
     "b": ("17.1", "X06 (2): clic pe „Contabilitate” îl deschide"),
     "c": ("17.1", "X06 (2): al doilea clic îl pliază"),
     "d": ("17.1", "X06 (2): starea nu se reține după reîncărcare"),
@@ -88,6 +91,18 @@ JS_DERULARI = """() => {
           inapoi: lat('.fereastra-antet .nav-inapoi:not(.nav-inapoi-la)'), inchidere: lat('.fereastra-antet > .nav-x'),
           antet: (() => { const a = F.querySelector('.fereastra-antet'); return a ? [a.scrollWidth, a.clientWidth] : null; })()};
 }"""
+# [17.5-F6, pct.2] cardul 502 în fereastra firmei din față: câte #fa-consultanta, grupul lui, locul în grup, titlul și lista cardurilor din „Contabilitate”
+JS_CONSULTANTA = """() => {
+  const F = document.querySelector('.fereastra-overlay:not(.fundal) .fereastra'); if (!F) return {fereastra: false};
+  const toate = [...F.querySelectorAll('#fa-consultanta')];
+  const c = F.querySelector('#fgc-contabilitate');
+  const carduri = c ? [...c.querySelectorAll('button.firme-optiune')] : [];
+  const t = (e) => { const x = e.querySelector('.firme-optiune-titlu'); return x ? x.textContent.replace(/\\s+/g, ' ').trim() : null; };
+  const g = toate.length ? toate[0].closest('section.firme-grup') : null;
+  return {fereastra: true, firma: (F.getAttribute('aria-label') || ''), numar: toate.length, grup: g ? (g.querySelector('h3') || {}).id || null : null,
+          ultimul: !!(toate.length && carduri.length && carduri[carduri.length - 1] === toate[0]), titlu: toate.length ? t(toate[0]) : null,
+          contabilitate: carduri.map((b) => b.id), toateIds: [...F.querySelectorAll('.firme-grup button.firme-optiune[id^="fa-"]')].map((b) => b.id)};
+}"""
 JS_OBSERVA = """(sel) => { window.__tranzitii = []; const b = document.querySelector(sel); if (!b) return false;
   new MutationObserver(() => window.__tranzitii.push(b.getAttribute('aria-expanded'))).observe(b, {attributes: true, attributeFilter: ['aria-expanded']}); return true; }"""
 
@@ -136,6 +151,17 @@ def _cauta(pg, parcurs, interogare, grup, titlu_fereastra, inapoi):
     return r
 
 
+def _verdicte(jurnal, sha):
+    """[17.5-F6, pct.2] Verdictele parcurgerii «plasa» pe commitul `sha` din CSV-ul propriu -> {aserțiune: verdict}."""
+    verdicte = {}
+    if os.path.exists(jurnal):
+        with open(jurnal, encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                if r["parcurgere"] == "plasa" and r["commit"].startswith(sha[:8]):
+                    verdicte[r["pas"]] = r["verdict"]
+    return verdicte
+
+
 def test_pilot_X06(browser, monkeypatch):
     from core import ceas_proba
     sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
@@ -144,7 +170,7 @@ def test_pilot_X06(browser, monkeypatch):
     shutil.rmtree(temp, ignore_errors=True)
     os.makedirs(temp)
     jurnal = os.path.join(temp, "jurnal_verificare.csv")
-    pasi_json = os.path.join(DOVEZI, "pasi.json")
+    pasi_json = PASI_X06   # [17.5-T] actualizat la comanda 17.5-F6 pct.2 (firme.js:557): aceeași copie la parcurgere și la inventarul verdictelor
     ctx = types.SimpleNamespace(lot=LOT, parcurgere="plasa", verificator="code", pasi_json=pasi_json, csv=jurnal, sha=sha,
                                 director=os.path.join(temp, "plasa", "code"))
     os.makedirs(ctx.director, exist_ok=True)
@@ -157,10 +183,13 @@ def test_pilot_X06(browser, monkeypatch):
         pg.goto(BAZA + "/", wait_until="load", timeout=30000)
         parcurs = _incarca("parcurs_17_1")
         parcurs.ruleaza(pg, ctx)
+        # [17.5-F6, pct.2] oracolul a rulat înaintea măsurilor directe: fiecare aserțiune a copiei are rândul ei în jurnal înainte de prima măsură
+        masuri["oracol_inainte"] = sorted(_verdicte(jurnal, sha))
         # (2) măsurători directe, pe ferestre deschise de funcțiile parcursului (nu de un al doilea parcurs)
         parcurs.firma(pg)
         pg.mouse.move(0, 0)   # hover-ul titlului are altă culoare (var(--ardezie)): mouse-ul nu stă peste niciun titlu la măsurarea culorii
         masuri["implicit"] = pg.evaluate(JS_GRUPURI)
+        masuri["consultanta F1"] = pg.evaluate(JS_CONSULTANTA)
         # tastatura: butonul de titlu e un buton nativ — Enter deschide, Spațiu pliază
         btn = ST + "#fg-contabilitate .firme-grup-btn"
         pg.focus(btn)
@@ -191,19 +220,18 @@ def test_pilot_X06(browser, monkeypatch):
             masuri["derulari"]["Firme existente %dx%d" % (w, h)] = pg.evaluate(JS_DERULARI)
             parcurs._deschide_din_lista(pg, "F1 Comert Stoc")
             masuri["derulari"]["firma F1 %dx%d" % (w, h)] = pg.evaluate(JS_DERULARI)
+            masuri["consultanta F1 %dx%d" % (w, h)] = pg.evaluate(JS_CONSULTANTA)
             parcurs._inapoi_la_lista(pg)
             parcurs._deschide_din_lista(pg, "F4 PFA Sistem Real")
             masuri["derulari"]["firma F4 %dx%d" % (w, h)] = pg.evaluate(JS_DERULARI)
+            masuri["consultanta F4 %dx%d" % (w, h)] = pg.evaluate(JS_CONSULTANTA)
         pg.set_viewport_size({"width": 1366, "height": 768})
     finally:
         b.close()
     asertiuni = [a["id"] for a in json.load(open(pasi_json, encoding="utf-8"))["asertiuni"]]
-    verdicte = {}
-    if os.path.exists(jurnal):
-        with open(jurnal, encoding="utf-8", newline="") as f:
-            for r in csv.DictReader(f):
-                if r["parcurgere"] == "plasa" and r["commit"].startswith(sha[:8]):
-                    verdicte[r["pas"]] = r["verdict"]
+    verdicte = _verdicte(jurnal, sha)
+    lipsa_inainte = [i for i in asertiuni if i not in masuri["oracol_inainte"]]
+    assert not lipsa_inainte, "oracolul X06 nu a rulat înaintea măsurilor directe pentru: %s" % ", ".join(lipsa_inainte)
     picate = ["%s [%s]: %s" % (i, HARTA[i.split(".")[0]][1], verdicte.get(i, "neexecutat")) for i in asertiuni if verdicte.get(i) != "trece"]
     assert not picate, "aserțiuni X06 care nu trec (id [ce se vede]: verdict): %s" % "; ".join(picate)
     rele = []
@@ -233,8 +261,25 @@ def test_pilot_X06(browser, monkeypatch):
             deschis = x["expandat"] == "true"
             if (deschis and not st.get("rotita")) or (not deschis and not st.get("faraRotire")):
                 rele.append("%s: săgeata rotită=%s, fără rotire=%s la aria-expanded=%s (rotită 90° numai când e deschis)" % (x["cheie"], st.get("rotita"), st.get("faraRotire"), x["expandat"]))
-        if sum(x["carduri"] for x in g) != 37:
-            rele.append("carduri în total: %s (așteptat 37)" % sum(x["carduri"] for x in g))
+        if sum(x["carduri"] for x in g) != 38:   # [17.5-T] actualizat la comanda 17.5-F6 pct.2 (firme.js:557): 37 istorice + cardul 502
+            rele.append("carduri în total: %s (așteptat 38)" % sum(x["carduri"] for x in g))
+    # [17.5-F6, pct.2] F1: un singur #fa-consultanta, ultimul card al grupului Contabilitate, titlul „Consultanță fiscală”, celelalte carduri în ordinea istorică;
+    # F4 (PFA, partidă simplă; cardul are regim „dubla”): niciun #fa-consultanta, la ambele rezoluții
+    for nume in [k for k in masuri if k.startswith("consultanta ")]:
+        c = masuri[nume]
+        if not c.get("fereastra"):
+            rele.append("%s: nicio fereastră deschisă" % nume)
+        elif nume.startswith("consultanta F4"):
+            if c["numar"] != 0:
+                rele.append("%s: %d carduri #fa-consultanta în meniul F4 PFA (așteptat 0: partidă simplă)" % (nume, c["numar"]))
+        else:
+            if c["numar"] != 1 or c["grup"] != "fg-contabilitate" or not c["ultimul"] or c["titlu"] != "Consultanță fiscală":
+                rele.append("%s: #fa-consultanta de %d ori, grupul %s, ultimul=%s, titlul %r (așteptat o dată, ultimul din fg-contabilitate, „Consultanță fiscală”)"
+                            % (nume, c["numar"], c["grup"], c["ultimul"], c["titlu"]))
+            if c["contabilitate"][:-1] != ["fa-jurnal", "fa-fisacont", "fa-balanta", "fa-planconturi", "fa-centrecost", "fa-verificari"] and c["numar"] == 1:
+                rele.append("%s: cardurile istorice din Contabilitate sunt %s" % (nume, c["contabilitate"][:-1]))
+            if len(c["toateIds"]) != 38 or len(set(c["toateIds"])) != 38:
+                rele.append("%s: %d carduri, %d distincte (așteptat 38 distincte)" % (nume, len(c["toateIds"]), len(set(c["toateIds"]))))
     if masuri["enter"] != "true" or masuri["spatiu"] != "false":
         rele.append("tastatura: după Enter aria-expanded=%s (așteptat true), după Spațiu %s (așteptat false)" % (masuri["enter"], masuri["spatiu"]))
     if not masuri["card_in_grup_deschis"]:

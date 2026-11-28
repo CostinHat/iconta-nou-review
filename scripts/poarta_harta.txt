@@ -180,3 +180,4 @@ static/js/ecrane/sal_sume.js => e2e_lot13_sal.py
 static/js/ecrane/tabel_note.js => e2e_lot13_ds.py e2e_bloc_d.py
 static/js/ecrane/tari_partener.js => e2e_lot12_emit.py
 static/js/luna_lucru.js => e2e_luna_lucru_17_5_C.py
+static/js/ecrane/consultanta_ecran.js => e2e_tinte_17_5_F5.py e2e_bara_jos.py

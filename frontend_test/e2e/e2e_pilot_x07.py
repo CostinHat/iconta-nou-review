@@ -29,6 +29,11 @@ DEFICIENTE_PROBATE = ()   # fără numere în acest lot (praguri_17_2.txt: „nu
 TOP = ".fereastra-overlay:not(.fundal) "
 SUS = ["validat", "control", "termene", "firme", "brief", "setari"]
 SEF = ["activitate", "pachete", "supervizor", "capacitate", "consolidare", "asistenti"]
+# [17.5-T] actualizat la comanda 17.5-F6 pct.4 (secțiunea «Consultanță», static/js/ecrane/cabinet.js:CARDURI_CONSULTANTA): după secțiunea șefului, ultima, funcțiile 501, 502
+CONS = ["hotarari_aga", "consultanta"]
+TITLURI_CONS = ["Hotărâri AGA", "Consultanță fiscală"]
+# [17.5-T] actualizat la comanda 17.5-F6 pct.4: oracolul lotului 17.2 rămâne neatins; parcursul și inventarul verdictelor folosesc aceeași copie F6 (x07_pasi.json)
+PASI_X07 = os.path.join(RAD, "docs", "dovezi", "17_5_F6", "x07_pasi.json")
 SETARI = [["Date profil", "Schimbă parola", "Notificări"], ["Date cabinet", "Ce pot face", "Datele cabinetului (GDPR)"], ["Chei API", "Conectare SPV"]]
 TITLURI_SETARI = ["Contul meu", "Cabinet", "Conexiuni"]
 
@@ -44,16 +49,25 @@ JS_PAGINA = """() => {
             sagLatime: sv ? Math.round(sv.getBoundingClientRect().width) : null, sagInalt: sv ? Math.round(sv.getBoundingClientRect().height) : null,
             tranzitie: cs ? cs.transitionDuration : null, rotita: v ? (Math.abs(v[0]) < 0.01 && Math.abs(v[1] - 1) < 0.01) : false, faraRotire: !cs || cs.transform === 'none'};
   };
-  const s = document.querySelector('.cab-grila > section.firme-grup'); if (!s) return {sectiune: false};
-  const h = s.querySelector('h3'), b = h.querySelector('button.firme-grup-btn'), c = document.getElementById(b.getAttribute('aria-controls') || '');
+  // [17.5-F6, pct.4] secțiunile se identifică după relația buton–conținut (aria-controls = id-ul conținutului din aceeași secțiune), nu după loc sau titlu
+  const sectiune = (idc) => { const bb = document.querySelector('.cab-grila > section.firme-grup > h3 > button.firme-grup-btn[aria-controls="' + idc + '"]');
+    const ss = bb ? bb.closest('section.firme-grup') : null, cc = document.getElementById(idc); return ss && cc && ss.contains(cc) ? {s: ss, b: bb, c: cc} : null; };
+  const sef = sectiune('fgc-sef'); if (!sef) return {sectiune: false};
+  const s = sef.s, h = s.querySelector('h3'), b = sef.b, c = sef.c;
   const rb = b.getBoundingClientRect(), rs = s.getBoundingClientRect(), chei = (r) => [...r.querySelectorAll('button.cab-card [data-cheie]')].map((e) => e.dataset.cheie);
-  const grila = s.parentElement;
+  const grila = s.parentElement, cons = sectiune('fgc-consultanta');
+  const titluri = (r) => [...r.querySelectorAll('button.cab-card .cab-card-titlu')].map((e) => e.textContent.trim());
   return {sectiune: true, titlu: b.textContent.replace(/\\s+/g, ' ').trim(), expandat: b.getAttribute('aria-expanded'), tip: b.getAttribute('type'), controleaza: !!c && s.contains(c),
           ascuns: c ? c.hasAttribute('hidden') : null, inaltimeContinut: c ? Math.round(c.getBoundingClientRect().height) : null, dim: [Math.round(rb.width), Math.round(rb.height)],
           latimeSectiune: Math.round(rs.width), latimeGrila: Math.round(grila.getBoundingClientRect().width), sageata: !!b.querySelector('svg'),
-          sus: chei(grila).filter((k) => !c || !c.querySelector('[data-cheie="' + k + '"]')), inSectiune: c ? chei(c) : [],
+          sus: [...grila.children].filter((x) => x.matches('button.cab-card')).map((x) => (x.querySelector('[data-cheie]') || {dataset: {}}).dataset.cheie), inSectiune: c ? chei(c) : [],
           dupaSetari: !!s.previousElementSibling && !!s.previousElementSibling.querySelector('[data-cheie="setari"]'), ultimul: !s.nextElementSibling,
-          cardInGrilaSus: [...grila.children].filter((x) => x.matches('button.cab-card')).length, stil: stil(b, h)};
+          cardInGrilaSus: [...grila.children].filter((x) => x.matches('button.cab-card')).length, stil: stil(b, h),
+          toateCheile: chei(grila),
+          consultanta: cons ? {imediatDupaSef: s.nextElementSibling === cons.s, ultima: !cons.s.nextElementSibling, parinte: cons.s.parentElement === grila,
+                              chei: chei(cons.c), titluri: titluri(cons.c), expandat: cons.b.getAttribute('aria-expanded'), ascuns: cons.c.hasAttribute('hidden'),
+                              titlu: cons.b.textContent.replace(/\\s+/g, ' ').trim(), sectiuneVizibila: !cons.s.hidden,
+                              butoaneConsultanta: [...document.querySelectorAll('button.firme-grup-btn')].filter((x) => /^consultanță/i.test(x.textContent.trim())).length} : null};
 }"""
 JS_SETARI = """() => {
   const F = document.querySelector('.fereastra-overlay:not(.fundal) .fereastra-corp'); if (!F) return {};
@@ -99,7 +113,7 @@ def test_pilot_X07(browser, monkeypatch):
     shutil.rmtree(temp, ignore_errors=True)
     os.makedirs(temp)
     jurnal = os.path.join(temp, "jurnal_verificare.csv")
-    pasi_json = os.path.join(DOVEZI, "pasi.json")
+    pasi_json = PASI_X07   # [17.5-T] actualizat la comanda 17.5-F6 pct.4 (cabinet.js:CARDURI_CONSULTANTA): aceeași copie la parcurs și la verdicte
     ctx = types.SimpleNamespace(lot=LOT, parcurgere="plasa", verificator="code", pasi_json=pasi_json, csv=jurnal, sha=sha, director=os.path.join(temp, "plasa", "code"))
     os.makedirs(ctx.director, exist_ok=True)
     m = {}
@@ -193,8 +207,25 @@ def test_pilot_X07(browser, monkeypatch):
             rele.append("implicit: aria-expanded=%s, hidden=%s, înălțime conținut=%s (așteptat pliat)" % (p["expandat"], p["ascuns"], p["inaltimeContinut"]))
         if p["sus"] != SUS or p["inSectiune"] != SEF:
             rele.append("carduri: sus %s, în secțiune %s (așteptat %s / %s)" % (p["sus"], p["inSectiune"], SUS, SEF))
-        if not p["dupaSetari"] or not p["ultimul"] or p["cardInGrilaSus"] != 6:
-            rele.append("loc: după cardul setari=%s, ultimul element al grilei=%s, carduri direct în grilă=%s (așteptat True, True, 6)" % (p["dupaSetari"], p["ultimul"], p["cardInGrilaSus"]))
+        # [17.5-T] actualizat la comanda 17.5-F6 pct.4 (cabinet.js:desenazaSectiuneaConsultanta): șeful după Setări, urmat imediat de secțiunea «Consultanță», ultima
+        if not p["dupaSetari"] or p["cardInGrilaSus"] != 6:
+            rele.append("loc: după cardul setari=%s, carduri direct în grilă=%s (așteptat True, 6)" % (p["dupaSetari"], p["cardInGrilaSus"]))
+        k = p.get("consultanta")
+        if not k:
+            rele.append("pagina principală: nu există secțiunea «Consultanță» (butonul care controlează fgc-consultanta)")
+        else:
+            if not (k["imediatDupaSef"] and k["ultima"] and k["parinte"]) or p["ultimul"]:
+                rele.append("Consultanță: imediat după secțiunea șefului=%s, ultima=%s, copil al grilei=%s, șeful ultimul=%s (așteptat True, True, True, False)"
+                            % (k["imediatDupaSef"], k["ultima"], k["parinte"], p["ultimul"]))
+            if k["chei"] != CONS or k["titluri"] != TITLURI_CONS:
+                rele.append("Consultanță: carduri %s / %s (așteptat exact %s / %s)" % (k["chei"], k["titluri"], CONS, TITLURI_CONS))
+            if k["expandat"] != "false" or not k["ascuns"] or not k["sectiuneVizibila"] or k["butoaneConsultanta"] != 1:
+                rele.append("Consultanță: aria-expanded=%s, conținut ascuns=%s, secțiune vizibilă=%s, butoane «Consultanță»=%s (așteptat false, True, True, 1)"
+                            % (k["expandat"], k["ascuns"], k["sectiuneVizibila"], k["butoaneConsultanta"]))
+            if not k["titlu"].lower().startswith("consultanță"):
+                rele.append("Consultanță: titlul secțiunii %r" % k["titlu"])
+        if p["toateCheile"] != SUS + SEF + CONS:
+            rele.append("grila exactă: %s (așteptat %s)" % (p["toateCheile"], SUS + SEF + CONS))
         st = p["stil"]
         if st["marime"] != "14px" or st["majuscule"] != "uppercase" or st["greutate"] != "600" or st["culoare"] != st["culoareH3"]:
             rele.append("stil titlu %s (așteptat 14px, uppercase, 600, culoarea titlului de grup)" % st)

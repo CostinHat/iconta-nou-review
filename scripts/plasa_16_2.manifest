@@ -7,8 +7,8 @@ frontend_test/e2e/e2e_pilot_x09.py	11bfa9c059b5362a82506dbe807a759ca6e4b8875be73
 frontend_test/e2e/e2e_pilot_f017.py	2c9b4fab2bfb3d9f833ea5afc6f5ed45b3e7a08b097a6c5dcd4a2fd061c4315e	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f017.py
 frontend_test/e2e/e2e_pilot_f054.py	2a950fa4adfe2f496f17ddfc4eab1b8621e4de5bc528f46e0d5818c6c543e204	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f054.py
 frontend_test/e2e/e2e_pilot_x05.py	6a328da7c56f60694bf085412bb9c28bc7899939b0e8267fb6d65d2e0296b2f6	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x05.py
-frontend_test/e2e/e2e_pilot_x06.py	f87b2ddfb4e2c0cb8b206d2d6a305993c2251faa746170e698a72f36e58bc966	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x06.py
-frontend_test/e2e/e2e_pilot_x07.py	f885c83339f9ccfbed0f0b398e3871064dcf7154e6706e2e60ba8fa022b68915	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x07.py
+frontend_test/e2e/e2e_pilot_x06.py	a693222cf69da5f46368bedd494c93c287a278757c429bbc60d542604ce81a68	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x06.py
+frontend_test/e2e/e2e_pilot_x07.py	c2d9a7949e6a57217f81861bdf32a2cfcd3577008afb8c3d387ed52203abaddb	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x07.py
 frontend_test/e2e/e2e_luna_lucru_17_5_C.py	6554d43464e57050568e4c8c00b3c5edca0730a2f1eada4a78f2a634eca5e7ae	1	python -m pytest -q frontend_test/e2e/e2e_luna_lucru_17_5_C.py
 frontend_test/e2e/e2e_actiune_principala_17_5_D.py	de86176d7d5825ec38b22972fc0dfdb5be5149f84843d9737b06d8d371f0efce	1	python -m pytest -q frontend_test/e2e/e2e_actiune_principala_17_5_D.py
 frontend_test/e2e/e2e_alegere_unica_17_5_E.py	6db1d160a8224d7fb566d646a7d270e0c49487f769db6205f534cfe14f0aaf6e	1	python -m pytest -q frontend_test/e2e/e2e_alegere_unica_17_5_E.py
@@ -32,8 +32,9 @@ frontend_test/e2e/e2e_ferestre_17_5_Q2.py	21faa2a07cc196fee957675b80250235fd5bd5
 frontend_test/e2e/e2e_ferestre_17_5_Q5.py	29cc944d0a8bffc2bd21f76c4cd2f4daaad12d2acbe3625e8946d178ce4a354c	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_Q5.py
 frontend_test/e2e/e2e_ferestre_17_5_Q4.py	cee65c031e6e0f0841517c8be9375cd48d45a637b9e6c152dae7005925323bc3	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_Q4.py
 frontend_test/e2e/e2e_ferestre_17_5_Q6.py	00ee612ff672f9700d356e6a6b242e2e51bd845c05bbb6180d5e46d369d1f71b	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_Q6.py
-frontend_test/e2e/e2e_ajutor_17_5_R2.py	2608920d04a6ae0b0567fb535a151ca7f3ef0f94e4aff744dce425c110cf5bdf	1	python -m pytest -q frontend_test/e2e/e2e_ajutor_17_5_R2.py
+frontend_test/e2e/e2e_ajutor_17_5_R2.py	b19438c59ba05b49eb9a8123db56940539512c2251b9cff3ae9639ecaedcf647	1	python -m pytest -q frontend_test/e2e/e2e_ajutor_17_5_R2.py
 frontend_test/e2e/e2e_fundatie_17_5_Q9.py	80d4f3c71c40e7cebfffdb716e0ecb5ce6916e51ffeba5cd83e6043a6338f1cc	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_Q9.py
 frontend_test/e2e/e2e_fundatie_17_5_Q10.py	726bcb9f5a01955970c5c18e947bf8f03b9f9573334d148e3e0b5fd13346eb92	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_Q10.py
 frontend_test/e2e/e2e_fundatie_17_5_Q12.py	5e4bd285a83d34a7ed2d1dac0bd99c201ca9749faf48df380b0acdef28880b1c	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_Q12.py
 frontend_test/e2e/e2e_fundatie_17_5_C9.py	d361557ea4f7921c02dd6750f6b83e94363e0e4786b47266d0a87c80c360a6bb	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_C9.py
+frontend_test/e2e/e2e_fundatie_17_5_F6.py	5c2b9e6c15ce60c8067f4c18fa3be7e765cd96770b969b1e73439cd28017ea45	1	python -m pytest -q frontend_test/e2e/e2e_fundatie_17_5_F6.py
