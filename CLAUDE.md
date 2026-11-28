@@ -253,6 +253,7 @@ R8. Nicio reparație de aspect cu stil scris direct în ecran (inline style, sed
 - Proba funcțională reală (apel cu date), nu doar verificare de sintaxă; SQL testat pe Postgres.
 - Reparație reală: fără cod mort, fără logică dublată; se repară clasa, nu instanța.
 - La commit, fișierele se pun pe nume, niciodată git add -A.
+- Un commit are cel mult 40 de fișiere verificate de hook (JS și Python) (17.5-F9).
 - Exit-code-ul real al lui pytest, nu al ultimei comenzi din pipe.
 - Mutație: revert din copie de backup, nu git checkout; după mutație se șterge __pycache__.
 - Fixture-urile pe tabele partajate folosesc perioade sintetice (2099), în rollback.
