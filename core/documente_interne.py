@@ -32,6 +32,10 @@ TIPURI = {
     # [lotul 13, deficiența 510] predarea produselor finite la magazie: OMFP 2634/2015 anexa 2, cod 14-3-3A — „document justificativ pentru
     # încărcare/descărcare în/din gestiune; document justificativ de înregistrare în contabilitate”
     "bon_predare": "Bon de predare, transfer, restituire",
+    # [17.5-F5, funcția 501] hotărârea de distribuire a dividendelor: numărul e scris de contabil (editabil) și e identitatea firmă / an /
+    # număr comună Word-ului, PDF-ului și notei (`document_ref`); aplicația sugerează următorul număr fără să-l consume
+    "hotarare_aga": "Hotărârea adunării generale a asociaților",
+    "decizie_asociat_unic": "Decizia asociatului unic",
 }
 
 #: [401, 434] numărul borderoului de achiziție scris de aplicație: „BA-<n>”
@@ -103,6 +107,25 @@ def borderou_cu_numarul(cur, schema, numar, data):
                 "AND EXTRACT(YEAR FROM data_emitere) = %%s ORDER BY id LIMIT 1" % _p(schema), (str(numar), _data(data).year))
     r = cur.fetchone()
     return (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None
+
+
+def hotarari_cu_numarul(cur, schema, tip, numar, an):
+    """[17.5-F5, funcția 501] Datele (zz.ll.aaaa) la care documentul `tip` cu numărul `numar` din anul `an` poartă deja o notă
+    (`inregistrari.document_ref`, forma `jurnal_api.eticheta_document`). O altă dată cu același număr = două hotărâri distincte cu aceeași
+    identitate: refuz. Aceeași hotărâre (același număr, aceeași dată) se poate descărca și reface de oricâte ori."""
+    _cere_tip(tip)
+    cur.execute("SELECT DISTINCT (regexp_match(btrim(document_ref), %%s))[1] AS d FROM %sinregistrari WHERE document_ref LIKE %%s"
+                % _p(schema), ("^" + re.escape(TIPURI[tip]) + " nr " + re.escape(str(numar).strip()) + r" din ([0-9]{2}\.[0-9]{2}\." +
+                               str(int(an)) + ")( |$)", TIPURI[tip] + " nr %"))
+    return sorted({(list(r.values())[0] if isinstance(r, dict) else r[0]) for r in cur.fetchall()} - {None})
+
+
+def blocheaza_identitatea(cur, schema, tip, an):
+    """[17.5-F6, funcția 501] Blocajul tranzacțional al identității firmă / tip / an a hotărârii (`pg_advisory_xact_lock`), luat la emiterea
+    notei înaintea verificării numărului și ținut până la commit sau rollback: două emiteri concurente ale aceluiași tip și an se
+    serializează, deci a doua vede nota primei și nu poate primi aceeași identitate pentru altă hotărâre."""
+    _cere_tip(tip)
+    cur.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", ("documente_interne:%s:%s:%d" % (schema, tip, int(an)),))
 
 
 def e_generat(document_ref, tip):

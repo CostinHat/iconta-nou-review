@@ -138,6 +138,24 @@ def _mijloace_fixe(conn, schema):
     return {"are_mijloace": r["are_mijloace"], "randuri": r["randuri"]}
 
 
+def _hotarari_aga(conn, schema):
+    """[17.5-F6, Cabinet 3 a) și 5] Funcția 501 pe firmă: profitul disponibil la zi și ultima hotărâre de distribuire —
+    `hotarare_dividende.rezumat_cabinet`, aceeași regulă ca propunerea din fereastra dividendului. Numai citiri."""
+    import psycopg2.extras as _E
+    from core import hotarare_dividende as _hd
+    from core.common import azi_ro as _azi_ro
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        return _hd.rezumat_cabinet(cur, schema, _azi_ro())
+
+
+def _consultanta(conn, schema):
+    """[17.5-F6, Cabinet 3 b) și 5] Funcția 502 pe firmă: măsurile «Se aplică», economia compatibilă și măsurile cu date lipsă —
+    `consultanta_fiscala.rezumat_cabinet`, aceleași măsuri ca fereastra «Consultanță fiscală». Numai citiri."""
+    from core import consultanta_fiscala as _cf
+    from core.common import azi_ro as _azi_ro
+    return _cf.rezumat_cabinet(conn, schema, _azi_ro())
+
+
 # ============================================================================
 #  REGISTRUL ASPECTELOR — `tabele` sunt MĂSURATE, nu scrise
 # ============================================================================
@@ -163,7 +181,11 @@ def _mijloace_fixe(conn, schema):
 #: „SPV fără drept pe firmă” — nu poartă `tenant_id` (rândul e al cabinetului, nu al firmei), deci nu pot avea trigger pe firmă; o
 #: schimbare de conexiune SPV ajunge în rezumat la următoarea recalculare a zilei (`timp: "zi"`), iar detaliul Control fiscal le citește
 #: live. Alegere, nu omisiune.
-NEURMARITE_PUBLIC = ("tenants", "users", "accounting_firms", "spv_token", "spv_cui_acoperit")
+NEURMARITE_PUBLIC = ("tenants", "users", "accounting_firms", "spv_token", "spv_cui_acoperit",
+                     # [17.5-F6] cursurile BNR (`curs_bnr_zilnic`, citit de M4 al aspectului `consultanta` și din funcțiile termenelor) sunt ale
+                     # tuturor firmelor, fără `tenant_id`: un trigger nu le poate lega de o firmă; aspectele care le citesc au `timp: "zi"`, deci
+                     # un curs nou ajunge în rezumat la recalcularea zilei. Alegere, nu omisiune.
+                     "curs_bnr_zilnic")
 
 _T_CONTROL_FISCAL = (
     "articole", "asociati", "beneficii_lunare", "bonuri", "casa_operatiuni", "chitante",
@@ -195,7 +217,10 @@ _T_CONTROL_FISCAL = (
     # [lotul 12, 463] Control fiscal spune facturile emise netransmise în SPV, din ultima lor trimitere (triggerul există deja, al supervizorului)
     "efactura_trimiteri",
     # [lotul 13, 670 b] statul de plată și D112 citesc excedentul de diurnă al salariatului (venit asimilat salariilor, CF art.76 alin.(2) lit.k)
-    "diurna_excedent")
+    "diurna_excedent",
+    # [17.5-F6] măsurarea din 28.11.2026 (scripts/scan_dependente.py, 29 de firme): structura istorică a asociaților (`asociati_istoric`, citită
+    # de D205 / dividende prin `dividende_curs.structura_la`) era citită fără să fie în registru — o schimbare a ei nu invalida verdictul
+    "asociati_istoric")
 
 #: SURSE CONDIȚIONATE — citite de `control_fiscal` doar CÂND o fereastră de obligație e deschisă (spre
 #: scadență), nu în fiecare zi. `efactura_primite`: `control_fiscal` numără e-facturile primite
@@ -213,6 +238,15 @@ _T_TERMENE = ("clienti", "d390_manual", "facturi", "firma_profil", "salariati", 
               "d301_operatiuni",
               # [14.3, 719] restanțele (fereastra fără limită jos) judecă și faptele din notele validate (D205 / D301): rândurile notelor
               "inregistrari_linii")
+
+#: [17.5-F6, Cabinet 5] sursele aspectelor secțiunii «Consultanță», MĂSURATE cu `scripts/scan_dependente.py` (PLAN + STAT) pe copia
+#: izolată a bazei de test (masuratori/p2/dependente_masurate.json)
+_T_HOTARARI_AGA = ("firma_profil", "inregistrari", "inregistrari_linii", "solduri_initiale")
+_T_CONSULTANTA = ("firma_profil", "inregistrari", "inregistrari_linii", "solduri_initiale", "asociati", "salariati", "salariu_istoric",
+                  "mijloace_fixe",
+                  # M3 / M5 prin `d101.genereaza`: ajustările fiscale ale rezultatului, reevaluările și legătura notelor de amortizare cu
+                  # mijloacele fixe (`amortizare_lunii`, `mf_linii`)
+                  "ajustari_fiscale", "reevaluari", "mf_linii")
 
 ASPECTE = {
     "solduri": {
@@ -254,6 +288,17 @@ ASPECTE = {
     "mijloace_fixe": {
         "tabele": ("mijloace_fixe",), "tabele_public": (), "timp": None,
         "calcul": _mijloace_fixe},
+    # ── [17.5-F6, Cabinet 5] secțiunea «Consultanță» a cabinetului: funcțiile 501 și 502 pe firmă ──
+    # Pagina cabinetului nu recalculează nimic la deschidere: citește aceste două aspecte (`citeste`), invalidate prin sursele lor, ca
+    # Control fiscal și Termene. `timp: "zi"`: profitul disponibil «la zi», anul calendaristic al hotărârii și măsurile 502 (anul,
+    # luna lucrătoare, plafonul anului) se judecă față de ziua de azi.
+    "hotarari_aga": {
+        "tabele": _T_HOTARARI_AGA, "tabele_public": (), "timp": "zi",
+        "calcul": _hotarari_aga},
+    "consultanta": {
+        # `declaratii_coada` / `declaratii_depuse`: citite de `d101.genereaza` (M3, M5); au `tenant_id`, deci trigger public
+        "tabele": _T_CONSULTANTA, "tabele_public": ("declaratii_depuse", "declaratii_coada"), "timp": "zi",
+        "calcul": _consultanta},
     # ── grele: se calculează împreună, în `recalculeaza_greu` ──
     "termene": {
         "tabele": _T_TERMENE, "tabele_public": ("declaratii_depuse",),
@@ -262,7 +307,8 @@ ASPECTE = {
         # nimic din bază să se fi atins.
         "timp": "zi", "calcul": None},
     "control_fiscal": {
-        "tabele": _T_CONTROL_FISCAL, "tabele_public": ("declaratii_depuse",),
+        # [17.5-F6] măsurarea din 28.11.2026 (29 de firme) a găsit și `declaratii_coada` (public, cu `tenant_id`) — v. `_T_CONTROL_FISCAL`
+        "tabele": _T_CONTROL_FISCAL, "tabele_public": ("declaratii_depuse", "declaratii_coada"),
         # ZI: `evalueaza_firma` primește `azi` și decide „lipsă / de urmărit / la termen" față de
         # termenele legale ale lunii curente. Ieri D300 nu era încă restantă; azi este.
         "timp": "zi", "calcul": None},

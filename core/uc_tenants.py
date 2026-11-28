@@ -6499,18 +6499,151 @@ def _dividend_propus(conn, schema, corp, pentru_nota=True):
         if not structura:
             raise _refuz_dividend(_da.FARA_ASOCIATI, ecran="date_firma")
         sursa, afirmatie = ("463", None) if interimar else _sursa_profitului(cur, schema, data_hot, brut)
+    if numar and pentru_nota:   # [17.5-F5, 501] două hotărâri distincte nu primesc aceeași identitate firmă / an / număr
+        # [17.5-F6, pct.6 (501)] la emiterea notei identitatea se alocă atomic: blocajul tranzacțional pe (firmă, tip, an) ține până la commitul
+        # notei, deci o a doua emitere concurentă cu același număr și altă dată își face verificarea după ce prima e scrisă și e refuzată
+        _cere_numar_liber(conn, schema, numar, data_hot, len(structura) == 1, blocheaza=True)
     try:
-        r = _da.nota_dividend(brut, data_nota or data_hot, interimar, _uc_comun.bifa(corp, "cu_plata", True),
+        # [17.5-F5, pct.5 d)] cota impozitului e cea de la data distribuirii, adică data hotărârii (CF art. 97 alin. (7)); data notei rămâne
+        # data înregistrării (hotărâre 20.12.2025, notă 05.01.2026 -> 10%, ca în tabel, Word și PDF)
+        r = _da.nota_dividend(brut, data_hot, interimar, _uc_comun.bifa(corp, "cu_plata", True),
                               asociati=structura, cont_sursa=sursa)
     except _da.StructuraAsociati as e:   # cotele care nu însumează 100%: se repară în Date firmă → Asociați
         raise _refuz_dividend(str(e), ecran="date_firma")
     except ValueError as e:
         raise _refuz_dividend(str(e))
     fel = "Hotărârea adunării generale a asociaților" if len(r["parti"]) > 1 else "Decizia asociatului unic"
-    return {"nota": r, "interimar": interimar, "brut": brut, "cont_sursa": sursa, "afirmatie": afirmatie,
+    # [17.5-F6, corecția 1 pct.1, decizia lui Costin 28.11.2026] beneficiarul persoană juridică: pe rândul lui nu apar impozitul și netul, iar
+    # totalul impozitului și al netului nu se arată (regimul lui nu se calculează); nota de dividende nu se generează (ar reține o sumă greșită)
+    pj = [p for p in r["parti"] if _da.persoana_juridica(p.get("cnp"))]
+    if pj and pentru_nota:
+        raise _refuz_dividend(_da.NOTA_PJ % pj[0]["nume"])
+    return {"nota": r, "interimar": interimar, "brut": brut, "cont_sursa": sursa, "afirmatie": afirmatie, "pj": bool(pj),
             "document": _jurnal_api.eticheta_document(fel, numar, data_hot), "cota_text": _da.procent_text(r["cota"]),
-            "asociati": [{"nume": p["nume"], "cota": _da.procent_text(p["cota"]), "brut": str(p["brut"]),
-                          "impozit": str(p["impozit"]), "net": str(p["net"])} for p in r["parti"]]}
+            "asociati": [dict({"nume": p["nume"], "cota": _da.procent_text(p["cota"]), "brut": str(p["brut"])},
+                              **({"impozit": None, "net": None, "regim": _da.REGIM_PJ} if p in pj else
+                                 {"impozit": str(p["impozit"]), "net": str(p["net"])})) for p in r["parti"]]}
+
+
+def _cere_numar_liber(conn, schema, numar, data_hot, unic, blocheaza=False):
+    """[17.5-F5, 501] Numărul hotărârii e identitatea ei pe firmă și an: același număr cu altă dată în același an = refuz, cu data găsită.
+    [17.5-F6] `blocheaza=True` (emiterea notei): `pg_advisory_xact_lock` pe (schema, tip, an), ținut până la sfârșitul tranzacției notei —
+    verificarea și scrierea identității sunt atomice față de o emitere concurentă. Previzualizarea și descărcarea nu blochează și nu scriu."""
+    from core import documente_interne as _di
+    import psycopg2.extras as _E
+    tip = "decizie_asociat_unic" if unic else "hotarare_aga"
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        if blocheaza:
+            _di.blocheaza_identitatea(cur, schema, tip, data_hot.year)
+        alte = [x for x in _di.hotarari_cu_numarul(cur, schema, tip, numar, data_hot.year) if x != data_ro(data_hot)]
+    if alte:
+        raise _refuz_dividend("Numărul %s e deja al %s din %s (anul %d): două hotărâri diferite nu pot avea același număr. Scrie alt număr "
+                              "sau data acelei hotărâri." % (numar, "deciziei" if unic else "hotărârii", ", ".join(alte), data_hot.year),
+                              "op-numar_hotarare")
+
+
+def _sugestii_document(conn, schema, nr_asociati, data_hot):
+    """[17.5-F5, 501] Sugestiile documentului, editabile în formular: administratorul din profil, exemplarele (asociații plus unu) și
+    numărul următor al hotărârii în anul ei (sugerat, neconsumat: previzualizarea și descărcarea nu mută contorul)."""
+    from core import documente_interne as _di, hotarare_dividende as _hd
+    import psycopg2.extras as _E
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        profil = _hd.profil_firma(cur, schema)
+        tip = "decizie_asociat_unic" if nr_asociati == 1 else "hotarare_aga"
+        urm = _di.cel_mai_mare(cur, schema, tip, data_hot.year) + 1
+    return {"administrator_sugerat": _hd.administrator_sugerat(profil), "exemplare_sugerate": nr_asociati + 1, "numar_sugerat": str(urm)}
+
+
+def hotarare_dividende(tenant_id, corp, ctx, fel):
+    """[17.5-F5, funcția 501] Hotărârea AGA / decizia asociatului unic în Word (`fel` = "docx") sau PDF, din aceeași propunere ca tabelul
+    și nota (`_dividend_propus`). Nu scrie nimic: nu creează note, nu consumă numere, nu aprobă situații, nu plătește. -> (octeți, nume
+    fișier, tip media). Validarea și izolarea pe firmă sunt cele ale propunerii (schema firmei din accesul utilizatorului)."""
+    from core import hotarare_dividende as _hd
+    import psycopg2.extras as _E
+    if fel not in ("docx", "pdf"):
+        raise _erori.DateInvalide(nomenclator_cerut("format", "docx|pdf"))
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+        if str(corp.get("operatie") or "dividend") != "dividend":
+            raise _refuz_dividend("Hotărârea se generează pentru operația «Dividend».", "op-operatie")
+        p = _dividend_propus(conn, schema, corp, pentru_nota=False)
+        numar = str(corp.get("numar_hotarare") or "").strip()
+        if numar:
+            _cere_numar_liber(conn, schema, numar, _date_iso(corp.get("data_hotarare")), len(p["nota"]["parti"]) == 1)
+        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+            repo_contabilitate.search_path_firma(cur, schema)
+            try:
+                d = _hd.date_document(cur, schema, p, corp)
+            except _hd.LipsaDate as e:
+                if e.camp:
+                    raise _refuz_dividend(str(e), e.camp)
+                raise _erori.DateInvalide(str(e) if not e.unde else {"mesaj": str(e), "unde": e.unde})
+        conn.rollback()   # numai citiri
+    if fel == "docx":
+        return _hd.docx(d), _hd.nume_fisier(d, "docx"), "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    return _hd.pdf(d), _hd.nume_fisier(d, "pdf"), "application/pdf"
+
+
+def consultanta_fiscala(tenant_id, ctx, data=""):
+    """[17.5-F5, funcția 502] Fereastra «Consultanță fiscală» a firmei: măsurile M1–M5 (`core.consultanta_fiscala`), în contextul firmei
+    selectate și al rolului autorizat (accesul se verifică pe conexiunea publică, calculul pe conexiunea firmei, ca D101). Numai citiri."""
+    from core import consultanta_fiscala as _cf
+    from datetime import date as _date
+    try:
+        la = _date.fromisoformat(data[:10]) if data else None
+    except ValueError:
+        raise _erori.DateInvalide("Data cerută nu e o dată validă (AAAA-LL-ZZ).")
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+    with db.get_conn(schema) as conn:
+        return _cf.masuri(conn, schema, la)
+
+
+def cabinet_consultanta(ctx):
+    """[17.5-F6, Cabinet 1–5] Secțiunea «Consultanță» a paginii cabinetului: cele două carduri (501 «Hotărâri AGA», 502 «Consultanță
+    fiscală») pe firmele la care utilizatorul are acces (`auth_api.tenantii_userului`: administratorul pe firmele cabinetului lui,
+    asistentul numai pe cele atribuite, independent de drepturile de conducere). Nu recalculează nimic: citește rezumatele pe firmă
+    (`firma_rezumat.citeste`, aspectele `hotarari_aga` și `consultanta`, invalidate prin sursele lor). O firmă al cărei rezumat nu e la
+    zi nu se arată ca fiind fără nimic de făcut: se numără în `in_recalculare`. `firme_distincte` = firmele distincte care au ceva de
+    făcut pe oricare card (aceeași firmă pe ambele carduri se numără o dată)."""
+    from core import firma_rezumat as _fr
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+        model = _fr.citeste(conn, [f.get("id") for f in firme], ["hotarari_aga", "consultanta"])
+    carduri = {"hotarari_aga": {"firme": [], "in_recalculare": 0}, "consultanta": {"firme": [], "in_recalculare": 0, "economie": "0.00"}}
+    total_ec = Decimal("0")
+    for f in sorted(firme, key=lambda x: (str(x.get("nume") or "").lower(), x.get("id"))):
+        tid = f.get("id")
+        for aspect, card in carduri.items():
+            st = (model.get(tid) or {}).get(aspect) or {}
+            d = st.get("date") or {}
+            if st.get("stare") != _fr.CURENT or d.get("eroare"):
+                card["in_recalculare"] += 1
+                continue
+            if not d.get("eligibil"):
+                continue
+            rand = {"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"), "tip_firma": f.get("tip_firma"),
+                    "regim_contabil": f.get("regim_contabil")}
+            if aspect == "hotarari_aga":
+                rand.update({"disponibil": d.get("disponibil"), "ultima": d.get("ultima")})
+            else:
+                rand.update({"se_aplica": d.get("se_aplica") or [], "lipsesc": d.get("lipsesc") or [], "economie": d.get("economie") or "0.00"})
+                total_ec += Decimal(str(rand["economie"]))
+            card["firme"].append(rand)
+    carduri["consultanta"]["economie"] = str(total_ec.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+    for card in carduri.values():
+        card["n"] = len(card["firme"])
+    distincte = {r["tenant_id"] for c in carduri.values() for r in c["firme"]}
+    return {"firme_accesibile": len(firme), "firme_distincte": len(distincte), "carduri": carduri}
+
+
+def _date_iso(v):
+    from datetime import date as _date
+    return _date.fromisoformat(str(v or "")[:10])
 
 
 def dividende_impartire(tenant_id, corp, ctx):
@@ -6522,9 +6655,14 @@ def dividende_impartire(tenant_id, corp, ctx):
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         p = _dividend_propus(conn, schema, corp, pentru_nota=False)
+        sug = _sugestii_document(conn, schema, len(p["nota"]["parti"]), _date_iso(corp.get("data_hotarare")))
+    from core import decontari_asociati as _da
+    # [17.5-F6, corecția 1 pct.1] cu un asociat persoană juridică totalul impozitului și al netului nu se arată, ci se spune de ce
+    total = {"impozit": None, "net": None, "regim_total": _da.TOTAL_FARA_PJ} if p["pj"] else {"impozit": str(p["nota"]["impozit"]),
+                                                                                              "net": str(p["nota"]["net"])}
     return {"asociati": p["asociati"], "document": p["document"], "cont_sursa": p["cont_sursa"], "cota": p["cota_text"],
-            "brut": str(p["brut"]), "impozit": str(p["nota"]["impozit"]), "net": str(p["nota"]["net"]),
-            "afirmatie": p["afirmatie"]}   # avertismentul despre sursă, tipat (`_sursa_profitului`); ecranul arată `motiv`
+            "brut": str(p["brut"]), **total,
+            "afirmatie": p["afirmatie"], **sug}   # avertismentul despre sursă, tipat (`_sursa_profitului`); ecranul arată `motiv`
 
 
 def nota_asociati(tenant_id, corp, ctx):
@@ -6562,6 +6700,18 @@ def nota_asociati(tenant_id, corp, ctx):
                 d0 = "Restituire dividende interimare încasată (5121=463, OMFP 3067/2018)"
             elif op == "imprumut":
                 if corp.get("fel") == "restituire":
+                    # [17.5-F6, T7] Legea 31/1990 art. 67 alin. (2⁴): fără restituire cât activul net din situațiile anuale e sub jumătate din capital
+                    from core import hotarare_dividende as _hd
+                    import psycopg2.extras as _E
+                    try:
+                        data_op = _date_iso(corp.get("data"))
+                    except ValueError:
+                        data_op = None
+                    if data_op:
+                        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur_d:
+                            blocaj = _hd.restituirea_imprumutului_blocata(cur_d, schema, data_op)
+                        if blocaj:
+                            raise _erori.DateInvalide({"mesaj": blocaj, "erori_campuri": [{"camp": "op-fel", "mesaj": blocaj}]})
                     with conn.cursor() as cur:   # [lotul 13, 524] restituirea stinge datoria către asociați (4551): nu peste soldul ei
                         _os.cere_sold(cur, schema, "4551", corp.get("data"), corp.get("suma") or 0, "creditor",
                                       "Restituirea împrumutului", camp="op-suma")

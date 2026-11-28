@@ -1,6 +1,6 @@
 {
-  "azi": "2026-09-09",
-  "firme_masurate": 20,
+  "azi": "2026-11-28",
+  "firme_masurate": 29,
   "firme_cu_confruntare": 3,
   "aspecte": {
     "solduri": {
@@ -84,6 +84,42 @@
         [
           "tenant_048",
           "solduri_initiale"
+        ],
+        [
+          "tenant_9049",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9050",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9051",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9052",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9053",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9054",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9055",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9057",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9731",
+          "solduri_initiale"
         ]
       ],
       "stat": [
@@ -102,12 +138,12 @@
       ],
       "doar_stat": [],
       "doar_plan": [],
-      "instructiuni": 40,
-      "secunde": 0.191,
-      "neexplicabile": 20,
+      "instructiuni": 58,
+      "secunde": 0.2,
+      "neexplicabile": 29,
       "esecuri_explicare": [],
       "erori_firma": [],
-      "stat_instabil": 0,
+      "stat_instabil": 3,
       "declarat_in_cod": [
         "solduri_initiale"
       ]
@@ -193,6 +229,42 @@
         [
           "tenant_048",
           "plan_conturi"
+        ],
+        [
+          "tenant_9049",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9050",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9051",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9052",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9053",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9054",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9055",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9057",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9731",
+          "plan_conturi"
         ]
       ],
       "stat": [
@@ -211,12 +283,12 @@
       ],
       "doar_stat": [],
       "doar_plan": [],
-      "instructiuni": 20,
-      "secunde": 0.163,
+      "instructiuni": 29,
+      "secunde": 0.169,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
-      "stat_instabil": 0,
+      "stat_instabil": 3,
       "declarat_in_cod": [
         "plan_conturi"
       ]
@@ -224,84 +296,356 @@
     "vector": {
       "plan": [
         [
+          "public",
+          "users"
+        ],
+        [
           "tenant_001",
           "firma_profil"
+        ],
+        [
+          "tenant_001",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_001",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_002",
           "firma_profil"
         ],
         [
+          "tenant_002",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_002",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_003",
           "firma_profil"
+        ],
+        [
+          "tenant_003",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_003",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_004",
           "firma_profil"
         ],
         [
+          "tenant_004",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_004",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_005",
           "firma_profil"
+        ],
+        [
+          "tenant_005",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_005",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_006",
           "firma_profil"
         ],
         [
+          "tenant_006",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_006",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_007",
           "firma_profil"
+        ],
+        [
+          "tenant_007",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_007",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_008",
           "firma_profil"
         ],
         [
+          "tenant_008",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_008",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_009",
           "firma_profil"
+        ],
+        [
+          "tenant_009",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_009",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_010",
           "firma_profil"
         ],
         [
+          "tenant_010",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_010",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_011",
           "firma_profil"
+        ],
+        [
+          "tenant_011",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_011",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_012",
           "firma_profil"
         ],
         [
+          "tenant_012",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_012",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_013",
           "firma_profil"
+        ],
+        [
+          "tenant_013",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_013",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_014",
           "firma_profil"
         ],
         [
+          "tenant_014",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_014",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_015",
           "firma_profil"
+        ],
+        [
+          "tenant_015",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_015",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_016",
           "firma_profil"
         ],
         [
+          "tenant_016",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_016",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_017",
           "firma_profil"
+        ],
+        [
+          "tenant_017",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_017",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_018",
           "firma_profil"
         ],
         [
+          "tenant_018",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_018",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_045",
           "firma_profil"
         ],
         [
+          "tenant_045",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_045",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_048",
           "firma_profil"
+        ],
+        [
+          "tenant_048",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_048",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9049",
+          "firma_profil"
+        ],
+        [
+          "tenant_9049",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_9049",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9050",
+          "firma_profil"
+        ],
+        [
+          "tenant_9050",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_9050",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9051",
+          "firma_profil"
+        ],
+        [
+          "tenant_9051",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_9051",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9052",
+          "firma_profil"
+        ],
+        [
+          "tenant_9052",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_9052",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9053",
+          "firma_profil"
+        ],
+        [
+          "tenant_9053",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_9053",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9054",
+          "firma_profil"
+        ],
+        [
+          "tenant_9054",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_9054",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9055",
+          "firma_profil"
+        ],
+        [
+          "tenant_9055",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_9055",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9057",
+          "firma_profil"
+        ],
+        [
+          "tenant_9057",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_9057",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9731",
+          "firma_profil"
+        ],
+        [
+          "tenant_9731",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_9731",
+          "tva_incasare_perioade"
         ]
       ],
       "stat": [
@@ -310,24 +654,55 @@
           "firma_profil"
         ],
         [
+          "tenant_001",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_001",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_002",
           "firma_profil"
         ],
         [
+          "tenant_002",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_002",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_003",
           "firma_profil"
+        ],
+        [
+          "tenant_003",
+          "firma_profil_jurnal"
+        ],
+        [
+          "tenant_003",
+          "tva_incasare_perioade"
         ]
       ],
       "doar_stat": [],
-      "doar_plan": [],
-      "instructiuni": 20,
-      "secunde": 0.165,
+      "doar_plan": [
+        [
+          "public",
+          "users"
+        ]
+      ],
+      "instructiuni": 145,
+      "secunde": 0.362,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
-      "stat_instabil": 0,
+      "stat_instabil": 3,
       "declarat_in_cod": [
-        "firma_profil"
+        "firma_profil",
+        "firma_profil_jurnal",
+        "tva_incasare_perioade"
       ]
     },
     "parteneri": {
@@ -411,6 +786,42 @@
         [
           "tenant_048",
           "solduri_parteneri"
+        ],
+        [
+          "tenant_9049",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_9050",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_9051",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_9052",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_9053",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_9054",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_9055",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_9057",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_9731",
+          "solduri_parteneri"
         ]
       ],
       "stat": [
@@ -429,12 +840,12 @@
       ],
       "doar_stat": [],
       "doar_plan": [],
-      "instructiuni": 40,
-      "secunde": 0.174,
-      "neexplicabile": 20,
+      "instructiuni": 58,
+      "secunde": 0.16,
+      "neexplicabile": 29,
       "esecuri_explicare": [],
       "erori_firma": [],
-      "stat_instabil": 0,
+      "stat_instabil": 3,
       "declarat_in_cod": [
         "solduri_parteneri"
       ]
@@ -520,6 +931,42 @@
         [
           "tenant_048",
           "salariati"
+        ],
+        [
+          "tenant_9049",
+          "salariati"
+        ],
+        [
+          "tenant_9050",
+          "salariati"
+        ],
+        [
+          "tenant_9051",
+          "salariati"
+        ],
+        [
+          "tenant_9052",
+          "salariati"
+        ],
+        [
+          "tenant_9053",
+          "salariati"
+        ],
+        [
+          "tenant_9054",
+          "salariati"
+        ],
+        [
+          "tenant_9055",
+          "salariati"
+        ],
+        [
+          "tenant_9057",
+          "salariati"
+        ],
+        [
+          "tenant_9731",
+          "salariati"
         ]
       ],
       "stat": [
@@ -538,12 +985,12 @@
       ],
       "doar_stat": [],
       "doar_plan": [],
-      "instructiuni": 40,
-      "secunde": 0.182,
+      "instructiuni": 58,
+      "secunde": 0.161,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
-      "stat_instabil": 0,
+      "stat_instabil": 3,
       "declarat_in_cod": [
         "salariati"
       ]
@@ -629,6 +1076,42 @@
         [
           "tenant_048",
           "asociati"
+        ],
+        [
+          "tenant_9049",
+          "asociati"
+        ],
+        [
+          "tenant_9050",
+          "asociati"
+        ],
+        [
+          "tenant_9051",
+          "asociati"
+        ],
+        [
+          "tenant_9052",
+          "asociati"
+        ],
+        [
+          "tenant_9053",
+          "asociati"
+        ],
+        [
+          "tenant_9054",
+          "asociati"
+        ],
+        [
+          "tenant_9055",
+          "asociati"
+        ],
+        [
+          "tenant_9057",
+          "asociati"
+        ],
+        [
+          "tenant_9731",
+          "asociati"
         ]
       ],
       "stat": [
@@ -647,12 +1130,12 @@
       ],
       "doar_stat": [],
       "doar_plan": [],
-      "instructiuni": 40,
-      "secunde": 0.174,
+      "instructiuni": 58,
+      "secunde": 0.161,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
-      "stat_instabil": 0,
+      "stat_instabil": 3,
       "declarat_in_cod": [
         "asociati"
       ]
@@ -738,6 +1221,42 @@
         [
           "tenant_048",
           "mijloace_fixe"
+        ],
+        [
+          "tenant_9049",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9050",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9051",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9052",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9053",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9054",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9055",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9057",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9731",
+          "mijloace_fixe"
         ]
       ],
       "stat": [
@@ -756,14 +1275,1286 @@
       ],
       "doar_stat": [],
       "doar_plan": [],
-      "instructiuni": 40,
-      "secunde": 0.171,
+      "instructiuni": 58,
+      "secunde": 0.133,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
-      "stat_instabil": 0,
+      "stat_instabil": 3,
       "declarat_in_cod": [
         "mijloace_fixe"
+      ]
+    },
+    "hotarari_aga": {
+      "plan": [
+        [
+          "public",
+          "tenants"
+        ],
+        [
+          "tenant_001",
+          "firma_profil"
+        ],
+        [
+          "tenant_001",
+          "inregistrari"
+        ],
+        [
+          "tenant_001",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_001",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_002",
+          "firma_profil"
+        ],
+        [
+          "tenant_002",
+          "inregistrari"
+        ],
+        [
+          "tenant_002",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_002",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_003",
+          "firma_profil"
+        ],
+        [
+          "tenant_003",
+          "inregistrari"
+        ],
+        [
+          "tenant_003",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_003",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_004",
+          "firma_profil"
+        ],
+        [
+          "tenant_004",
+          "inregistrari"
+        ],
+        [
+          "tenant_004",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_004",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_005",
+          "firma_profil"
+        ],
+        [
+          "tenant_005",
+          "inregistrari"
+        ],
+        [
+          "tenant_005",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_005",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_006",
+          "firma_profil"
+        ],
+        [
+          "tenant_006",
+          "inregistrari"
+        ],
+        [
+          "tenant_006",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_006",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_007",
+          "firma_profil"
+        ],
+        [
+          "tenant_007",
+          "inregistrari"
+        ],
+        [
+          "tenant_007",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_007",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_008",
+          "firma_profil"
+        ],
+        [
+          "tenant_008",
+          "inregistrari"
+        ],
+        [
+          "tenant_008",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_008",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_009",
+          "firma_profil"
+        ],
+        [
+          "tenant_009",
+          "inregistrari"
+        ],
+        [
+          "tenant_009",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_009",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_010",
+          "firma_profil"
+        ],
+        [
+          "tenant_010",
+          "inregistrari"
+        ],
+        [
+          "tenant_010",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_010",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_011",
+          "firma_profil"
+        ],
+        [
+          "tenant_011",
+          "inregistrari"
+        ],
+        [
+          "tenant_011",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_011",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_012",
+          "firma_profil"
+        ],
+        [
+          "tenant_012",
+          "inregistrari"
+        ],
+        [
+          "tenant_012",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_012",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_013",
+          "firma_profil"
+        ],
+        [
+          "tenant_013",
+          "inregistrari"
+        ],
+        [
+          "tenant_013",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_013",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_014",
+          "firma_profil"
+        ],
+        [
+          "tenant_014",
+          "inregistrari"
+        ],
+        [
+          "tenant_014",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_014",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_015",
+          "firma_profil"
+        ],
+        [
+          "tenant_015",
+          "inregistrari"
+        ],
+        [
+          "tenant_015",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_015",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_016",
+          "firma_profil"
+        ],
+        [
+          "tenant_016",
+          "inregistrari"
+        ],
+        [
+          "tenant_016",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_016",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_017",
+          "firma_profil"
+        ],
+        [
+          "tenant_017",
+          "inregistrari"
+        ],
+        [
+          "tenant_017",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_017",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_018",
+          "firma_profil"
+        ],
+        [
+          "tenant_018",
+          "inregistrari"
+        ],
+        [
+          "tenant_018",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_018",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_045",
+          "firma_profil"
+        ],
+        [
+          "tenant_045",
+          "inregistrari"
+        ],
+        [
+          "tenant_045",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_045",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_048",
+          "firma_profil"
+        ],
+        [
+          "tenant_048",
+          "inregistrari"
+        ],
+        [
+          "tenant_9049",
+          "firma_profil"
+        ],
+        [
+          "tenant_9049",
+          "inregistrari"
+        ],
+        [
+          "tenant_9049",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9049",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9050",
+          "firma_profil"
+        ],
+        [
+          "tenant_9050",
+          "inregistrari"
+        ],
+        [
+          "tenant_9050",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9050",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9051",
+          "firma_profil"
+        ],
+        [
+          "tenant_9051",
+          "inregistrari"
+        ],
+        [
+          "tenant_9051",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9051",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9052",
+          "firma_profil"
+        ],
+        [
+          "tenant_9052",
+          "inregistrari"
+        ],
+        [
+          "tenant_9053",
+          "firma_profil"
+        ],
+        [
+          "tenant_9053",
+          "inregistrari"
+        ],
+        [
+          "tenant_9053",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9053",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9054",
+          "firma_profil"
+        ],
+        [
+          "tenant_9054",
+          "inregistrari"
+        ],
+        [
+          "tenant_9054",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9054",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9055",
+          "firma_profil"
+        ],
+        [
+          "tenant_9055",
+          "inregistrari"
+        ],
+        [
+          "tenant_9055",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9055",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9057",
+          "firma_profil"
+        ],
+        [
+          "tenant_9057",
+          "inregistrari"
+        ],
+        [
+          "tenant_9057",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9057",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9731",
+          "firma_profil"
+        ],
+        [
+          "tenant_9731",
+          "inregistrari"
+        ],
+        [
+          "tenant_9731",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9731",
+          "solduri_initiale"
+        ]
+      ],
+      "stat": [
+        [
+          "public",
+          "tenants"
+        ],
+        [
+          "tenant_001",
+          "firma_profil"
+        ],
+        [
+          "tenant_001",
+          "inregistrari"
+        ],
+        [
+          "tenant_001",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_001",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_002",
+          "firma_profil"
+        ],
+        [
+          "tenant_002",
+          "inregistrari"
+        ],
+        [
+          "tenant_002",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_002",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_003",
+          "firma_profil"
+        ],
+        [
+          "tenant_003",
+          "inregistrari"
+        ],
+        [
+          "tenant_003",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_003",
+          "solduri_initiale"
+        ]
+      ],
+      "doar_stat": [],
+      "doar_plan": [],
+      "instructiuni": 230,
+      "secunde": 0.459,
+      "neexplicabile": 0,
+      "esecuri_explicare": [],
+      "erori_firma": [],
+      "stat_instabil": 3,
+      "declarat_in_cod": [
+        "firma_profil",
+        "inregistrari",
+        "inregistrari_linii",
+        "solduri_initiale"
+      ]
+    },
+    "consultanta": {
+      "plan": [
+        [
+          "public",
+          "curs_bnr_zilnic"
+        ],
+        [
+          "public",
+          "declaratii_coada"
+        ],
+        [
+          "public",
+          "declaratii_depuse"
+        ],
+        [
+          "public",
+          "tenants"
+        ],
+        [
+          "tenant_001",
+          "asociati"
+        ],
+        [
+          "tenant_001",
+          "firma_profil"
+        ],
+        [
+          "tenant_001",
+          "inregistrari"
+        ],
+        [
+          "tenant_001",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_001",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_001",
+          "salariati"
+        ],
+        [
+          "tenant_001",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_001",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_002",
+          "asociati"
+        ],
+        [
+          "tenant_002",
+          "firma_profil"
+        ],
+        [
+          "tenant_002",
+          "salariati"
+        ],
+        [
+          "tenant_002",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_003",
+          "asociati"
+        ],
+        [
+          "tenant_003",
+          "firma_profil"
+        ],
+        [
+          "tenant_003",
+          "salariati"
+        ],
+        [
+          "tenant_003",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_004",
+          "asociati"
+        ],
+        [
+          "tenant_004",
+          "firma_profil"
+        ],
+        [
+          "tenant_004",
+          "inregistrari"
+        ],
+        [
+          "tenant_004",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_004",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_004",
+          "salariati"
+        ],
+        [
+          "tenant_004",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_004",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_005",
+          "ajustari_fiscale"
+        ],
+        [
+          "tenant_005",
+          "asociati"
+        ],
+        [
+          "tenant_005",
+          "firma_profil"
+        ],
+        [
+          "tenant_005",
+          "inregistrari"
+        ],
+        [
+          "tenant_005",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_005",
+          "mf_linii"
+        ],
+        [
+          "tenant_005",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_005",
+          "reevaluari"
+        ],
+        [
+          "tenant_005",
+          "salariati"
+        ],
+        [
+          "tenant_005",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_005",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_006",
+          "asociati"
+        ],
+        [
+          "tenant_006",
+          "firma_profil"
+        ],
+        [
+          "tenant_006",
+          "salariati"
+        ],
+        [
+          "tenant_006",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_007",
+          "asociati"
+        ],
+        [
+          "tenant_007",
+          "firma_profil"
+        ],
+        [
+          "tenant_007",
+          "inregistrari"
+        ],
+        [
+          "tenant_007",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_007",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_007",
+          "salariati"
+        ],
+        [
+          "tenant_007",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_007",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_008",
+          "asociati"
+        ],
+        [
+          "tenant_008",
+          "firma_profil"
+        ],
+        [
+          "tenant_008",
+          "inregistrari"
+        ],
+        [
+          "tenant_008",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_008",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_008",
+          "salariati"
+        ],
+        [
+          "tenant_008",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_008",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_009",
+          "asociati"
+        ],
+        [
+          "tenant_009",
+          "firma_profil"
+        ],
+        [
+          "tenant_009",
+          "salariati"
+        ],
+        [
+          "tenant_009",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_010",
+          "asociati"
+        ],
+        [
+          "tenant_010",
+          "firma_profil"
+        ],
+        [
+          "tenant_010",
+          "inregistrari"
+        ],
+        [
+          "tenant_010",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_010",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_010",
+          "salariati"
+        ],
+        [
+          "tenant_010",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_010",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_011",
+          "asociati"
+        ],
+        [
+          "tenant_011",
+          "firma_profil"
+        ],
+        [
+          "tenant_011",
+          "salariati"
+        ],
+        [
+          "tenant_011",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_012",
+          "asociati"
+        ],
+        [
+          "tenant_012",
+          "firma_profil"
+        ],
+        [
+          "tenant_012",
+          "salariati"
+        ],
+        [
+          "tenant_012",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_013",
+          "asociati"
+        ],
+        [
+          "tenant_013",
+          "firma_profil"
+        ],
+        [
+          "tenant_013",
+          "inregistrari"
+        ],
+        [
+          "tenant_013",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_013",
+          "salariati"
+        ],
+        [
+          "tenant_013",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_013",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_014",
+          "ajustari_fiscale"
+        ],
+        [
+          "tenant_014",
+          "asociati"
+        ],
+        [
+          "tenant_014",
+          "firma_profil"
+        ],
+        [
+          "tenant_014",
+          "inregistrari"
+        ],
+        [
+          "tenant_014",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_014",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_014",
+          "reevaluari"
+        ],
+        [
+          "tenant_014",
+          "salariati"
+        ],
+        [
+          "tenant_014",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_014",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_015",
+          "asociati"
+        ],
+        [
+          "tenant_015",
+          "firma_profil"
+        ],
+        [
+          "tenant_015",
+          "salariati"
+        ],
+        [
+          "tenant_015",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_016",
+          "asociati"
+        ],
+        [
+          "tenant_016",
+          "firma_profil"
+        ],
+        [
+          "tenant_016",
+          "inregistrari"
+        ],
+        [
+          "tenant_016",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_016",
+          "salariati"
+        ],
+        [
+          "tenant_016",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_016",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_017",
+          "asociati"
+        ],
+        [
+          "tenant_017",
+          "firma_profil"
+        ],
+        [
+          "tenant_017",
+          "salariati"
+        ],
+        [
+          "tenant_017",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_018",
+          "firma_profil"
+        ],
+        [
+          "tenant_018",
+          "salariati"
+        ],
+        [
+          "tenant_018",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_045",
+          "firma_profil"
+        ],
+        [
+          "tenant_045",
+          "salariati"
+        ],
+        [
+          "tenant_045",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_048",
+          "firma_profil"
+        ],
+        [
+          "tenant_048",
+          "salariati"
+        ],
+        [
+          "tenant_048",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9049",
+          "asociati"
+        ],
+        [
+          "tenant_9049",
+          "firma_profil"
+        ],
+        [
+          "tenant_9049",
+          "salariati"
+        ],
+        [
+          "tenant_9049",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9050",
+          "ajustari_fiscale"
+        ],
+        [
+          "tenant_9050",
+          "asociati"
+        ],
+        [
+          "tenant_9050",
+          "firma_profil"
+        ],
+        [
+          "tenant_9050",
+          "inregistrari"
+        ],
+        [
+          "tenant_9050",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9050",
+          "mf_linii"
+        ],
+        [
+          "tenant_9050",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9050",
+          "reevaluari"
+        ],
+        [
+          "tenant_9050",
+          "salariati"
+        ],
+        [
+          "tenant_9050",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9050",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9051",
+          "asociati"
+        ],
+        [
+          "tenant_9051",
+          "firma_profil"
+        ],
+        [
+          "tenant_9051",
+          "salariati"
+        ],
+        [
+          "tenant_9051",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9052",
+          "firma_profil"
+        ],
+        [
+          "tenant_9052",
+          "salariati"
+        ],
+        [
+          "tenant_9052",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9053",
+          "asociati"
+        ],
+        [
+          "tenant_9053",
+          "firma_profil"
+        ],
+        [
+          "tenant_9053",
+          "salariati"
+        ],
+        [
+          "tenant_9053",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9054",
+          "firma_profil"
+        ],
+        [
+          "tenant_9054",
+          "salariati"
+        ],
+        [
+          "tenant_9054",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9055",
+          "asociati"
+        ],
+        [
+          "tenant_9055",
+          "firma_profil"
+        ],
+        [
+          "tenant_9055",
+          "inregistrari"
+        ],
+        [
+          "tenant_9055",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9055",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9055",
+          "salariati"
+        ],
+        [
+          "tenant_9055",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9055",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9057",
+          "firma_profil"
+        ],
+        [
+          "tenant_9057",
+          "salariati"
+        ],
+        [
+          "tenant_9057",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9731",
+          "firma_profil"
+        ],
+        [
+          "tenant_9731",
+          "salariati"
+        ],
+        [
+          "tenant_9731",
+          "salariu_istoric"
+        ]
+      ],
+      "stat": [
+        [
+          "public",
+          "curs_bnr_zilnic"
+        ],
+        [
+          "tenant_001",
+          "asociati"
+        ],
+        [
+          "tenant_001",
+          "firma_profil"
+        ],
+        [
+          "tenant_001",
+          "inregistrari"
+        ],
+        [
+          "tenant_001",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_001",
+          "salariati"
+        ],
+        [
+          "tenant_001",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_001",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_002",
+          "asociati"
+        ],
+        [
+          "tenant_002",
+          "firma_profil"
+        ],
+        [
+          "tenant_002",
+          "salariati"
+        ],
+        [
+          "tenant_003",
+          "asociati"
+        ],
+        [
+          "tenant_003",
+          "firma_profil"
+        ],
+        [
+          "tenant_003",
+          "salariati"
+        ],
+        [
+          "tenant_003",
+          "salariu_istoric"
+        ]
+      ],
+      "doar_stat": [],
+      "doar_plan": [
+        [
+          "tenant_001",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_002",
+          "salariu_istoric"
+        ]
+      ],
+      "instructiuni": 386,
+      "secunde": 0.486,
+      "neexplicabile": 32,
+      "esecuri_explicare": [],
+      "erori_firma": [],
+      "stat_instabil": 3,
+      "declarat_in_cod": [
+        "ajustari_fiscale",
+        "asociati",
+        "firma_profil",
+        "inregistrari",
+        "inregistrari_linii",
+        "mf_linii",
+        "mijloace_fixe",
+        "reevaluari",
+        "salariati",
+        "salariu_istoric",
+        "solduri_initiale"
       ]
     },
     "termene": {
@@ -798,7 +2589,31 @@
         ],
         [
           "tenant_001",
+          "inregistrari"
+        ],
+        [
+          "tenant_001",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_001",
           "salariati"
+        ],
+        [
+          "tenant_001",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_002",
+          "clienti"
+        ],
+        [
+          "tenant_002",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_002",
+          "facturi"
         ],
         [
           "tenant_002",
@@ -806,7 +2621,19 @@
         ],
         [
           "tenant_002",
+          "inregistrari"
+        ],
+        [
+          "tenant_002",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_002",
           "salariati"
+        ],
+        [
+          "tenant_002",
+          "solduri_initiale"
         ],
         [
           "tenant_003",
@@ -826,11 +2653,27 @@
         ],
         [
           "tenant_003",
+          "inregistrari"
+        ],
+        [
+          "tenant_003",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_003",
           "salariati"
+        ],
+        [
+          "tenant_003",
+          "solduri_initiale"
         ],
         [
           "tenant_004",
           "clienti"
+        ],
+        [
+          "tenant_004",
+          "d390_manual"
         ],
         [
           "tenant_004",
@@ -842,7 +2685,19 @@
         ],
         [
           "tenant_004",
+          "inregistrari"
+        ],
+        [
+          "tenant_004",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_004",
           "salariati"
+        ],
+        [
+          "tenant_004",
+          "solduri_initiale"
         ],
         [
           "tenant_005",
@@ -862,7 +2717,35 @@
         ],
         [
           "tenant_005",
+          "inregistrari"
+        ],
+        [
+          "tenant_005",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_005",
           "salariati"
+        ],
+        [
+          "tenant_005",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_006",
+          "clienti"
+        ],
+        [
+          "tenant_006",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_006",
+          "d390_manual"
+        ],
+        [
+          "tenant_006",
+          "facturi"
         ],
         [
           "tenant_006",
@@ -870,7 +2753,19 @@
         ],
         [
           "tenant_006",
+          "inregistrari"
+        ],
+        [
+          "tenant_006",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_006",
           "salariati"
+        ],
+        [
+          "tenant_006",
+          "solduri_initiale"
         ],
         [
           "tenant_007",
@@ -890,7 +2785,19 @@
         ],
         [
           "tenant_007",
+          "inregistrari"
+        ],
+        [
+          "tenant_007",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_007",
           "salariati"
+        ],
+        [
+          "tenant_007",
+          "solduri_initiale"
         ],
         [
           "tenant_008",
@@ -910,7 +2817,31 @@
         ],
         [
           "tenant_008",
+          "inregistrari"
+        ],
+        [
+          "tenant_008",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_008",
           "salariati"
+        ],
+        [
+          "tenant_008",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_009",
+          "clienti"
+        ],
+        [
+          "tenant_009",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_009",
+          "facturi"
         ],
         [
           "tenant_009",
@@ -918,7 +2849,19 @@
         ],
         [
           "tenant_009",
+          "inregistrari"
+        ],
+        [
+          "tenant_009",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_009",
           "salariati"
+        ],
+        [
+          "tenant_009",
+          "solduri_initiale"
         ],
         [
           "tenant_010",
@@ -938,7 +2881,31 @@
         ],
         [
           "tenant_010",
+          "inregistrari"
+        ],
+        [
+          "tenant_010",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_010",
           "salariati"
+        ],
+        [
+          "tenant_010",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_011",
+          "clienti"
+        ],
+        [
+          "tenant_011",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_011",
+          "facturi"
         ],
         [
           "tenant_011",
@@ -946,7 +2913,19 @@
         ],
         [
           "tenant_011",
+          "inregistrari"
+        ],
+        [
+          "tenant_011",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_011",
           "salariati"
+        ],
+        [
+          "tenant_011",
+          "solduri_initiale"
         ],
         [
           "tenant_012",
@@ -966,11 +2945,27 @@
         ],
         [
           "tenant_012",
+          "inregistrari"
+        ],
+        [
+          "tenant_012",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_012",
           "salariati"
+        ],
+        [
+          "tenant_012",
+          "solduri_initiale"
         ],
         [
           "tenant_013",
           "clienti"
+        ],
+        [
+          "tenant_013",
+          "d390_manual"
         ],
         [
           "tenant_013",
@@ -982,7 +2977,31 @@
         ],
         [
           "tenant_013",
+          "inregistrari"
+        ],
+        [
+          "tenant_013",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_013",
           "salariati"
+        ],
+        [
+          "tenant_013",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_014",
+          "clienti"
+        ],
+        [
+          "tenant_014",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_014",
+          "facturi"
         ],
         [
           "tenant_014",
@@ -990,7 +3009,19 @@
         ],
         [
           "tenant_014",
+          "inregistrari"
+        ],
+        [
+          "tenant_014",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_014",
           "salariati"
+        ],
+        [
+          "tenant_014",
+          "solduri_initiale"
         ],
         [
           "tenant_015",
@@ -1010,11 +3041,27 @@
         ],
         [
           "tenant_015",
+          "inregistrari"
+        ],
+        [
+          "tenant_015",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_015",
           "salariati"
+        ],
+        [
+          "tenant_015",
+          "solduri_initiale"
         ],
         [
           "tenant_016",
           "clienti"
+        ],
+        [
+          "tenant_016",
+          "d390_manual"
         ],
         [
           "tenant_016",
@@ -1026,11 +3073,27 @@
         ],
         [
           "tenant_016",
+          "inregistrari"
+        ],
+        [
+          "tenant_016",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_016",
           "salariati"
+        ],
+        [
+          "tenant_016",
+          "solduri_initiale"
         ],
         [
           "tenant_017",
           "clienti"
+        ],
+        [
+          "tenant_017",
+          "d390_manual"
         ],
         [
           "tenant_017",
@@ -1042,7 +3105,19 @@
         ],
         [
           "tenant_017",
+          "inregistrari"
+        ],
+        [
+          "tenant_017",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_017",
           "salariati"
+        ],
+        [
+          "tenant_017",
+          "solduri_initiale"
         ],
         [
           "tenant_018",
@@ -1062,7 +3137,19 @@
         ],
         [
           "tenant_018",
+          "inregistrari"
+        ],
+        [
+          "tenant_018",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_018",
           "salariati"
+        ],
+        [
+          "tenant_018",
+          "solduri_initiale"
         ],
         [
           "tenant_045",
@@ -1082,7 +3169,31 @@
         ],
         [
           "tenant_045",
+          "inregistrari"
+        ],
+        [
+          "tenant_045",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_045",
           "salariati"
+        ],
+        [
+          "tenant_045",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_048",
+          "clienti"
+        ],
+        [
+          "tenant_048",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_048",
+          "facturi"
         ],
         [
           "tenant_048",
@@ -1090,7 +3201,311 @@
         ],
         [
           "tenant_048",
+          "inregistrari"
+        ],
+        [
+          "tenant_048",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_048",
           "salariati"
+        ],
+        [
+          "tenant_048",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9049",
+          "clienti"
+        ],
+        [
+          "tenant_9049",
+          "d390_manual"
+        ],
+        [
+          "tenant_9049",
+          "facturi"
+        ],
+        [
+          "tenant_9049",
+          "firma_profil"
+        ],
+        [
+          "tenant_9049",
+          "inregistrari"
+        ],
+        [
+          "tenant_9049",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9049",
+          "salariati"
+        ],
+        [
+          "tenant_9049",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9050",
+          "clienti"
+        ],
+        [
+          "tenant_9050",
+          "d390_manual"
+        ],
+        [
+          "tenant_9050",
+          "facturi"
+        ],
+        [
+          "tenant_9050",
+          "firma_profil"
+        ],
+        [
+          "tenant_9050",
+          "inregistrari"
+        ],
+        [
+          "tenant_9050",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9050",
+          "salariati"
+        ],
+        [
+          "tenant_9050",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9051",
+          "clienti"
+        ],
+        [
+          "tenant_9051",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9051",
+          "d390_manual"
+        ],
+        [
+          "tenant_9051",
+          "facturi"
+        ],
+        [
+          "tenant_9051",
+          "firma_profil"
+        ],
+        [
+          "tenant_9051",
+          "inregistrari"
+        ],
+        [
+          "tenant_9051",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9051",
+          "salariati"
+        ],
+        [
+          "tenant_9051",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9052",
+          "clienti"
+        ],
+        [
+          "tenant_9052",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9052",
+          "facturi"
+        ],
+        [
+          "tenant_9052",
+          "firma_profil"
+        ],
+        [
+          "tenant_9052",
+          "inregistrari"
+        ],
+        [
+          "tenant_9052",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9052",
+          "salariati"
+        ],
+        [
+          "tenant_9052",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9053",
+          "clienti"
+        ],
+        [
+          "tenant_9053",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9053",
+          "facturi"
+        ],
+        [
+          "tenant_9053",
+          "firma_profil"
+        ],
+        [
+          "tenant_9053",
+          "inregistrari"
+        ],
+        [
+          "tenant_9053",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9053",
+          "salariati"
+        ],
+        [
+          "tenant_9053",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9054",
+          "clienti"
+        ],
+        [
+          "tenant_9054",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9054",
+          "facturi"
+        ],
+        [
+          "tenant_9054",
+          "firma_profil"
+        ],
+        [
+          "tenant_9054",
+          "inregistrari"
+        ],
+        [
+          "tenant_9054",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9054",
+          "salariati"
+        ],
+        [
+          "tenant_9054",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9055",
+          "clienti"
+        ],
+        [
+          "tenant_9055",
+          "d390_manual"
+        ],
+        [
+          "tenant_9055",
+          "facturi"
+        ],
+        [
+          "tenant_9055",
+          "firma_profil"
+        ],
+        [
+          "tenant_9055",
+          "inregistrari"
+        ],
+        [
+          "tenant_9055",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9055",
+          "salariati"
+        ],
+        [
+          "tenant_9055",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9057",
+          "clienti"
+        ],
+        [
+          "tenant_9057",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9057",
+          "facturi"
+        ],
+        [
+          "tenant_9057",
+          "firma_profil"
+        ],
+        [
+          "tenant_9057",
+          "inregistrari"
+        ],
+        [
+          "tenant_9057",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9057",
+          "salariati"
+        ],
+        [
+          "tenant_9057",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9731",
+          "clienti"
+        ],
+        [
+          "tenant_9731",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9731",
+          "facturi"
+        ],
+        [
+          "tenant_9731",
+          "firma_profil"
+        ],
+        [
+          "tenant_9731",
+          "inregistrari"
+        ],
+        [
+          "tenant_9731",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9731",
+          "salariati"
+        ],
+        [
+          "tenant_9731",
+          "solduri_initiale"
         ]
       ],
       "stat": [
@@ -1108,6 +3523,10 @@
         ],
         [
           "tenant_001",
+          "clienti"
+        ],
+        [
+          "tenant_001",
           "d390_manual"
         ],
         [
@@ -1120,7 +3539,31 @@
         ],
         [
           "tenant_001",
+          "inregistrari"
+        ],
+        [
+          "tenant_001",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_001",
           "salariati"
+        ],
+        [
+          "tenant_001",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_002",
+          "clienti"
+        ],
+        [
+          "tenant_002",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_002",
+          "facturi"
         ],
         [
           "tenant_002",
@@ -1128,7 +3571,19 @@
         ],
         [
           "tenant_002",
+          "inregistrari"
+        ],
+        [
+          "tenant_002",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_002",
           "salariati"
+        ],
+        [
+          "tenant_002",
+          "solduri_initiale"
         ],
         [
           "tenant_003",
@@ -1148,28 +3603,39 @@
         ],
         [
           "tenant_003",
+          "inregistrari"
+        ],
+        [
+          "tenant_003",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_003",
           "salariati"
+        ],
+        [
+          "tenant_003",
+          "solduri_initiale"
         ]
       ],
       "doar_stat": [],
-      "doar_plan": [
-        [
-          "tenant_001",
-          "clienti"
-        ]
-      ],
-      "instructiuni": 396,
-      "secunde": 1.863,
+      "doar_plan": [],
+      "instructiuni": 11318,
+      "secunde": 3.454,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
-      "stat_instabil": 0,
+      "stat_instabil": 6,
       "declarat_in_cod": [
         "clienti",
+        "d301_operatiuni",
         "d390_manual",
         "facturi",
         "firma_profil",
-        "salariati"
+        "inregistrari",
+        "inregistrari_linii",
+        "salariati",
+        "solduri_initiale"
       ]
     },
     "control_fiscal": {
@@ -1180,7 +3646,15 @@
         ],
         [
           "public",
+          "declaratii_coada"
+        ],
+        [
+          "public",
           "declaratii_depuse"
+        ],
+        [
+          "public",
+          "spv_token"
         ],
         [
           "public",
@@ -1212,11 +3686,19 @@
         ],
         [
           "tenant_001",
+          "centre_cost"
+        ],
+        [
+          "tenant_001",
           "chitante"
         ],
         [
           "tenant_001",
           "clienti"
+        ],
+        [
+          "tenant_001",
+          "compensari"
         ],
         [
           "tenant_001",
@@ -1240,11 +3722,27 @@
         ],
         [
           "tenant_001",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_001",
+          "efactura_primite"
+        ],
+        [
+          "tenant_001",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_001",
           "extras_linii"
         ],
         [
           "tenant_001",
           "factura_linii"
+        ],
+        [
+          "tenant_001",
+          "factura_tva_cote"
         ],
         [
           "tenant_001",
@@ -1269,6 +3767,14 @@
         [
           "tenant_001",
           "mijloace_fixe"
+        ],
+        [
+          "tenant_001",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_001",
+          "nir"
         ],
         [
           "tenant_001",
@@ -1284,6 +3790,18 @@
         ],
         [
           "tenant_001",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_001",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_001",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_001",
           "salariati"
         ],
         [
@@ -1295,16 +3813,20 @@
           "solduri_initiale"
         ],
         [
+          "tenant_001",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_001",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_002",
           "articole"
         ],
         [
           "tenant_002",
           "asociati"
-        ],
-        [
-          "tenant_002",
-          "beneficii_lunare"
         ],
         [
           "tenant_002",
@@ -1316,15 +3838,15 @@
         ],
         [
           "tenant_002",
+          "centre_cost"
+        ],
+        [
+          "tenant_002",
           "chitante"
         ],
         [
           "tenant_002",
           "clienti"
-        ],
-        [
-          "tenant_002",
-          "concedii_medicale"
         ],
         [
           "tenant_002",
@@ -1372,11 +3894,23 @@
         ],
         [
           "tenant_002",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_002",
+          "nir"
+        ],
+        [
+          "tenant_002",
           "perioada_confirmata"
         ],
         [
           "tenant_002",
           "plan_conturi"
+        ],
+        [
+          "tenant_002",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_002",
@@ -1408,7 +3942,19 @@
         ],
         [
           "tenant_003",
+          "centre_cost"
+        ],
+        [
+          "tenant_003",
+          "chitante"
+        ],
+        [
+          "tenant_003",
           "clienti"
+        ],
+        [
+          "tenant_003",
+          "compensari"
         ],
         [
           "tenant_003",
@@ -1432,7 +3978,27 @@
         ],
         [
           "tenant_003",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_003",
+          "efactura_primite"
+        ],
+        [
+          "tenant_003",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_003",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_003",
           "factura_linii"
+        ],
+        [
+          "tenant_003",
+          "factura_tva_cote"
         ],
         [
           "tenant_003",
@@ -1460,11 +4026,27 @@
         ],
         [
           "tenant_003",
+          "nir"
+        ],
+        [
+          "tenant_003",
           "perioada_confirmata"
         ],
         [
           "tenant_003",
           "plan_conturi"
+        ],
+        [
+          "tenant_003",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_003",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_003",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_003",
@@ -1479,16 +4061,20 @@
           "solduri_initiale"
         ],
         [
+          "tenant_003",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_003",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_004",
           "articole"
         ],
         [
           "tenant_004",
           "asociati"
-        ],
-        [
-          "tenant_004",
-          "beneficii_lunare"
         ],
         [
           "tenant_004",
@@ -1500,6 +4086,10 @@
         ],
         [
           "tenant_004",
+          "centre_cost"
+        ],
+        [
+          "tenant_004",
           "chitante"
         ],
         [
@@ -1508,7 +4098,7 @@
         ],
         [
           "tenant_004",
-          "concedii_medicale"
+          "compensari"
         ],
         [
           "tenant_004",
@@ -1528,11 +4118,23 @@
         ],
         [
           "tenant_004",
+          "efactura_primite"
+        ],
+        [
+          "tenant_004",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_004",
           "extras_linii"
         ],
         [
           "tenant_004",
           "factura_linii"
+        ],
+        [
+          "tenant_004",
+          "factura_tva_cote"
         ],
         [
           "tenant_004",
@@ -1560,6 +4162,14 @@
         ],
         [
           "tenant_004",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_004",
+          "nir"
+        ],
+        [
+          "tenant_004",
           "perioada_confirmata"
         ],
         [
@@ -1568,11 +4178,27 @@
         ],
         [
           "tenant_004",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_004",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_004",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_004",
           "salariati"
         ],
         [
           "tenant_004",
           "solduri_initiale"
+        ],
+        [
+          "tenant_004",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_005",
@@ -1596,7 +4222,19 @@
         ],
         [
           "tenant_005",
+          "centre_cost"
+        ],
+        [
+          "tenant_005",
+          "chitante"
+        ],
+        [
+          "tenant_005",
           "clienti"
+        ],
+        [
+          "tenant_005",
+          "compensari"
         ],
         [
           "tenant_005",
@@ -1620,7 +4258,27 @@
         ],
         [
           "tenant_005",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_005",
+          "efactura_primite"
+        ],
+        [
+          "tenant_005",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_005",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_005",
           "factura_linii"
+        ],
+        [
+          "tenant_005",
+          "factura_tva_cote"
         ],
         [
           "tenant_005",
@@ -1644,11 +4302,31 @@
         ],
         [
           "tenant_005",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_005",
+          "nir"
+        ],
+        [
+          "tenant_005",
           "perioada_confirmata"
         ],
         [
           "tenant_005",
           "plan_conturi"
+        ],
+        [
+          "tenant_005",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_005",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_005",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_005",
@@ -1663,16 +4341,20 @@
           "solduri_initiale"
         ],
         [
+          "tenant_005",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_005",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_006",
           "articole"
         ],
         [
           "tenant_006",
           "asociati"
-        ],
-        [
-          "tenant_006",
-          "beneficii_lunare"
         ],
         [
           "tenant_006",
@@ -1684,15 +4366,15 @@
         ],
         [
           "tenant_006",
+          "centre_cost"
+        ],
+        [
+          "tenant_006",
           "chitante"
         ],
         [
           "tenant_006",
           "clienti"
-        ],
-        [
-          "tenant_006",
-          "concedii_medicale"
         ],
         [
           "tenant_006",
@@ -1740,11 +4422,23 @@
         ],
         [
           "tenant_006",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_006",
+          "nir"
+        ],
+        [
+          "tenant_006",
           "perioada_confirmata"
         ],
         [
           "tenant_006",
           "plan_conturi"
+        ],
+        [
+          "tenant_006",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_006",
@@ -1764,15 +4458,15 @@
         ],
         [
           "tenant_007",
-          "beneficii_lunare"
-        ],
-        [
-          "tenant_007",
           "bonuri"
         ],
         [
           "tenant_007",
           "casa_operatiuni"
+        ],
+        [
+          "tenant_007",
+          "centre_cost"
         ],
         [
           "tenant_007",
@@ -1784,7 +4478,7 @@
         ],
         [
           "tenant_007",
-          "concedii_medicale"
+          "compensari"
         ],
         [
           "tenant_007",
@@ -1804,11 +4498,19 @@
         ],
         [
           "tenant_007",
+          "efactura_primite"
+        ],
+        [
+          "tenant_007",
           "extras_linii"
         ],
         [
           "tenant_007",
           "factura_linii"
+        ],
+        [
+          "tenant_007",
+          "factura_tva_cote"
         ],
         [
           "tenant_007",
@@ -1836,6 +4538,14 @@
         ],
         [
           "tenant_007",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_007",
+          "nir"
+        ],
+        [
+          "tenant_007",
           "perioada_confirmata"
         ],
         [
@@ -1844,11 +4554,27 @@
         ],
         [
           "tenant_007",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_007",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_007",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_007",
           "salariati"
         ],
         [
           "tenant_007",
           "solduri_initiale"
+        ],
+        [
+          "tenant_007",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_008",
@@ -1860,15 +4586,15 @@
         ],
         [
           "tenant_008",
-          "beneficii_lunare"
-        ],
-        [
-          "tenant_008",
           "bonuri"
         ],
         [
           "tenant_008",
           "casa_operatiuni"
+        ],
+        [
+          "tenant_008",
+          "centre_cost"
         ],
         [
           "tenant_008",
@@ -1880,7 +4606,7 @@
         ],
         [
           "tenant_008",
-          "concedii_medicale"
+          "compensari"
         ],
         [
           "tenant_008",
@@ -1900,11 +4626,19 @@
         ],
         [
           "tenant_008",
+          "efactura_primite"
+        ],
+        [
+          "tenant_008",
           "extras_linii"
         ],
         [
           "tenant_008",
           "factura_linii"
+        ],
+        [
+          "tenant_008",
+          "factura_tva_cote"
         ],
         [
           "tenant_008",
@@ -1932,6 +4666,14 @@
         ],
         [
           "tenant_008",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_008",
+          "nir"
+        ],
+        [
+          "tenant_008",
           "perioada_confirmata"
         ],
         [
@@ -1940,11 +4682,27 @@
         ],
         [
           "tenant_008",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_008",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_008",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_008",
           "salariati"
         ],
         [
           "tenant_008",
           "solduri_initiale"
+        ],
+        [
+          "tenant_008",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_009",
@@ -1956,10 +4714,6 @@
         ],
         [
           "tenant_009",
-          "beneficii_lunare"
-        ],
-        [
-          "tenant_009",
           "bonuri"
         ],
         [
@@ -1968,15 +4722,15 @@
         ],
         [
           "tenant_009",
+          "centre_cost"
+        ],
+        [
+          "tenant_009",
           "chitante"
         ],
         [
           "tenant_009",
           "clienti"
-        ],
-        [
-          "tenant_009",
-          "concedii_medicale"
         ],
         [
           "tenant_009",
@@ -1992,6 +4746,10 @@
         ],
         [
           "tenant_009",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_009",
           "extras_linii"
         ],
         [
@@ -2024,11 +4782,23 @@
         ],
         [
           "tenant_009",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_009",
+          "nir"
+        ],
+        [
+          "tenant_009",
           "perioada_confirmata"
         ],
         [
           "tenant_009",
           "plan_conturi"
+        ],
+        [
+          "tenant_009",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_009",
@@ -2048,15 +4818,15 @@
         ],
         [
           "tenant_010",
-          "beneficii_lunare"
-        ],
-        [
-          "tenant_010",
           "bonuri"
         ],
         [
           "tenant_010",
           "casa_operatiuni"
+        ],
+        [
+          "tenant_010",
+          "centre_cost"
         ],
         [
           "tenant_010",
@@ -2068,7 +4838,7 @@
         ],
         [
           "tenant_010",
-          "concedii_medicale"
+          "compensari"
         ],
         [
           "tenant_010",
@@ -2088,11 +4858,23 @@
         ],
         [
           "tenant_010",
+          "efactura_primite"
+        ],
+        [
+          "tenant_010",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_010",
           "extras_linii"
         ],
         [
           "tenant_010",
           "factura_linii"
+        ],
+        [
+          "tenant_010",
+          "factura_tva_cote"
         ],
         [
           "tenant_010",
@@ -2120,6 +4902,14 @@
         ],
         [
           "tenant_010",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_010",
+          "nir"
+        ],
+        [
+          "tenant_010",
           "perioada_confirmata"
         ],
         [
@@ -2128,11 +4918,27 @@
         ],
         [
           "tenant_010",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_010",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_010",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_010",
           "salariati"
         ],
         [
           "tenant_010",
           "solduri_initiale"
+        ],
+        [
+          "tenant_010",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_011",
@@ -2144,10 +4950,6 @@
         ],
         [
           "tenant_011",
-          "beneficii_lunare"
-        ],
-        [
-          "tenant_011",
           "bonuri"
         ],
         [
@@ -2156,15 +4958,15 @@
         ],
         [
           "tenant_011",
+          "centre_cost"
+        ],
+        [
+          "tenant_011",
           "chitante"
         ],
         [
           "tenant_011",
           "clienti"
-        ],
-        [
-          "tenant_011",
-          "concedii_medicale"
         ],
         [
           "tenant_011",
@@ -2212,11 +5014,23 @@
         ],
         [
           "tenant_011",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_011",
+          "nir"
+        ],
+        [
+          "tenant_011",
           "perioada_confirmata"
         ],
         [
           "tenant_011",
           "plan_conturi"
+        ],
+        [
+          "tenant_011",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_011",
@@ -2236,15 +5050,15 @@
         ],
         [
           "tenant_012",
-          "beneficii_lunare"
-        ],
-        [
-          "tenant_012",
           "bonuri"
         ],
         [
           "tenant_012",
           "casa_operatiuni"
+        ],
+        [
+          "tenant_012",
+          "centre_cost"
         ],
         [
           "tenant_012",
@@ -2256,7 +5070,7 @@
         ],
         [
           "tenant_012",
-          "concedii_medicale"
+          "compensari"
         ],
         [
           "tenant_012",
@@ -2276,11 +5090,19 @@
         ],
         [
           "tenant_012",
+          "efactura_primite"
+        ],
+        [
+          "tenant_012",
           "extras_linii"
         ],
         [
           "tenant_012",
           "factura_linii"
+        ],
+        [
+          "tenant_012",
+          "factura_tva_cote"
         ],
         [
           "tenant_012",
@@ -2308,11 +5130,31 @@
         ],
         [
           "tenant_012",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_012",
+          "nir"
+        ],
+        [
+          "tenant_012",
           "perioada_confirmata"
         ],
         [
           "tenant_012",
           "plan_conturi"
+        ],
+        [
+          "tenant_012",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_012",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_012",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_012",
@@ -2323,12 +5165,20 @@
           "solduri_initiale"
         ],
         [
+          "tenant_012",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_013",
           "articole"
         ],
         [
           "tenant_013",
           "asociati"
+        ],
+        [
+          "tenant_013",
+          "asociati_istoric"
         ],
         [
           "tenant_013",
@@ -2344,7 +5194,19 @@
         ],
         [
           "tenant_013",
+          "centre_cost"
+        ],
+        [
+          "tenant_013",
+          "chitante"
+        ],
+        [
+          "tenant_013",
           "clienti"
+        ],
+        [
+          "tenant_013",
+          "compensari"
         ],
         [
           "tenant_013",
@@ -2368,7 +5230,27 @@
         ],
         [
           "tenant_013",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_013",
+          "efactura_primite"
+        ],
+        [
+          "tenant_013",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_013",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_013",
           "factura_linii"
+        ],
+        [
+          "tenant_013",
+          "factura_tva_cote"
         ],
         [
           "tenant_013",
@@ -2396,11 +5278,27 @@
         ],
         [
           "tenant_013",
+          "nir"
+        ],
+        [
+          "tenant_013",
           "perioada_confirmata"
         ],
         [
           "tenant_013",
           "plan_conturi"
+        ],
+        [
+          "tenant_013",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_013",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_013",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_013",
@@ -2415,12 +5313,24 @@
           "solduri_initiale"
         ],
         [
+          "tenant_013",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_013",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_014",
           "articole"
         ],
         [
           "tenant_014",
           "asociati"
+        ],
+        [
+          "tenant_014",
+          "asociati_istoric"
         ],
         [
           "tenant_014",
@@ -2433,6 +5343,10 @@
         [
           "tenant_014",
           "casa_operatiuni"
+        ],
+        [
+          "tenant_014",
+          "centre_cost"
         ],
         [
           "tenant_014",
@@ -2453,6 +5367,18 @@
         [
           "tenant_014",
           "d390_reclasificare"
+        ],
+        [
+          "tenant_014",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_014",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_014",
+          "elemente_salariale"
         ],
         [
           "tenant_014",
@@ -2480,11 +5406,23 @@
         ],
         [
           "tenant_014",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_014",
+          "nir"
+        ],
+        [
+          "tenant_014",
           "perioada_confirmata"
         ],
         [
           "tenant_014",
           "plan_conturi"
+        ],
+        [
+          "tenant_014",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_014",
@@ -2497,6 +5435,10 @@
         [
           "tenant_014",
           "solduri_initiale"
+        ],
+        [
+          "tenant_014",
+          "suspendari_contract"
         ],
         [
           "tenant_015",
@@ -2520,11 +5462,19 @@
         ],
         [
           "tenant_015",
+          "centre_cost"
+        ],
+        [
+          "tenant_015",
           "chitante"
         ],
         [
           "tenant_015",
           "clienti"
+        ],
+        [
+          "tenant_015",
+          "compensari"
         ],
         [
           "tenant_015",
@@ -2548,11 +5498,27 @@
         ],
         [
           "tenant_015",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_015",
+          "efactura_primite"
+        ],
+        [
+          "tenant_015",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_015",
           "extras_linii"
         ],
         [
           "tenant_015",
           "factura_linii"
+        ],
+        [
+          "tenant_015",
+          "factura_tva_cote"
         ],
         [
           "tenant_015",
@@ -2580,11 +5546,31 @@
         ],
         [
           "tenant_015",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_015",
+          "nir"
+        ],
+        [
+          "tenant_015",
           "perioada_confirmata"
         ],
         [
           "tenant_015",
           "plan_conturi"
+        ],
+        [
+          "tenant_015",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_015",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_015",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_015",
@@ -2597,6 +5583,14 @@
         [
           "tenant_015",
           "solduri_initiale"
+        ],
+        [
+          "tenant_015",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_015",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_016",
@@ -2620,7 +5614,19 @@
         ],
         [
           "tenant_016",
+          "centre_cost"
+        ],
+        [
+          "tenant_016",
+          "chitante"
+        ],
+        [
+          "tenant_016",
           "clienti"
+        ],
+        [
+          "tenant_016",
+          "compensari"
         ],
         [
           "tenant_016",
@@ -2644,7 +5650,27 @@
         ],
         [
           "tenant_016",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_016",
+          "efactura_primite"
+        ],
+        [
+          "tenant_016",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_016",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_016",
           "factura_linii"
+        ],
+        [
+          "tenant_016",
+          "factura_tva_cote"
         ],
         [
           "tenant_016",
@@ -2668,11 +5694,31 @@
         ],
         [
           "tenant_016",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_016",
+          "nir"
+        ],
+        [
+          "tenant_016",
           "perioada_confirmata"
         ],
         [
           "tenant_016",
           "plan_conturi"
+        ],
+        [
+          "tenant_016",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_016",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_016",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_016",
@@ -2685,6 +5731,14 @@
         [
           "tenant_016",
           "solduri_initiale"
+        ],
+        [
+          "tenant_016",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_016",
+          "tva_incasare_perioade"
         ],
         [
           "tenant_017",
@@ -2708,11 +5762,19 @@
         ],
         [
           "tenant_017",
+          "centre_cost"
+        ],
+        [
+          "tenant_017",
           "chitante"
         ],
         [
           "tenant_017",
           "clienti"
+        ],
+        [
+          "tenant_017",
+          "compensari"
         ],
         [
           "tenant_017",
@@ -2736,11 +5798,31 @@
         ],
         [
           "tenant_017",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_017",
+          "efactura_primite"
+        ],
+        [
+          "tenant_017",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_017",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_017",
           "extras_linii"
         ],
         [
           "tenant_017",
           "factura_linii"
+        ],
+        [
+          "tenant_017",
+          "factura_tva_cote"
         ],
         [
           "tenant_017",
@@ -2768,11 +5850,31 @@
         ],
         [
           "tenant_017",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_017",
+          "nir"
+        ],
+        [
+          "tenant_017",
           "perioada_confirmata"
         ],
         [
           "tenant_017",
           "plan_conturi"
+        ],
+        [
+          "tenant_017",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_017",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_017",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_017",
@@ -2787,16 +5889,20 @@
           "solduri_initiale"
         ],
         [
+          "tenant_017",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_017",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_018",
           "articole"
         ],
         [
           "tenant_018",
           "asociati"
-        ],
-        [
-          "tenant_018",
-          "beneficii_lunare"
         ],
         [
           "tenant_018",
@@ -2808,15 +5914,19 @@
         ],
         [
           "tenant_018",
+          "centre_cost"
+        ],
+        [
+          "tenant_018",
           "clienti"
         ],
         [
           "tenant_018",
-          "concedii_medicale"
+          "d390_manual"
         ],
         [
           "tenant_018",
-          "d390_manual"
+          "efactura_primite"
         ],
         [
           "tenant_018",
@@ -2840,7 +5950,19 @@
         ],
         [
           "tenant_018",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_018",
+          "nir"
+        ],
+        [
+          "tenant_018",
           "perioada_confirmata"
+        ],
+        [
+          "tenant_018",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_018",
@@ -2860,10 +5982,6 @@
         ],
         [
           "tenant_045",
-          "beneficii_lunare"
-        ],
-        [
-          "tenant_045",
           "bonuri"
         ],
         [
@@ -2872,15 +5990,19 @@
         ],
         [
           "tenant_045",
+          "centre_cost"
+        ],
+        [
+          "tenant_045",
           "clienti"
         ],
         [
           "tenant_045",
-          "concedii_medicale"
+          "d390_manual"
         ],
         [
           "tenant_045",
-          "d390_manual"
+          "efactura_primite"
         ],
         [
           "tenant_045",
@@ -2904,7 +6026,19 @@
         ],
         [
           "tenant_045",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_045",
+          "nir"
+        ],
+        [
+          "tenant_045",
           "perioada_confirmata"
+        ],
+        [
+          "tenant_045",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_045",
@@ -2920,10 +6054,6 @@
         ],
         [
           "tenant_048",
-          "beneficii_lunare"
-        ],
-        [
-          "tenant_048",
           "bonuri"
         ],
         [
@@ -2932,11 +6062,11 @@
         ],
         [
           "tenant_048",
-          "clienti"
+          "centre_cost"
         ],
         [
           "tenant_048",
-          "concedii_medicale"
+          "clienti"
         ],
         [
           "tenant_048",
@@ -2964,7 +6094,19 @@
         ],
         [
           "tenant_048",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_048",
+          "nir"
+        ],
+        [
+          "tenant_048",
           "perioada_confirmata"
+        ],
+        [
+          "tenant_048",
+          "registru_jurnal_numere"
         ],
         [
           "tenant_048",
@@ -2972,6 +6114,982 @@
         ],
         [
           "tenant_048",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9049",
+          "articole"
+        ],
+        [
+          "tenant_9049",
+          "asociati"
+        ],
+        [
+          "tenant_9049",
+          "beneficii_lunare"
+        ],
+        [
+          "tenant_9049",
+          "bonuri"
+        ],
+        [
+          "tenant_9049",
+          "casa_operatiuni"
+        ],
+        [
+          "tenant_9049",
+          "centre_cost"
+        ],
+        [
+          "tenant_9049",
+          "chitante"
+        ],
+        [
+          "tenant_9049",
+          "clienti"
+        ],
+        [
+          "tenant_9049",
+          "compensari"
+        ],
+        [
+          "tenant_9049",
+          "concedii_medicale"
+        ],
+        [
+          "tenant_9049",
+          "d300_manual"
+        ],
+        [
+          "tenant_9049",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9049",
+          "d390_manual"
+        ],
+        [
+          "tenant_9049",
+          "d390_reclasificare"
+        ],
+        [
+          "tenant_9049",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_9049",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_9049",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_9049",
+          "extras_linii"
+        ],
+        [
+          "tenant_9049",
+          "factura_linii"
+        ],
+        [
+          "tenant_9049",
+          "factura_tva_cote"
+        ],
+        [
+          "tenant_9049",
+          "facturi"
+        ],
+        [
+          "tenant_9049",
+          "firma_profil"
+        ],
+        [
+          "tenant_9049",
+          "furnizori"
+        ],
+        [
+          "tenant_9049",
+          "inregistrari"
+        ],
+        [
+          "tenant_9049",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9049",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9049",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_9049",
+          "nir"
+        ],
+        [
+          "tenant_9049",
+          "perioada_confirmata"
+        ],
+        [
+          "tenant_9049",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9049",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_9049",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_9049",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_9049",
+          "salariati"
+        ],
+        [
+          "tenant_9049",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9049",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9049",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_9049",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9050",
+          "articole"
+        ],
+        [
+          "tenant_9050",
+          "asociati"
+        ],
+        [
+          "tenant_9050",
+          "bonuri"
+        ],
+        [
+          "tenant_9050",
+          "casa_operatiuni"
+        ],
+        [
+          "tenant_9050",
+          "centre_cost"
+        ],
+        [
+          "tenant_9050",
+          "chitante"
+        ],
+        [
+          "tenant_9050",
+          "clienti"
+        ],
+        [
+          "tenant_9050",
+          "compensari"
+        ],
+        [
+          "tenant_9050",
+          "d300_manual"
+        ],
+        [
+          "tenant_9050",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9050",
+          "d390_manual"
+        ],
+        [
+          "tenant_9050",
+          "d390_reclasificare"
+        ],
+        [
+          "tenant_9050",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_9050",
+          "factura_linii"
+        ],
+        [
+          "tenant_9050",
+          "factura_tva_cote"
+        ],
+        [
+          "tenant_9050",
+          "facturi"
+        ],
+        [
+          "tenant_9050",
+          "firma_profil"
+        ],
+        [
+          "tenant_9050",
+          "furnizori"
+        ],
+        [
+          "tenant_9050",
+          "inregistrari"
+        ],
+        [
+          "tenant_9050",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9050",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_9050",
+          "nir"
+        ],
+        [
+          "tenant_9050",
+          "perioada_confirmata"
+        ],
+        [
+          "tenant_9050",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9050",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_9050",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_9050",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_9050",
+          "salariati"
+        ],
+        [
+          "tenant_9050",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9050",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9051",
+          "articole"
+        ],
+        [
+          "tenant_9051",
+          "asociati"
+        ],
+        [
+          "tenant_9051",
+          "bonuri"
+        ],
+        [
+          "tenant_9051",
+          "casa_operatiuni"
+        ],
+        [
+          "tenant_9051",
+          "centre_cost"
+        ],
+        [
+          "tenant_9051",
+          "chitante"
+        ],
+        [
+          "tenant_9051",
+          "clienti"
+        ],
+        [
+          "tenant_9051",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9051",
+          "d390_manual"
+        ],
+        [
+          "tenant_9051",
+          "d390_reclasificare"
+        ],
+        [
+          "tenant_9051",
+          "extras_linii"
+        ],
+        [
+          "tenant_9051",
+          "factura_linii"
+        ],
+        [
+          "tenant_9051",
+          "facturi"
+        ],
+        [
+          "tenant_9051",
+          "firma_profil"
+        ],
+        [
+          "tenant_9051",
+          "furnizori"
+        ],
+        [
+          "tenant_9051",
+          "inregistrari"
+        ],
+        [
+          "tenant_9051",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9051",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9051",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_9051",
+          "nir"
+        ],
+        [
+          "tenant_9051",
+          "perioada_confirmata"
+        ],
+        [
+          "tenant_9051",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9051",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_9051",
+          "salariati"
+        ],
+        [
+          "tenant_9051",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9052",
+          "articole"
+        ],
+        [
+          "tenant_9052",
+          "bonuri"
+        ],
+        [
+          "tenant_9052",
+          "casa_operatiuni"
+        ],
+        [
+          "tenant_9052",
+          "centre_cost"
+        ],
+        [
+          "tenant_9052",
+          "clienti"
+        ],
+        [
+          "tenant_9052",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9052",
+          "d390_manual"
+        ],
+        [
+          "tenant_9052",
+          "d390_reclasificare"
+        ],
+        [
+          "tenant_9052",
+          "factura_linii"
+        ],
+        [
+          "tenant_9052",
+          "facturi"
+        ],
+        [
+          "tenant_9052",
+          "firma_profil"
+        ],
+        [
+          "tenant_9052",
+          "inregistrari"
+        ],
+        [
+          "tenant_9052",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9052",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_9052",
+          "nir"
+        ],
+        [
+          "tenant_9052",
+          "perioada_confirmata"
+        ],
+        [
+          "tenant_9052",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_9052",
+          "salariati"
+        ],
+        [
+          "tenant_9052",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9053",
+          "articole"
+        ],
+        [
+          "tenant_9053",
+          "asociati"
+        ],
+        [
+          "tenant_9053",
+          "beneficii_lunare"
+        ],
+        [
+          "tenant_9053",
+          "bonuri"
+        ],
+        [
+          "tenant_9053",
+          "casa_operatiuni"
+        ],
+        [
+          "tenant_9053",
+          "centre_cost"
+        ],
+        [
+          "tenant_9053",
+          "chitante"
+        ],
+        [
+          "tenant_9053",
+          "clienti"
+        ],
+        [
+          "tenant_9053",
+          "concedii_medicale"
+        ],
+        [
+          "tenant_9053",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9053",
+          "d390_manual"
+        ],
+        [
+          "tenant_9053",
+          "d390_reclasificare"
+        ],
+        [
+          "tenant_9053",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_9053",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_9053",
+          "extras_linii"
+        ],
+        [
+          "tenant_9053",
+          "factura_linii"
+        ],
+        [
+          "tenant_9053",
+          "facturi"
+        ],
+        [
+          "tenant_9053",
+          "firma_profil"
+        ],
+        [
+          "tenant_9053",
+          "furnizori"
+        ],
+        [
+          "tenant_9053",
+          "inregistrari"
+        ],
+        [
+          "tenant_9053",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9053",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9053",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_9053",
+          "nir"
+        ],
+        [
+          "tenant_9053",
+          "perioada_confirmata"
+        ],
+        [
+          "tenant_9053",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9053",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_9053",
+          "salariati"
+        ],
+        [
+          "tenant_9053",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9053",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9053",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_9054",
+          "articole"
+        ],
+        [
+          "tenant_9054",
+          "asociati"
+        ],
+        [
+          "tenant_9054",
+          "bonuri"
+        ],
+        [
+          "tenant_9054",
+          "casa_operatiuni"
+        ],
+        [
+          "tenant_9054",
+          "centre_cost"
+        ],
+        [
+          "tenant_9054",
+          "chitante"
+        ],
+        [
+          "tenant_9054",
+          "clienti"
+        ],
+        [
+          "tenant_9054",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9054",
+          "extras_linii"
+        ],
+        [
+          "tenant_9054",
+          "factura_linii"
+        ],
+        [
+          "tenant_9054",
+          "facturi"
+        ],
+        [
+          "tenant_9054",
+          "firma_profil"
+        ],
+        [
+          "tenant_9054",
+          "furnizori"
+        ],
+        [
+          "tenant_9054",
+          "inregistrari"
+        ],
+        [
+          "tenant_9054",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9054",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_9054",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_9054",
+          "nir"
+        ],
+        [
+          "tenant_9054",
+          "perioada_confirmata"
+        ],
+        [
+          "tenant_9054",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9054",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_9054",
+          "salariati"
+        ],
+        [
+          "tenant_9054",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9055",
+          "articole"
+        ],
+        [
+          "tenant_9055",
+          "asociati"
+        ],
+        [
+          "tenant_9055",
+          "asociati_istoric"
+        ],
+        [
+          "tenant_9055",
+          "beneficii_lunare"
+        ],
+        [
+          "tenant_9055",
+          "bonuri"
+        ],
+        [
+          "tenant_9055",
+          "casa_operatiuni"
+        ],
+        [
+          "tenant_9055",
+          "centre_cost"
+        ],
+        [
+          "tenant_9055",
+          "chitante"
+        ],
+        [
+          "tenant_9055",
+          "clienti"
+        ],
+        [
+          "tenant_9055",
+          "compensari"
+        ],
+        [
+          "tenant_9055",
+          "concedii_medicale"
+        ],
+        [
+          "tenant_9055",
+          "d300_manual"
+        ],
+        [
+          "tenant_9055",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9055",
+          "d390_manual"
+        ],
+        [
+          "tenant_9055",
+          "d390_reclasificare"
+        ],
+        [
+          "tenant_9055",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_9055",
+          "efactura_primite"
+        ],
+        [
+          "tenant_9055",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_9055",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_9055",
+          "factura_linii"
+        ],
+        [
+          "tenant_9055",
+          "factura_tva_cote"
+        ],
+        [
+          "tenant_9055",
+          "facturi"
+        ],
+        [
+          "tenant_9055",
+          "firma_profil"
+        ],
+        [
+          "tenant_9055",
+          "furnizori"
+        ],
+        [
+          "tenant_9055",
+          "inregistrari"
+        ],
+        [
+          "tenant_9055",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9055",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_9055",
+          "nir"
+        ],
+        [
+          "tenant_9055",
+          "perioada_confirmata"
+        ],
+        [
+          "tenant_9055",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9055",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_9055",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_9055",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_9055",
+          "salariati"
+        ],
+        [
+          "tenant_9055",
+          "salariu_istoric"
+        ],
+        [
+          "tenant_9055",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9055",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_9055",
+          "tva_incasare_perioade"
+        ],
+        [
+          "tenant_9057",
+          "articole"
+        ],
+        [
+          "tenant_9057",
+          "asociati"
+        ],
+        [
+          "tenant_9057",
+          "bonuri"
+        ],
+        [
+          "tenant_9057",
+          "casa_operatiuni"
+        ],
+        [
+          "tenant_9057",
+          "centre_cost"
+        ],
+        [
+          "tenant_9057",
+          "clienti"
+        ],
+        [
+          "tenant_9057",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9057",
+          "factura_linii"
+        ],
+        [
+          "tenant_9057",
+          "facturi"
+        ],
+        [
+          "tenant_9057",
+          "firma_profil"
+        ],
+        [
+          "tenant_9057",
+          "furnizori"
+        ],
+        [
+          "tenant_9057",
+          "inregistrari"
+        ],
+        [
+          "tenant_9057",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9057",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_9057",
+          "nir"
+        ],
+        [
+          "tenant_9057",
+          "perioada_confirmata"
+        ],
+        [
+          "tenant_9057",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9057",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_9057",
+          "salariati"
+        ],
+        [
+          "tenant_9057",
+          "solduri_initiale"
+        ],
+        [
+          "tenant_9731",
+          "articole"
+        ],
+        [
+          "tenant_9731",
+          "asociati"
+        ],
+        [
+          "tenant_9731",
+          "bonuri"
+        ],
+        [
+          "tenant_9731",
+          "casa_operatiuni"
+        ],
+        [
+          "tenant_9731",
+          "centre_cost"
+        ],
+        [
+          "tenant_9731",
+          "clienti"
+        ],
+        [
+          "tenant_9731",
+          "d301_operatiuni"
+        ],
+        [
+          "tenant_9731",
+          "factura_linii"
+        ],
+        [
+          "tenant_9731",
+          "facturi"
+        ],
+        [
+          "tenant_9731",
+          "firma_profil"
+        ],
+        [
+          "tenant_9731",
+          "furnizori"
+        ],
+        [
+          "tenant_9731",
+          "inregistrari"
+        ],
+        [
+          "tenant_9731",
+          "inregistrari_linii"
+        ],
+        [
+          "tenant_9731",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_9731",
+          "nir"
+        ],
+        [
+          "tenant_9731",
+          "perioada_confirmata"
+        ],
+        [
+          "tenant_9731",
+          "plan_conturi"
+        ],
+        [
+          "tenant_9731",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_9731",
+          "salariati"
+        ],
+        [
+          "tenant_9731",
           "solduri_initiale"
         ]
       ],
@@ -2986,6 +7104,10 @@
         ],
         [
           "public",
+          "spv_token"
+        ],
+        [
+          "public",
           "tenants"
         ],
         [
@@ -3022,6 +7144,10 @@
         ],
         [
           "tenant_001",
+          "compensari"
+        ],
+        [
+          "tenant_001",
           "concedii_medicale"
         ],
         [
@@ -3039,6 +7165,18 @@
         [
           "tenant_001",
           "d390_reclasificare"
+        ],
+        [
+          "tenant_001",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_001",
+          "efactura_primite"
+        ],
+        [
+          "tenant_001",
+          "elemente_salariale"
         ],
         [
           "tenant_001",
@@ -3074,6 +7212,10 @@
         ],
         [
           "tenant_001",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_001",
           "perioada_confirmata"
         ],
         [
@@ -3083,6 +7225,10 @@
         [
           "tenant_001",
           "pontaj"
+        ],
+        [
+          "tenant_001",
+          "rapoarte_z_cote"
         ],
         [
           "tenant_001",
@@ -3097,16 +7243,20 @@
           "solduri_initiale"
         ],
         [
+          "tenant_001",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_001",
+          "tva_incasare_perioade"
+        ],
+        [
           "tenant_002",
           "articole"
         ],
         [
           "tenant_002",
           "asociati"
-        ],
-        [
-          "tenant_002",
-          "beneficii_lunare"
         ],
         [
           "tenant_002",
@@ -3126,10 +7276,6 @@
         ],
         [
           "tenant_002",
-          "concedii_medicale"
-        ],
-        [
-          "tenant_002",
           "d301_operatiuni"
         ],
         [
@@ -3174,6 +7320,10 @@
         ],
         [
           "tenant_002",
+          "miscari_stoc"
+        ],
+        [
+          "tenant_002",
           "perioada_confirmata"
         ],
         [
@@ -3210,7 +7360,15 @@
         ],
         [
           "tenant_003",
+          "chitante"
+        ],
+        [
+          "tenant_003",
           "clienti"
+        ],
+        [
+          "tenant_003",
+          "compensari"
         ],
         [
           "tenant_003",
@@ -3234,7 +7392,27 @@
         ],
         [
           "tenant_003",
+          "diurna_excedent"
+        ],
+        [
+          "tenant_003",
+          "efactura_primite"
+        ],
+        [
+          "tenant_003",
+          "efactura_trimiteri"
+        ],
+        [
+          "tenant_003",
+          "elemente_salariale"
+        ],
+        [
+          "tenant_003",
           "factura_linii"
+        ],
+        [
+          "tenant_003",
+          "factura_tva_cote"
         ],
         [
           "tenant_003",
@@ -3270,6 +7448,14 @@
         ],
         [
           "tenant_003",
+          "rapoarte_z_cote"
+        ],
+        [
+          "tenant_003",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_003",
           "salariati"
         ],
         [
@@ -3279,31 +7465,97 @@
         [
           "tenant_003",
           "solduri_initiale"
+        ],
+        [
+          "tenant_003",
+          "suspendari_contract"
+        ],
+        [
+          "tenant_003",
+          "tva_incasare_perioade"
         ]
       ],
       "doar_stat": [],
-      "doar_plan": [],
-      "instructiuni": 9960,
-      "secunde": 4.442,
+      "doar_plan": [
+        [
+          "public",
+          "declaratii_coada"
+        ],
+        [
+          "tenant_001",
+          "centre_cost"
+        ],
+        [
+          "tenant_001",
+          "factura_tva_cote"
+        ],
+        [
+          "tenant_001",
+          "nir"
+        ],
+        [
+          "tenant_001",
+          "rapoarte_z_amef"
+        ],
+        [
+          "tenant_001",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_002",
+          "centre_cost"
+        ],
+        [
+          "tenant_002",
+          "nir"
+        ],
+        [
+          "tenant_002",
+          "registru_jurnal_numere"
+        ],
+        [
+          "tenant_003",
+          "centre_cost"
+        ],
+        [
+          "tenant_003",
+          "nir"
+        ],
+        [
+          "tenant_003",
+          "rapoarte_z_amef"
+        ]
+      ],
+      "instructiuni": 22450,
+      "secunde": 10.956,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
-      "stat_instabil": 0,
+      "stat_instabil": 6,
       "declarat_in_cod": [
+        "ajustari_fiscale",
         "articole",
         "asociati",
+        "asociati_istoric",
         "beneficii_lunare",
         "bonuri",
         "casa_operatiuni",
+        "centre_cost",
         "chitante",
         "clienti",
+        "compensari",
         "concedii_medicale",
         "d300_manual",
         "d301_operatiuni",
         "d390_manual",
         "d390_reclasificare",
+        "diurna_excedent",
+        "efactura_primite",
+        "efactura_trimiteri",
+        "elemente_salariale",
         "extras_linii",
         "factura_linii",
+        "factura_tva_cote",
         "facturi",
         "firma_profil",
         "furnizori",
@@ -3311,12 +7563,19 @@
         "inregistrari_linii",
         "mijloace_fixe",
         "miscari_stoc",
+        "nir",
         "perioada_confirmata",
         "plan_conturi",
         "pontaj",
+        "rapoarte_z_amef",
+        "rapoarte_z_cote",
+        "reevaluari",
+        "registru_jurnal_numere",
         "salariati",
         "salariu_istoric",
-        "solduri_initiale"
+        "solduri_initiale",
+        "suspendari_contract",
+        "tva_incasare_perioade"
       ]
     }
   }

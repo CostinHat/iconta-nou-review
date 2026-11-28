@@ -7366,6 +7366,37 @@ def dividende_impartire(tenant_id: int, brut: str = "", data_hotarare: str = "",
         raise _http_din(e)
 
 
+@app.post("/tenants/{tenant_id}/hotarare-dividende/{fel}")
+def hotarare_dividende(tenant_id: int, fel: str, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """[17.5-F5, funcția 501] Hotărârea adunării generale a asociaților / decizia asociatului unic pentru dividendul din formular, în
+    Word editabil (`fel` = docx) sau PDF, din aceeași propunere ca tabelul și nota. Nu scrie nimic (nu creează note, nu consumă numere)."""
+    try:
+        continut, nume, tip = _uc_tenants.hotarare_dividende(tenant_id, corp, ctx, fel)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+    return Response(content=continut, media_type=tip, headers={"Content-Disposition": 'attachment; filename="%s"' % nume})
+
+
+@app.get("/tenants/{tenant_id}/consultanta-fiscala")
+def consultanta_fiscala(tenant_id: int, data: str = "", ctx=Depends(cere_cabinet)):
+    """[17.5-F5, funcția 502] Consultanța fiscală a firmei: cinci măsuri (salariu sau dividende, beneficii pentru salariați, sponsorizări,
+    plafonul micro, profit reinvestit), fiecare cu starea, suma cu sensul ei, perioada, pașii, condițiile și temeiul. Nu scrie nimic."""
+    try:
+        return _uc_tenants.consultanta_fiscala(tenant_id, ctx, data)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/cabinet/consultanta")
+def cabinet_consultanta(ctx=Depends(cere_cabinet)):
+    """[17.5-F6, Cabinet 1–5] Secțiunea «Consultanță» a paginii cabinetului: cardurile «Hotărâri AGA» (501) și «Consultanță fiscală» (502),
+    cu lista firmelor fiecăruia, numai pe firmele utilizatorului. Citește rezumatele pe firmă (nu recalculează nimic). Nu scrie nimic."""
+    try:
+        return _uc_tenants.cabinet_consultanta(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.get("/tenants/{tenant_id}/operatiuni-date")
 def operatiuni_date(tenant_id: int, ce: str = "", tip: str = "", data: str = "", ctx=Depends(cere_cabinet)):
     """[lotul 13, 511 / 524] Listele din care formularele Operațiunilor aleg ce aplicația are deja (facturile în valută deschise, cu soldul

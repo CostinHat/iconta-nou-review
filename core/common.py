@@ -820,6 +820,18 @@ COTE = {
         (date(2025, 4, 1), Decimal("40.18"), Temei("Ordin", "484", 2025, data_in="2025-04-01", data_out="2025-09-30", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/anaf_limite_2025.pdf", text_citat="Ordinul MF 484/2025: tichet masa 40,18 lei, semestrul I 2025 din aprilie + august si septembrie 2025; octombrie 2025 neacoperit -> gol motivat (data_out explicit 30 sep)")),
         (date(2025, 1, 1), Decimal("40.04"), Temei("Ordin", "4679", 2024, data_in="2025-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/anaf_limite_2025.pdf", text_citat="Ordinul MF 4.679/2024: tichet masa 40,04 lei, semestrul II 2024 din octombrie + februarie si martie 2025")),
     ],
+    # [17.5-F5, funcția 502, M4] plafonul veniturilor microîntreprinderii, în euro; echivalentul în lei în cursul anului se face la cursul de
+    # la închiderea exercițiului precedent (CF art. 52 alin. (5), forma OUG 89/2025), la verificarea anuală la cursul de la închiderea
+    # exercițiului în care s-au înregistrat veniturile (art. 47 alin. (1) lit. c)); 2025 (250.000 euro) nu e în registru: anii fără valoare
+    # dau „temei neverificat”, nu o cifră
+    # [17.5-F5, funcția 502, M2] cadoul neimpozabil și fără contribuții, pe persoană și ocazie (CF art. 76 alin. (4) lit. a), art. 142 lit. b));
+    # forma consolidată verificată în corpus la 27.11.2026, înscrisă de la 01.01.2026 (anii anteriori: „temei neverificat”)
+    "plafon_cadou_ocazie": [
+        (date(2026, 1, 1), Decimal("300"), Temei("CF", art="76", alin="4", lit="a", data_in="2026-01-01", verificat_la="2026-11-27", de_cine="Code", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="În cazul cadourilor în bani și/sau în natură, inclusiv tichetele cadou, oferite de angajatori, veniturile sunt neimpozabile, în măsura în care valoarea acestora pentru fiecare persoană în parte, cu fiecare ocazie din cele de mai jos, nu depășește 300 lei")),
+    ],
+    "plafon_micro_eur": [
+        (date(2026, 1, 1), Decimal("100000"), Temei("CF", art="52", alin="1", data_in="2026-01-01", verificat_la="2026-11-27", de_cine="Code", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită.", lant_acte="OUG 156/2024 art.I (art.47 alin.(1) lit.c): 100.000 euro începând cu 1 ianuarie 2026; art.52 alin.(5) cursul de la închiderea exercițiului financiar precedent (OUG 89/2025 art.I pct.6); OUG 8/2026 art.6 pct.20 și art.10 alin.(5): calculul plafonului din trimestrul I 2026")),
+    ],
 }
 
 
@@ -887,6 +899,8 @@ ETICHETE_COTE = {
     "facilitate_salariu_minim": "Facilitatea la salariul minim (partea neimpozabilă)",
     "plafon_facilitate_salariu_minim": "Plafonul facilității la salariul minim",
     "tichet_masa_plafon": "Valoarea maximă a tichetului de masă",
+    "plafon_micro_eur": "Plafonul veniturilor microîntreprinderii (euro)",
+    "plafon_cadou_ocazie": "Cadoul neimpozabil pe persoană și ocazie",
     "plafon_intrastat": "Pragul Intrastat (expedieri / introduceri, separat pe flux)",
     # constantele ancorate (`ancoreaza`, cheia „<modul>.<NUME>”), în registru din R1 (10.10.2026); eticheta spune ce e, din citatul ei
     "casa.PLAFON_INCASARE_PJ": "Plafonul zilnic de încasare în numerar de la o persoană juridică (5.000 lei)",

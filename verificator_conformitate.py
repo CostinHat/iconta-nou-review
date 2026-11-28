@@ -3307,8 +3307,71 @@ def inventar_neacoperit(fisiere, inventar):
     return [(e["fisier"], 0, "C9-INVENTAR", "ecran inventariat, nejudecat de verificator") for e in inventar if e["fisier"] not in fisiere]
 
 
+# ───────────────────────── [17.5-F5] AC202 și secțiunea «Consultanță» (DS v2.135) ─────────────────────────
+#: două sau mai multe semne «?» alăturate în aceeași zonă: `${semnAjutor(…)}${semnAjutor(…)}`, `semnAjutor(…) + semnAjutor(…)` sau o
+#: listă de ID-uri transformată în semne (`.map(… semnAjutor …)`) — inclusiv grupurile fiscale generate
+_RX_F5_SEMNE = (re.compile(r"""semnAjutor\([^()]*\)\s*\}\s*\$\{\s*semnAjutor\("""),
+                re.compile(r"""semnAjutor\([^()]*\)\s*\+\s*semnAjutor\("""),
+                re.compile(r"""\.map\(\s*\(?\s*\w+\s*\)?\s*=>\s*semnAjutor\("""))
+#: cheile funcțiilor de consultanță (501 «Hotărâri AGA», 502 «Consultanță fiscală»); orice funcție viitoare de acest fel se adaugă aici
+CHEI_CONSULTANTA = ("hotarari_aga", "consultanta")
+
+
+def reguli_f5(fisiere):
+    """[17.5-F5] F5-AC202 (pct.17): un singur semn de ajutor pe titlu sau pe zona fără titlu propriu; o zonă cu mai multe funcționalități
+    folosește `semnAjutorGrup(ids, zona)` (un buton, title = aria-label = „Ajutor: <zona>”); două zone distincte ale aceleiași ferestre
+    au fiecare semnul lor. F5-CONSULTANTA (Cabinet 7): funcțiile de consultanță apar pe pagina cabinetului numai ca un card în secțiunea
+    «Consultanță»; grila principală (`CARDURI`) și secțiunea șefului (`CARDURI_SEF`) nu primesc carduri de consultanță; secțiunea e
+    pliată implicit. Constatările: (fisier, linie, ID regulă, motiv); lista goală = conform."""
+    out = []
+    for nume, cod in sorted(fisiere.items()):
+        for nr, linie in enumerate(cod.splitlines(), 1):
+            s = linie.lstrip()
+            if s.startswith(("//", "/*", "*", "<!--")):
+                continue
+            for rx in _RX_F5_SEMNE:
+                m = rx.search(linie)
+                if m:
+                    out.append((nume, nr, "F5-AC202", "mai multe semne «?» în aceeași zonă (folosește semnAjutorGrup): " + m.group(0)[:60]))
+                    break
+        if os.path.basename(nume) != "cabinet.js":
+            continue
+        for lista in ("CARDURI_SEF", "CARDURI"):
+            m = re.search(r"const %s\s*=\s*\[([^\]]*)\]" % lista, cod)
+            if m:
+                for k in CHEI_CONSULTANTA:
+                    if re.search(r"""["']%s["']""" % k, m.group(1)):
+                        out.append((nume, cod[:m.start()].count("\n") + 1, "F5-CONSULTANTA",
+                                    "cardul de consultanță «%s» stă în %s, nu în secțiunea «Consultanță»" % (k, lista)))
+        # [17.5-F6, Cabinet 7] grila principală a paginii (`DEF`) nu primește carduri de consultanță
+        m = re.search(r"const DEF\s*=\s*\[", cod)
+        if m:
+            sf = cod.find("\n];", m.end())
+            bloc = cod[m.end():sf if sf > 0 else len(cod)]
+            for k in CHEI_CONSULTANTA:
+                mk = re.search(r"""cheie\s*:\s*["']%s["']""" % k, bloc)
+                if mk:
+                    out.append((nume, cod[:m.end() + mk.start()].count("\n") + 1, "F5-CONSULTANTA",
+                                "cardul de consultanță «%s» stă în grila principală (DEF), nu în secțiunea «Consultanță»" % k))
+        # [17.5-F6, Cabinet 7] secțiunea desenată: fiecare funcție de consultanță are cardul ei acolo, iar secțiunea pornește pliată
+        m = re.search(r"const CARDURI_CONSULTANTA\s*=\s*\[", cod)
+        if m:
+            sf = cod.find("];", m.end())
+            bloc = cod[m.end():sf if sf > 0 else len(cod)]
+            for k in CHEI_CONSULTANTA:
+                if not re.search(r"""["']%s["']""" % k, bloc):
+                    out.append((nume, cod[:m.start()].count("\n") + 1, "F5-CONSULTANTA", "cardul de consultanță «%s» lipsește din secțiunea «Consultanță»" % k))
+            if not re.search(r"let _consultantaDeschis\s*=\s*false\b", cod):
+                out.append((nume, cod[:m.start()].count("\n") + 1, "F5-CONSULTANTA", "secțiunea «Consultanță» nu e pliată implicit"))
+        m = re.search(r"let _consultantaDeschis\s*=\s*(\w+)", cod)
+        if m and m.group(1) != "false":
+            out.append((nume, cod[:m.start()].count("\n") + 1, "F5-CONSULTANTA", "secțiunea «Consultanță» nu e pliată implicit"))
+    return out
+
+
 _INVENTAR = inventar_ecrane()
 rap["pilot_c9"] = reguli_pilot_c9(fisiere)
+rap["f5"] = reguli_f5(fisiere)
 rap["inventar_ecrane"] = inventar_neacoperit(fisiere, _INVENTAR)
 if __name__ == "__main__":
     import sys as _sys_c9

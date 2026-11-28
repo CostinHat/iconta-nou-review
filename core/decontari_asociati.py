@@ -33,6 +33,22 @@ def procent_text(cota):
     return "%s%%" % str(q).replace(".", ",")
 
 
+#: [17.5-F6, corecția 1 pct.1, decizia lui Costin 28.11.2026] regimul dividendelor către o persoană juridică (impozit reținut sau scutire,
+#: Codul fiscal art. 43 alin. (4)) nu se calculează: pe rândul ei nu apar impozitul și netul, iar totalul impozitului și al netului nu se arată
+REGIM_PJ = "Persoană juridică: regimul dividendelor către o persoană juridică nu se calculează în aplicație (impozit sau scutire, Codul fiscal art. 43 alin. (4))."
+TOTAL_FARA_PJ = "Impozitul și netul total nu se calculează: un asociat e persoană juridică."
+NOTA_PJ = ("Asociatul «%s» e persoană juridică: regimul dividendelor către o persoană juridică (impozit reținut sau scutire, Codul fiscal art. 43 "
+           "alin. (4)) nu se calculează în aplicație, deci nota de dividende nu se generează. Stabilește regimul și înregistrează distribuirea manual.")
+
+
+def persoana_juridica(cod):
+    """[17.5-F6, corecția 1 pct.1] Beneficiarul e persoană juridică după aceeași regulă ca ecranul Date firmă → Asociați (`asociati_api._tip`):
+    un cod nevid care nu e un CNP de 13 cifre. Un cod lipsă sau un CNP invalid de 13 cifre nu e socotit persoană juridică (hotărârea îl refuză
+    separat, ca beneficiar neidentificat)."""
+    from core.asociati_api import _tip
+    return _tip(cod) == "juridica"
+
+
 #: [lotul 10, deficiența 430b/431] refuzul fără asociați trimite unde se adaugă (comanda Costin: „mesajul de refuz trimite la ce lipsește”)
 FARA_ASOCIATI = ("Firma nu are asociați înregistrați la data hotărârii: adaugă asociații și cotele lor în Date firmă → Asociați. "
                  "Nota de dividende împarte dividendul pe asociați, după cote (Legea 31/1990 art.67 alin.(2)).")
