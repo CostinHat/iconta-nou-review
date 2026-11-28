@@ -1,0 +1,12 @@
+== E 6ad08381 stil.css 30624c212d50fd49
+        assert m, ".ajutor-btn negasit"
+>       assert "width:24px" in m.group(1) and "height:24px" in m.group(1), ".ajutor-btn nu e 24x24: %s" % m.group(1)[:80]
+E       AssertionError: .ajutor-btn nu e 24x24:  margin-left: 0; 
+== S ed2c910d stil.css 8f6f287ddea6dc2b
+        assert m, ".ajutor-btn negasit"
+>       assert "width:24px" in m.group(1) and "height:24px" in m.group(1), ".ajutor-btn nu e 24x24: %s" % m.group(1)[:80]
+E       AssertionError: .ajutor-btn nu e 24x24:  margin-left: 0; 
+== C e39489f1 stil.css 8f6f287ddea6dc2b
+        assert m, ".ajutor-btn negasit"
+>       assert "width:24px" in m.group(1) and "height:24px" in m.group(1), ".ajutor-btn nu e 24x24: %s" % m.group(1)[:80]
+E       AssertionError: .ajutor-btn nu e 24x24:  margin-left: 0; 

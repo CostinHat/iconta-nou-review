@@ -1,0 +1,337 @@
+VERDICT e.1 trece
+VERDICT e.2 pica
+VERDICT e.3 trece
+VERDICT e.4 pica
+VERDICT e.5 trece
+VERDICT e.6 pica
+VERDICT e.7 trece
+VERDICT e.8 pica
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________________________ test_fundatie_17_5_F5 _____________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+capsys = <_pytest.capture.CaptureFixture object at 0x72ed40538740>
+
+    def test_fundatie_17_5_F5(browser, capsys):
+        from conftest import BAZA, CAPTURI, alege_perioada, sesiune, sql
+        from core.ceas_proba import MOMENT_REF
+        from declaratie_tip import alege_tipul
+        from e2e_ferestre_17_5_Q5 import acasa, firma, origine_proba
+    
+        origine_proba(BAZA)
+        d = Path(CAPTURI) / LOT
+        d.mkdir(parents=True, exist_ok=True)
+        radacina = Path(__file__).resolve().parents[2]
+        firme = {n: sql("SELECT id, schema_name, cui FROM public.tenants WHERE nume = %s", (n,)) for n in (F1, F2)}
+        assert all(len(v) == 1 for v in firme.values()), "firmele de probă F1/F2 lipsesc sau sunt duble"
+        (id1, s1, cui1), (id2, s2, cui2) = firme[F1][0], firme[F2][0]
+        assert re.fullmatch(r"tenant_[0-9]+", s1) and re.fullmatch(r"tenant_[0-9]+", s2), "schemele F1/F2"
+        cont = sql("SELECT id FROM public.users WHERE email = %s", (CONT_PROBA,))
+        assert len(cont) == 1, "contul de probă lipsește"
+        uid = cont[0][0]
+        stare, abateri = premise_date(sql, s2)
+        assert not abateri, "PREMISE_F5: " + "; ".join(abateri)   # înaintea oricărei scrieri
+        reg = (radacina / "FUNCTIONALITATI.csv").read_bytes()
+        (d / "FUNCTIONALITATI.csv").write_bytes(reg)   # registrul servit, recitit de cititor (amprenta C9 în cititor)
+        for f, nume in (("static/js/ds_piese.js", "exportat_ds_piese.js"), ("static/js/api.js", "exportat_api.js")):
+            (d / nume).write_bytes((radacina / f).read_bytes())   # fișierele arborelui servit, confruntate de cititor cu modulul încărcat
+        arbore = {"ds_piese_sha256": sha((d / "exportat_ds_piese.js").read_bytes()), "api_sha256": sha((d / "exportat_api.js").read_bytes()),
+                  "functionalitati_sha256": sha(reg)}   # arborele servit (commitul și arborele Git sunt în rulare.meta a rulatorului nativ)
+        registru = asteptat_ajutor(reg.decode("utf-8"))
+        note = lambda: sql('SELECT count(*) FROM "%s".inregistrari' % s2)[0][0]  # noqa: E731
+        acces = sql("SELECT count(*) FROM public.user_tenants WHERE user_id = %s AND tenant_id = %s", (uid, id1))[0][0]
+        capturi = {}
+    
+        def stabil(pg):
+            pg.evaluate(STABIL)
+    
+        def poza(pg, nume, z, **scena):
+            f = d / ("%s.png" % nume)
+            if f.exists():
+                raise ValueError("captură repetată: " + f.name)
+            pg.screenshot(path=str(f))
+            capturi[f.name] = dict(scena, rezolutie=z, sha256=sha(f.read_bytes()), stiva=pg.evaluate(JS_STIVA))
+            return f.name
+    
+        def api(pg, cale):
+            return pg.evaluate("""async (cale) => { const t = sessionStorage.getItem('iconta_token');
+              const r = await fetch(cale, {headers: {Authorization: 'Bearer ' + t}, cache: 'no-store'}); let d = null; try { d = await r.json(); } catch (e) {}
+              return {status: r.status, date: d}; }""", cale)
+    
+        def dividend(pg, z):
+            firma(pg, F2, "#fa-operatiuni")
+            pg.locator(TOP + 'button[data-op="asociati"]').click()
+            pg.locator(TOP + "#op-operatie").wait_for(state="attached")
+            pg.locator(TOP + "#op-operatie").select_option("dividend")
+            for camp, val in T1_FORMULAR:
+                loc = pg.locator(TOP + "#op-" + camp)
+                loc.fill(val)
+                loc.dispatch_event("change")
+            pg.locator(TOP + "#op-interimar").select_option("0")
+            pg.locator(TOP + "#op-div-tabel").wait_for(state="visible", timeout=30000)
+            stabil(pg)
+            pg.wait_for_timeout(400)
+            f = pg.evaluate(JS_DIVIDEND)
+            m = {"zona": "dividend", "viewport": z, "antet": f.get("antet"), "formular": f, "note_inainte": note(), "ruta": pg.url}
+            if all(f["butoane"][k].get("exista") for k, *_ in BUTOANE):
+                ids = [c for c, _ in DOC_CAMPURI] + ["op-administrator", "op-exemplare"]
+                initial = pg.evaluate(JS_VALORI, ids)
+                facut = []
+                for cid, val in DOC_CAMPURI:
+                    loc = pg.locator(TOP + "#" + cid)
+                    if not loc.count():
+                        continue
+                    if loc.evaluate("e => e.tagName") == "SELECT":
+                        loc.select_option(val)
+                    else:
+                        loc.fill(val)
+                        loc.dispatch_event("change")
+                    facut.append(cid)
+                if pg.locator(TOP + "#op-administrator").count() and not (initial.get("op-administrator") or "").strip():
+                    pg.locator(TOP + "#op-administrator").fill(ADMIN_IMPLICIT)
+                    pg.locator(TOP + "#op-administrator").dispatch_event("change")
+                    facut.append("op-administrator")
+                stabil(pg)
+                m.update({"valori": {"initial": initial, "final": pg.evaluate(JS_VALORI, ids)}, "completat_de_test": facut})
+                docs = {}
+                for cheie, sel, _ in BUTOANE:
+                    with pg.expect_download(timeout=60000) as dl:
+                        pg.locator(TOP + sel).click()
+                    nume = "hotarare_%s.%s" % (z, cheie)
+                    dl.value.save_as(str(d / nume))
+                    continut = (d / nume).read_bytes()
+                    docs[cheie] = {"fisier": nume, "nume": dl.value.suggested_filename, "sha256": sha(continut), "octeti": len(continut),
+                                   "judecata": judeca_document(cheie, continut)}
+                m["documente"] = docs
+            m["note_dupa"] = note()
+            m["captura"] = poza(pg, "dividend_%s" % z, z, zona="dividend", scena="formular")
+            return m
+    
+        def meniu(pg, z):
+            acasa(pg)
+            pg.locator("button.cab-card:has([data-cheie='firme'])").click()
+            pg.locator(TOP + "#opt-existente").click()
+            pg.locator(TOP + "#firme-lista button.firme-rand").filter(has=pg.get_by_text(F1, exact=True)).click()
+            pg.locator(TOP + "#fg-contabilitate").wait_for(state="attached")
+            b = pg.locator(TOP + "#fg-contabilitate button.firme-grup-btn")
+            if b.get_attribute("aria-expanded") != "true":
+                b.click()
+            pg.locator(TOP + "#fgc-contabilitate").wait_for(state="visible")
+            stabil(pg)
+            me = pg.evaluate(JS_MENIU)
+            dr, tn = api(pg, "/eu/drepturi"), api(pg, "/tenants")
+            lista = ((tn.get("date") or {}).get("tenants") or []) if isinstance(tn.get("date"), dict) else []
+            m = {"zona": "meniu", "viewport": z, "antet": me.get("antet"), "meniu": me, "acces": acces, "ruta": pg.url,
+                 "drepturi": {"stare_http": dr.get("status"), "rol": (dr.get("date") or {}).get("rol") if isinstance(dr.get("date"), dict) else None},
+                 "firme_cont": {"stare_http": tn.get("status"), "f1": any(t.get("id") == id1 and t.get("nume") == F1 for t in lista)},
+                 "captura": poza(pg, "meniu_%s" % z, z, zona="meniu", scena="meniu")}
+            if pg.locator(TOP + "#" + CARD_502).count():
+                pg.locator(TOP + "#" + CARD_502).click()
+                try:
+                    pg.locator(TOP + "[data-masura]").first.wait_for(state="visible", timeout=30000)
+                except Exception:   # noqa: BLE001 — fereastra fără rânduri e o măsură (fereastra_502), nu o eroare de probă
+                    pass
+                stabil(pg)
+                pg.wait_for_timeout(400)
+                m["consultanta"] = pg.evaluate(JS_CONSULTANTA)
+                m["captura_502"] = poza(pg, "consultanta_%s" % z, z, zona="meniu", scena="consultanta")
+            return m
+    
+        def asteapta_nivel(pg, n):
+            try:
+                pg.wait_for_function(JS_NIVEL, arg=n, timeout=10000)
+                stabil(pg)
+                return True
+            except Exception:   # noqa: BLE001 — nivelul neatins e o măsură (refuzul e.6), nu o eroare de probă
+                return False
+    
+        def banca(pg, z):
+            firma(pg, F1, "#fa-banca")
+            pg.locator(TOP + "#bk-rezumat h2.pf-titlu").wait_for(state="visible")
+            stabil(pg)
+            b = pg.evaluate(JS_BANCA)
+            ec = dict(pg.evaluate(JS_STIVA), url=pg.url)
+            m = {"zona": "banca", "viewport": z, "banca": b, "ecran": ec, "captura": poza(pg, "banca_%s" % z, z, zona="banca", scena="banca")}
+            s = b.get("semne") or []
+            if len(s) == 1 and s[0].get("title") == AJUTOR_BANCA and re.fullmatch(r"[0-9]+", str(ec.get("nivel"))):
+                n0 = int(ec["nivel"])
+                sel = (TOP + "#bk-rezumat h2.pf-titlu [data-ajutor]").strip()
+                pasi = [{"pas": "inainte", "stiva": pg.evaluate(JS_STIVA), "asteptat": True}]
+                c = pg.evaluate(CENTRU, sel)
+                pg.mouse.click(c["x"], c["y"])
+                ok = asteapta_nivel(pg, n0 + 1)
+                pasi.append({"pas": "clic", "centru_atins": bool(c["hit"]), "asteptat": ok, "stiva": pg.evaluate(JS_STIVA), "sectiuni": pg.evaluate(JS_SECTIUNI),
+                             "captura": poza(pg, "ajutor_%s" % z, z, zona="banca", scena="ajutor")})
+                x = pg.locator(TOP + "button.nav-x").last
+                if x.count():
+                    x.click()
+                ok = asteapta_nivel(pg, n0)
+                pasi.append({"pas": "x", "asteptat": ok, "stiva": pg.evaluate(JS_STIVA)})
+                c = pg.evaluate(CENTRU, sel)
+                if c:
+                    pg.mouse.click(c["x"], c["y"])
+                ok = asteapta_nivel(pg, n0 + 1)
+                pasi.append({"pas": "redeschidere", "centru_atins": bool(c and c["hit"]), "asteptat": ok, "stiva": pg.evaluate(JS_STIVA),
+                             "sectiuni": pg.evaluate(JS_SECTIUNI)})
+                pg.keyboard.press("Escape")
+                ok = asteapta_nivel(pg, n0)
+                pasi.append({"pas": "esc", "asteptat": ok, "stiva": pg.evaluate(JS_STIVA)})
+                m["ajutor"] = {"pasi": pasi, "registru": registru}
+            return m
+    
+        def doua_clicuri(pg, m, z, etapa, tinta, tip, prefix, document):
+            t = pg.evaluate(TINTA, [tip, prefix])
+            if not t:
+                m["clicuri"].append({"etapa": etapa, "tinta": tinta, "absent": True})
+                return
+            pg.evaluate(URMARESTE)
+            for nr in (1, 2):
+                pg.evaluate(CENTRU_BTN)
+                stabil(pg)
+                c = pg.evaluate(CENTRU_BTN)
+                pg.evaluate(COLECTEAZA)
+                st0 = pg.evaluate(STARE)
+                pg.mouse.click(c["x"], c["y"])
+                stabil(pg)
+                pg.wait_for_timeout(300)
+                stabil(pg)
+                col = pg.evaluate(COLECTEAZA)
+                st1 = pg.evaluate(STARE)
+                conectat = pg.evaluate(CONECTAT)
+                cap = poza(pg, fis("detalii", etapa, tinta, "clic%d" % nr, z), z, zona="detalii", scena="clic", etapa=etapa, tinta=tinta, clic=nr)
+                m["clicuri"].append(dict({"etapa": etapa, "tinta": tinta, "clic": nr, "centru": c, "stare_inainte": st0, "stare_dupa": st1,
+                                          "captura": cap, "tinta_observata": t, "document": document, "ruta": pg.url, "conectat": conectat}, **col))
+            pg.evaluate(INCHEIE)
+    
+        def inventar_stabil(pg, max_s=20.0, liniste_s=1.5):
+            """Inventarul brut al butoanelor «detalii» după 1,5 s fără schimbări (secțiunile asincrone, ca SPV, desenate); ceasul procesului de test."""
+            t0 = din = time.monotonic()
+            ultim = None
+            while True:
+                inv = pg.evaluate(INVENTAR)
+                cheie = json.dumps(inv, sort_keys=True, ensure_ascii=False)
+                if cheie != ultim:
+                    ultim, din = cheie, time.monotonic()
+                elif time.monotonic() - din >= liniste_s:
+                    return dict(inv, stabil=True)
+                if time.monotonic() - t0 > max_s:
+                    return dict(inv, stabil=False)
+                pg.wait_for_timeout(250)
+    
+        def luna(pg, valoare, tid):
+            an, l = valoare.split("-")
+            vechi = pg.evaluate_handle("() => document.querySelector('.fereastra-overlay:not(.fundal) .cf-corp')")
+            tipar = re.compile(r"/control-fiscal/%s\?an=%s&luna=%s(?:&|$)" % (tid, an, l))
+            with pg.expect_response(lambda r: r.request.method == "GET" and bool(tipar.search(r.url)), timeout=60000) as ri:
+                pg.locator(TOP + "#cf-luna-comparata").select_option(valoare)
+            pg.wait_for_function("""([v, luna]) => !v.isConnected && !!document.querySelector('.fereastra-overlay:not(.fundal) .cf-corp')
+                && document.querySelector('.fereastra-overlay:not(.fundal) #cf-luna-comparata').value === luna""", arg=[vechi, valoare], timeout=60000)
+            stabil(pg)
+            return {"luna_ceruta": valoare, "stare_http": ri.value.status, "corp_inlocuit": True,
+                    "luna_in_selector": pg.locator(TOP + "#cf-luna-comparata").input_value()}
+    
+        def modul(r, document):
+            corp = r.body()   # octeții primiți de documentul curent, citiți cât documentul e încă activ
+            nume = "servit_ds_piese_%d.js" % document
+            (d / nume).write_bytes(corp)
+            return {"document": document, "url": r.url.replace(origine_proba(BAZA), ""), "stare_http": r.status, "tip": r.request.resource_type,
+                    "sha256": sha(corp), "fisier": nume}
+    
+        def detalii(pg, z):
+            m = {"zona": "detalii", "viewport": z, "luni": [], "etape": [], "clicuri": [], "module": [], "arbore": arbore}
+            cdp = pg.context.new_cdp_session(pg)
+            cdp.send("Network.enable")
+            cdp.send("Network.setCacheDisabled", {"cacheDisabled": True})   # fiecare document își încarcă modulul din rețea
+            with pg.expect_response(lambda r: bool(MODUL.search(r.url)), timeout=60000) as rm, \
+                    pg.expect_response(lambda r: r.request.method == "GET" and bool(re.search(r"/control-fiscal/[0-9]+(?:\?|$)", r.url)), timeout=60000) as ri0:
+                firma(pg, F1, "#fa-control")
+            m["module"].append(modul(rm.value, 1))
+            pg.wait_for_selector(TOP + "#cf-luna-comparata", state="attached", timeout=60000)
+            stabil(pg)
+            pg.wait_for_timeout(800)
+            tid = next(t["id"] for t in api(pg, "/tenants")["date"]["tenants"] if t["nume"] == F1)
+            m["identitate"] = {"antet": pg.evaluate("() => {" + SUS + TXT + "return top ? txt(top.querySelector('.fereastra-antet, header')) : null; }"),
+                               "tenant": tid, "ruta": pg.url}
+            m["luni"].append({"luna_ceruta": "la deschidere", "stare_http": ri0.value.status,
+                              "luna_in_selector": pg.locator(TOP + "#cf-luna-comparata").input_value()})
+            for etapa, val in ETAPE:
+                if val:
+                    m["luni"].append(luna(pg, val, tid))
+                inv = inventar_stabil(pg)
+                prezente = (["semnal"] if inv["semnale"] else []) + [p for p in ("Statul de plată", "SPV") if any(c.startswith(p) for c in inv["carduri"])]
+                cap = poza(pg, fis("detalii", etapa, "inainte", z), z, zona="detalii", scena="etapa", etapa=etapa)
+                if etapa == "10":
+                    m["captura"] = cap
+                m["etape"].append({"etapa": etapa, "inventar": inv, "prezente": prezente,
+                                   "absente": [t for t in ABSENTE.get(etapa, ()) if t not in prezente], "captura": cap})
+                for tinta in TINTE[etapa]:
+                    doua_clicuri(pg, m, z, etapa, tinta, "semnal" if tinta == "semnal" else "rezumat", None if tinta == "semnal" else tinta, 1)
+            with pg.expect_response(lambda r: bool(MODUL.search(r.url)), timeout=60000) as rm2:
+                firma(pg, F1, "#fa-declaratii")
+            m["module"].append(modul(rm2.value, 2))
+            pg.wait_for_selector(TOP + "#dec-tip", state="attached", timeout=60000)
+            alege_tipul(pg, "d394", zona=TOP)
+            pg.wait_for_selector(TOP + "#dec-an", timeout=10000)
+            alege_perioada(pg, 2026, 10, zona=TOP)
+            dc = pg.evaluate("() => {" + SUS + TXT + """ const v = s => { const e = top ? top.querySelector(s) : null; return e ? e.value : null; };
+                return {tip: v('#dec-tip'), an: v('#dec-an'), luna: v('#dec-luna')}; }""")   # alegerea, citită înainte de «Continuă»
+            pg.locator(TOP + "#dec-continua").click()
+            pg.wait_for_selector(TOP + "#dec-rezultat, " + TOP + ".dec-eroare", timeout=120000)
+            pg.wait_for_timeout(1500)
+            stabil(pg)
+            inv = inventar_stabil(pg)
+            dc["antet"] = pg.evaluate("() => {" + SUS + TXT + "return top ? txt(top.querySelector('.fereastra-antet, header')) : null; }")
+            dc["primul_avertisment"] = inv["avertismente"][0] if inv["avertismente"] else None
+            prezente = ["avertisment"] if inv["avertismente"] else []
+            m["etape"].append({"etapa": "Declarații", "inventar": inv, "declaratie": dc, "prezente": prezente, "absente": [],
+                               "captura": poza(pg, fis("detalii", "Declarații", "inainte", z), z, zona="detalii", scena="etapa", etapa="Declarații")})
+            doua_clicuri(pg, m, z, "Declarații", "avertisment", "avertisment", None, 2)
+            return m
+    
+        facute = []
+        try:
+            pregateste_date(sql, s2, stare, facute)
+            masuri = {i: {} for i in IDS}
+            erori = []
+            for w, h in DIM:
+                z = "%dx%d" % (w, h)
+                ctx = browser.new_context(viewport={"width": w, "height": h}, accept_downloads=True)
+                try:
+                    ctx.clock.set_fixed_time(MOMENT_REF)
+                    ctx.add_init_script(sesiune(CONT_PROBA))
+                    pg = ctx.new_page()
+                    pg.on("pageerror", lambda e: erori.append(str(e)[:300]))
+                    pg.goto(BAZA + "/", wait_until="domcontentloaded")
+                    for nume, fn in (("dividend", dividend), ("meniu", meniu), ("banca", banca)) + ((("detalii", detalii),) if (w, h) in DIM_DETALII else ()):
+                        m = fn(pg, z)
+                        for i in ANALIZE[nume][0]:
+                            masuri[i][z] = m
+                finally:
+                    ctx.close()
+            for i, (zona, f) in zip(IDS, (("dividend", "captura"), ("dividend", "captura"), ("meniu", "captura"), ("meniu", "captura"),
+                                           ("banca", "captura"), ("banca", "captura"), ("detalii", "captura"), ("detalii", None))):
+                z = "%dx%d" % DIM_ID[i][0]
+                sursa = masuri[i][z]["clicuri"][-1]["captura"] if f is None else masuri[i][z][f]
+                (d / ("%s.png" % i)).write_bytes((d / sursa).read_bytes())
+            (d / "masuri.json").write_text(json.dumps(masuri, ensure_ascii=False, default=str), encoding="utf-8")
+            (d / "capturi.json").write_text(json.dumps(capturi, ensure_ascii=False), encoding="utf-8")
+            (d / "erori.json").write_text("{}", encoding="utf-8")
+            (d / "erori_pagina.json").write_text(json.dumps(erori, ensure_ascii=False), encoding="utf-8")   # informativ, nejudecat
+            (d / "partiale.json").write_text("{}", encoding="utf-8")
+            rez = analiza(json.loads((d / "masuri.json").read_text(encoding="utf-8")))
+            verdicte = {i: all(not motive for motive in rez[i].values()) for i in IDS}
+            with capsys.disabled():
+                for i in IDS:
+                    print("VERDICT", i, "trece" if verdicte[i] else "pica", flush=True)
+>           assert all(verdicte.values()), "F5_FUNDATIE"
+E           AssertionError: F5_FUNDATIE
+E           assert False
+E            +  where False = all(dict_values([True, False, True, False, True, False, True, False]))
+E            +    where dict_values([True, False, True, False, True, False, True, False]) = <built-in method values of dict object at 0x72ed3f30b4c0>()
+E            +      where <built-in method values of dict object at 0x72ed3f30b4c0> = {'e.1': True, 'e.2': False, 'e.3': True, 'e.4': False, ...}.values
+
+frontend_test/e2e/e2e_fundatie_17_5_F5.py:1572: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_fundatie_17_5_F5.py::test_fundatie_17_5_F5 - Ass...
+1 failed in 39.88s

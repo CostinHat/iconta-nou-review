@@ -1,0 +1,33 @@
+{
+ "bara": {
+  "bara": true,
+  "principal": 0
+ },
+ "detalii": [
+  {
+   "cod": "M1",
+   "deschis_vizibil": true,
+   "inchis": true
+  },
+  {
+   "cod": "M2",
+   "deschis_vizibil": true,
+   "inchis": true
+  },
+  {
+   "cod": "M3",
+   "deschis_vizibil": true,
+   "inchis": true
+  },
+  {
+   "cod": "M4",
+   "deschis_vizibil": true,
+   "inchis": true
+  },
+  {
+   "cod": "M5",
+   "deschis_vizibil": true,
+   "inchis": true
+  }
+ ]
+}

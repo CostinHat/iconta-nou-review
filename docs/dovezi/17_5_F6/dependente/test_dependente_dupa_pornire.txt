@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/costin/iconta_lot17_5f6/venv/bin/python
+mediu: test · baza: iconta_test · rol: iconta_test_user  (frontiera R68: rolul asta nu are CONNECT pe iconta_v2)
+rootdir: /home/costin/iconta_lot17_5f6
+plugins: anyio-4.13.0, xdist-3.8.0
+collecting ... collected 7 items
+
+core/test_dependente_masurate.py::test_blocul_din_document_e_cel_generat_acum PASSED [ 14%]
+core/test_dependente_masurate.py::test_documentul_numeste_fiecare_aspect PASSED [ 28%]
+core/test_dependente_masurate.py::test_registrul_cuprinde_tot_ce_s_a_masurat PASSED [ 42%]
+core/test_dependente_masurate.py::test_publicul_masurat_e_urmarit_sau_declarat_neurmarit PASSED [ 57%]
+core/test_dependente_masurate.py::test_artefactul_spune_pe_cate_firme_a_fost_masurat PASSED [ 71%]
+core/test_dependente_masurate.py::test_cele_doua_instrumente_nu_s_au_contrazis PASSED [ 85%]
+core/test_dependente_masurate.py::test_fiecare_sursa_din_registru_are_trigger_pe_fiecare_firma PASSED [100%]
+
+============================== 7 passed in 0.94s ===============================

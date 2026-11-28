@@ -1,0 +1,158 @@
+{
+ "firma": "F2 Profit Amortizare SRL",
+ "data": "2026-11-03",
+ "masuri": [
+  {
+   "cod": "M1",
+   "text": "M1 · Salariu sau dividende\nLipsesc date\n\nFirma are 2 asociați: aplicația face simularea salariu / dividende numai pentru un asociat unic. Cu mai mulți asociați nu calculează partea fiecăruia, pragurile CASS și declarația unică (D212) ale fiecăruia și salariul minim pe fiecare lună, deci nu arată o sumă. Fă simularea pentru fiecare asociat în afara aplicației.\n\nAscunde detaliile\n\nCe lipsește și unde se completează\nsimularea pentru fiecare asociat (pragurile CASS și D212, salariul minim pe fiecare lună) — verificare manuală"
+  },
+  {
+   "cod": "M2",
+   "text": "M2 · Beneficii pentru salariați\nNu se aplică\n\nFirma nu are salariați activi la 03.11.2026: beneficiile se acordă salariaților."
+  },
+  {
+   "cod": "M3",
+   "text": "M3 · Sponsorizări\nLipsesc date\n\nEvidența anului 2026 nu e întreagă în aplicație (soldurile preluate sunt din cursul anului): cifra de afaceri și impozitul anului nu se cunosc.\n\nAscunde detaliile\n\nCe lipsește și unde se completează\nrulajele anului dinaintea preluării — Import date → Balanță"
+  },
+  {
+   "cod": "M4",
+   "text": "M4 · Plafonul micro\nNu se aplică\n\nFirma e plătitoare de impozit pe profit: plafonul veniturilor privește microîntreprinderile."
+  },
+  {
+   "cod": "M5",
+   "text": "M5 · Profit reinvestit\nNu se aplică\n\nNiciun activ din subgrupa 2.1, clasa 2.2.9 sau program informatic nu a fost pus în funcțiune în 2026 până la 03.11.2026 (registrul mijloacelor fixe).\n\nAscunde detaliile\n\nIpoteze\nUn cod din catalog sau un cont singure nu confirmă eligibilitatea; activele second-hand nu sunt eligibile."
+  }
+ ],
+ "fereastra": "←\nF2 Profit Amortizare SRL · CUI 403000015\n›\nConsultanță fiscală\n✕\nConsultanță fiscală\n\nimpozit pe profit · datele firmei la 03.11.2026\n\nData calculului\n×\nM1 · Salariu sau dividende\nLipsesc date\n\nFirma are 2 asociați: aplicația face simularea salariu / dividende numai pentru un asociat unic. Cu mai mulți asociați nu calculează partea fiecăruia, pragurile CASS și declarația unică (D212) ale fiecăruia și salariul minim pe fiecare lună, deci nu arată o sumă. Fă simularea pentru fiecare asociat în afara aplicației.\n\nAscunde detaliile\n\nCe lipsește și unde se completează\nsimularea pentru fiecare asociat (pragurile CASS și D212, salariul minim pe fiecare lună) — verificare manuală\nM2 · Beneficii pentru salariați\nNu se aplică\n\nFirma nu are salariați activi la 03.11.2026: beneficiile se acordă salariaților.\n\nM3 · Sponsorizări\nLipsesc date\n\nEvidența anului 2026 nu e întreagă în aplicație (soldurile preluate sunt din cursul anului): cifra de afaceri și impozitul anului nu se cunosc.\n\nAscunde detaliile\n\nCe lipsește și unde se completează\nrulajele anului dinaintea preluării — Import date → Balanță\nM4 · Plafonul micro\nNu se aplică\n\nFirma e plătitoare de impozit pe profit: plafonul veniturilor privește microîntreprinderile.\n\nM5 · Profit reinvestit\nNu se aplică\n\nNiciun activ din subgrupa 2.1, clasa 2.2.9 sau program informatic nu a fost pus în funcțiune în 2026 până la 03.11.2026 (registrul mijloacelor fixe).\n\nAscunde detaliile\n\nIpoteze\nUn cod din catalog sau un cont singure nu confirmă eligibilitatea; activele second-hand nu sunt eligibile.\n\nAplicația semnalează și calculează; decizia și consilierea clientului aparțin contabilului.",
+ "asociati": {
+  "status": 200,
+  "corp": {
+   "asociati": [
+    {
+     "id": 5,
+     "nume": "Ion Test",
+     "cnp": "1850101400017",
+     "cota": "60",
+     "tip": "fizica"
+    },
+    {
+     "id": 6,
+     "nume": "Maria Test",
+     "cnp": "2870202400011",
+     "cota": "40",
+     "tip": "fizica"
+    }
+   ],
+   "total_cota": "100",
+   "valabila_de_la": null,
+   "istoric": []
+  }
+ },
+ "api": {
+  "status": 200,
+  "corp": {
+   "firma": {
+    "nume": "F2 Profit Amortizare SRL",
+    "cui": "403000015",
+    "regim": "profit"
+   },
+   "data": "2026-11-03",
+   "an": 2026,
+   "masuri": [
+    {
+     "cod": "M1",
+     "nume": "Salariu sau dividende",
+     "stare": "Lipsesc date",
+     "motiv": "Firma are 2 asociați: aplicația face simularea salariu / dividende numai pentru un asociat unic. Cu mai mulți asociați nu calculează partea fiecăruia, pragurile CASS și declarația unică (D212) ale fiecăruia și salariul minim pe fiecare lună, deci nu arată o sumă. Fă simularea pentru fiecare asociat în afara aplicației.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [
+      {
+       "ce": "simularea pentru fiecare asociat (pragurile CASS și D212, salariul minim pe fiecare lună)",
+       "unde": "verificare manuală"
+      }
+     ],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M2",
+     "nume": "Beneficii pentru salariați",
+     "stare": "Nu se aplică",
+     "motiv": "Firma nu are salariați activi la 03.11.2026: beneficiile se acordă salariaților.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M3",
+     "nume": "Sponsorizări",
+     "stare": "Lipsesc date",
+     "motiv": "Evidența anului 2026 nu e întreagă în aplicație (soldurile preluate sunt din cursul anului): cifra de afaceri și impozitul anului nu se cunosc.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [
+      {
+       "ce": "rulajele anului dinaintea preluării",
+       "unde": "Import date → Balanță"
+      }
+     ],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M4",
+     "nume": "Plafonul micro",
+     "stare": "Nu se aplică",
+     "motiv": "Firma e plătitoare de impozit pe profit: plafonul veniturilor privește microîntreprinderile.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M5",
+     "nume": "Profit reinvestit",
+     "stare": "Nu se aplică",
+     "motiv": "Niciun activ din subgrupa 2.1, clasa 2.2.9 sau program informatic nu a fost pus în funcțiune în 2026 până la 03.11.2026 (registrul mijloacelor fixe).",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [
+      "Un cod din catalog sau un cont singure nu confirmă eligibilitatea; activele second-hand nu sunt eligibile."
+     ],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [],
+     "ce_poti_face": ""
+    }
+   ],
+   "fraza": "Aplicația semnalează și calculează; decizia și consilierea clientului aparțin contabilului."
+  }
+ }
+}

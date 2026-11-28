@@ -1,0 +1,328 @@
+{
+ "curs_inainte": [],
+ "masuri": [
+  {
+   "cod": "M1",
+   "text": "M1 · Salariu sau dividende\nLipsesc date\n\nFirma are 2 asociați: aplicația face simularea salariu / dividende numai pentru un asociat unic. Cu mai mulți asociați nu calculează partea fiecăruia, pragurile CASS și declarația unică (D212) ale fiecăruia și salariul minim pe fiecare lună, deci nu arată o sumă. Fă simularea pentru fiecare asociat în afara aplicației.\n\nAscunde detaliile\n\nCe lipsește și unde se completează\nsimularea pentru fiecare asociat (pragurile CASS și D212, salariul minim pe fiecare lună) — verificare manuală"
+  },
+  {
+   "cod": "M2",
+   "text": "M2 · Beneficii pentru salariați\nSe aplică\n\n9.100,80 lei · net în plus pentru salariați, la același cost · estimare anuală pe luna 11/2026\n\nAscunde detaliile\n\nPașii calculului\nIonescu Ion, 03.11.2026: tichete 20 × 45,00 lei = 900,00 lei; net în numerar 2.539,00 lei + tichete 900,00 lei, față de majorarea brutului la 5.380,20 lei cu net 3.186,20 lei; diferență 252,80 lei pe lună.\nPopescu Maria, 03.11.2026: tichete 20 × 45,00 lei = 900,00 lei; net în numerar 2.810,00 lei + tichete 900,00 lei, față de majorarea brutului la 5.880,20 lei cu net 3.457,20 lei; diferență 252,80 lei pe lună.\nGeorgescu Ilie, 03.11.2026: tichete 20 × 45,00 lei = 900,00 lei; net în numerar 2.485,00 lei + tichete 900,00 lei, față de majorarea brutului la 5.280,20 lei cu net 3.132,20 lei; diferență 252,80 lei pe lună.\nCadouri: 300,00 lei pe persoană și ocazie (Paște, Crăciun și sărbători similare, 1 iunie pentru copiii minori, 8 martie pentru angajate) sunt neimpozabile și fără contribuții; depășirea se impune ca salariu.\nIpoteze\nTichetele se acordă pentru toate zilele lucrătoare ale lunii (zilele efectiv lucrate pot fi mai puține).\nEstimarea anuală = diferența lunii × 12.\nVoucherele de vacanță nu sunt calculate: plafonul lor nu e în registrul datat.\nCondiții\nTichetele și voucherele se acordă potrivit legii speciale și contractului / regulamentului intern.\nCadourile se acordă numai la ocaziile din Codul fiscal art. 76 alin. (4) lit. a).\nTemei\nCodul fiscal, art. 76 alin. (4) lit. a): „cadourile ... nu depășește 300,00 lei” (regimul anului 2026)\nLegea 165/2018, Legea 201/2025, art. I: „tichet de masă cel mult 45,00 lei (Legea 201/2025 art.I)” (de la 01.11.2025)\nCodul fiscal, art. 76, 142, 157, 220⁴–220⁵: „tichetele: impozit și CASS, în afara bazelor CAS și CAM” (anul 2026)\nCe poți face\n\nCompară cu clientul tichetele / cadourile cu o majorare de salariu la același cost."
+  },
+  {
+   "cod": "M3",
+   "text": "M3 · Sponsorizări\nNu se aplică\n\nMicroîntreprinderea nu mai poate scădea sponsorizarea din impozit începând cu 2024: art. 56 alin. (1¹) din Codul fiscal a fost abrogat prin OUG 115/2023; ultimul an cu această facilitate este 2023. Sponsorizarea rămâne doar cheltuială.\n\nAscunde detaliile\n\nTemei\nOUG 115/2023, art. III (CF art. 56 alin. (1¹) abrogat): „facilitatea micro pentru sponsorizare, eliminată” (de la 01.01.2024)"
+  },
+  {
+   "cod": "M4",
+   "text": "M4 · Plafonul micro\nLipsesc date\n\nVeniturile de la 01.01.2026 până la preluarea în aplicație (31.07.2026) nu sunt în evidență, iar veniturile întreprinderilor legate nu se pot introduce: marja până la plafon nu se poate calcula.\n\nPlafon: 509.750,00 lei · plafonul anului 2026\n\nAscunde detaliile\n\nPașii calculului\nPlafonul anului 2026: 100.000,00 euro × 5,0975 (cursul BNR din 31.12.2025) = 509.750,00 lei.\nVeniturile din aplicație (cont 70x) de la preluare (31.07.2026) până la 03.11.2026: 9.799,30 lei.\nCondiții\nVeniturile întreprinderilor legate (art. 47 alin. (1¹), art. 52 alin. (5¹)) se adună la plafon; nu sunt în aplicație.\nTransferurile de active din aceeași subgrupă și de terenuri (art. 54 alin. (1)) intră în baza plafonului la ieșirea în cursul anului.\nCelelalte condiții ale art. 47 (capital deținut, salariat, activități) rămân de verificat de contabil.\nTemei\nCodul fiscal, art. 52 alin. (1) și (5): „venituri mai mari de 100.000 euro … cursul … la închiderea exercițiului financiar precedent” (de la 01.01.2026 (OUG 156/2024, OUG 89/2025, OUG 8/2026 art. 6))\nCe lipsește și unde se completează\nrulajele anului dinaintea preluării — Import date → Balanță\nveniturile întreprinderilor legate — verificare manuală"
+  },
+  {
+   "cod": "M5",
+   "text": "M5 · Profit reinvestit\nNu se aplică\n\nScutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere.\n\nAscunde detaliile\n\nTemei\nCodul fiscal, art. 22 alin. (1): „profitul investit … este scutit de impozit” (contribuabilii plătitori de impozit pe profit)"
+  }
+ ],
+ "api": {
+  "status": 200,
+  "corp": {
+   "firma": {
+    "nume": "F1 Comert Stoc SRL",
+    "cui": "401002001",
+    "regim": "micro"
+   },
+   "data": "2026-11-03",
+   "an": 2026,
+   "masuri": [
+    {
+     "cod": "M1",
+     "nume": "Salariu sau dividende",
+     "stare": "Lipsesc date",
+     "motiv": "Firma are 2 asociați: aplicația face simularea salariu / dividende numai pentru un asociat unic. Cu mai mulți asociați nu calculează partea fiecăruia, pragurile CASS și declarația unică (D212) ale fiecăruia și salariul minim pe fiecare lună, deci nu arată o sumă. Fă simularea pentru fiecare asociat în afara aplicației.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [
+      {
+       "ce": "simularea pentru fiecare asociat (pragurile CASS și D212, salariul minim pe fiecare lună)",
+       "unde": "verificare manuală"
+      }
+     ],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M2",
+     "nume": "Beneficii pentru salariați",
+     "stare": "Se aplică",
+     "motiv": null,
+     "suma": "9100.80",
+     "sens": "net în plus pentru salariați, la același cost",
+     "perioada": "estimare anuală pe luna 11/2026",
+     "valori": {
+      "zile_lucratoare_luna": 20,
+      "plafon_tichet": "45",
+      "plafon_cadou": "300"
+     },
+     "pasi": [
+      "Ionescu Ion, 03.11.2026: tichete 20 × 45,00 lei = 900,00 lei; net în numerar 2.539,00 lei + tichete 900,00 lei, față de majorarea brutului la 5.380,20 lei cu net 3.186,20 lei; diferență 252,80 lei pe lună.",
+      "Popescu Maria, 03.11.2026: tichete 20 × 45,00 lei = 900,00 lei; net în numerar 2.810,00 lei + tichete 900,00 lei, față de majorarea brutului la 5.880,20 lei cu net 3.457,20 lei; diferență 252,80 lei pe lună.",
+      "Georgescu Ilie, 03.11.2026: tichete 20 × 45,00 lei = 900,00 lei; net în numerar 2.485,00 lei + tichete 900,00 lei, față de majorarea brutului la 5.280,20 lei cu net 3.132,20 lei; diferență 252,80 lei pe lună.",
+      "Cadouri: 300,00 lei pe persoană și ocazie (Paște, Crăciun și sărbători similare, 1 iunie pentru copiii minori, 8 martie pentru angajate) sunt neimpozabile și fără contribuții; depășirea se impune ca salariu."
+     ],
+     "ipoteze": [
+      "Tichetele se acordă pentru toate zilele lucrătoare ale lunii (zilele efectiv lucrate pot fi mai puține).",
+      "Estimarea anuală = diferența lunii × 12.",
+      "Voucherele de vacanță nu sunt calculate: plafonul lor nu e în registrul datat."
+     ],
+     "conditii": [
+      "Tichetele și voucherele se acordă potrivit legii speciale și contractului / regulamentului intern.",
+      "Cadourile se acordă numai la ocaziile din Codul fiscal art. 76 alin. (4) lit. a)."
+     ],
+     "temei": [
+      {
+       "act": "Codul fiscal",
+       "articol": "art. 76 alin. (4) lit. a)",
+       "citat": "cadourile ... nu depășește 300,00 lei",
+       "aplicare": "regimul anului 2026"
+      },
+      {
+       "act": "Legea 165/2018, Legea 201/2025",
+       "articol": "art. I",
+       "citat": "tichet de masă cel mult 45,00 lei (Legea 201/2025 art.I)",
+       "aplicare": "de la 01.11.2025"
+      },
+      {
+       "act": "Codul fiscal",
+       "articol": "art. 76, 142, 157, 220⁴–220⁵",
+       "citat": "tichetele: impozit și CASS, în afara bazelor CAS și CAM",
+       "aplicare": "anul 2026"
+      }
+     ],
+     "lipsuri": [],
+     "ce_poti_face": "Compară cu clientul tichetele / cadourile cu o majorare de salariu la același cost."
+    },
+    {
+     "cod": "M3",
+     "nume": "Sponsorizări",
+     "stare": "Nu se aplică",
+     "motiv": "Microîntreprinderea nu mai poate scădea sponsorizarea din impozit începând cu 2024: art. 56 alin. (1¹) din Codul fiscal a fost abrogat prin OUG 115/2023; ultimul an cu această facilitate este 2023. Sponsorizarea rămâne doar cheltuială.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [
+      {
+       "act": "OUG 115/2023",
+       "articol": "art. III (CF art. 56 alin. (1¹) abrogat)",
+       "citat": "facilitatea micro pentru sponsorizare, eliminată",
+       "aplicare": "de la 01.01.2024"
+      }
+     ],
+     "lipsuri": [],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M4",
+     "nume": "Plafonul micro",
+     "stare": "Lipsesc date",
+     "motiv": "Veniturile de la 01.01.2026 până la preluarea în aplicație (31.07.2026) nu sunt în evidență, iar veniturile întreprinderilor legate nu se pot introduce: marja până la plafon nu se poate calcula.",
+     "suma": null,
+     "sens": null,
+     "perioada": "plafonul anului 2026",
+     "valori": {
+      "plafon_eur": "100000",
+      "curs": "5.0975",
+      "plafon_lei": "509750.00",
+      "an": 2026,
+      "cifra_afaceri": "9799.30",
+      "marja": null
+     },
+     "pasi": [
+      "Plafonul anului 2026: 100.000,00 euro × 5,0975 (cursul BNR din 31.12.2025) = 509.750,00 lei.",
+      "Veniturile din aplicație (cont 70x) de la preluare (31.07.2026) până la 03.11.2026: 9.799,30 lei."
+     ],
+     "ipoteze": [],
+     "conditii": [
+      "Veniturile întreprinderilor legate (art. 47 alin. (1¹), art. 52 alin. (5¹)) se adună la plafon; nu sunt în aplicație.",
+      "Transferurile de active din aceeași subgrupă și de terenuri (art. 54 alin. (1)) intră în baza plafonului la ieșirea în cursul anului.",
+      "Celelalte condiții ale art. 47 (capital deținut, salariat, activități) rămân de verificat de contabil."
+     ],
+     "temei": [
+      {
+       "act": "Codul fiscal",
+       "articol": "art. 52 alin. (1) și (5)",
+       "citat": "venituri mai mari de 100.000 euro … cursul … la închiderea exercițiului financiar precedent",
+       "aplicare": "de la 01.01.2026 (OUG 156/2024, OUG 89/2025, OUG 8/2026 art. 6)"
+      }
+     ],
+     "lipsuri": [
+      {
+       "ce": "rulajele anului dinaintea preluării",
+       "unde": "Import date → Balanță"
+      },
+      {
+       "ce": "veniturile întreprinderilor legate",
+       "unde": "verificare manuală"
+      }
+     ],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M5",
+     "nume": "Profit reinvestit",
+     "stare": "Nu se aplică",
+     "motiv": "Scutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [
+      {
+       "act": "Codul fiscal",
+       "articol": "art. 22 alin. (1)",
+       "citat": "profitul investit … este scutit de impozit",
+       "aplicare": "contribuabilii plătitori de impozit pe profit"
+      }
+     ],
+     "lipsuri": [],
+     "ce_poti_face": ""
+    }
+   ],
+   "fraza": "Aplicația semnalează și calculează; decizia și consilierea clientului aparțin contabilului."
+  }
+ },
+ "cabinet": {
+  "status": 200,
+  "corp": {
+   "firme_accesibile": 8,
+   "firme_distincte": 4,
+   "carduri": {
+    "hotarari_aga": {
+     "firme": [
+      {
+       "tenant_id": 105779,
+       "nume": "F1 Comert Stoc SRL",
+       "cui": "401002001",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "disponibil": "13800.00",
+       "ultima": null
+      },
+      {
+       "tenant_id": 105780,
+       "nume": "F2 Profit Amortizare SRL",
+       "cui": "403000015",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "disponibil": "14600.00",
+       "ultima": null
+      }
+     ],
+     "in_recalculare": 0,
+     "n": 2
+    },
+    "consultanta": {
+     "firme": [
+      {
+       "tenant_id": 105779,
+       "nume": "F1 Comert Stoc SRL",
+       "cui": "401002001",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "se_aplica": [
+        {
+         "cod": "M2",
+         "nume": "Beneficii pentru salariați",
+         "sens": "net în plus pentru salariați, la același cost",
+         "suma": "9100.80"
+        }
+       ],
+       "lipsesc": [
+        {
+         "cod": "M1",
+         "nume": "Salariu sau dividende",
+         "stare": "Lipsesc date"
+        },
+        {
+         "cod": "M4",
+         "nume": "Plafonul micro",
+         "stare": "Lipsesc date"
+        }
+       ],
+       "economie": "0.00"
+      },
+      {
+       "tenant_id": 105783,
+       "nume": "F5 SRL Salariati SRL",
+       "cui": "40510009",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "se_aplica": [
+        {
+         "cod": "M2",
+         "nume": "Beneficii pentru salariați",
+         "sens": "net în plus pentru salariați, la același cost",
+         "suma": "5599.20"
+        }
+       ],
+       "lipsesc": [
+        {
+         "cod": "M1",
+         "nume": "Salariu sau dividende",
+         "stare": "Lipsesc date"
+        },
+        {
+         "cod": "M4",
+         "nume": "Plafonul micro",
+         "stare": "Lipsesc date"
+        }
+       ],
+       "economie": "0.00"
+      },
+      {
+       "tenant_id": 105785,
+       "nume": "F6 Migrare Test SRL",
+       "cui": "401006003",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "se_aplica": [
+        {
+         "cod": "M2",
+         "nume": "Beneficii pentru salariați",
+         "sens": "net în plus pentru salariați, la același cost",
+         "suma": "14388.00"
+        }
+       ],
+       "lipsesc": [
+        {
+         "cod": "M1",
+         "nume": "Salariu sau dividende",
+         "stare": "Lipsesc date"
+        },
+        {
+         "cod": "M3",
+         "nume": "Sponsorizări",
+         "stare": "Lipsesc date"
+        }
+       ],
+       "economie": "0.00"
+      }
+     ],
+     "in_recalculare": 0,
+     "economie": "0.00",
+     "n": 3
+    }
+   }
+  }
+ }
+}

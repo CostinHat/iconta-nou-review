@@ -1,0 +1,7 @@
+{"asertiuni":[
+{"id":"f.1","pas":"decontari","operator":"text_vizibil","valoare":"Decontări asociați (455/457)","cheie":"dom:.fereastra-overlay:not(.fundal) .fereastra h2.pf-titlu|text"},
+{"id":"f.2","pas":"decontari","operator":"text_vizibil","valoare":"Ion Test","cheie":"dom:.fereastra-overlay:not(.fundal) #op-div-tabel|text"},
+{"id":"f.3","pas":"decontari","operator":"text_vizibil","valoare":"F2 Profit Amortizare SRL · CUI 403000015","cheie":"dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet|text"},
+{"id":"f.4","pas":"meniu","operator":"text_vizibil","valoare":"Contabilitate","cheie":"dom:.fereastra-overlay:not(.fundal) .fereastra #fg-contabilitate .firme-grup-btn|text"},
+{"id":"f.5","pas":"banca","operator":"text_vizibil","valoare":"Bancă","cheie":"dom:.fereastra-overlay:not(.fundal) .fereastra #bk-rezumat h2.pf-titlu|text"},
+{"id":"f.6","pas":"control","operator":"text_vizibil","valoare":"Control fiscal","cheie":"dom:.fereastra-overlay:not(.fundal) .fereastra h2.pf-titlu|text"}]}

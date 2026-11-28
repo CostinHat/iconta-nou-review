@@ -1,0 +1,45 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/costin/iconta_nou/venv/bin/python
+mediu: test · baza: iconta_test · rol: iconta_test_user  (frontiera R68: rolul asta nu are CONNECT pe iconta_v2)
+rootdir: /home/costin/iconta_nou
+plugins: anyio-4.13.0, xdist-3.8.0
+collecting ... collected 7 items
+
+core/test_dependente_masurate.py::test_blocul_din_document_e_cel_generat_acum PASSED [ 14%]
+core/test_dependente_masurate.py::test_documentul_numeste_fiecare_aspect PASSED [ 28%]
+core/test_dependente_masurate.py::test_registrul_cuprinde_tot_ce_s_a_masurat PASSED [ 42%]
+core/test_dependente_masurate.py::test_publicul_masurat_e_urmarit_sau_declarat_neurmarit PASSED [ 57%]
+core/test_dependente_masurate.py::test_artefactul_spune_pe_cate_firme_a_fost_masurat PASSED [ 71%]
+core/test_dependente_masurate.py::test_cele_doua_instrumente_nu_s_au_contrazis PASSED [ 85%]
+core/test_dependente_masurate.py::test_fiecare_sursa_din_registru_are_trigger_pe_fiecare_firma FAILED [100%]
+
+=================================== FAILURES ===================================
+_________ test_fiecare_sursa_din_registru_are_trigger_pe_fiecare_firma _________
+
+    def test_fiecare_sursa_din_registru_are_trigger_pe_fiecare_firma():
+        from core import db as _db
+        try:
+            _db.init_pool()
+            with _db.get_conn() as c:
+                rap = FR.verifica_triggerele(c)
+        except Exception as e:      # noqa: BLE001
+            pytest.skip("fara baza de date: %s" % e)
+        assert not rap["domeniu_gol"], (
+            "verificarea n-a găsit nicio firmă — ar raporta zero lipsuri despre o lume pe care n-o vede")
+>       assert rap["lipsa"] == [], "tabele-sursă fără trigger: %s" % rap["lipsa"][:20]
+E       AssertionError: tabele-sursă fără trigger: [('tenant_001', 'centre_cost'), ('tenant_001', 'nir'), ('tenant_001', 'registru_jurnal_numere'), ('tenant_002', 'centre_cost'), ('tenant_002', 'nir'), ('tenant_002', 'registru_jurnal_numere'), ('tenant_003', 'centre_cost'), ('tenant_003', 'nir'), ('tenant_003', 'registru_jurnal_numere'), ('tenant_004', 'centre_cost'), ('tenant_004', 'nir'), ('tenant_004', 'registru_jurnal_numere'), ('tenant_005', 'centre_cost'), ('tenant_005', 'nir'), ('tenant_005', 'registru_jurnal_numere'), ('tenant_006', 'centre_cost'), ('tenant_006', 'nir'), ('tenant_006', 'registru_jurnal_numere'), ('tenant_007', 'centre_cost'), ('tenant_007', 'nir')]
+E       assert [('tenant_001...numere'), ...] == []
+E         
+E         Left contains 87 more items, first extra item: ('tenant_001', 'centre_cost')
+E         
+E         Full diff:
+E         - []
+E         + [
+E         +     (...
+E         
+E         ...Full output truncated (348 lines hidden), use '-vv' to show
+
+core/test_dependente_masurate.py:150: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_dependente_masurate.py::test_fiecare_sursa_din_registru_are_trigger_pe_fiecare_firma
+========================= 1 failed, 6 passed in 1.70s ==========================

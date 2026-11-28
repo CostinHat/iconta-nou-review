@@ -1,0 +1,53 @@
+produs
+lot: 17.5-F5
+max hook 126
+max poarta_verificator 114
+max poarta_pytest 695
+max poarta_plasa 3689
+runde_verificator_max: 2
+sursa pragurilor 17.5-F5: generate de scripts/praguri_automate.py la 2026-11-27T17:16:40+02:00 din .lot_jurnal.log; loturi folosite: 17.5-Q11, 17.5-Q12, 17.5-C9 (3)
+  hook: maxim 105 s (lotul 17.5-Q12, rularea 2578446-1795696866357) din 14 rulari complete, 0 rulari «intrerupt» ignorate, prag 126 s
+  poarta_verificator: maxim 95 s (lotul 17.5-Q12, rularea 2618602-1795698262347) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 114 s
+  poarta_pytest: maxim 579 s (lotul 17.5-C9, rularea 3298481-1795721640105) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 695 s
+  poarta_plasa: maxim 3074 s (lotul 17.5-Q12, rularea 2618602-1795698925818) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 3689 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  DECIZII.md (numai deciziile lotului și decizii_17_5_F5.txt)
+  DEFICIENTE.md (numai pozițiile închise de lot: 501, 502, AC202 și „▾ detalii”)
+  PREDARE_LANT.md (numai rândul lotului)
+  CLAUDE.md (numai o regulă nouă din lecțiile lotului, în același commit cu corecția ei)
+  DESIGN_SYSTEM.md (pct. 17: regula AC202 în locul regulii v2.131; Cabinet 7: regula secțiunii «Consultanță»)
+  verificator_conformitate.py (pct. 17 și Cabinet 7: regulile noi, cu probă pozitivă și negativă)
+  scripts/verificator_design.py (pct. 17 și Cabinet 7: numai intrarea consolidată a acelorași reguli)
+  scripts/verificator_design_masuri.js (pct. 17: numai măsura DOM a semnului unic pe zonă)
+  scripts/plasa_16_2.manifest (adaugă e2e_fundatie_17_5_F5.py; actualizează SHA-ul rândului R14 al testului istoric e2e_ajutor_17_5_R2, decizia D3)
+  scripts/praguri_17_5_F5.txt (nou, pragurile calificate, octet cu octet)
+  docs/dovezi/17_5_F5/ (nou, dovezile F5)
+  frontend_test/e2e/e2e_fundatie_17_5_F5.py (nou, proba REAL a arhitectului, octet cu octet)
+  frontend_test/e2e/e2e_tinte_17_5_F5.py (nou; exclus din plasa: testele țintite e2e ale pozițiilor 501, 502, AC202 și „▾ detalii”, rulate la pct. 19)
+  frontend_test/e2e/e2e_ajutor_17_5_R2.py (pct. 17, R14: numai verificările care presupun câte un buton per ID)
+  frontend_test/e2e/e2e_bloc_a.py (Cabinet 7: ORDINE_CABINET cu secțiunea nouă)
+  frontend_test/vizual/nav_ecrane.py (502: ecranul fa-consultanta în inventarul ecranelor scanate)
+  core/test_harta_ecrane.py (502: ecranul fa-consultanta în inventar, dacă nu intră în nav_ecrane)
+  core/test_fara_functii_noi.py (501 și 502: numai intrările EXCEPTII ale rutelor noi, cu numerele 501 și 502 din DEFICIENTE.md, decizia D9)
+  core/test_hotarare_dividende_17_5_F5.py (nou, 501: cazurile de la pct. 2–7)
+  core/test_consultanta_fiscala_17_5_F5.py (nou, 502: M1–M5 și rezumatele pe firmă, pct. 8–16)
+  core/test_ajutor_ac202_17_5_F5.py (nou, pct. 17: inventarul AC202 și regula din verificator)
+  core/hotarare_dividende.py (nou, 501: documentul Word și PDF din propunerea comună)
+  core/consultanta_fiscala.py (nou, 502: măsurile M1–M5)
+  core/uc_tenants.py (pct. 3: propunerea comună; intrările 501 și 502)
+  core/dividende_curs.py (pct. 3)
+  core/decontari_asociati.py (pct. 3)
+  core/documente_interne.py (pct. 4: tipul numărului hotărârii)
+  core/common.py (pct. 9–15: valorile fiscale datate noi, cu etichetele lor)
+  core/temeiuri.py (pct. 9–15: numai temeiurile valorilor noi)
+  core/registru_fiscal.py (pct. 9–15, garda datelor fiscale: numai legarea valorilor noi)
+  core/firma_rezumat.py (Cabinet 5: aspectele 501 și 502)
+  anaf_surse/ (pct. 9–15: numai sursele oficiale datate ale valorilor noi)
+  main.py (numai rutele 501 și 502 și rezumatele lor)
+  static/js/ (pct. 2–4 și 16: ecranele 501 și 502 și pagina cabinetului; pct. 17: AC202; pct. 18: ds_piese.js; tokenurile de versiune ale importatorilor)
+  static/stil.css (pct. 16–17: stilul cardurilor și al țintei, numai unde e necesar)
+  static/index.html (numai tokenurile de versiune ale dependențelor modificate)
+  static/spv_callback.html (numai tokenul de versiune al stil.css)
+plasa_modificabile frontend_test/e2e/e2e_ajutor_17_5_R2.py
+durata_istoric frontend_test/e2e/e2e_ajutor_17_5_R2.py 13 docs/dovezi/17_5_C9/baza.json

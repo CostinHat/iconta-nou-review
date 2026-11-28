@@ -1,0 +1,23 @@
+ok 319 e2e_tinte_17_5_F6 test_cabinet8_administratorul_sectiunea_cardurile_si_intrarea_directa[1366-768]
+ok 5 e2e_tinte_17_5_F6 test_cabinet8_administratorul_sectiunea_cardurile_si_intrarea_directa[603-590]
+FAIL 1 e2e_tinte_17_5_F6 test_cabinet8_asistentul_vede_numai_firmele_lui_fara_drept_de_conducere[1366-768]
+     AssertionError: {'grila': True, 'sectiune': False, 'ascunsa': None, 'ultima': None, ...} | assert (False)
+FAIL 1 e2e_tinte_17_5_F6 test_cabinet8_asistentul_vede_numai_firmele_lui_fara_drept_de_conducere[603-590]
+     AssertionError: {'grila': True, 'sectiune': False, 'ascunsa': None, 'ultima': None, ...} | assert (False)
+ok 2 e2e_tinte_17_5_F6 test_cabinet8_utilizatorul_fara_firme_nu_vede_sectiunea[1366-768]
+ok 3 e2e_tinte_17_5_F6 test_cabinet8_utilizatorul_fara_firme_nu_vede_sectiunea[603-590]
+FAIL 2 e2e_tinte_17_5_F6 test_502_doua_perioade_data_ceruta_si_rezultatele_afisate[1366-768]
+     AssertionError: {'data': '2026-11-28', 'afisat': '28.11.2026', 'masuri': [{'cod': 'M1', 'stare': 'Lipsesc date', 'suma': None, 'motiv'...cutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere.'}]} | assert ('2026-11-28' == '2026-11-03' |    |   - 2026-11-03 |   ?         ^^ |   + 2026-11-28 |   ?         ^^)
+FAIL 2 e2e_tinte_17_5_F6 test_502_doua_perioade_data_ceruta_si_rezultatele_afisate[603-590]
+     AssertionError: {'data': '2026-11-28', 'afisat': '28.11.2026', 'masuri': [{'cod': 'M1', 'stare': 'Lipsesc date', 'suma': None, 'motiv'...cutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere.'}]} | assert ('2026-11-28' == '2026-11-03' |    |   - 2026-11-03 |   ?         ^^ |   + 2026-11-28 |   ?         ^^)
+FAIL 2 e2e_tinte_17_5_F6 test_bb_fereastra_502_bara_fara_principal_si_cele_cinci_detalii[1366-768]
+     AssertionError: {'bara': True, 'principal': 1} | assert (True and 1 == 0)
+ok 4 e2e_tinte_17_5_F6 test_bb_fereastra_502_bara_fara_principal_si_cele_cinci_detalii[603-590]
+ok 135 e2e_pilot_x06 test_pilot_X06
+ok 121 e2e_pilot_x07 test_pilot_X07
+FAIL 414 e2e_bara_jos test_bara_jos_17_5_H
+     AssertionError: păzirea barei de jos: 2 abateri: |     BB4 F1 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în hartă |     BB4 F5 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în hartă | assert not ["BB4 F1 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în ...F5 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în hartă"]
+FAIL 6 e2e_bloc_a test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre
+     AssertionError: ('0 declarații de depus', ['Note de validat (0)', 'Declarații (0)', 'Notele tale în ciornă (0)']) | assert ([])
+ok 39 e2e_cabinet_17_5_M test_cabinet_17_5_M
+ok 126 e2e_texte_17_5_I test_texte_17_5_I

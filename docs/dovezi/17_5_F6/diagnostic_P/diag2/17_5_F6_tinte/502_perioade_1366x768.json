@@ -1,0 +1,120 @@
+{
+ "implicit": {
+  "data": "2026-11-28",
+  "afisat": "28.11.2026"
+ },
+ "a": {
+  "data": "2026-11-03",
+  "afisat": "03.11.2026",
+  "masuri": [
+   {
+    "cod": "M1",
+    "stare": "Lipsesc date",
+    "suma": null,
+    "motiv": "Firma nu are asociați persoane fizice înregistrați: simularea salariu / dividende se face pe asociat. Adaugă asociații și cotele lor în Date firmă → Asociați."
+   },
+   {
+    "cod": "M2",
+    "stare": "Se aplică",
+    "suma": "9.100,80 lei",
+    "motiv": null
+   },
+   {
+    "cod": "M3",
+    "stare": "Nu se aplică",
+    "suma": null,
+    "motiv": "Microîntreprinderea nu mai poate scădea sponsorizarea din impozit începând cu 2024: art. 56 alin. (1¹) din Codul fiscal a fost abrogat prin OUG 115/2023; ultimul an cu această facilitate este 2023. Sponsorizarea rămâne doar cheltuială."
+   },
+   {
+    "cod": "M4",
+    "stare": "Lipsesc date",
+    "suma": null,
+    "motiv": "Lipsește cursul BNR EUR din 31.12.2025 (închiderea exercițiului precedent, CF art. 52 alin. (5)): echivalentul în lei al plafonului nu se poate calcula."
+   },
+   {
+    "cod": "M5",
+    "stare": "Nu se aplică",
+    "suma": null,
+    "motiv": "Scutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere."
+   }
+  ]
+ },
+ "b": {
+  "data": "2025-12-31",
+  "afisat": "31.12.2025",
+  "masuri": [
+   {
+    "cod": "M1",
+    "stare": "Lipsesc date",
+    "suma": null,
+    "motiv": "Firma nu are asociați persoane fizice înregistrați: simularea salariu / dividende se face pe asociat. Adaugă asociații și cotele lor în Date firmă → Asociați."
+   },
+   {
+    "cod": "M2",
+    "stare": "Nu se aplică",
+    "suma": null,
+    "motiv": "Firma nu are salariați activi la 31.12.2025: beneficiile se acordă salariaților."
+   },
+   {
+    "cod": "M3",
+    "stare": "Nu se aplică",
+    "suma": null,
+    "motiv": "Microîntreprinderea nu mai poate scădea sponsorizarea din impozit începând cu 2024: art. 56 alin. (1¹) din Codul fiscal a fost abrogat prin OUG 115/2023; ultimul an cu această facilitate este 2023. Sponsorizarea rămâne doar cheltuială."
+   },
+   {
+    "cod": "M4",
+    "stare": "Lipsesc date — temei neverificat",
+    "suma": null,
+    "motiv": "Plafonul micro al anului 2025 nu are temei în registru: Plafonul veniturilor microîntreprinderii (euro) la 01.01.2025: PERIOADA_BLOCATA: Calculul pentru 01.01.2025 nu se poate face: valoarea „Plafonul veniturilor microîntreprinderii (euro)” nu e definită înainte de 01.01.2026 (nu a fost verificată la sursă pentru perioadele anterioare, deci nu se inventează retroactiv). Calculul e disponibil de la 01.01.2026; pentru o perioadă anterioară, valoarea se adaugă în registrul de parametri fiscali, după verificarea la sursă.."
+   },
+   {
+    "cod": "M5",
+    "stare": "Nu se aplică",
+    "suma": null,
+    "motiv": "Scutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere."
+   }
+  ]
+ },
+ "revenire": {
+  "data": "2026-11-03",
+  "afisat": "03.11.2026",
+  "masuri": [
+   {
+    "cod": "M1",
+    "stare": "Lipsesc date",
+    "suma": null,
+    "motiv": "Firma nu are asociați persoane fizice înregistrați: simularea salariu / dividende se face pe asociat. Adaugă asociații și cotele lor în Date firmă → Asociați."
+   },
+   {
+    "cod": "M2",
+    "stare": "Se aplică",
+    "suma": "9.100,80 lei",
+    "motiv": null
+   },
+   {
+    "cod": "M3",
+    "stare": "Nu se aplică",
+    "suma": null,
+    "motiv": "Microîntreprinderea nu mai poate scădea sponsorizarea din impozit începând cu 2024: art. 56 alin. (1¹) din Codul fiscal a fost abrogat prin OUG 115/2023; ultimul an cu această facilitate este 2023. Sponsorizarea rămâne doar cheltuială."
+   },
+   {
+    "cod": "M4",
+    "stare": "Lipsesc date",
+    "suma": null,
+    "motiv": "Lipsește cursul BNR EUR din 31.12.2025 (închiderea exercițiului precedent, CF art. 52 alin. (5)): echivalentul în lei al plafonului nu se poate calcula."
+   },
+   {
+    "cod": "M5",
+    "stare": "Nu se aplică",
+    "suma": null,
+    "motiv": "Scutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere."
+   }
+  ]
+ },
+ "cereri": [
+  "http://127.0.0.1:8019/tenants/105779/consultanta-fiscala",
+  "http://127.0.0.1:8019/tenants/105779/consultanta-fiscala?data=2026-11-03",
+  "http://127.0.0.1:8019/tenants/105779/consultanta-fiscala?data=2025-12-31",
+  "http://127.0.0.1:8019/tenants/105779/consultanta-fiscala?data=2026-11-03"
+ ]
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="8.504" timestamp="2026-11-28T03:38:40.128151+02:00" hostname="iconta-prod"><testcase classname="e2e_bloc_a" name="test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre" time="8.070"><failure message="AssertionError: ('0 declarații de depus', ['Note de validat (0)', 'Declarații (0)', 'Notele tale în ciornă (0)'])&#10;assert ([])">patron = &lt;conftest.Ecran object at 0x7a168d293350&gt;
+
+    def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
+        """203. Pagina principală: la cabinet lipsește cardul „Raportează”; cardurile trebuie ordonate după lucrul zilnic, iar cifrele lor =
+        ecranele din spate.
+        Pașii: contabilul-șef -&gt; pagina principală: există cardul „Raportează”; cardurile sunt în ordinea lucrului zilnic (de validat,
+        control fiscal, termene, firme …, la urmă Suport) -&gt; cifra cardului Firme = firmele active din ecranul Firme; „N note de validat”
+        = „Note de validat (N)” din fereastra cozii (cifrele cardului Control fiscal: `e2e_comanda_1010.py::test_def_224_…`)."""
+        import re as _r
+        pg = patron.pg
+        patron.acasa()
+        pg.wait_for_function("() =&gt; !document.querySelector('.cab-grila').innerText.includes('se încarcă')", timeout=60000)
+        pg.wait_for_timeout(1500)
+        card = pg.evaluate("""() =&gt; [...document.querySelectorAll('.cab-grila button.cab-card')].map(b =&gt; ({
+            cheie: (b.querySelector('[data-cheie]') || {}).dataset ? b.querySelector('[data-cheie]').dataset.cheie : null,
+            titlu: (b.querySelector('.cab-card-titlu') || {}).innerText, sinteza: (b.querySelector('.cab-card-sinteza') || {}).innerText}))""")
+        patron.captura("desktop")
+        chei = [c["cheie"] for c in card]
+        assert [k for k in chei if k in ORDINE_CABINET] == [k for k in ORDINE_CABINET if k in chei], chei
+        assert "raport" not in chei and pg.inner_text("[data-banda='raport']").strip().startswith("Suport"), chei   # [225, 12.10.2026] banda
+        sint = {c["cheie"]: c["sinteza"] for c in card}
+        firme_card = int(_r.search(r"(\d+) firm", sint["firme"]).group(1))
+        pg.click("button.cab-card:has([data-cheie='firme'])")
+        pg.wait_for_timeout(600)
+        if pg.query_selector("#opt-existente"):
+            pg.click("#opt-existente")
+        pg.wait_for_selector("#firme-lista .firme-rand-linie", timeout=30000)
+        pg.wait_for_timeout(800)
+        firme_ecran = pg.locator("#firme-lista .firme-rand-linie").count()
+        assert firme_card == firme_ecran, (sint["firme"], firme_ecran)
+        # [deficiența 224] cifrele cardului Control fiscal (patru lumini = firmele în fiecare stare) față de lista din spate: test_def_224
+        patron.acasa()
+        pg.wait_for_function("() =&gt; /\\d/.test(document.querySelector('[data-cheie=validat]').innerText)", timeout=60000)
+        val_card = pg.inner_text("[data-cheie=validat]")
+        pg.click("button.cab-card:has([data-cheie='validat'])")
+        pg.wait_for_selector(".fereastra:last-of-type .cf-grup-titlu", timeout=60000)
+        pg.wait_for_timeout(800)
+        titluri = pg.eval_on_selector_all(".fereastra:last-of-type .cf-grup-titlu", "els =&gt; els.map(e =&gt; e.textContent.trim())")
+        patron.captura("coada")
+        for eticheta_card, grup in ((r"(\d+) note? de validat", "Note de validat"), (r"(\d+) declarații? de validat", "De validat"),
+                                    (r"(\d+) declarații? de depus", "De depus")):
+            m = _r.search(eticheta_card, val_card)
+            if m:
+                g = [t for t in titluri if t.startswith(grup + " (")]
+&gt;               assert g and g[0] == "%s (%s)" % (grup, m.group(1)), (val_card, titluri)
+E               AssertionError: ('0 declarații de depus', ['Note de validat (0)', 'Declarații (0)', 'Notele tale în ciornă (0)'])
+E               assert ([])
+
+frontend_test/e2e/e2e_bloc_a.py:1031: AssertionError</failure></testcase></testsuite></testsuites>

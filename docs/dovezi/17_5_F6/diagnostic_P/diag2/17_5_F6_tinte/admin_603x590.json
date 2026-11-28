@@ -1,0 +1,323 @@
+{
+ "ruta": {
+  "firme_accesibile": 8,
+  "firme_distincte": 4,
+  "carduri": {
+   "hotarari_aga": {
+    "firme": [
+     {
+      "tenant_id": 105779,
+      "nume": "F1 Comert Stoc SRL",
+      "cui": "401002001",
+      "tip_firma": "srl",
+      "regim_contabil": "dubla",
+      "disponibil": "13800.00",
+      "ultima": null
+     },
+     {
+      "tenant_id": 105780,
+      "nume": "F2 Profit Amortizare SRL",
+      "cui": "403000015",
+      "tip_firma": "srl",
+      "regim_contabil": "dubla",
+      "disponibil": "14600.00",
+      "ultima": null
+     }
+    ],
+    "in_recalculare": 0,
+    "n": 2
+   },
+   "consultanta": {
+    "firme": [
+     {
+      "tenant_id": 105779,
+      "nume": "F1 Comert Stoc SRL",
+      "cui": "401002001",
+      "tip_firma": "srl",
+      "regim_contabil": "dubla",
+      "se_aplica": [
+       {
+        "cod": "M2",
+        "nume": "Beneficii pentru salariați",
+        "sens": "net în plus pentru salariați, la același cost",
+        "suma": "9100.80"
+       }
+      ],
+      "lipsesc": [
+       {
+        "cod": "M1",
+        "nume": "Salariu sau dividende",
+        "stare": "Lipsesc date"
+       },
+       {
+        "cod": "M4",
+        "nume": "Plafonul micro",
+        "stare": "Lipsesc date"
+       }
+      ],
+      "economie": "0.00"
+     },
+     {
+      "tenant_id": 105780,
+      "nume": "F2 Profit Amortizare SRL",
+      "cui": "403000015",
+      "tip_firma": "srl",
+      "regim_contabil": "dubla",
+      "se_aplica": [
+       {
+        "cod": "M1",
+        "nume": "Salariu sau dividende",
+        "sens": "net în plus pentru asociat",
+        "suma": "0.00"
+       }
+      ],
+      "lipsesc": [
+       {
+        "cod": "M3",
+        "nume": "Sponsorizări",
+        "stare": "Lipsesc date"
+       }
+      ],
+      "economie": "0.00"
+     },
+     {
+      "tenant_id": 105783,
+      "nume": "F5 SRL Salariati SRL",
+      "cui": "40510009",
+      "tip_firma": "srl",
+      "regim_contabil": "dubla",
+      "se_aplica": [
+       {
+        "cod": "M2",
+        "nume": "Beneficii pentru salariați",
+        "sens": "net în plus pentru salariați, la același cost",
+        "suma": "5599.20"
+       }
+      ],
+      "lipsesc": [
+       {
+        "cod": "M1",
+        "nume": "Salariu sau dividende",
+        "stare": "Lipsesc date"
+       },
+       {
+        "cod": "M4",
+        "nume": "Plafonul micro",
+        "stare": "Lipsesc date"
+       }
+      ],
+      "economie": "0.00"
+     },
+     {
+      "tenant_id": 105785,
+      "nume": "F6 Migrare Test SRL",
+      "cui": "401006003",
+      "tip_firma": "srl",
+      "regim_contabil": "dubla",
+      "se_aplica": [
+       {
+        "cod": "M1",
+        "nume": "Salariu sau dividende",
+        "sens": "net în plus pentru asociat",
+        "suma": "0.00"
+       },
+       {
+        "cod": "M2",
+        "nume": "Beneficii pentru salariați",
+        "sens": "net în plus pentru salariați, la același cost",
+        "suma": "14388.00"
+       }
+      ],
+      "lipsesc": [
+       {
+        "cod": "M3",
+        "nume": "Sponsorizări",
+        "stare": "Lipsesc date"
+       }
+      ],
+      "economie": "0.00"
+     }
+    ],
+    "in_recalculare": 0,
+    "economie": "0.00",
+    "n": 4
+   }
+  }
+ },
+ "pliat": {
+  "grila": true,
+  "sectiune": true,
+  "ascunsa": false,
+  "ultima": true,
+  "parinte": true,
+  "dupaSef": true,
+  "sef": true,
+  "titlu": "Consultanță · 4 firme",
+  "expandat": "false",
+  "controleaza": true,
+  "continutAscuns": true,
+  "inaltimeContinut": 0,
+  "carduri": [
+   {
+    "cheie": "hotarari_aga",
+    "titlu": "Hotărâri AGA",
+    "sinteza": "2 firme cu profit de distribuit",
+    "vizibil": false,
+    "activ": true
+   },
+   {
+    "cheie": "consultanta",
+    "titlu": "Consultanță fiscală",
+    "sinteza": "4 firme · 0,00 lei/an",
+    "vizibil": false,
+    "activ": true
+   }
+  ],
+  "sus": [
+   "validat",
+   "control",
+   "termene",
+   "firme",
+   "brief",
+   "setari"
+  ],
+  "butoaneConsultanta": 1,
+  "cheiPagina": [
+   "validat",
+   "control",
+   "termene",
+   "firme",
+   "brief",
+   "setari",
+   "activitate",
+   "pachete",
+   "supervizor",
+   "capacitate",
+   "consolidare",
+   "asistenti",
+   "hotarari_aga",
+   "consultanta"
+  ]
+ },
+ "deschis": {
+  "grila": true,
+  "sectiune": true,
+  "ascunsa": false,
+  "ultima": true,
+  "parinte": true,
+  "dupaSef": true,
+  "sef": true,
+  "titlu": "Consultanță · 4 firme",
+  "expandat": "true",
+  "controleaza": true,
+  "continutAscuns": false,
+  "inaltimeContinut": 125,
+  "carduri": [
+   {
+    "cheie": "hotarari_aga",
+    "titlu": "Hotărâri AGA",
+    "sinteza": "2 firme cu profit de distribuit",
+    "vizibil": true,
+    "activ": true
+   },
+   {
+    "cheie": "consultanta",
+    "titlu": "Consultanță fiscală",
+    "sinteza": "4 firme · 0,00 lei/an",
+    "vizibil": true,
+    "activ": true
+   }
+  ],
+  "sus": [
+   "validat",
+   "control",
+   "termene",
+   "firme",
+   "brief",
+   "setari"
+  ],
+  "butoaneConsultanta": 1,
+  "cheiPagina": [
+   "validat",
+   "control",
+   "termene",
+   "firme",
+   "brief",
+   "setari",
+   "activitate",
+   "pachete",
+   "supervizor",
+   "capacitate",
+   "consolidare",
+   "asistenti",
+   "hotarari_aga",
+   "consultanta"
+  ]
+ },
+ "lista_501": {
+  "titlu": "Hotărâri AGA",
+  "randuri": [
+   [
+    "F1 Comert Stoc SRL · CUI 401002001",
+    "13.800,00",
+    "nefăcută",
+    "Deschide"
+   ],
+   [
+    "F2 Profit Amortizare SRL · CUI 403000015",
+    "14.600,00",
+    "nefăcută",
+    "Deschide"
+   ]
+  ],
+  "subsol": "2 firme",
+  "gol": ""
+ },
+ "intrare_501": {
+  "eticheta": "Decontări asociați (455/457)",
+  "antet": "← F1 Comert Stoc SRL · CUI 401002001›Decontări asociați (455/457) ✕",
+  "titlu": "Decontări asociați (455/457) ?",
+  "operatie": "dividend"
+ },
+ "lista_502": {
+  "titlu": "Consultanță fiscală",
+  "randuri": [
+   [
+    "F1 Comert Stoc SRL · CUI 401002001",
+    "M2 Beneficii pentru salariați",
+    "M1 Lipsesc date, M4 Lipsesc date",
+    "0,00",
+    "Deschide"
+   ],
+   [
+    "F2 Profit Amortizare SRL · CUI 403000015",
+    "M1 Salariu sau dividende",
+    "M3 Lipsesc date",
+    "0,00",
+    "Deschide"
+   ],
+   [
+    "F5 SRL Salariati SRL · CUI 40510009",
+    "M2 Beneficii pentru salariați",
+    "M1 Lipsesc date, M4 Lipsesc date",
+    "0,00",
+    "Deschide"
+   ],
+   [
+    "F6 Migrare Test SRL · CUI 401006003",
+    "M1 Salariu sau dividende, M2 Beneficii pentru salariați",
+    "M3 Lipsesc date",
+    "0,00",
+    "Deschide"
+   ]
+  ],
+  "subsol": "4 firme · total 0,00 lei/an",
+  "gol": ""
+ },
+ "intrare_502": {
+  "eticheta": "Consultanță fiscală",
+  "antet": "← F1 Comert Stoc SRL · CUI 401002001›Consultanță fiscală ✕",
+  "titlu": "Consultanță fiscală",
+  "operatie": null
+ }
+}

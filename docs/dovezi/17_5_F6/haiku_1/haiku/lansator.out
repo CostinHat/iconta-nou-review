@@ -1,0 +1,13 @@
+[haiku, instanța 1] cod 0
+Verificare pe capturi, judecată numai după descrieri:
+
+- **f.1**: Titlul „Decontări asociați (455/457)” apare sub breadcrumb, în titlul ferestrei.
+- **f.2**: Sub formular, în tabelul „Împărțirea pe asociați”, primul rând este „Ion Test”.
+- **f.3**: Antetul afișează „F2 Profit Amortizare SRL · CUI 403000015”.
+- **f.4**: În meniul firmei F2 apare grupul „CONTABILITATE” cu săgeata de extindere. Este vizibil, dar în captură e scris cu majuscule și nu e clar că este un buton.
+- **f.5**: Fereastra Bancă a firmei F2 are titlul „Bancă”.
+- **f.6**: Fereastra Control fiscal are titlul „Control fiscal”, iar breadcrumb-ul arată „F1 Comert Stoc SRL · CUI 401002001”.
+
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Titlul ferestrei este „Decontări asociați (455/457)”, afișat ca titlu principal și în breadcrumb."}, {"id": "f.2", "raspuns": "corespunde", "motiv": "Sub formular, în tabelul „Împărțirea pe asociați”, apare rândul cu asociatul „Ion Test”."}, {"id": "f.3", "raspuns": "corespunde", "motiv": "Antetul ferestrei arată „F2 Profit Amortizare SRL · CUI 403000015”."}, {"id": "f.4", "raspuns": "corespunde", "motiv": "În meniul firmei este vizibil grupul „CONTABILITATE” cu săgeată de extindere, deci butonul grupului apare pe ecran."}, {"id": "f.5", "raspuns": "corespunde", "motiv": "Fereastra are titlul „Bancă” și breadcrumb-ul „F2 Profit Amortizare SRL · CUI 403000015 › Bancă”."}, {"id": "f.6", "raspuns": "corespunde", "motiv": "Fereastra are titlul „Control fiscal” și breadcrumb-ul „F1 Comert Stoc SRL · CUI 401002001 › Control fiscal”."}]
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: f.1=corespunde; f.2=corespunde; f.3=corespunde; f.4=corespunde; f.5=corespunde; f.6=corespunde | nejudecabile: 0 din 6

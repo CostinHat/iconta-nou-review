@@ -1,0 +1,12 @@
+ok 5 e2e_tinte_17_5_F5 test_ac202_banca_un_semn_o_fereastra_cu_sectiunile_in_ordine_x_si_esc[1366-768]
+ok 3 e2e_tinte_17_5_F5 test_ac202_banca_un_semn_o_fereastra_cu_sectiunile_in_ordine_x_si_esc[603-590]
+ok 5 e2e_tinte_17_5_F5 test_ac202_titlurile_cu_mai_multe_functii_au_un_semn[#fa-produse-h2.pf-titlu-F023,F070-Produse \u0219i servicii]
+ok 5 e2e_tinte_17_5_F5 test_ac202_titlurile_cu_mai_multe_functii_au_un_semn[#fa-stocuri-h2.pf-titlu-F089,F088-Stocuri]
+ok 4 e2e_tinte_17_5_F5 test_ac202_titlurile_cu_mai_multe_functii_au_un_semn[#fa-etransport-h2.pf-titlu-F044,F121-e-Transport]
+ok 3 e2e_tinte_17_5_F5 test_502_fereastra_consultanta_pe_firma_cu_impozit_pe_profit[1366-768]
+ok 3 e2e_tinte_17_5_F5 test_502_fereastra_consultanta_pe_firma_cu_impozit_pe_profit[603-590]
+ok 3 e2e_tinte_17_5_F5 test_501_refuzul_documentului_sta_langa_formular_si_nu_creeaza_note
+ok 5 e2e_tinte_17_5_F5 test_detalii_o_singura_comutare_la_fiecare_clic_in_control_fiscal
+ok 21 e2e_ajutor_17_5_R2 test_ajutor_17_5_R2
+FAIL 8 e2e_bloc_a test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre
+     AssertionError: ('0 declarații de depus', ['Note de validat (0)', 'Declarații (0)', 'Notele tale în ciornă (0)']) | assert ([])

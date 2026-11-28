@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="16" time="1182.733" timestamp="2026-11-28T02:47:37.855680+02:00" hostname="iconta-prod"><testcase classname="e2e_tinte_17_5_F6" name="test_cabinet8_administratorul_sectiunea_cardurile_si_intrarea_directa[1366-768]" time="318.780" /><testcase classname="e2e_tinte_17_5_F6" name="test_cabinet8_administratorul_sectiunea_cardurile_si_intrarea_directa[603-590]" time="4.752" /><testcase classname="e2e_tinte_17_5_F6" name="test_cabinet8_asistentul_vede_numai_firmele_lui_fara_drept_de_conducere[1366-768]" time="1.327"><failure message="AssertionError: {'grila': True, 'sectiune': False, 'ascunsa': None, 'ultima': None, ...}&#10;assert (False)">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+w = 1366, h = 768
+
+    @pytest.mark.parametrize("w,h", REZ)
+    def test_cabinet8_asistentul_vede_numai_firmele_lui_fara_drept_de_conducere(browser, w, h):
+        ctx, pg = _pagina(browser, ASISTENT, w, h)
+        z = "%dx%d" % (w, h)
+        try:
+            ruta = _asteapta_la_zi(pg)
+            _acasa(pg)
+            p = pg.evaluate(JS_PAGINA)
+            _poza(pg, "asistent_pliat_%s" % z)
+            assert ruta["firme_accesibile"] == 3, ruta
+            vazute = {f["nume"] for c in ruta["carduri"].values() for f in c["firme"]}
+            assert vazute &lt;= {F1, F2, "F5 SRL Salariati SRL"}, vazute
+&gt;           assert p["sectiune"] and not p["ascunsa"] and p["ultima"] and not p["sef"] and p["expandat"] == "false", p
+E           AssertionError: {'grila': True, 'sectiune': False, 'ascunsa': None, 'ultima': None, ...}
+E           assert (False)
+
+frontend_test/e2e/e2e_tinte_17_5_F6.py:196: AssertionError</failure></testcase><testcase classname="e2e_tinte_17_5_F6" name="test_cabinet8_asistentul_vede_numai_firmele_lui_fara_drept_de_conducere[603-590]" time="1.254"><failure message="AssertionError: {'grila': True, 'sectiune': False, 'ascunsa': None, 'ultima': None, ...}&#10;assert (False)">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+w = 603, h = 590
+
+    @pytest.mark.parametrize("w,h", REZ)
+    def test_cabinet8_asistentul_vede_numai_firmele_lui_fara_drept_de_conducere(browser, w, h):
+        ctx, pg = _pagina(browser, ASISTENT, w, h)
+        z = "%dx%d" % (w, h)
+        try:
+            ruta = _asteapta_la_zi(pg)
+            _acasa(pg)
+            p = pg.evaluate(JS_PAGINA)
+            _poza(pg, "asistent_pliat_%s" % z)
+            assert ruta["firme_accesibile"] == 3, ruta
+            vazute = {f["nume"] for c in ruta["carduri"].values() for f in c["firme"]}
+            assert vazute &lt;= {F1, F2, "F5 SRL Salariati SRL"}, vazute
+&gt;           assert p["sectiune"] and not p["ascunsa"] and p["ultima"] and not p["sef"] and p["expandat"] == "false", p
+E           AssertionError: {'grila': True, 'sectiune': False, 'ascunsa': None, 'ultima': None, ...}
+E           assert (False)
+
+frontend_test/e2e/e2e_tinte_17_5_F6.py:196: AssertionError</failure></testcase><testcase classname="e2e_tinte_17_5_F6" name="test_cabinet8_utilizatorul_fara_firme_nu_vede_sectiunea[1366-768]" time="2.415" /><testcase classname="e2e_tinte_17_5_F6" name="test_cabinet8_utilizatorul_fara_firme_nu_vede_sectiunea[603-590]" time="2.613" /><testcase classname="e2e_tinte_17_5_F6" name="test_502_doua_perioade_data_ceruta_si_rezultatele_afisate[1366-768]" time="1.999"><failure message="AssertionError: {'data': '2026-11-28', 'afisat': '28.11.2026', 'masuri': [{'cod': 'M1', 'stare': 'Lipsesc date', 'suma': None, 'motiv'...cutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere.'}]}&#10;assert ('2026-11-28' == '2026-11-03'&#10;  &#10;  - 2026-11-03&#10;  ?         ^^&#10;  + 2026-11-28&#10;  ?         ^^)">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+w = 1366, h = 768
+
+    @pytest.mark.parametrize("w,h", REZ)
+    def test_502_doua_perioade_data_ceruta_si_rezultatele_afisate(browser, w, h):
+        """F1 (micro, salariați): la 03.11.2026 M2 «Se aplică» cu suma ei; la 31.12.2025 M2 «Nu se aplică» (niciun salariat activ la acea dată)
+        și M4 «Lipsesc date — temei neverificat» (plafonul micro al anului 2025 nu e în registrul datat). Fiecare schimbare cere API-ul cu data
+        aleasă, iar fereastra arată data primită."""
+        ctx, pg = _pagina(browser, ADMIN, w, h)
+        z = "%dx%d" % (w, h)
+        cereri = []
+        pg.on("request", lambda r: cereri.append(r.url) if "/consultanta-fiscala" in r.url else None)
+        try:
+            _consultanta_f1(pg)
+            a = {"data": pg.input_value(TOP + "#cs-data"), "afisat": pg.inner_text(TOP + "#cs-data-afisata"), "masuri": _masuri(pg)}
+            _poza(pg, "502_perioada_a_%s" % z)
+&gt;           assert a["data"] == "2026-11-03" and a["afisat"] == "03.11.2026", a
+E           AssertionError: {'data': '2026-11-28', 'afisat': '28.11.2026', 'masuri': [{'cod': 'M1', 'stare': 'Lipsesc date', 'suma': None, 'motiv'...cutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere.'}]}
+E           assert ('2026-11-28' == '2026-11-03'
+E             
+E             - 2026-11-03
+E             ?         ^^
+E             + 2026-11-28
+E             ?         ^^)
+
+frontend_test/e2e/e2e_tinte_17_5_F6.py:266: AssertionError</failure></testcase><testcase classname="e2e_tinte_17_5_F6" name="test_502_doua_perioade_data_ceruta_si_rezultatele_afisate[603-590]" time="1.957"><failure message="AssertionError: {'data': '2026-11-28', 'afisat': '28.11.2026', 'masuri': [{'cod': 'M1', 'stare': 'Lipsesc date', 'suma': None, 'motiv'...cutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere.'}]}&#10;assert ('2026-11-28' == '2026-11-03'&#10;  &#10;  - 2026-11-03&#10;  ?         ^^&#10;  + 2026-11-28&#10;  ?         ^^)">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+w = 603, h = 590
+
+    @pytest.mark.parametrize("w,h", REZ)
+    def test_502_doua_perioade_data_ceruta_si_rezultatele_afisate(browser, w, h):
+        """F1 (micro, salariați): la 03.11.2026 M2 «Se aplică» cu suma ei; la 31.12.2025 M2 «Nu se aplică» (niciun salariat activ la acea dată)
+        și M4 «Lipsesc date — temei neverificat» (plafonul micro al anului 2025 nu e în registrul datat). Fiecare schimbare cere API-ul cu data
+        aleasă, iar fereastra arată data primită."""
+        ctx, pg = _pagina(browser, ADMIN, w, h)
+        z = "%dx%d" % (w, h)
+        cereri = []
+        pg.on("request", lambda r: cereri.append(r.url) if "/consultanta-fiscala" in r.url else None)
+        try:
+            _consultanta_f1(pg)
+            a = {"data": pg.input_value(TOP + "#cs-data"), "afisat": pg.inner_text(TOP + "#cs-data-afisata"), "masuri": _masuri(pg)}
+            _poza(pg, "502_perioada_a_%s" % z)
+&gt;           assert a["data"] == "2026-11-03" and a["afisat"] == "03.11.2026", a
+E           AssertionError: {'data': '2026-11-28', 'afisat': '28.11.2026', 'masuri': [{'cod': 'M1', 'stare': 'Lipsesc date', 'suma': None, 'motiv'...cutirea profitului reinvestit (CF art. 22) se aplică plătitorilor de impozit pe profit; firma e microîntreprindere.'}]}
+E           assert ('2026-11-28' == '2026-11-03'
+E             
+E             - 2026-11-03
+E             ?         ^^
+E             + 2026-11-28
+E             ?         ^^)
+
+frontend_test/e2e/e2e_tinte_17_5_F6.py:266: AssertionError</failure></testcase><testcase classname="e2e_tinte_17_5_F6" name="test_bb_fereastra_502_bara_fara_principal_si_cele_cinci_detalii[1366-768]" time="1.943"><failure message="AssertionError: {'bara': True, 'principal': 1}&#10;assert (True and 1 == 0)">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+w = 1366, h = 768
+
+    @pytest.mark.parametrize("w,h", REZ)
+    def test_bb_fereastra_502_bara_fara_principal_si_cele_cinci_detalii(browser, w, h):
+        """BB (comanda F6 pct.3): fereastra «Consultanță fiscală» e de consultare — bara de jos construită de cadru există și nu are buton
+        principal; fiecare dintre cele cinci detalii se deschide și se închide, iar conținutul lui ajunge în vedere."""
+        ctx, pg = _pagina(browser, ADMIN, w, h)
+        z = "%dx%d" % (w, h)
+        try:
+            _consultanta_f1(pg)
+            bara = pg.evaluate("""() =&gt; { const F = document.querySelector('.fereastra-overlay:not(.fundal) .fereastra');
+              const j = F &amp;&amp; F.querySelector('.fereastra-jos'); return {bara: !!j, principal: j ? j.querySelectorAll('.fj-principal, .buton-primar').length : null}; }""")
+&gt;           assert bara["bara"] and bara["principal"] == 0, bara
+E           AssertionError: {'bara': True, 'principal': 1}
+E           assert (True and 1 == 0)
+
+frontend_test/e2e/e2e_tinte_17_5_F6.py:301: AssertionError</failure></testcase><testcase classname="e2e_tinte_17_5_F6" name="test_bb_fereastra_502_bara_fara_principal_si_cele_cinci_detalii[603-590]" time="3.513" /><testcase classname="e2e_pilot_x06" name="test_pilot_X06" time="134.782" /><testcase classname="e2e_pilot_x07" name="test_pilot_X07" time="120.627" /><testcase classname="e2e_bara_jos" name="test_bara_jos_17_5_H" time="414.201"><failure message="AssertionError: păzirea barei de jos: 2 abateri:&#10;    BB4 F1 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în hartă&#10;    BB4 F5 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în hartă&#10;assert not [&quot;BB4 F1 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în ...F5 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în hartă&quot;]">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+
+    def test_bara_jos_17_5_H(browser):
+        from core import ceas_proba
+        cu, fara = _harta()
+        parcurs = _parcurs()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            vazute = set()
+            for firma in ("F1 Comert Stoc", "F5 SRL Salariati"):
+                parcurs.firma(pg, firma)
+                pg.evaluate(JS_DESCHIDE_GRUPURI)
+                carduri = pg.evaluate(JS_CARDURI)
+                for sel, eticheta0 in carduri:
+                    eticheta = _cheie(eticheta0)
+                    if not eticheta:
+                        continue
+                    try:
+                        parcurs.firma(pg, firma)
+                        if pg.evaluate(JS_DESCHIDE_CARD, "#" + sel) != "ok":
+                            continue
+                        pg.click(TOP + "#" + sel, timeout=10000)
+                        pg.wait_for_timeout(2500)
+                        m = pg.evaluate(JS_BARA) or {}
+                    except Exception as e:   # noqa: BLE001
+                        rele.append("BB1 %s %s: fereastra nu s-a deschis (%s)" % (firma[:2], eticheta, str(e)[:60]))
+                        continue
+                    if firma.startswith("F1"):
+                        vazute.add(eticheta)
+                    princ, inactiv = m.get("principal", ""), m.get("inactiv", False)
+                    if eticheta in cu:
+                        text_h, stare_h = cu[eticheta]
+                        if princ != text_h and (princ or firma.startswith("F1")):
+                            rele.append("BB2 %s %s: butonul principal din bara de jos e %r, în hartă %r" % (firma[:2], eticheta, princ, text_h))
+                        elif stare_h != "orice" and firma.startswith("F1") and stare_h.startswith("inactiv") != inactiv:   # starea activ/inactiv depinde de date: se compara numai pe F1, firma cu date
+                            rele.append("BB3 %s %s: butonul %r e %s, în hartă %s" % (firma[:2], eticheta, princ, "inactiv" if inactiv else "activ", stare_h))
+                    elif eticheta in fara:
+                        if princ:
+                            rele.append("BB4 %s %s: e în lista «fără buton principal», dar are %r în bara de jos; se declară în hartă" % (firma[:2], eticheta, princ))
+                    elif firma.startswith("F1"):
+                        rele.append("BB6 %s: fereastră nouă sau redenumită, absentă din harta_bara_jos.txt; arhitectul o adaugă" % eticheta)
+                    if m.get("inchide"):
+                        rele.append("BB5 %s %s: «Închide» în corpul ferestrei (%d)" % (firma[:2], eticheta, m["inchide"]))
+            # Facturi primite (SPV) nu e card: se deschide din fereastra Facturi (butonul #fac-primite), pe F1
+            try:
+                # 823.1: defectul apare la firma CONECTATĂ la SPV, dar FĂRĂ DREPT (starea din producție a firmelor F1–F8); în baza de test F1 e neconectată,
+                # deci testul îi dă el această stare, schimbând numai trei câmpuri din răspunsul real al rutei /spv/stare
+                def _fara_drept(ruta):
+                    rasp = ruta.fetch()
+                    d = rasp.json()
+                    d.update({"conectat": True, "are_drept": False, "acoperire": "neacoperit"})
+                    ruta.fulfill(response=rasp, json=d)
+                pg.route("**/tenants/*/spv/stare", _fara_drept)
+                parcurs.firma(pg, "F1 Comert Stoc")
+                pg.evaluate(JS_DESCHIDE_GRUPURI)
+                sel = [s_ for s_, e_ in pg.evaluate(JS_CARDURI) if _cheie(e_) == "Facturi"]
+                if not sel:
+                    rele.append("BB9 Facturi primite: cardul Facturi nu s-a găsit pe F1")
+                else:
+                    pg.evaluate(JS_DESCHIDE_CARD, "#" + sel[0])
+                    pg.click(TOP + "#" + sel[0], timeout=10000)
+                    pg.wait_for_timeout(2500)
+                    pg.click(TOP + "#fac-primite", timeout=10000)
+                    pg.wait_for_timeout(2500)
+                    m = pg.evaluate(JS_BARA) or {}
+                    vazute.add("Facturi primite")
+                    if "Facturi primite" in cu:
+                        text_h, stare_h = cu["Facturi primite"]
+                        princ, inactiv = m.get("principal", ""), m.get("inactiv", False)
+                        if princ != text_h:
+                            rele.append("BB2 F1 Facturi primite: butonul principal din bara de jos e %r, în hartă %r" % (princ, text_h))
+                        elif stare_h != "orice" and stare_h.startswith("inactiv") != inactiv:
+                            rele.append("BB3 F1 Facturi primite (firmă conectată la SPV, fără drept): butonul %r e %s, în hartă %s" % (princ, "inactiv" if inactiv else "activ", stare_h))
+                        elif stare_h.startswith("inactiv") and "motiv" in stare_h:
+                            motiv = pg.evaluate("() =&gt; { const F = [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra')].pop(); return F ? [...F.querySelectorAll('.ds-motiv-inactiv')].map(m =&gt; (m.textContent || '').trim()).filter(Boolean).join(' | ') : ''; }")
+                            if not motiv:
+                                rele.append("BB3 F1 Facturi primite (firmă conectată la SPV, fără drept): butonul %r e inactiv, dar fără motiv scris la vedere" % princ)
+            except Exception as e:   # noqa: BLE001
+                rele.append("BB9 Facturi primite: fereastra nu s-a deschis (%s)" % str(e)[:60])
+            finally:
+                try:
+                    pg.unroute("**/tenants/*/spv/stare")
+                except Exception:   # noqa: BLE001
+                    pass
+            for e in sorted(set(cu) - vazute):
+                if e not in ("Prime, sporuri, ore suplimentare", "Registru încasări/plăți", "Capacitate", "Suport"):
+                    rele.append("BB8 %s: fereastra din hartă nu s-a găsit între cardurile F1" % e)
+            # F4 Încasări/plăți cu formularul deschis și F5 Prime, sporuri: verificate pe ecran
+            try:
+                parcurs.firma(pg, "F4 PFA Sistem Real")
+                pg.evaluate(JS_DESCHIDE_GRUPURI)
+                pg.click(TOP + "button:has-text('Încasări/plăți')", timeout=10000)
+                pg.wait_for_timeout(2500)
+                pg.click(TOP + "button:has-text('+ Operațiune nouă')", timeout=10000)
+                pg.wait_for_timeout(1500)
+                m = pg.evaluate(JS_BARA) or {}
+                if m.get("principal") != "Adaugă (ciornă)":
+                    rele.append("BB7 Încasări/plăți F4, formular deschis: butonul principal e %r, în hartă «Adaugă (ciornă)»" % m.get("principal"))
+            except Exception as e:   # noqa: BLE001
+                rele.append("BB7 Încasări/plăți F4: nu s-a putut deschide formularul (%s)" % str(e)[:80])
+        finally:
+            b.close()
+&gt;       assert not rele, "păzirea barei de jos: %d abateri:\n  " % len(rele) + "\n  ".join(rele)
+E       AssertionError: păzirea barei de jos: 2 abateri:
+E           BB4 F1 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în hartă
+E           BB4 F5 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în hartă
+E       assert not ["BB4 F1 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în ...F5 Consultanță fiscală: e în lista «fără buton principal», dar are 'Descarcă PDF' în bara de jos; se declară în hartă"]
+
+frontend_test/e2e/e2e_bara_jos.py:174: AssertionError</failure></testcase><testcase classname="e2e_bloc_a" name="test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre" time="6.219"><failure message="AssertionError: ('0 declarații de depus', ['Note de validat (0)', 'Declarații (0)', 'Notele tale în ciornă (0)'])&#10;assert ([])">patron = &lt;conftest.Ecran object at 0x758ec5832810&gt;
+
+    def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
+        """203. Pagina principală: la cabinet lipsește cardul „Raportează”; cardurile trebuie ordonate după lucrul zilnic, iar cifrele lor =
+        ecranele din spate.
+        Pașii: contabilul-șef -&gt; pagina principală: există cardul „Raportează”; cardurile sunt în ordinea lucrului zilnic (de validat,
+        control fiscal, termene, firme …, la urmă Suport) -&gt; cifra cardului Firme = firmele active din ecranul Firme; „N note de validat”
+        = „Note de validat (N)” din fereastra cozii (cifrele cardului Control fiscal: `e2e_comanda_1010.py::test_def_224_…`)."""
+        # [17.5-T] actualizat la comanda 17.5-F6 pct.4 (secțiunea «Consultanță» a cabinetului, static/js/ecrane/cabinet.js:CARDURI_CONSULTANTA): pe fixture-ul
+        # administratorului, cele 12 chei istorice urmate de hotarari_aga și consultanta, fiecare o singură dată, în secțiunea ei; grila exactă
+        import re as _r
+        pg = patron.pg
+        patron.acasa()
+        pg.wait_for_function("() =&gt; !document.querySelector('.cab-grila').innerText.includes('se încarcă')", timeout=60000)
+        pg.wait_for_selector(".cab-grila &gt; section.cab-consultanta #fgc-consultanta [data-cheie='consultanta']", state="attached", timeout=60000)
+        pg.wait_for_timeout(1500)
+        card = pg.evaluate("""() =&gt; [...document.querySelectorAll('.cab-grila button.cab-card')].map(b =&gt; ({
+            cheie: (b.querySelector('[data-cheie]') || {}).dataset ? b.querySelector('[data-cheie]').dataset.cheie : null,
+            titlu: (b.querySelector('.cab-card-titlu') || {}).innerText, sinteza: (b.querySelector('.cab-card-sinteza') || {}).innerText,
+            sectiune: (b.closest('section.firme-grup') || {}).id || ((b.closest('section.firme-grup') || {}).className || ''),
+            continut: (b.parentElement || {}).id || ''}))""")
+        patron.captura("desktop")
+        chei = [c["cheie"] for c in card]
+        assert [k for k in chei if k in ORDINE_CABINET] == [k for k in ORDINE_CABINET if k in chei], chei
+        assert chei == ORDINE_CABINET, ("grila exactă a administratorului", chei)
+        for k in ("hotarari_aga", "consultanta"):
+            loc = [c["continut"] for c in card if c["cheie"] == k]
+            assert loc == ["fgc-consultanta"], (k, loc)   # o singură dată, în secțiunea «Consultanță»
+        assert all(c["continut"] != "fgc-consultanta" for c in card if c["cheie"] not in ("hotarari_aga", "consultanta")), card
+        assert "raport" not in chei and pg.inner_text("[data-banda='raport']").strip().startswith("Suport"), chei   # [225, 12.10.2026] banda
+        sint = {c["cheie"]: c["sinteza"] for c in card}
+        firme_card = int(_r.search(r"(\d+) firm", sint["firme"]).group(1))
+        pg.click("button.cab-card:has([data-cheie='firme'])")
+        pg.wait_for_timeout(600)
+        if pg.query_selector("#opt-existente"):
+            pg.click("#opt-existente")
+        pg.wait_for_selector("#firme-lista .firme-rand-linie", timeout=30000)
+        pg.wait_for_timeout(800)
+        firme_ecran = pg.locator("#firme-lista .firme-rand-linie").count()
+        assert firme_card == firme_ecran, (sint["firme"], firme_ecran)
+        # [deficiența 224] cifrele cardului Control fiscal (patru lumini = firmele în fiecare stare) față de lista din spate: test_def_224
+        patron.acasa()
+        pg.wait_for_function("() =&gt; /\\d/.test(document.querySelector('[data-cheie=validat]').innerText)", timeout=60000)
+        val_card = pg.inner_text("[data-cheie=validat]")
+        pg.click("button.cab-card:has([data-cheie='validat'])")
+        pg.wait_for_selector(".fereastra:last-of-type .cf-grup-titlu", timeout=60000)
+        pg.wait_for_timeout(800)
+        titluri = pg.eval_on_selector_all(".fereastra:last-of-type .cf-grup-titlu", "els =&gt; els.map(e =&gt; e.textContent.trim())")
+        patron.captura("coada")
+        for eticheta_card, grup in ((r"(\d+) note? de validat", "Note de validat"), (r"(\d+) declarații? de validat", "De validat"),
+                                    (r"(\d+) declarații? de depus", "De depus")):
+            m = _r.search(eticheta_card, val_card)
+            if m:
+                g = [t for t in titluri if t.startswith(grup + " (")]
+&gt;               assert g and g[0] == "%s (%s)" % (grup, m.group(1)), (val_card, titluri)
+E               AssertionError: ('0 declarații de depus', ['Note de validat (0)', 'Declarații (0)', 'Notele tale în ciornă (0)'])
+E               assert ([])
+
+frontend_test/e2e/e2e_bloc_a.py:1043: AssertionError</failure></testcase><testcase classname="e2e_cabinet_17_5_M" name="test_cabinet_17_5_M" time="38.803" /><testcase classname="e2e_texte_17_5_I" name="test_texte_17_5_I" time="125.627" /></testsuite></testsuites>

@@ -1,0 +1,7 @@
+PASI 17.5-F5 — F2 (Decontări asociați, meniul firmei, Bancă) și F1 (Control fiscal), contul nativ de probă, 1366×768. Textul se citește vizibil, în fereastra de sus.
+f.1 | decontari | Decontări asociați | text_vizibil | Decontări asociați (455/457) | Titlul ferestrei operației este „Decontări asociați (455/457)” | .fereastra h2.pf-titlu
+f.2 | decontari | Decontări asociați | text_vizibil | Ion Test | În tabelul propunerii, sub formular, apare asociatul Ion Test | #op-div-tabel
+f.3 | decontari | Decontări asociați | text_vizibil | F2 Profit Amortizare SRL · CUI 403000015 | Antetul ferestrei numește firma deschisă și CUI-ul ei | .fereastra .fereastra-antet
+f.4 | meniu | Fereastra firmei F2 | text_vizibil | Contabilitate | Butonul grupului „Contabilitate” din meniul firmei este vizibil | .fereastra #fg-contabilitate .firme-grup-btn
+f.5 | banca | Bancă | text_vizibil | Bancă | Titlul ferestrei Bancă a firmei F2 | .fereastra #bk-rezumat h2.pf-titlu
+f.6 | control | Control fiscal | text_vizibil | Control fiscal | Titlul ferestrei Control fiscal a firmei F1 | .fereastra h2.pf-titlu

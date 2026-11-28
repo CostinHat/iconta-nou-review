@@ -8,7 +8,7 @@ secțiunea și butoanele noi lipsesc: clicurile pe ele eșuează (înghițite), 
 import verifica_pas as VP
 
 TOP = ".fereastra-overlay:not(.fundal) "
-BTN_SEF = ".cab-grila > section.firme-grup h3 > button.firme-grup-btn"
+BTN_SEF = ".cab-grila > section.firme-grup h3 > button.firme-grup-btn[aria-controls=\"fgc-sef\"]"   # [17.5-F6, pct.4] butonul care controlează fgc-sef (pagina are și secțiunea «Consultanță»)
 SEF_DESCHIS = "#fgc-sef:not([hidden])"
 SEF_PLIAT = "#fgc-sef[hidden]"
 NUME_FIRMA = "F5 SRL Salariati"

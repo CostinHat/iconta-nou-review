@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="105" time="3019.492" timestamp="2026-11-27T21:14:49.726535+02:00" hostname="iconta-prod"><testcase classname="e2e_lot12_verif" name="test_def_135_firma_veche_cu_731_738_ramane_fara_ele_dupa_migrare" time="8.231" /><testcase classname="e2e_lot12_verif" name="test_def_280_cam_pe_cartele_insumeaza_cam_ul_declarat" time="12.620" /><testcase classname="e2e_lot12_verif" name="test_def_c43_serviciul_catre_client_din_afara_ue_numai_la_rd3" time="9.317" /><testcase classname="e2e_lot12_verif" name="test_def_c60_registrul_de_casa_porneste_de_la_preluare_si_de_la_notele_lunii_trecute" time="7.241" /><testcase classname="e2e_lot72_facturi" name="test_def_303_verifica_cui_spune_ca_asteapta_si_ce_s_a_intamplat" time="7.813" /><testcase classname="e2e_lot72_facturi" name="test_def_304_refuzul_clientului_vechi_dispare_si_vine_inaintea_intrebarii" time="5.092" /><testcase classname="e2e_lot72_facturi" name="test_def_305_nota_cotei_si_localitatea_din_vies" time="4.708"><failure message="AssertionError: &#10;assert 'la un articol din stoc, cota TVA vine din articol' in ''">patron = &lt;conftest.Ecran object at 0x7d13d5273f50&gt;
+firma_e2e = {'tenant_id': 370968, 'schema': 'tenant_9736', 'nume': 'E2E Probă 6934347 SRL', 'cabinet_id': 1968}
+
+    def test_def_305_nota_cotei_si_localitatea_din_vies(patron, firma_e2e):
+        """305. Textul „cota TVA e propusă automat pe baza denumirii” apărea și la articolele din stoc; localitatea clientului străin rămânea
+        goală deși VIES dă adresa.
+        Pașii: Emite factură: nota de sub „Produse și servicii” spune că la articolul din stoc cota vine din articol; CUI irlandez -&gt; „Verifică”
+        (VIES răspunde cu adresa pe două rânduri) -&gt; țara devine Irlanda, iar „Localitatea clientului” se completează din adresă."""
+        pregateste_firma(patron, firma_e2e)
+        _deschide_emiterea(patron, firma_e2e["nume"])
+        pg = patron.pg
+        nota = pg.inner_text(".em-sectiune .camp-eticheta .tip-micut")
+&gt;       assert "la un articol din stoc, cota TVA vine din articol" in nota, nota
+E       AssertionError: 
+E       assert 'la un articol din stoc, cota TVA vine din articol' in ''
+
+frontend_test/e2e/e2e_lot72_facturi.py:92: AssertionError</failure></testcase><testcase classname="e2e_lot72_facturi" name="test_def_306_factura_ue_categoria_codul_de_tva_si_tara" time="4.478" /><testcase classname="e2e_lot72_facturi" name="test_def_307_factura_catre_client_nestabilit_fara_termen_spv" time="4.335" /><testcase classname="e2e_lot72_facturi" name="test_def_308_ajutorul_importului_ubl_spune_ce_face" time="4.280" /><testcase classname="e2e_lot72_facturi" name="test_def_318_cui_blocat_arata_blocat" time="4.152" /><testcase classname="e2e_pilot_luna" name="test_pilot_00_primii_pasi" time="1.701" /><testcase classname="e2e_pilot_luna" name="test_pilot_01_preluarea_luna_si_balanta_de_deschidere" time="11.447" /><testcase classname="e2e_pilot_luna" name="test_pilot_02_soldurile_pe_parteneri" time="3.494" /><testcase classname="e2e_pilot_luna" name="test_pilot_03_auditul_de_preluare" time="2.521" /><testcase classname="e2e_pilot_luna" name="test_pilot_04_soldul_preluat_e_document_deschis" time="5.474" /><testcase classname="e2e_pilot_luna" name="test_pilot_05_nomenclatorul_cu_cota_propusa" time="3.926" /><testcase classname="e2e_pilot_luna" name="test_pilot_06_nir_cu_transport" time="4.267" /><testcase classname="e2e_pilot_luna" name="test_pilot_07_facturile_primite_din_e_factura" time="10.220" /><testcase classname="e2e_pilot_luna" name="test_pilot_08_partenerii_au_localitatea" time="7.050" /><testcase classname="e2e_pilot_luna" name="test_pilot_09_lista_partenerilor_cu_soldurile" time="3.725" /><testcase classname="e2e_pilot_luna" name="test_pilot_10_factura_cu_descarcarea_stocului" time="10.982" /><testcase classname="e2e_pilot_luna" name="test_pilot_11_incasarea_in_casa_cu_chitanta" time="8.594" /><testcase classname="e2e_pilot_luna" name="test_pilot_12_raportul_z_si_descarcarea_lui" time="4.623" /><testcase classname="e2e_pilot_luna" name="test_pilot_13_raportul_z_din_fisierul_amef" time="4.547" /><testcase classname="e2e_pilot_luna" name="test_pilot_14_factura_pe_baza_bonului_fiscal" time="5.633" /><testcase classname="e2e_pilot_luna" name="test_pilot_15_depunerea_numerarului" time="3.559" /><testcase classname="e2e_pilot_luna" name="test_pilot_16_a_doua_factura_cu_marfa" time="5.604" /><testcase classname="e2e_pilot_luna" name="test_pilot_17_factura_de_servicii_neincasata" time="5.599" /><testcase classname="e2e_pilot_luna" name="test_pilot_18_extrasul_de_banca_si_potrivirea" time="8.281" /><testcase classname="e2e_pilot_luna" name="test_pilot_19_salariatii" time="7.635" /><testcase classname="e2e_pilot_luna" name="test_pilot_20_statul_de_plata_cu_concediul_medical" time="9.151" /><testcase classname="e2e_pilot_luna" name="test_pilot_21_concediul_medical_arata_cas_ul" time="3.895" /><testcase classname="e2e_pilot_luna" name="test_pilot_22_contabilizarea_statului_si_fluturasul" time="8.900" /><testcase classname="e2e_pilot_luna" name="test_pilot_23_plata_salariilor_pe_card" time="7.321" /><testcase classname="e2e_pilot_luna" name="test_pilot_24_notele_lunii_validate" time="23.907" /><testcase classname="e2e_pilot_luna" name="test_pilot_25_registrul_de_casa" time="3.739" /><testcase classname="e2e_pilot_luna" name="test_pilot_26_scadentarul" time="2.792" /><testcase classname="e2e_pilot_luna" name="test_pilot_27_scadentarul_stie_incasarea_prin_banca" time="2.791" /><testcase classname="e2e_pilot_luna" name="test_pilot_28_inchiderea_lunii" time="8.497" /><testcase classname="e2e_pilot_luna" name="test_pilot_29_balanta" time="3.848" /><testcase classname="e2e_pilot_luna" name="test_pilot_30_d300" time="8.868" /><testcase classname="e2e_pilot_luna" name="test_pilot_31_d394" time="8.937" /><testcase classname="e2e_pilot_luna" name="test_pilot_32_d112" time="8.978" /><testcase classname="e2e_pilot_luna" name="test_pilot_33_d406" time="10.243" /><testcase classname="e2e_pilot_luna" name="test_pilot_34_d100" time="4.216" /><testcase classname="e2e_pilot_luna" name="test_pilot_35_controlul_fiscal_si_incrucisat" time="3.199" /><testcase classname="e2e_pilot_luna" name="test_pilot_36_factura_in_valuta_pe_luna_urmatoare" time="7.008" /><testcase classname="e2e_pilot_luna" name="test_pilot_37_concediul_cod_10_pe_luna_urmatoare" time="6.300" /><testcase classname="e2e_pilot_luna" name="test_pilot_38_factura_primita_introdusa_manual" time="4.671" /><testcase classname="e2e_pilot_luna" name="test_pilot_39_deblocarea_lunii_cu_motiv" time="6.855" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f004_adauga_firma_cu_datele_de_la_anaf" time="4.154" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f006_asistentul_invitat_cu_drepturile_si_firmele_lui" time="4.344" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f008_autentificarea_deschide_numai_firmele_contului" time="1.800" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f017_chitanta_din_factura_are_suma_in_litere_si_intra_in_casa" time="5.192" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f019_validarea_in_doi_pregatitorul_nu_aproba_altul_aproba_si_depune" time="10.702" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f028_d112_din_statul_de_plata_e_valida_la_duk_cu_sumele_statului" time="7.892" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f080_statul_calculeaza_contributiile_si_netul_din_brut" time="3.203" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare" time="2.170"><failure message="AssertionError: niciun D112 cu ziua de 25 în weekend pe ecran (03, 06, 09/2026 o au): [['d112-2026-10', 'termen 25.11.2026'], ['d112-2026-11', 'termen 21.12.2026']]&#10;assert 0">patron = &lt;conftest.Ecran object at 0x7d13d515c2f0&gt;
+firma_sal = {'tenant_id': 370972, 'schema': 'tenant_9740', 'nume': 'E2E Probă SAL 7258466 SRL', 'cabinet_id': 1968, ...}
+
+    def test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare(patron, firma_sal):
+        """F081. Pașii: Control fiscal -&gt; firma cu salariat din ianuarie 2026: fiecare D112 lunar are pe rând „termen ZZ.LL.AAAA” = ziua de 25
+        a lunii următoare; când ea cade sâmbăta sau duminica, termenul e prima zi lucrătoare de după (cel puțin un rând de felul ăsta:
+        25.04, 25.07 și 25.10.2026 cad în weekend); obligațiile lui noiembrie (25 decembrie) au termenul cel târziu pe 21 decembrie."""
+        _control_firma(patron, firma_sal)
+        pg = patron.pg
+        randuri = pg.eval_on_selector_all(_F + ".cf-decl-item[data-cheie^='d112-']",
+                                          "els =&gt; els.map((e) =&gt; [e.dataset.cheie, (e.querySelector('.cf-termen') || {textContent: ''})"
+                                          ".textContent.trim()])")
+        patron.captura()
+        assert randuri, patron.fereastra()[:2000]
+        mutate = 0   # termene nominale căzute în weekend, deci mutate: fără niciunul, regula mutării n-ar fi fost probată
+        for cheie, termen in randuri:
+            _tip, an, luna = cheie.split("-")
+            if not luna:
+                continue
+            an, luna = int(an), int(luna)
+            m = re.search(r"termen (\d\d)\.(\d\d)\.(\d{4})", termen)
+            assert m, (cheie, termen)
+            t = _dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+            # CF art.147 alin.(1): angajatorii „sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care
+            # se datorează” (anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+            nominala = _dt.date(an + (luna == 12), luna % 12 + 1, 25)
+            if (nominala.month, nominala.day) == (12, 25):
+                # CPF art.155 alin.(2): „termenul de declarare se împlinesc la 25 decembrie, sunt scadente și/sau se declară până la data de
+                # 21 decembrie” (anaf_surse/legea_207_2015_consolidat.txt)
+                assert t &lt;= _dt.date(nominala.year, 12, 21) and t.weekday() &lt; 5, (cheie, t)
+            elif nominala.weekday() &gt;= 5:
+                # CPF art.75 (termenele se calculează potrivit Codului de procedură civilă) + Legea 134/2010 art.181 alin.(2): „Când ultima
+                # zi a unui termen cade într-o zi nelucrătoare, termenul se prelungește până în prima zi lucrătoare care urmează.”
+                assert nominala &lt; t &lt;= nominala + _dt.timedelta(days=4) and t.weekday() &lt; 5, (cheie, nominala, t)
+                mutate += 1
+            elif nominala.month in (4, 5, 6):
+                assert nominala &lt;= t &lt;= nominala + _dt.timedelta(days=4) and t.weekday() &lt; 5, (cheie, nominala, t)   # Paștele / Rusaliile mobile
+            else:
+                assert t == nominala, (cheie, nominala, t)
+&gt;       assert mutate, "niciun D112 cu ziua de 25 în weekend pe ecran (03, 06, 09/2026 o au): %s" % randuri
+E       AssertionError: niciun D112 cu ziua de 25 în weekend pe ecran (03, 06, 09/2026 o au): [['d112-2026-10', 'termen 25.11.2026'], ['d112-2026-11', 'termen 21.12.2026']]
+E       assert 0
+
+frontend_test/e2e/e2e_pozitii_validate.py:458: AssertionError</failure></testcase><testcase classname="e2e_pozitii_validate" name="test_pozitie_f134_fisierul_de_plata_pe_card_are_netul_si_iban_ul_salariatului" time="4.687" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f078_salariatul_se_adauga_si_se_corecteaza_din_ecran" time="6.386" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f073_extrasul_se_potriveste_exact_pe_combinatie_si_partial" time="6.033" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f183_auditul_de_preluare_confrunta_partenerii_cu_balanta" time="4.452" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f072_sesizarea_cu_captura_primeste_raspunsul_echipei" time="5.556" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f026_d100_micro_e_1_la_suta_din_veniturile_trimestrului" time="6.606" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f087_fluturasul_si_nota_statului_au_netul_statului" time="4.131" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f252_tara_partenerului_duce_factura_pe_randul_ei_din_d300" time="11.262" /><testcase classname="e2e_pozitii_validate" name="test_pozitie_f254_factura_pe_bon_nu_se_numara_a_doua_oara" time="15.758" /><testcase classname="e2e_pilot_x09" name="test_pilot_X09" time="59.136" /><testcase classname="e2e_pilot_f017" name="test_pilot_F017" time="120.360" /><testcase classname="e2e_pilot_f054" name="test_pilot_F054" time="119.387" /><testcase classname="e2e_pilot_x05" name="test_pilot_X05" time="173.503" /><testcase classname="e2e_pilot_x06" name="test_pilot_X06" time="132.419"><failure message="AssertionError: aserțiuni X06 care nu trec (id [ce se vede]: verdict): a.1 [X06 (1): F1, 7 grupuri în ordine, 37 de carduri, deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu descrierea nouă]: pica; a.14 [X06 (1): F1, 7 grupuri în ordine, 37 de carduri, deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu descrierea nouă]: pica&#10;assert not ['a.1 [X06 (1): F1, 7 grupuri în ordine, 37 de carduri, deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu des...7 grupuri în ordine, 37 de carduri, deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu descrierea nouă]: pica']">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7d13cfcd9b50&gt;
+
+    def test_pilot_X06(browser, monkeypatch):
+        from core import ceas_proba
+        sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
+        monkeypatch.setenv("PARCURS_SHA", sha)
+        temp = os.path.join(os.environ.get("E2E_TEMP", "/tmp/e2e_poarta"), "pilot_x06")
+        shutil.rmtree(temp, ignore_errors=True)
+        os.makedirs(temp)
+        jurnal = os.path.join(temp, "jurnal_verificare.csv")
+        pasi_json = os.path.join(DOVEZI, "pasi.json")
+        ctx = types.SimpleNamespace(lot=LOT, parcurgere="plasa", verificator="code", pasi_json=pasi_json, csv=jurnal, sha=sha,
+                                    director=os.path.join(temp, "plasa", "code"))
+        os.makedirs(ctx.director, exist_ok=True)
+        masuri = {}
+        b = browser.new_context(viewport={"width": 1366, "height": 768}, accept_downloads=True)
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            parcurs = _incarca("parcurs_17_1")
+            parcurs.ruleaza(pg, ctx)
+            # (2) măsurători directe, pe ferestre deschise de funcțiile parcursului (nu de un al doilea parcurs)
+            parcurs.firma(pg)
+            pg.mouse.move(0, 0)   # hover-ul titlului are altă culoare (var(--ardezie)): mouse-ul nu stă peste niciun titlu la măsurarea culorii
+            masuri["implicit"] = pg.evaluate(JS_GRUPURI)
+            # tastatura: butonul de titlu e un buton nativ — Enter deschide, Spațiu pliază
+            btn = ST + "#fg-contabilitate .firme-grup-btn"
+            pg.focus(btn)
+            pg.keyboard.press("Enter")
+            pg.wait_for_selector(ST + "#fgc-contabilitate:not([hidden])", state="attached", timeout=5000)
+            masuri["enter"] = pg.eval_on_selector(btn, "b =&gt; b.getAttribute('aria-expanded')")
+            pg.keyboard.press("Space")
+            pg.wait_for_selector(ST + "#fgc-contabilitate[hidden]", state="attached", timeout=5000)
+            masuri["spatiu"] = pg.eval_on_selector(btn, "b =&gt; b.getAttribute('aria-expanded')")
+            # un card dintr-un grup pliat, după ce omul îl deschide: clic pe card =&gt; se deschide fereastra lui (așteptată după aria-label, nu după numărul de ferestre)
+            pg.click(ST + "#fg-termene .firme-grup-btn")
+            pg.click(ST + "#fa-declaratii", timeout=10000)
+            masuri["card_in_grup_deschis"] = _asteapta_fereastra(pg, "Declarații")
+            # căutarea globală, calea 1 (_cardul): „centre de cost” = card din „Contabilitate” (pliat); după clic fereastra firmei dispare din DOM, deci tranziția
+            # false -&gt; true a butonului grupului o notează un observator instalat înainte de clic; apoi „←” și grupul trebuie să fi rămas deschis (starea din memorie)
+            masuri["cautare_card"] = _cauta(pg, parcurs, "centre de cost", "contabilitate", "Centre de cost", inapoi=True)
+            # calea 2 (_pasiiEcranului): „stat de plată” = intrare de catalog (primul clic: #fa-salariati, din „Personal și stocuri”, pliat)
+            masuri["cautare_catalog"] = _cauta(pg, parcurs, "stat de plată", "personal", None, inapoi=False)
+            # 788 și 790: criteriul „o singură derulare” și lățimea lui „←” / „✕”, măsurate pe DOM la 1366 × 768 și în pagina de 603 × 590 px
+            masuri["derulari"] = {}
+            for (w, h) in ((1366, 768), (603, 590)):
+                pg.set_viewport_size({"width": w, "height": h})
+                parcurs._la_meniul_firme(pg)
+                masuri["derulari"]["meniul Firme %dx%d" % (w, h)] = pg.evaluate(JS_DERULARI)
+                pg.click("#opt-existente")
+                pg.wait_for_selector("#firme-lista button.firme-rand", timeout=20000)
+                pg.wait_for_timeout(700)
+                masuri["derulari"]["Firme existente %dx%d" % (w, h)] = pg.evaluate(JS_DERULARI)
+                parcurs._deschide_din_lista(pg, "F1 Comert Stoc")
+                masuri["derulari"]["firma F1 %dx%d" % (w, h)] = pg.evaluate(JS_DERULARI)
+                parcurs._inapoi_la_lista(pg)
+                parcurs._deschide_din_lista(pg, "F4 PFA Sistem Real")
+                masuri["derulari"]["firma F4 %dx%d" % (w, h)] = pg.evaluate(JS_DERULARI)
+            pg.set_viewport_size({"width": 1366, "height": 768})
+        finally:
+            b.close()
+        asertiuni = [a["id"] for a in json.load(open(pasi_json, encoding="utf-8"))["asertiuni"]]
+        verdicte = {}
+        if os.path.exists(jurnal):
+            with open(jurnal, encoding="utf-8", newline="") as f:
+                for r in csv.DictReader(f):
+                    if r["parcurgere"] == "plasa" and r["commit"].startswith(sha[:8]):
+                        verdicte[r["pas"]] = r["verdict"]
+        picate = ["%s [%s]: %s" % (i, HARTA[i.split(".")[0]][1], verdicte.get(i, "neexecutat")) for i in asertiuni if verdicte.get(i) != "trece"]
+&gt;       assert not picate, "aserțiuni X06 care nu trec (id [ce se vede]: verdict): %s" % "; ".join(picate)
+E       AssertionError: aserțiuni X06 care nu trec (id [ce se vede]: verdict): a.1 [X06 (1): F1, 7 grupuri în ordine, 37 de carduri, deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu descrierea nouă]: pica; a.14 [X06 (1): F1, 7 grupuri în ordine, 37 de carduri, deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu descrierea nouă]: pica
+E       assert not ['a.1 [X06 (1): F1, 7 grupuri în ordine, 37 de carduri, deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu des...7 grupuri în ordine, 37 de carduri, deschis numai „Zi de zi”, ordinea cardurilor, Salariați cu descrierea nouă]: pica']
+
+frontend_test/e2e/e2e_pilot_x06.py:208: AssertionError</failure></testcase><testcase classname="e2e_pilot_x07" name="test_pilot_X07" time="120.203" /><testcase classname="e2e_luna_lucru_17_5_C" name="test_luna_de_lucru_17_5_C" time="34.721" /><testcase classname="e2e_actiune_principala_17_5_D" name="test_actiune_principala_17_5_D" time="24.680" /><testcase classname="e2e_alegere_unica_17_5_E" name="test_alegere_unica_17_5_E" time="6.703" /><testcase classname="e2e_butoane_la_loc_17_5_F" name="test_butoane_la_loc_17_5_F" time="26.587" /><testcase classname="e2e_de_validat_17_5_G" name="test_de_validat_17_5_G" time="34.401" /><testcase classname="e2e_piese_17_5_H2" name="test_piese_17_5_H2" time="100.071" /><testcase classname="e2e_bara_jos" name="test_bara_jos_17_5_H" time="411.242"><failure message="AssertionError: păzirea barei de jos: 1 abateri:&#10;    BB6 Consultanță fiscală: fereastră nouă sau redenumită, absentă din harta_bara_jos.txt; arhitectul o adaugă&#10;assert not ['BB6 Consultanță fiscală: fereastră nouă sau redenumită, absentă din harta_bara_jos.txt; arhitectul o adaugă']">browser = &lt;Browser type=&lt;BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome&gt; version=151.0.7922.34&gt;
+
+    def test_bara_jos_17_5_H(browser):
+        from core import ceas_proba
+        cu, fara = _harta()
+        parcurs = _parcurs()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            vazute = set()
+            for firma in ("F1 Comert Stoc", "F5 SRL Salariati"):
+                parcurs.firma(pg, firma)
+                pg.evaluate(JS_DESCHIDE_GRUPURI)
+                carduri = pg.evaluate(JS_CARDURI)
+                for sel, eticheta0 in carduri:
+                    eticheta = _cheie(eticheta0)
+                    if not eticheta:
+                        continue
+                    try:
+                        parcurs.firma(pg, firma)
+                        if pg.evaluate(JS_DESCHIDE_CARD, "#" + sel) != "ok":
+                            continue
+                        pg.click(TOP + "#" + sel, timeout=10000)
+                        pg.wait_for_timeout(2500)
+                        m = pg.evaluate(JS_BARA) or {}
+                    except Exception as e:   # noqa: BLE001
+                        rele.append("BB1 %s %s: fereastra nu s-a deschis (%s)" % (firma[:2], eticheta, str(e)[:60]))
+                        continue
+                    if firma.startswith("F1"):
+                        vazute.add(eticheta)
+                    princ, inactiv = m.get("principal", ""), m.get("inactiv", False)
+                    if eticheta in cu:
+                        text_h, stare_h = cu[eticheta]
+                        if princ != text_h and (princ or firma.startswith("F1")):
+                            rele.append("BB2 %s %s: butonul principal din bara de jos e %r, în hartă %r" % (firma[:2], eticheta, princ, text_h))
+                        elif stare_h != "orice" and firma.startswith("F1") and stare_h.startswith("inactiv") != inactiv:   # starea activ/inactiv depinde de date: se compara numai pe F1, firma cu date
+                            rele.append("BB3 %s %s: butonul %r e %s, în hartă %s" % (firma[:2], eticheta, princ, "inactiv" if inactiv else "activ", stare_h))
+                    elif eticheta in fara:
+                        if princ:
+                            rele.append("BB4 %s %s: e în lista «fără buton principal», dar are %r în bara de jos; se declară în hartă" % (firma[:2], eticheta, princ))
+                    elif firma.startswith("F1"):
+                        rele.append("BB6 %s: fereastră nouă sau redenumită, absentă din harta_bara_jos.txt; arhitectul o adaugă" % eticheta)
+                    if m.get("inchide"):
+                        rele.append("BB5 %s %s: «Închide» în corpul ferestrei (%d)" % (firma[:2], eticheta, m["inchide"]))
+            # Facturi primite (SPV) nu e card: se deschide din fereastra Facturi (butonul #fac-primite), pe F1
+            try:
+                # 823.1: defectul apare la firma CONECTATĂ la SPV, dar FĂRĂ DREPT (starea din producție a firmelor F1–F8); în baza de test F1 e neconectată,
+                # deci testul îi dă el această stare, schimbând numai trei câmpuri din răspunsul real al rutei /spv/stare
+                def _fara_drept(ruta):
+                    rasp = ruta.fetch()
+                    d = rasp.json()
+                    d.update({"conectat": True, "are_drept": False, "acoperire": "neacoperit"})
+                    ruta.fulfill(response=rasp, json=d)
+                pg.route("**/tenants/*/spv/stare", _fara_drept)
+                parcurs.firma(pg, "F1 Comert Stoc")
+                pg.evaluate(JS_DESCHIDE_GRUPURI)
+                sel = [s_ for s_, e_ in pg.evaluate(JS_CARDURI) if _cheie(e_) == "Facturi"]
+                if not sel:
+                    rele.append("BB9 Facturi primite: cardul Facturi nu s-a găsit pe F1")
+                else:
+                    pg.evaluate(JS_DESCHIDE_CARD, "#" + sel[0])
+                    pg.click(TOP + "#" + sel[0], timeout=10000)
+                    pg.wait_for_timeout(2500)
+                    pg.click(TOP + "#fac-primite", timeout=10000)
+                    pg.wait_for_timeout(2500)
+                    m = pg.evaluate(JS_BARA) or {}
+                    vazute.add("Facturi primite")
+                    if "Facturi primite" in cu:
+                        text_h, stare_h = cu["Facturi primite"]
+                        princ, inactiv = m.get("principal", ""), m.get("inactiv", False)
+                        if princ != text_h:
+                            rele.append("BB2 F1 Facturi primite: butonul principal din bara de jos e %r, în hartă %r" % (princ, text_h))
+                        elif stare_h != "orice" and stare_h.startswith("inactiv") != inactiv:
+                            rele.append("BB3 F1 Facturi primite (firmă conectată la SPV, fără drept): butonul %r e %s, în hartă %s" % (princ, "inactiv" if inactiv else "activ", stare_h))
+                        elif stare_h.startswith("inactiv") and "motiv" in stare_h:
+                            motiv = pg.evaluate("() =&gt; { const F = [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra')].pop(); return F ? [...F.querySelectorAll('.ds-motiv-inactiv')].map(m =&gt; (m.textContent || '').trim()).filter(Boolean).join(' | ') : ''; }")
+                            if not motiv:
+                                rele.append("BB3 F1 Facturi primite (firmă conectată la SPV, fără drept): butonul %r e inactiv, dar fără motiv scris la vedere" % princ)
+            except Exception as e:   # noqa: BLE001
+                rele.append("BB9 Facturi primite: fereastra nu s-a deschis (%s)" % str(e)[:60])
+            finally:
+                try:
+                    pg.unroute("**/tenants/*/spv/stare")
+                except Exception:   # noqa: BLE001
+                    pass
+            for e in sorted(set(cu) - vazute):
+                if e not in ("Prime, sporuri, ore suplimentare", "Registru încasări/plăți", "Capacitate", "Suport"):
+                    rele.append("BB8 %s: fereastra din hartă nu s-a găsit între cardurile F1" % e)
+            # F4 Încasări/plăți cu formularul deschis și F5 Prime, sporuri: verificate pe ecran
+            try:
+                parcurs.firma(pg, "F4 PFA Sistem Real")
+                pg.evaluate(JS_DESCHIDE_GRUPURI)
+                pg.click(TOP + "button:has-text('Încasări/plăți')", timeout=10000)
+                pg.wait_for_timeout(2500)
+                pg.click(TOP + "button:has-text('+ Operațiune nouă')", timeout=10000)
+                pg.wait_for_timeout(1500)
+                m = pg.evaluate(JS_BARA) or {}
+                if m.get("principal") != "Adaugă (ciornă)":
+                    rele.append("BB7 Încasări/plăți F4, formular deschis: butonul principal e %r, în hartă «Adaugă (ciornă)»" % m.get("principal"))
+            except Exception as e:   # noqa: BLE001
+                rele.append("BB7 Încasări/plăți F4: nu s-a putut deschide formularul (%s)" % str(e)[:80])
+        finally:
+            b.close()
+&gt;       assert not rele, "păzirea barei de jos: %d abateri:\n  " % len(rele) + "\n  ".join(rele)
+E       AssertionError: păzirea barei de jos: 1 abateri:
+E           BB6 Consultanță fiscală: fereastră nouă sau redenumită, absentă din harta_bara_jos.txt; arhitectul o adaugă
+E       assert not ['BB6 Consultanță fiscală: fereastră nouă sau redenumită, absentă din harta_bara_jos.txt; arhitectul o adaugă']
+
+frontend_test/e2e/e2e_bara_jos.py:174: AssertionError</failure></testcase><testcase classname="e2e_ferestre_17_5_O" name="test_ferestre_17_5_O" time="78.721" /><testcase classname="e2e_d300_ciorne_17_5_W" name="test_decont_ciorne_17_5_W" time="27.937" /><testcase classname="e2e_pilot_17_5_S" name="test_pozitii_pilot_17_5_S" time="59.774" /><testcase classname="e2e_texte_17_5_I" name="test_texte_17_5_I" time="123.258" /><testcase classname="e2e_pilot_17_5_X" name="test_pilot_17_5_X" time="108.598" /><testcase classname="e2e_cursa_luna_17_5_X2" name="test_cursa_luna_comparata_17_5_X2" time="24.272" /><testcase classname="e2e_declaratii_17_5_J" name="test_declaratii_17_5_J" time="135.010" /><testcase classname="e2e_ferestre_17_5_K" name="test_ferestre_17_5_K" time="217.461" /><testcase classname="e2e_portal_17_5_L" name="test_portal_17_5_L" time="90.490" /><testcase classname="e2e_cabinet_17_5_M" name="test_cabinet_17_5_M" time="37.117" /><testcase classname="e2e_ferestre_firma_17_5_N" name="test_ferestre_firma_17_5_N" time="139.841" /><testcase classname="e2e_bon_cui_17_5_P2" name="test_bon_cui_cumparator_17_5_P2" time="3.686" /><testcase classname="e2e_ferestre_17_5_Q2" name="test_ferestre_17_5_Q" time="31.813" /><testcase classname="e2e_ferestre_17_5_Q2" name="test_q_poarta_667" time="3.751" /><testcase classname="e2e_ferestre_17_5_Q2" name="test_q_poarta_392" time="3.963" /><testcase classname="e2e_ferestre_17_5_Q5" name="test_ferestre_17_5_Q5" time="18.177" /><testcase classname="e2e_ferestre_17_5_Q4" name="test_ferestre_17_5_Q4" time="4.575" /><testcase classname="e2e_ferestre_17_5_Q6" name="test_ferestre_17_5_Q6" time="7.002" /><testcase classname="e2e_ajutor_17_5_R2" name="test_ajutor_17_5_R2" time="10.689" /><testcase classname="e2e_fundatie_17_5_Q9" name="test_fundatie_17_5_Q9" time="15.474" /><testcase classname="e2e_fundatie_17_5_Q10" name="test_fundatie_17_5_Q10" time="5.927" /><testcase classname="e2e_fundatie_17_5_Q12" name="test_fundatie_17_5_Q12" time="15.979" /><testcase classname="e2e_fundatie_17_5_C9" name="test_fundatie_17_5_C9" time="6.631" /><testcase classname="e2e_fundatie_17_5_F5" name="test_fundatie_17_5_F5" time="38.954" /></testsuite></testsuites>

@@ -1,0 +1,296 @@
+{
+ "coloane": [
+  "id",
+  "cod",
+  "denumire",
+  "cont_imobilizare",
+  "cont_amortizare",
+  "valoare",
+  "rezidual",
+  "dnf_luni",
+  "data_pif",
+  "metoda",
+  "activ",
+  "creat_la",
+  "destinatie_cd",
+  "cod_catalog",
+  "amortizare_preluata",
+  "data_preluare",
+  "centru_cost_id"
+ ],
+ "scris": "ok",
+ "masuri": [
+  {
+   "cod": "M1",
+   "text": "M1 · Salariu sau dividende\nLipsesc date\n\nFirma are 2 asociați: aplicația face simularea salariu / dividende numai pentru un asociat unic. Cu mai mulți asociați nu calculează partea fiecăruia, pragurile CASS și declarația unică (D212) ale fiecăruia și salariul minim pe fiecare lună, deci nu arată o sumă. Fă simularea pentru fiecare asociat în afara aplicației.\n\nAscunde detaliile\n\nCe lipsește și unde se completează\nsimularea pentru fiecare asociat (pragurile CASS și D212, salariul minim pe fiecare lună) — verificare manuală"
+  },
+  {
+   "cod": "M2",
+   "text": "M2 · Beneficii pentru salariați\nNu se aplică\n\nFirma nu are salariați activi la 03.11.2026: beneficiile se acordă salariaților."
+  },
+  {
+   "cod": "M3",
+   "text": "M3 · Sponsorizări\nLipsesc date\n\nEvidența anului 2026 nu e întreagă în aplicație (soldurile preluate sunt din cursul anului): cifra de afaceri și impozitul anului nu se cunosc.\n\nAscunde detaliile\n\nCe lipsește și unde se completează\nrulajele anului dinaintea preluării — Import date → Balanță"
+  },
+  {
+   "cod": "M4",
+   "text": "M4 · Plafonul micro\nNu se aplică\n\nFirma e plătitoare de impozit pe profit: plafonul veniturilor privește microîntreprinderile."
+  },
+  {
+   "cod": "M5",
+   "text": "M5 · Profit reinvestit\nLipsesc date\n\nAplicația nu știe dacă activele sunt noi (nu second-hand), din lista specială a echipamentelor tehnologice și puse în funcțiune: suma de mai jos e numai o estimare, valabilă dacă activele îndeplinesc toate aceste condiții.\n\n665,60 lei · estimare a economiei de impozit, numai dacă activele sunt noi, din lista specială și puse în funcțiune · anul 2026, până la 03.11.2026\n\nAscunde detaliile\n\nPașii calculului\nActive puse în funcțiune: Strung CNC (proba M5, second-hand) (50.000,00 lei).\nProfit scutit = min(investiția, profitul) = 4.160,00 lei; impozit economisit estimat = 4.160,00 lei × 16%.\nCondiții\nActivele sunt noi, puse în funcțiune și folosite în activitatea economică; se păstrează cel puțin durata legală.\nProfitul scutit se repartizează la rezerve; în 2026 rezervele au restricțiile art. 26 alin. (9¹).\nAmortizarea accelerată e permisă; amortizarea super-accelerată (art. 22 alin. (9)) e o excepție distinctă.\nTemei\nCodul fiscal, art. 22: „profitul investit în echipamente tehnologice … este scutit de impozit” (anul 2026)\nCe lipsește și unde se completează\nactivele sunt noi (nu second-hand), din lista specială a echipamentelor tehnologice și puse în funcțiune — verificare manuală (documentele de achiziție și procesul-verbal de punere în funcțiune)\nCe poți face\n\nVerifică cu clientul dovezile punerii în funcțiune și rezerva."
+  }
+ ],
+ "api": {
+  "status": 200,
+  "corp": {
+   "firma": {
+    "nume": "F2 Profit Amortizare SRL",
+    "cui": "403000015",
+    "regim": "profit"
+   },
+   "data": "2026-11-03",
+   "an": 2026,
+   "masuri": [
+    {
+     "cod": "M1",
+     "nume": "Salariu sau dividende",
+     "stare": "Lipsesc date",
+     "motiv": "Firma are 2 asociați: aplicația face simularea salariu / dividende numai pentru un asociat unic. Cu mai mulți asociați nu calculează partea fiecăruia, pragurile CASS și declarația unică (D212) ale fiecăruia și salariul minim pe fiecare lună, deci nu arată o sumă. Fă simularea pentru fiecare asociat în afara aplicației.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [
+      {
+       "ce": "simularea pentru fiecare asociat (pragurile CASS și D212, salariul minim pe fiecare lună)",
+       "unde": "verificare manuală"
+      }
+     ],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M2",
+     "nume": "Beneficii pentru salariați",
+     "stare": "Nu se aplică",
+     "motiv": "Firma nu are salariați activi la 03.11.2026: beneficiile se acordă salariaților.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M3",
+     "nume": "Sponsorizări",
+     "stare": "Lipsesc date",
+     "motiv": "Evidența anului 2026 nu e întreagă în aplicație (soldurile preluate sunt din cursul anului): cifra de afaceri și impozitul anului nu se cunosc.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [
+      {
+       "ce": "rulajele anului dinaintea preluării",
+       "unde": "Import date → Balanță"
+      }
+     ],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M4",
+     "nume": "Plafonul micro",
+     "stare": "Nu se aplică",
+     "motiv": "Firma e plătitoare de impozit pe profit: plafonul veniturilor privește microîntreprinderile.",
+     "suma": null,
+     "sens": null,
+     "perioada": "",
+     "valori": {},
+     "pasi": [],
+     "ipoteze": [],
+     "conditii": [],
+     "temei": [],
+     "lipsuri": [],
+     "ce_poti_face": ""
+    },
+    {
+     "cod": "M5",
+     "nume": "Profit reinvestit",
+     "stare": "Lipsesc date",
+     "motiv": "Aplicația nu știe dacă activele sunt noi (nu second-hand), din lista specială a echipamentelor tehnologice și puse în funcțiune: suma de mai jos e numai o estimare, valabilă dacă activele îndeplinesc toate aceste condiții.",
+     "suma": "665.60",
+     "sens": "estimare a economiei de impozit, numai dacă activele sunt noi, din lista specială și puse în funcțiune",
+     "perioada": "anul 2026, până la 03.11.2026",
+     "valori": {
+      "investit": "50000",
+      "profit": "4160",
+      "scutit": "4160"
+     },
+     "pasi": [
+      "Active puse în funcțiune: Strung CNC (proba M5, second-hand) (50.000,00 lei).",
+      "Profit scutit = min(investiția, profitul) = 4.160,00 lei; impozit economisit estimat = 4.160,00 lei × 16%."
+     ],
+     "ipoteze": [],
+     "conditii": [
+      "Activele sunt noi, puse în funcțiune și folosite în activitatea economică; se păstrează cel puțin durata legală.",
+      "Profitul scutit se repartizează la rezerve; în 2026 rezervele au restricțiile art. 26 alin. (9¹).",
+      "Amortizarea accelerată e permisă; amortizarea super-accelerată (art. 22 alin. (9)) e o excepție distinctă."
+     ],
+     "temei": [
+      {
+       "act": "Codul fiscal",
+       "articol": "art. 22",
+       "citat": "profitul investit în echipamente tehnologice … este scutit de impozit",
+       "aplicare": "anul 2026"
+      }
+     ],
+     "lipsuri": [
+      {
+       "ce": "activele sunt noi (nu second-hand), din lista specială a echipamentelor tehnologice și puse în funcțiune",
+       "unde": "verificare manuală (documentele de achiziție și procesul-verbal de punere în funcțiune)"
+      }
+     ],
+     "ce_poti_face": "Verifică cu clientul dovezile punerii în funcțiune și rezerva."
+    }
+   ],
+   "fraza": "Aplicația semnalează și calculează; decizia și consilierea clientului aparțin contabilului."
+  }
+ },
+ "cabinet": {
+  "status": 200,
+  "corp": {
+   "firme_accesibile": 8,
+   "firme_distincte": 4,
+   "carduri": {
+    "hotarari_aga": {
+     "firme": [
+      {
+       "tenant_id": 105779,
+       "nume": "F1 Comert Stoc SRL",
+       "cui": "401002001",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "disponibil": "13800.00",
+       "ultima": null
+      },
+      {
+       "tenant_id": 105780,
+       "nume": "F2 Profit Amortizare SRL",
+       "cui": "403000015",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "disponibil": "14600.00",
+       "ultima": null
+      }
+     ],
+     "in_recalculare": 0,
+     "n": 2
+    },
+    "consultanta": {
+     "firme": [
+      {
+       "tenant_id": 105779,
+       "nume": "F1 Comert Stoc SRL",
+       "cui": "401002001",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "se_aplica": [
+        {
+         "cod": "M2",
+         "nume": "Beneficii pentru salariați",
+         "sens": "net în plus pentru salariați, la același cost",
+         "suma": "9100.80"
+        }
+       ],
+       "lipsesc": [
+        {
+         "cod": "M1",
+         "nume": "Salariu sau dividende",
+         "stare": "Lipsesc date"
+        },
+        {
+         "cod": "M4",
+         "nume": "Plafonul micro",
+         "stare": "Lipsesc date"
+        }
+       ],
+       "economie": "0.00"
+      },
+      {
+       "tenant_id": 105783,
+       "nume": "F5 SRL Salariati SRL",
+       "cui": "40510009",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "se_aplica": [
+        {
+         "cod": "M2",
+         "nume": "Beneficii pentru salariați",
+         "sens": "net în plus pentru salariați, la același cost",
+         "suma": "5599.20"
+        }
+       ],
+       "lipsesc": [
+        {
+         "cod": "M1",
+         "nume": "Salariu sau dividende",
+         "stare": "Lipsesc date"
+        },
+        {
+         "cod": "M4",
+         "nume": "Plafonul micro",
+         "stare": "Lipsesc date"
+        }
+       ],
+       "economie": "0.00"
+      },
+      {
+       "tenant_id": 105785,
+       "nume": "F6 Migrare Test SRL",
+       "cui": "401006003",
+       "tip_firma": "srl",
+       "regim_contabil": "dubla",
+       "se_aplica": [
+        {
+         "cod": "M2",
+         "nume": "Beneficii pentru salariați",
+         "sens": "net în plus pentru salariați, la același cost",
+         "suma": "14388.00"
+        }
+       ],
+       "lipsesc": [
+        {
+         "cod": "M1",
+         "nume": "Salariu sau dividende",
+         "stare": "Lipsesc date"
+        },
+        {
+         "cod": "M3",
+         "nume": "Sponsorizări",
+         "stare": "Lipsesc date"
+        }
+       ],
+       "economie": "0.00"
+      }
+     ],
+     "in_recalculare": 1,
+     "economie": "0.00",
+     "n": 3
+    }
+   }
+  }
+ }
+}

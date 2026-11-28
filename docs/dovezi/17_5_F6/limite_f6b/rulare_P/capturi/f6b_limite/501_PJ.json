@@ -1,0 +1,35 @@
+{
+ "descarcare": null,
+ "exceptie": "TimeoutError",
+ "mesaj": "Beneficiarul «Proba Holding SRL» e persoană juridică (CUI 14399840): regimul dividendelor către o persoană juridică (impozit reținut sau scutire, Codul fiscal art. 43 alin. (4)) nu se calculează în aplicație, deci hotărârea nu se produce: ar reține o sumă greșită. Stabilește regimul și pregătește hotărârea în afara aplicației.",
+ "fereastra": "←\nF2 Profit Amortizare SRL · CUI 403000015\n›\nDecontări asociați (455/457)\n✕\nDecontări asociați (455/457)\n?\nDOCUMENT\nData*\nOperație*\nDividend\nÎmprumut asociat\nRegularizare interimare\nRestituire dividend încasată\n— alege —\nDividend\nÎmprumut asociat\nRegularizare interimare\nRestituire dividend încasată\nNumărul hotărârii (adunarea asociaților sau decizia asociatului unic)*\nData hotărârii*\nAsociații și cotele se iau la data ei; profitul disponibil, la fel.\nFel*\nAnual, din profitul nerepartizat (1171 = 457)\nInterimar (463/456)\n— alege —\nAnual, din profitul nerepartizat (1171 = 457)\nInterimar (463/456)\nDividendul se plătește acum*\nDa\nNu\n— alege —\nDa\nNu\nDa: nota cuprinde și plata netului (457/456 = 5121).\nSUME\nDividend brut (total)*\nSe împarte pe asociați după cotele din Date firmă → Asociați, valabile la data hotărârii (Legea 31/1990 art. 67 alin. (2)).\nDESCRIERE\nÎmpărțirea pe asociați: Hotărârea adunării generale a asociaților nr 1 din 15.03.2026, din contul 117\nAsociat\tCota\tDividend brut\tImpozit 16%\tNet\nIon Test\t60%\t6.000,00\t960,00\t5.040,00\nProba Holding SRL\t40%\t4.000,00\tPersoană juridică: regimul dividendelor către o persoană juridică nu se calculează în aplicație (impozit sau scutire, Codul fiscal art. 43 alin. (4)).\nTotal\t\t10.000,00\tImpozitul și netul total nu se calculează: un asociat e persoană juridică.\n\nHotărârea (decizia asociatului unic) se descarcă din această împărțire și din câmpurile blocului «Hotărârea» de mai jos, pentru verificare și semnare; descărcarea nu generează nota.\n\nAplicația nu verifică rezerva legală (Legea 31/1990 art. 183) și acoperirea pierderii reportate: verifică-le înainte de semnare.\n\nDescarcă Word Descarcă PDF\n\nBeneficiarul «Proba Holding SRL» e persoană juridică (CUI 14399840): regimul dividendelor către o persoană juridică (impozit reținut sau scutire, Codul fiscal art. 43 alin. (4)) nu se calculează în aplicație, deci hotărârea nu se produce: ar reține o sumă greșită. Stabilește regimul și pregătește hotărârea în afara aplicației.\nRezultatul reportat e preluat pe contul sintetic 117 (14.600,00 lei), fără analiticul 1171: nota trece întâi suma dividendului pe analitic (117 = 1171) și repartizează din 1171 (OMFP 1802/2014, contul 1171).\nHOTĂRÂREA (WORD ȘI PDF)\nHotărârea aprobă și situațiile financiare anuale\nDa\nNu\n-\nDa\nNu\nAnul situațiilor financiare\nTermenul de plată\n×\nModalitatea de plată\nVirament\nNumerar\n-\nVirament\nNumerar\nLocul adunării\nConvocarea\nCine a convocat adunarea și când (Legea 31/1990 art. 195).\nPrezența\nToți asociații (întregul capital social)\n-\nToți asociații (întregul capital social)\nVotul\nUnanimitate\n-\nUnanimitate\nAdministratorul împuternicit\nSugerat din Date firmă; îl poți schimba.\nNumărul de exemplare originale\nSugerat: numărul asociaților plus unu.\n\nRenunță\n\nCompletează: Dividendul se plătește acum\nGenerează nota (ciornă)",
+ "tabel": "Asociat\tCota\tDividend brut\tImpozit 16%\tNet\nIon Test\t60%\t6.000,00\t960,00\t5.040,00\nProba Holding SRL\t40%\t4.000,00\tPersoană juridică: regimul dividendelor către o persoană juridică nu se calculează în aplicație (impozit sau scutire, Codul fiscal art. 43 alin. (4)).\nTotal\t\t10.000,00\tImpozitul și netul total nu se calculează: un asociat e persoană juridică.",
+ "asociati_inainte": [
+  [
+   5,
+   "Ion Test",
+   "1850101400017",
+   "60.0"
+  ],
+  [
+   6,
+   "Maria Test",
+   "2870202400011",
+   "40.0"
+  ]
+ ],
+ "asociati_dupa": [
+  [
+   5,
+   "Ion Test",
+   "1850101400017",
+   "60.0"
+  ],
+  [
+   6,
+   "Proba Holding SRL",
+   "14399840",
+   "40.0"
+  ]
+ ]
+}

@@ -1,0 +1,5 @@
+SKIPPED [1] core/test_lot12_c154_c155_d390_art317.py:174: la plătitor axa vine din categoria liniei (serviciu_extern), nu din apelant
+SKIPPED [1] core/test_lot12_c154_c155_d390_art317.py:230: la plătitor calendarul D390 vine din `d390_are_operatiuni` (neschimbat)
+SKIPPED [1] core/test_lot12_c154_c155_d390_art317.py:244: neplătitorul art.317
+2 failed, 1959 passed, 3 skipped in 523.27s (0:08:43)
+rc=1

@@ -39,5 +39,6 @@ Parteneri | + Fișă de partener | activ   [17.5-Q12 r2, decizia lui Costin din 
 Contracte | + Șablon nou | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
 Date firmă | Salvează | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
 Rapoarte comerciale | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
-FĂRĂ buton principal (ferestre-meniu sau liste; bara rămâne goală): Facturi, Operațiuni speciale, Import date
+FĂRĂ buton principal (ferestre-meniu sau liste; bara rămâne goală): Facturi, Operațiuni speciale, Import date, Consultanță fiscală
 Notă: «fără buton principal» e starea măsurată azi, nu o decizie de DS pentru fiecare; o fereastră din această listă care primește un buton principal într-un lot schimbă harta printr-un rând cerut în comanda lotului, de către arhitect.
+Notă 17.5-F6 (comanda 17.5-F6 pct.3): «Consultanță fiscală» (funcția 502, cardul #fa-consultanta, ultimul din «Contabilitate») este o fereastră de consultare: bara de jos rămâne fără buton principal; un buton principal apărut în ea e o abatere prinsă de BB4.

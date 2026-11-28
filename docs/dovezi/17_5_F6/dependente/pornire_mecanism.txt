@@ -1,0 +1,2 @@
+aplica_ddl + migreaza_triggerele (mecanismul de pornire, main.py:282): {'firme': 29, 'triggere': 1363, 'esecuri': [], 'triggere_publice': 2} publice: 2
+verifica_triggerele: firme 29 lipsa [] proiectii 29

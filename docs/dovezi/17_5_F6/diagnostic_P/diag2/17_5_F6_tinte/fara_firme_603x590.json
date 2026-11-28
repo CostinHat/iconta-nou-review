@@ -1,0 +1,60 @@
+{
+ "ruta": {
+  "status": 200,
+  "corp": {
+   "firme_accesibile": 0,
+   "firme_distincte": 0,
+   "carduri": {
+    "hotarari_aga": {
+     "firme": [],
+     "in_recalculare": 0,
+     "n": 0
+    },
+    "consultanta": {
+     "firme": [],
+     "in_recalculare": 0,
+     "economie": "0.00",
+     "n": 0
+    }
+   }
+  }
+ },
+ "pagina": {
+  "grila": true,
+  "sectiune": false,
+  "ascunsa": null,
+  "ultima": null,
+  "parinte": null,
+  "dupaSef": true,
+  "sef": true,
+  "titlu": null,
+  "expandat": null,
+  "controleaza": false,
+  "continutAscuns": null,
+  "inaltimeContinut": null,
+  "carduri": [],
+  "sus": [
+   "validat",
+   "control",
+   "termene",
+   "firme",
+   "brief",
+   "setari"
+  ],
+  "butoaneConsultanta": 0,
+  "cheiPagina": [
+   "validat",
+   "control",
+   "termene",
+   "firme",
+   "brief",
+   "setari",
+   "activitate",
+   "pachete",
+   "supervizor",
+   "capacitate",
+   "consolidare",
+   "asistenti"
+  ]
+ }
+}

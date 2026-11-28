@@ -1,0 +1,18 @@
+{
+ "operatii": [
+  "— alege —",
+  "Dividend",
+  "Împrumut asociat",
+  "Regularizare interimare",
+  "Restituire dividend încasată"
+ ],
+ "sens": [
+  "— alege —",
+  "Primire de la asociat",
+  "Restituire către asociat"
+ ],
+ "fereastra": "←\nF2 Profit Amortizare SRL · CUI 403000015\n›\nDecontări asociați (455/457)\n✕\nDecontări asociați (455/457)\n?\nDOCUMENT\nData*\nOperație*\nDividend\nÎmprumut asociat\nRegularizare interimare\nRestituire dividend încasată\n— alege —\nDividend\nÎmprumut asociat\nRegularizare interimare\nRestituire dividend încasată\nSens*\nPrimire de la asociat\nRestituire către asociat\n— alege —\nPrimire de la asociat\nRestituire către asociat\nAcordarea unui împrumut de către firmă asociatului nu există în aplicație: aici se înregistrează numai împrumutul primit de la asociat și restituirea lui.\nSUME\nSuma împrumut*\nDESCRIERE\n\nRenunță\n\nCompletează: Data, Sens, Suma împrumut\nGenerează nota (ciornă)",
+ "acord_in_pagina": [
+  "Acordarea unui împrumut de către firmă asociatului nu există în aplicație: aici se înregistrează numai împrumutul primit de la asociat și restituirea lui."
+ ]
+}

@@ -1,0 +1,17 @@
+amprenta referintei: af1050887cb078d53e5e74edf6c34b2f413ef0b960d06ae3ddae26a20bde7fa9 == garda: True
+starea reala, EXCEPTII ale candidatului -> nicio abatere
+
+(1) ruta operatiune-n fara exceptie ->
+   rută nouă: POST /tenants/{tenant_id}/facturi/{factura_id}/operatiune-n — până la pilot nu intră funcții noi, doar reparații (comanda 11.2 pct.5); dacă repară o deficiență, adaug-o în EXCEPTII din core/test_fara_functii_noi.py cu numărul ei
+
+(2) numar lipsa din registru (C999) ->
+   excepția GET /cabinet/consultanta numește deficiența C999, care nu e în DEFICIENTE.md
+
+(3) ruta cabinetului fara exceptie ->
+   rută nouă: GET /cabinet/consultanta — până la pilot nu intră funcții noi, doar reparații (comanda 11.2 pct.5); dacă repară o deficiență, adaug-o în EXCEPTII din core/test_fara_functii_noi.py cu numărul ei
+
+(4) exceptie orfana ->
+   excepția GET /ruta/care/nu/exista nu mai corespunde nimic în aplicație — scoate-o din EXCEPTII
+
+perechile 501/502 aprobate (neschimbate): {'POST /tenants/{tenant_id}/hotarare-dividende/{fel}': '501', 'GET /tenants/{tenant_id}/consultanta-fiscala': '502'}
+rutele noi fata de referinta: ['DELETE /tenants/{tenant_id}/ciorne-formular/{formular}', 'DELETE /tenants/{tenant_id}/furnizori/{furnizor_id}', 'DELETE /tenants/{tenant_id}/horeca/raport-z/{nota_id}', 'GET /admin/anunturi', 'GET /cabinet/consultanta', 'GET /eu/cautare', 'GET /migrare/firma/{tenant_id}', 'GET /tenants/{tenant_id}/ciorne-formular/{formular}', 'GET /tenants/{tenant_id}/consultanta-fiscala', 'GET /tenants/{tenant_id}/etransport/din-document', 'GET /tenants/{tenant_id}/operatiuni-date', 'GET /tenants/{tenant_id}/parteneri-firma', 'GET /tenants/{tenant_id}/parteneri-firma/fisa', 'GET /tenants/{tenant_id}/salariati/{salariat_id}/baza-cm', 'POST /admin/anunturi/{lot}/retrage', 'POST /admin/cabinete/{firm_id}/de-test', 'POST /admin/invitatii/{invitatie_id}/retrage', 'POST /tenants/{tenant_id}/facturi-primite/manual', 'POST /tenants/{tenant_id}/facturi-recurente/{sid}/emite', 'POST /tenants/{tenant_id}/facturi/{factura_id}/operatiune-n', 'POST /tenants/{tenant_id}/hotarare-dividende/{fel}', 'POST /tenants/{tenant_id}/inchidere/regularizare-tva', 'PUT /tenants/{tenant_id}/centre-cost/alocari', 'PUT /tenants/{tenant_id}/ciorne-formular/{formular}']

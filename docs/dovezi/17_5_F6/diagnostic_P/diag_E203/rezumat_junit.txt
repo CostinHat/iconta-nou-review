@@ -1,0 +1,2 @@
+FAIL 8 e2e_bloc_a test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre
+     AssertionError: ('0 declarații de depus', ['Note de validat (0)', 'Declarații (0)', 'Notele tale în ciornă (0)']) | assert ([])

@@ -1,0 +1,8 @@
+e.1 trece
+e.2 pica
+e.3 trece
+e.4 pica
+e.5 trece
+e.6 pica
+e.7 trece
+e.8 pica
