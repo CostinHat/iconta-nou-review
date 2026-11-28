@@ -1,0 +1,13 @@
+{
+ "fisiere": [
+  "scripts/publica_lot.py",
+  "core/test_exceptie_hook_17_5_U2.py",
+  "scripts/praguri_17_5_U2.txt"
+ ],
+ "toate_ecranele": false,
+ "plafon": 20,
+ "candidate": 0,
+ "lista": [],
+ "taiate": [],
+ "neacoperite": []
+}

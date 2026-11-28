@@ -17,9 +17,13 @@ Lotul „produs” (16.3-A): faza „verificator” trebuie scrisă de lansator 
 `fisiere_permise` din scripts/praguri_<lot>.txt se aplică pe diff-ul merge-base..HEAD, iar aserțiunile cu cheia pdf: și operatorul interval_px nu se numără la „neefectuată”.
 Oracolul pașilor (16.1-C3, pct.1): ~/ghid_incoming/pasi_<lot>.txt (al arhitectului) are hash-ul din rândul „pornire”, iar docs/dovezi/<lot>/pasi.json copiază literal operator + valoare ale fiecărei aserțiuni, altfel
 STOP „oracol modificat”. Lotul de produs cere fișierul; lotul de unelte fără fișier nu are oracol.
+Excepția numerică unică la „max hook” (17.5-U2, U2.1): recipisa ~/ghid_incoming/exceptii_praguri_<lot_fisier(lot)>.txt (a arhitectului; Code o citește, nu o scrie și nu o consumă), legată
+de amprenta SHA-256 fixată aici în RECIPISE_APROBATE; scoate din comparația `max hook` numai rularea numită de ea, după ce perechea ei din jurnal e rezolvată exact (`exceptie_hook`). Fișier absent =
+comportamentul de dinainte; fișier prezent și nevalid = STOP cu lotul, rândul și motivul. Decizia se calculează înaintea ZIP-ului, se scrie idempotent în raport (`scrie_sectiune_raport`) și e aceeași la verifica().
 Ieșire: 0 = PASS, 1 = STOP (nepublicat, cu cifra sau motivul)."""
 import csv
 import datetime
+import hashlib
 import json
 import os
 import re
@@ -45,6 +49,16 @@ UNELTE_INTERZISE = ("static/", "core/", "templates/", "frontend_test/")
 PAZITE = ("scripts/poarta_lot.sh", "scripts/publica_lot.sh", "scripts/baza_test.sh", "scripts/poarta_nucleu.txt", "conftest.py")
 FRAZA_RISC = ("confinarea la fișiere deja atinse nu dovedește că fiecare modificare e legată de testul picat; "
               "poarta finală dovedește comportamentul din manifest, nu justificarea fiecărei linii")
+#: [17.5-U2, U2.1] excepția numerică unică aprobată: lotul -> amprenta SHA-256 a recipisei (aceeași secvență de octeți citită la decizie), faza și pragul exceptat, referința aprobării.
+#: Recipisa 17.5-F6: comanda 17.5-U2 (SHA-256 b784dcc98f8fcd5a15816497bb0baf6b5d280e40155665a5fd5d7a415bf6289f, antetul), verificare_arhitect_17_5_U2.txt rândul B2; aprobarea lui Costin 28.11.2026 06:50:24.
+RECIPISE_APROBATE = {
+    "17.5-F6": {"sha256": "3c6fbf70dad4e7a88878986cf392b69c1d65cc5a88aa42db938f0d43d8f7a538", "faza": "hook", "prag": 126,
+                "aprobare": "comanda 17.5-U2 b784dcc98f8f…, antetul (recipisa 3c6fbf70…); verificare_arhitect_17_5_U2.txt B2; Costin, 28.11.2026 06:50:24"},
+}
+APROBATORI = ("Costin",)
+#: formatul v1 al recipisei: un singur rând TSV, câmpurile în această ordine, toate nenule
+CAMPURI_RECIPISA = ("lot", "faza", "id", "sfarsit", "sha", "secunde", "aprobator", "aprobat_la", "referinta", "motiv")
+MARCAJ_EXCEPTIE = ("<!-- exceptie_hook:inceput (scris de scripts/publica_lot.py; nu se editează de mână) -->", "<!-- exceptie_hook:sfarsit -->")
 
 
 #: depozitul în care se judecă commiturile; `--verifica` din hook-uri îl ia din directorul curent al hook-ului (None = worktree-ul scriptului)
@@ -355,8 +369,212 @@ def jurnal_verificare_stop(rr, pasi, c, baza, mx, rad=None):
     return stop
 
 
-def verifica(lot, sha, comun, sirul_zip):
-    """-> listă de motive de STOP (goală = PASS)."""
+def cale_recipisa(lot):
+    """[17.5-U2] Recipisa excepției numerice a lotului: <ghid_incoming>/exceptii_praguri_<lot_fisier(lot)>.txt."""
+    return os.path.join(_ghid(), "exceptii_praguri_%s.txt" % L.lot_fisier(lot))
+
+
+def _rezolva_commit(prefix):
+    """Commitul integral al prefixului, rezolvat neambiguu de git în depozitul judecat; None = nerezolvat sau ambiguu."""
+    r = _git_brut("rev-parse", "--verify", "--quiet", prefix + "^{commit}")
+    return r.stdout.strip() if r.returncode == 0 else None
+
+
+def _iso_cu_fus(text):
+    try:
+        t = datetime.datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    return t if t.tzinfo is not None else None
+
+
+def exceptie_hook(lot, durate7, rows=None, cale=None, aprobate=None, rezolva=None):
+    """[17.5-U2, U2.1] Citește și validează recipisa excepției numerice a lotului. `durate7` = `durate_cu_sha(lot)` (forma cu SHA, înainte de `eligibile_sha_final`); `rows` = rândurile brute ale
+    jurnalului (implicit tot jurnalul, fără scrieri). PURĂ față de recipisă: n-o mută, n-o rescrie, n-o consumă; două invocări dau același rezultat.
+    -> (decizia | None, motivele de STOP). Fișier absent = (None, []): comportamentul de dinainte. Orice abatere = (None, [STOP cu lotul, rândul și motivul])."""
+    cale = cale or cale_recipisa(lot)
+    aprobate = RECIPISE_APROBATE if aprobate is None else aprobate
+    rezolva = rezolva or _rezolva_commit
+    if not os.path.lexists(cale):
+        return None, []
+    et = "excepția hook (%s, %s)" % (lot, os.path.basename(cale))
+    stop = []
+
+    def refuz(rand, motiv):
+        stop.append("%s, rândul %s: %s" % (et, rand, motiv))
+
+    try:
+        with open(cale, "rb") as f:
+            octeti = f.read()   # o singură citire: aceeași secvență de octeți pentru amprentă și pentru câmpuri
+    except OSError as e:
+        refuz("-", "recipisa ilizibilă (%s)" % (e.strerror or type(e).__name__))
+        return None, stop
+    amprenta = hashlib.sha256(octeti).hexdigest()
+    aut = aprobate.get(lot)
+    if not aut:
+        refuz("-", "neautorizat: lotul nu are o amprentă aprobată în scripts/publica_lot.py::RECIPISE_APROBATE")
+    elif amprenta != aut["sha256"]:
+        refuz("-", "recipisa modificată: amprenta %s diferă de amprenta aprobată %s" % (amprenta, aut["sha256"]))
+    try:
+        text = octeti.decode("utf-8")
+    except UnicodeDecodeError:
+        refuz("-", "recipisa ilizibilă (nu e UTF-8)")
+        return None, stop
+    if not text.strip():
+        refuz("-", "recipisa goală")
+        return None, stop
+    linii = text.split("\n")
+    if linii[-1] == "":
+        linii.pop()
+    if len(linii) != 1:
+        refuz("2", ("rând duplicat" if len(set(linii)) < len(linii) else "rând în plus") + " (%d rânduri; formatul v1 cere un singur rând de date)" % len(linii))
+        return None, stop
+    linie = linii[0]
+    if "\r" in linie:
+        refuz("1", "sfârșit de linie CR (formatul v1: numai LF)")
+        return None, stop
+    v = linie.split("\t")
+    if len(v) != len(CAMPURI_RECIPISA):
+        refuz("1", "%s: %d câmpuri, formatul v1 cere %d (%s)" % ("incomplet" if len(v) < len(CAMPURI_RECIPISA) else "câmp în plus", len(v), len(CAMPURI_RECIPISA), ", ".join(CAMPURI_RECIPISA)))
+        return None, stop
+    r = dict(zip(CAMPURI_RECIPISA, v))
+    goale = [k for k in CAMPURI_RECIPISA if not r[k].strip() or r[k] != r[k].strip()]
+    if goale:
+        refuz("1", "câmpuri goale sau cu spații la margine: %s" % ", ".join(goale))
+        return None, stop
+    if r["lot"] != lot:
+        refuz("1", "alt lot: %s (lotul publicat: %s)" % (r["lot"], lot))
+    if aut and r["faza"] != aut["faza"]:
+        refuz("1", "altă fază: %s (excepția aprobată e pentru „%s”)" % (r["faza"], aut["faza"]))
+    if r["aprobator"] not in APROBATORI:
+        refuz("1", "aprobator neautorizat: %s" % r["aprobator"])
+    t_sf, t_ap = _iso_cu_fus(r["sfarsit"]), _iso_cu_fus(r["aprobat_la"])
+    if t_sf is None:
+        refuz("1", "sfârșitul „%s” nu e o oră ISO cu fus" % r["sfarsit"])
+    if t_ap is None:
+        refuz("1", "momentul aprobării „%s” nu e o oră ISO cu fus" % r["aprobat_la"])
+    if t_sf and t_ap and t_ap < t_sf:
+        refuz("1", "aprobarea (%s) e anterioară sfârșitului rulării (%s)" % (r["aprobat_la"], r["sfarsit"]))
+    if not re.fullmatch(r"[0-9a-f]{40}", r["sha"]):
+        refuz("1", "SHA-ul „%s” nu e integral (40 de caractere hexazecimale)" % r["sha"])
+    if not re.fullmatch(r"[0-9]+", r["secunde"]):
+        refuz("1", "secundele „%s” nu sunt un număr întreg" % r["secunde"])
+    if stop:
+        return None, stop
+    # perechea din jurnal: ID, lot și fază comune, exact un început și un sfârșit; ID-ul nefolosit la altă fază a lotului sau în alt lot
+    brute = [x for x in (JL.citeste_jurnal() if rows is None else rows) if len(x) > 6 and x[6] == r["id"]]
+    ale = [x for x in brute if x[0] == lot]
+    straine = sorted({x[0] for x in brute if x[0] != lot})
+    if straine:
+        refuz("1", "potrivire diferită: ID-ul %s apare și în lotul %s" % (r["id"], ", ".join(straine)))
+    if not ale:
+        refuz("1", "ID orfan: %s nu apare în jurnalul lotului %s" % (r["id"], lot))
+        return None, stop
+    faze = sorted({x[1] for x in ale})
+    if faze != [r["faza"]]:
+        refuz("1", "ID-ul %s e reutilizat în lot la altă fază (%s)" % (r["id"], ", ".join(faze)))
+    inc = [x for x in ale if x[2] == "inceput"]
+    sf = [x for x in ale if x[2] == "sfarsit"]
+    if not inc:
+        refuz("1", "ID-ul %s nu are început în jurnal" % r["id"])
+    if not sf:
+        refuz("1", "ID-ul %s nu are sfârșit în jurnal (rulare neterminată)" % r["id"])
+    if len(inc) > 1 or len(sf) > 1:
+        refuz("1", "pereche ambiguă: ID-ul %s are %d începuturi și %d sfârșituri (se cere exact câte unul)" % (r["id"], len(inc), len(sf)))
+    if stop:
+        return None, stop
+    inc, sf = inc[0], sf[0]
+    if sf[5] != "verde":
+        refuz("1", "statut neeligibil: rularea %s are rezultatul nativ „%s” (se exceptează numai o rulare terminată „verde”)" % (r["id"], sf[5]))
+    if sf[3] != r["sfarsit"]:
+        refuz("1", "sfârșitul din recipisă (%s) diferă de cel din jurnal (%s)" % (r["sfarsit"], sf[3]))
+    prefix = inc[4]
+    if not re.fullmatch(r"[0-9a-f]{12}", prefix or ""):
+        refuz("1", "prefixul nativ al rândului „inceput” („%s”) nu are 12 caractere hexazecimale (prefix scurt sau nedeterminat)" % prefix)
+    elif not r["sha"].startswith(prefix):
+        refuz("1", "SHA-ul recipisei %s nu începe cu prefixul nativ %s al rândului „inceput”" % (r["sha"], prefix))
+    else:
+        rez = rezolva(prefix)
+        if rez != r["sha"]:
+            refuz("1", "prefixul %s nu se rezolvă neambiguu la %s (git: %s)" % (prefix, r["sha"], rez or "nerezolvat sau ambiguu"))
+    native = [x for x in durate7 if x[1] == r["id"]]
+    if len(native) != 1:
+        refuz("1", "durata nativă a ID-ului %s: %d rânduri în durate_cu_sha (se cere unul)" % (r["id"], len(native)))
+    elif native[0][0] != r["faza"] or native[0][4] != "verde" or str(native[0][5]) != r["secunde"] or native[0][6] != prefix:
+        refuz("1", "durata nativă (%s, %s, %ss, %s) diferă de recipisă (%s, verde, %ss, %s)" % (native[0][0], native[0][4], native[0][5], native[0][6], r["faza"], r["secunde"], prefix))
+    if stop:
+        return None, stop
+    return dict(r, secunde=int(r["secunde"]), prag=aut["prag"], amprenta=amprenta, aprobare=aut["aprobare"], cale=cale), []
+
+
+def rezumat_exceptie(decizie, durate6, linii_praguri):
+    """[17.5-U2] Maximul fazei exceptate înainte / după scoaterea rulării aprobate și celelalte depășiri, pe seria integrală (fără «intrerupt», «infra», «infra_g2»), față de rândul `max` al fazei.
+    -> dict, sau None fără decizie. Un rând `max <fază>` diferit de pragul aprobat se raportează în `prag_praguri` (STOP în `verifica`)."""
+    if not decizie:
+        return None
+    faza = decizie["faza"]
+    prag = next((int(m.group(2)) for m in (re.match(r"max\s+(\S+)\s+(\d+)", ln) for ln in linii_praguri) if m and m.group(1) == faza), None)
+    serie = [x for x in durate6 if x[0] == faza and x[5] != "" and x[4] not in ("intrerupt", "infra", "infra_g2")]
+    dupa = [x for x in serie if x[1] != decizie["id"]]
+    return {"faza": faza, "prag_praguri": prag, "numar": sum(1 for x in serie if x[1] == decizie["id"]), "rulari": len(serie),
+            "max_inainte": max((x[5] for x in serie), default=None), "max_dupa": max((x[5] for x in dupa), default=None),
+            "alte_depasiri": [(x[1], x[5]) for x in dupa if prag is not None and x[5] > prag]}
+
+
+def sectiune_exceptie(lot, decizie, stop_exc, rez):
+    """[17.5-U2] Textul secțiunii „Excepție aprobată” din raport (între MARCAJ_EXCEPTIE); None când lotul nu are recipisă."""
+    if decizie is None and not stop_exc:
+        return None
+    linii = [MARCAJ_EXCEPTIE[0], "### Excepție aprobată la pragul „max %s” (scripts/publica_lot.py::exceptie_hook)" % (decizie or {}).get("faza", "hook")]
+    if stop_exc:
+        linii += ["- Rezultat: excepție RESPINSĂ — STOP:"] + ["  - " + m for m in stop_exc]
+    else:
+        d = decizie
+        linii += ["- Rezultat: excepție aprobată, aplicată numai comparației „max %s %s”" % (d["faza"], d["prag"]),
+                  "- Număr: %d (ID %s; aceeași rulare se numără o singură dată la fiecare evaluare)" % (rez["numar"], d["id"]),
+                  "- SHA-ul rulării: %s; sfârșit %s" % (d["sha"], d["sfarsit"]),
+                  "- Durată / prag: %d s / %d s" % (d["secunde"], d["prag"]),
+                  "- Aprobator: %s, la %s; referința: %s" % (d["aprobator"], d["aprobat_la"], d["referinta"]),
+                  "- Motiv: %s" % d["motiv"],
+                  "- Amprenta recipisei (SHA-256): %s; aprobarea fixată: %s" % (d["amprenta"], d["aprobare"]),
+                  "- Maximul „%s” înainte / după excepție: %s s / %s s (%d rulări terminate în seria integrală)" % (d["faza"], rez["max_inainte"], rez["max_dupa"], rez["rulari"]),
+                  "- Alte depășiri ale pragului „%s”: %s" % (d["faza"], "; ".join("%s = %s s" % x for x in rez["alte_depasiri"]) or "niciuna")]
+    linii.append(MARCAJ_EXCEPTIE[1])
+    return "\n".join(linii) + "\n"
+
+
+def scrie_sectiune_raport(raport, sectiune):
+    """[17.5-U2] Scrie secțiunea excepției în raport, idempotent: înlocuiește blocul dintre marcaje sau îl adaugă la sfârșit; None = nicio schimbare. -> True dacă fișierul s-a schimbat."""
+    if sectiune is None or not os.path.exists(raport):
+        return False
+    text = open(raport, encoding="utf-8").read()
+    i, j = text.find(MARCAJ_EXCEPTIE[0]), text.find(MARCAJ_EXCEPTIE[1])
+    if i >= 0 and j > i:
+        nou = text[:i] + sectiune + text[j + len(MARCAJ_EXCEPTIE[1]):].lstrip("\n")
+    else:
+        nou = text.rstrip("\n") + "\n\n" + sectiune
+    if nou == text:
+        return False
+    open(raport, "w", encoding="utf-8").write(nou)
+    return True
+
+
+def extrage_sectiune(text):
+    """Blocul excepției dintr-un raport (cu marcaje), sau None."""
+    i, j = text.find(MARCAJ_EXCEPTIE[0]), text.find(MARCAJ_EXCEPTIE[1])
+    return text[i:j + len(MARCAJ_EXCEPTIE[1])] + "\n" if i >= 0 and j > i else None
+
+
+def decizie_exceptie(lot, c, linii_praguri, durate7=None):
+    """[17.5-U2] Decizia numerică din intrările verificate, calculată o dată înaintea ZIP-ului și recalculată în verifica(): -> (decizie, stop_exc, rezumat, secțiunea)."""
+    durate7 = durate_cu_sha(lot) if durate7 is None else durate7
+    decizie, stop_exc = exceptie_hook(lot, durate7)
+    rez = rezumat_exceptie(decizie, eligibile_sha_final(durate7, c), linii_praguri)
+    return decizie, stop_exc, rez, sectiune_exceptie(lot, decizie, stop_exc, rez)
+
+
+def verifica(lot, sha, comun, sirul_zip, exceptie=None):
+    """-> listă de motive de STOP (goală = PASS). `exceptie` = decizia calculată de main() înaintea ZIP-ului (`decizie_exceptie`); verifica() o recalculează și oprește la orice diferență."""
     lotf = L.lot_fisier(lot)
     stop = []
     # praguri: fișierul există, hash-ul = cel din jurnal la „pornire”
@@ -465,7 +683,34 @@ def verifica(lot, sha, comun, sirul_zip):
     infra = {}
     g2 = {}
     # [17.5-Q12, AC197] pragurile se judecă pe rulările eligibile ale SHA-ului final C (fazele porții), cu toate celelalte faze ale lotului
-    depasiri, intrerupte = depasiri_praguri(eligibile_sha_final(durate_cu_sha(lot), c), open(praguri, encoding="utf-8").read().splitlines(), infra, g2, JL.marcaje_g2(lot))
+    linii_praguri = open(praguri, encoding="utf-8").read().splitlines()
+    durate7 = durate_cu_sha(lot)
+    # [17.5-U2, U2.1] excepția numerică: identificată pe forma cu SHA (durate7), înainte ca eligibile_sha_final să scoată SHA-ul; scoate un singur ID numai din comparația `max <faza>` aprobată
+    decizie, stop_exc, rez, sectiune = decizie_exceptie(lot, c, linii_praguri, durate7)
+    if exceptie is not None and tuple(exceptie) != (decizie, stop_exc, rez, sectiune):
+        stop.append("excepția hook: intrările s-au schimbat între decizia scrisă în raport / ZIP și verificare (recipisa sau jurnalul)")
+    stop += stop_exc
+    exceptate = {}
+    if decizie:
+        if rez["prag_praguri"] != decizie["prag"]:
+            stop.append("excepția hook: pragul „max %s” din scripts/praguri_%s.txt este %s, excepția e aprobată numai față de %d" % (decizie["faza"], lotf, rez["prag_praguri"], decizie["prag"]))
+        else:
+            exceptate = {decizie["faza"]: {decizie["id"]}}
+        print("[publica_lot] excepție aprobată: %s" % " | ".join(ln[2:] for ln in sectiune.splitlines()[2:-1]))
+    elif stop_exc:
+        print("[publica_lot] excepția hook respinsă: %s" % "; ".join(stop_exc))
+    if sectiune is not None:
+        if not os.path.exists(raport) or extrage_sectiune(open(raport, encoding="utf-8").read()) != sectiune:
+            stop.append("excepția hook: raportul %s nu are secțiunea excepției identică cu decizia calculată" % raport)
+        if os.path.exists(sirul_zip):
+            z = zipfile.ZipFile(sirul_zip)
+            nume = os.path.basename(raport)
+            if nume not in z.namelist() or extrage_sectiune(z.read(nume).decode("utf-8")) != sectiune:
+                stop.append("excepția hook: raportul din ZIP nu are secțiunea excepției identică cu decizia calculată")
+            if decizie and ("exceptie/" + os.path.basename(decizie["cale"]) not in z.namelist()
+                            or hashlib.sha256(z.read("exceptie/" + os.path.basename(decizie["cale"]))).hexdigest() != decizie["amprenta"]):
+                stop.append("excepția hook: ZIP-ul nu conține recipisa cu amprenta aprobată")
+    depasiri, intrerupte = depasiri_praguri(eligibile_sha_final(durate7, c), linii_praguri, infra, g2, JL.marcaje_g2(lot), exceptate)
     oprit_c = (stare or {}).get("candidati_opriti", {}).get(c)
     if oprit_c:
         stop.append("candidatul %s a fost oprit după poarta roșie (AC197): %s" % (c[:12], oprit_c))
@@ -515,15 +760,17 @@ def eligibile_sha_final(durate, sha_final):
     return [x[:6] for x in durate if eligibil(x)]
 
 
-def depasiri_praguri(durate, linii_praguri, infra=None, g2=None, marcaje=None):
+def depasiri_praguri(durate, linii_praguri, infra=None, g2=None, marcaje=None, exceptate=None):
     """-> (STOP-uri, {faza: număr de rulări „intrerupt”}). Comparația `max <faza> <secunde>` ignoră rulările cu rezultatul „intrerupt” (x[4]) [16.7]: o rulare
     întreruptă nu e o rulare terminată peste prag; numărul lor pe fază intră în raport. [17.5-U] Rulările „infra” (treaptă fără nicio probă rulată) se ignoră la fel și se numără
     separat în dicționarul `infra` dacă e dat (ieșire a scriptului, nu cerință a raportului).
     [17.5-T, T.5] Prima măsurare marcată de poartă „infra_g2” (depășire cu încărcare străină susținută, scripts/infra_g2.py) se ignoră la fel și se numără în `g2`; o fază cu o măsurare marcată și
     fără nicio măsurătoare nemarcată după ea dă STOP „faza <fază>: marcată infra fără re-măsurare”; la depășire după re-măsurare mesajul „pragul … depășit” numește și prima măsurare
-    (`marcaje` = {id: (motiv, durata primei măsurări)} din scripts/jurnal_lot.py::marcaje_g2). Textul și codul de ieșire ale depășirii simple rămân cele de azi."""
+    (`marcaje` = {id: (motiv, durata primei măsurări)} din scripts/jurnal_lot.py::marcaje_g2). Textul și codul de ieșire ale depășirii simple rămân cele de azi.
+    [17.5-U2] `exceptate` = {faza: {id}}: ID-urile scoase numai din comparația `max <faza>` (excepția aprobată); numărătorile «intrerupt» / «infra» / «infra_g2» și regula G2 rămân pe seria integrală."""
     stop, intrerupte = [], {}
     marcaje = marcaje or {}
+    exceptate = exceptate or {}
     for x in durate:
         if x[4] == "intrerupt":
             intrerupte[x[0]] = intrerupte.get(x[0], 0) + 1
@@ -539,7 +786,7 @@ def depasiri_praguri(durate, linii_praguri, infra=None, g2=None, marcaje=None):
     for ln in linii_praguri:
         m = re.match(r"max\s+(\S+)\s+(\d+)", ln)
         if m:
-            d = [x[5] for x in durate if x[0] == m.group(1) and x[5] != "" and x[4] not in ("intrerupt", "infra", "infra_g2")]
+            d = [x[5] for x in durate if x[0] == m.group(1) and x[5] != "" and x[4] not in ("intrerupt", "infra", "infra_g2") and x[1] not in exceptate.get(m.group(1), ())]
             if d and max(d) > int(m.group(2)):
                 prime = [marcaje[x[1]] for x in durate if x[0] == m.group(1) and x[4] == "infra_g2" and x[1] in marcaje]
                 mesaj = "pragul „%s” depășit: %ss > %ss" % (m.group(1), max(d), m.group(2))
@@ -568,7 +815,8 @@ def lucru_si_timp(lot):
     return mesaje
 
 
-def zip_lot(lot, sha, cale):
+def zip_lot(lot, sha, cale, recipisa=None):
+    """ZIP-ul lotului; `recipisa` = calea recipisei excepției aprobate (17.5-U2), pusă în ZIP sub exceptie/ cu octeții ei."""
     baza = git("merge-base", sha, "main")
     diff = git("diff", "--name-only", baza, sha).splitlines()
     lotf = L.lot_fisier(lot)
@@ -581,6 +829,8 @@ def zip_lot(lot, sha, cale):
         for extra in (os.path.join(ACASA, "lot_%s_raport.md" % lotf), os.path.join(ACASA, "lot_%s_timp.md" % lotf)):
             if os.path.exists(extra):
                 z.write(extra, os.path.basename(extra))
+        if recipisa and os.path.exists(recipisa):
+            z.write(recipisa, "exceptie/" + os.path.basename(recipisa))
         z.writestr("jurnal_lot.txt", "\n".join("%-20s %-10s %s -> %s  %ss" % (f, r, b, s, sec) for f, i, b, s, r, sec in JL.durate(lot)) + "\n")
 
 
@@ -650,11 +900,15 @@ def main():
     comun = git("rev-parse", "--path-format=absolute", "--git-common-dir")
     sirul_zip = os.path.join(ACASA, "lot_%s.zip" % lotf)
     lucru_si_timp(lot)
-    zip_lot(lot, sha, sirul_zip)
-    stop = verifica(lot, sha, comun, sirul_zip)
     f_stare = os.path.join(comun, "lot_stare_%s.json" % lotf)
     stare = json.load(open(f_stare)) if os.path.exists(f_stare) else {}
     c = stare["complete"][-1]["sha"] if stare.get("complete") else sha
+    # [17.5-U2] decizia numerică a excepției, din intrările verificate, înaintea ZIP-ului: secțiunea din raport (idempotent), recipisa în ZIP, aceeași decizie la verifica()
+    f_praguri = os.path.join(RAD, "scripts", "praguri_%s.txt" % lotf)
+    exceptie = decizie_exceptie(lot, c, open(f_praguri, encoding="utf-8").read().splitlines() if os.path.exists(f_praguri) else [])
+    scrie_sectiune_raport(os.path.join(ACASA, "lot_%s_raport.md" % lotf), exceptie[3])
+    zip_lot(lot, sha, sirul_zip, exceptie[0]["cale"] if exceptie[0] else None)
+    stop = verifica(lot, sha, comun, sirul_zip, exceptie)
     if stop:
         for m in stop:
             print("[publica_lot] STOP: " + m)

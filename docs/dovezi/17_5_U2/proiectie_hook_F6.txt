@@ -1,0 +1,7 @@
+produs
+lot: 17.5-F6
+max hook 153
+runde_verificator_max: 2
+sursa pragurilor 17.5-F6: generate de scripts/praguri_automate.py la 2026-11-28T07:27:21+02:00 din .lot_jurnal.log; loturi folosite: 17.5-F6 (1)
+  hook: maxim 127 s (lotul 17.5-F6, rularea 2383537-1795837151686) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 153 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
