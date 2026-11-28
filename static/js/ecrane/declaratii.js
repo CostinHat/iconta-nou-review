@@ -6,8 +6,8 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { listaCuCautare, cardRezumat, tabelDS, semnalHtml, legaSemnale } from "../ds_piese.js?v=e7221f7987";   // [15.1, 722] lista cu căutare
-import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=a84ae6966b";
+import { listaCuCautare, cardRezumat, tabelDS, semnalHtml, legaSemnale } from "../ds_piese.js?v=9cf04e8fc6";   // [15.1, 722] lista cu căutare
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, semnAjutorGrup, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=3c07c7414f";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=b26ef32cac";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
@@ -269,7 +269,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
       }
     }
     const _za = corp.querySelector("#dec-ajutor");  // [ajutor] "?" urmareste tipul ales
-    if (_za) _za.innerHTML = (S.tip && _DECL_AJUTOR[S.tip]) ? [].concat(_DECL_AJUTOR[S.tip]).map((id) => semnAjutor(id)).join("") : "";   // [17.5-R, R4] o cheie poate avea mai multe ID-uri: semne alăturate
+    if (_za) _za.innerHTML = (S.tip && _DECL_AJUTOR[S.tip]) ? semnAjutorGrup(_DECL_AJUTOR[S.tip], S.tip.toUpperCase()) : "";   // [17.5-F5, AC202] o cheie cu mai multe ID-uri: un singur semn, o secțiune pe ID
   }
   if (S.tenant_id) declaratiiExistente(corp.querySelector("#dec-existente"), S.tenant_id);
   if (selFirma) selFirma.addEventListener("change", refresh);
@@ -714,7 +714,7 @@ function legaturiFacturi(zona, nav, tenantId, documente) {
   zona.appendChild(lista);
   lista.querySelectorAll("[data-factura]").forEach((b) => b.addEventListener("click", async () => {
     const d = documente[parseInt(b.dataset.factura, 10)];
-    const { deschideFactura } = await import("./facturi_ecran.js?v=c79325fde2");
+    const { deschideFactura } = await import("./facturi_ecran.js?v=8a2c533c5c");
     deschideFactura(nav, tenantId, d.factura_id);
   }));
 }

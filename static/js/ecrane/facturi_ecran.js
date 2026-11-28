@@ -4,12 +4,12 @@
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=2e679a8748";   // [15.1, 725.1]
-import { inactiv, activ, noteGenerate, liniiNotaHtml, api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv, baniSemn } from "../api.js?v=a84ae6966b";  /* esc_nc27 */
+import { inactiv, activ, noteGenerate, liniiNotaHtml, api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, semnAjutorGrup, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv, baniSemn } from "../api.js?v=3c07c7414f";  /* esc_nc27 */
 import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
 import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=f751f434e7";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=49f3af5910";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=200eda21e4";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
@@ -343,7 +343,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=2c318eb87d");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=ed86d220b8");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -735,7 +735,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       ? `Eviden\u021ba facturilor e \u00eenchis\u0103${dataInch ? " la " + dataInch : ""} \u2014 e complet\u0103; semaforul se poate sprijini pe ea.`
       : "Eviden\u021ba facturilor e deschis\u0103 \u2014 informativ\u0103 p\u00e2n\u0103 la \u00eenchidere."} Se \u00eenchide \u0219i se redeschide din cardul \u201e\u00cenchidere lun\u0103\u201d al firmei.</span></div>`;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Istoric facturi <span class="semne-ajutor">${semnAjutor("F171")}${semnAjutor("F187")}</span></h2>
+      <h2 class="pf-titlu">Istoric facturi <span class="semne-ajutor">${semnAjutorGrup(["F171", "F187"], "Istoric facturi")}</span></h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="fac-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="fac-next"${opt.client && (an > anCurent || (an === anCurent && luna >= lunaCurenta)) ? atributeInactiv("Aceasta e luna curentă.") : ""}>luna \u2192</button>
@@ -1215,7 +1215,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     </div>
     <div class="fd-antet rezumat-fix">
       <div class="fd-antet-sus">
-        <h2 class="pf-titlu">Factur\u0103 ${f.numar ? esc(numarCuSerie(f.serie, f.numar)) : "\u2014"}</h2><span class="semne-ajutor">${semnAjutor("F045")}${semnAjutor("F046")}</span>
+        <h2 class="pf-titlu">Factur\u0103 ${f.numar ? esc(numarCuSerie(f.serie, f.numar)) : "\u2014"}</h2><span class="semne-ajutor">${semnAjutorGrup(["F045", "F046"], "Factură")}</span>
         ${statusTxt ? `<span class="fd-stare">${esc(statusTxt)}</span>` : ""}
         ${opt.client || (dinBon && !nc) ? "" : `<button class="btn-link" id="fd-vezi-nota" data-context-q7="tip-document"${nc ? "" : atributeInactiv("Factura n-are încă notă contabilă: nota se propune la contare.")}>${nc ? "nota " + esc(nc.eticheta || "") : "nota contabilă"}</button>`}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
@@ -1523,7 +1523,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div id="fd-nota-linii" class="fd-nota-linii">${nota && nota.linii.length ? liniiNotaHtml(nota.linii) : "Nota n-are rânduri de afișat."}</div>
         <p style="margin-top:12px"><button type="button" class="buton-secundar" id="fd-nota-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Deschide în Registrul jurnal</button></p>`;
       c2.querySelector("#fd-nota-jurnal").addEventListener("click", async () => {
-        const { ecranJurnal } = await import("./firme.js?v=2c318eb87d");   // dinamic: firme.js importă deja ecranul facturilor
+        const { ecranJurnal } = await import("./firme.js?v=ed86d220b8");   // dinamic: firme.js importă deja ecranul facturilor
         const [an, luna] = String(nc.data).split("-").map(Number);
         nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
       });

@@ -7,7 +7,7 @@
 // [270d / C36, 15.10.2026] Cererile de import din alta aplicatie apar in „De la utilizatori”, cu aplicatia in titlu; fisierele
 // firului (capturi si exporturi) se arata si se descarca prin ruta autentificata, nu din /static.
 
-import { api, semnAjutor, esc, refuzPeRand } from "../api.js?v=a84ae6966b";
+import { api, semnAjutor, esc, refuzPeRand } from "../api.js?v=3c07c7414f";
 import { fisiereHTML, legaFisiere } from "./raporteaza.js?v=1c7aa06881";
 
 const LUNI = ["ian.","feb.","mar.","apr.","mai","iun.",

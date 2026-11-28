@@ -1,8 +1,8 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=a84ae6966b";
+import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, descarca, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=3c07c7414f";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";
-import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=e7221f7987";   // [15.1] piesele formularului grupat
+import { formularGrupat, actualizeazaGrupe, cardRezumat, latimeCamp } from "../ds_piese.js?v=9cf04e8fc6";   // [15.1] piesele formularului grupat
 import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=2e679a8748";   // [15.1, 725] F5 readuce fereastra
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";   // [15.1, 721] ciorna formularului, pe server
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
@@ -35,6 +35,24 @@ const DN = (nume, eticheta, extra = {}) => C(nume, eticheta, "select", { optiuni
 // core/test_lot13_ops_formular.py::test_niciun_camp_precompletat_sau_gri.
 // [lotul 13, 631 / 670] monedele: aceeași listă ca la „Emite factură” (`#em-moneda`), fără RON — operațiunea e în valută
 export const MONEDE = ["EUR", "USD", "GBP", "CHF", "HUF", "PLN"];
+// [17.5-F5, funcția 501] câmpurile hotărârii (Word și PDF, D4): ale DOCUMENTULUI, nu ale notei — nu intră în registrul câmpurilor notei
+// (nota de dividende nu le citește; le citește numai `POST /tenants/{id}/hotarare-dividende/{fel}`). Administratorul și exemplarele se
+// sugerează din datele firmei când apare împărțirea (editabile); convocarea, prezența și votul le confirmă contabilul, nimic presupus. Fără „*”:
+// nu sunt câmpurile notei (cadrul ar ține «Generează nota» inactiv); documentul le cere el, cu refuzul lângă câmpul lipsă.
+const CAMPURI_HOTARARE = [
+    C("aprobare_anuala", "Hotărârea aprobă și situațiile financiare anuale", "select", { optiuni: [["da", "Da"], ["nu", "Nu"]], optional: true, cond: { camp: "operatie", val: "dividend" } }),
+    C("an_situatii", "Anul situațiilor financiare", "text", { optional: true, cond: { camp: "operatie", val: "dividend" } }),
+    C("data_situatii", "Data situațiilor financiare interimare", "data", { optional: true, cond: { camp: "interimar", val: "1" }, ajutor: "Sfârșitul trimestrului încheiat (Legea 82/1991 art. 19 alin. (3¹))." }),
+    C("termen_plata", "Termenul de plată", "data", { optional: true, cond: { camp: "operatie", val: "dividend" } }),
+    C("modalitate_plata", "Modalitatea de plată", "select", { optiuni: [["virament", "Virament"], ["numerar", "Numerar"]], optional: true, cond: { camp: "operatie", val: "dividend" } }),
+    C("loc_adunare", "Locul adunării", "text", { optional: true, cond: { camp: "operatie", val: "dividend" } }),
+    C("convocare", "Convocarea", "text", { optional: true, cond: { camp: "operatie", val: "dividend" }, ajutor: "Cine a convocat adunarea și când (Legea 31/1990 art. 195)." }),
+    C("prezenta", "Prezența", "select", { optiuni: [["toti", "Toți asociații (întregul capital social)"]], optional: true, cond: { camp: "operatie", val: "dividend" } }),
+    C("vot", "Votul", "select", { optiuni: [["unanimitate", "Unanimitate"]], optional: true, cond: { camp: "operatie", val: "dividend" } }),
+    C("administrator", "Administratorul împuternicit", "text", { optional: true, cond: { camp: "operatie", val: "dividend" }, ajutor: "Sugerat din Date firmă; îl poți schimba." }),
+    C("exemplare", "Numărul de exemplare originale", "text", { optional: true, cond: { camp: "operatie", val: "dividend" }, ajutor: "Sugerat: numărul asociaților plus unu." }),
+];
+
 
 const REGISTRU = [
 { cat: "Finanțare", cheie: "leasing", titlu: "Leasing", ruta: "nota-leasing", frecventa: "lunar", faraPropunere: "contractul de leasing (scadențarul ratelor) nu e înregistrat în aplicație", campuri: [
@@ -80,7 +98,8 @@ const REGISTRU = [
     C("interimar", "Fel", "select", { optiuni: [["0","Anual, din profitul nerepartizat (1171 = 457)"],["1","Interimar (463/456)"]], neales: "— alege —", cond: { camp: "operatie", val: "dividend" } }),
     DN("cu_plata", "Dividendul se plătește acum", { cond: { camp: "operatie", val: "dividend" }, ajutor: "Da: nota cuprinde și plata netului (457/456 = 5121)." }),
     C("suma", "Suma împrumut", "numar", { cond: { camp: "operatie", val: "imprumut" } }),
-    C("fel", "Sens", "select", { optiuni: [["primire","Primire de la asociat"],["restituire","Restituire către asociat"]], cond: { camp: "operatie", val: "imprumut" } }),
+    // [17.5-F6, corecția 1 pct.3, decizia lui Costin 28.11.2026] acordarea unui împrumut către asociat (Legea 31/1990 art. 67 alin. (2³)) nu e o operație a aplicației: fereastra o spune
+    C("fel", "Sens", "select", { optiuni: [["primire","Primire de la asociat"],["restituire","Restituire către asociat"]], cond: { camp: "operatie", val: "imprumut" }, ajutor: "Acordarea unui împrumut de către firmă asociatului nu există în aplicație: aici se înregistrează numai împrumutul primit de la asociat și restituirea lui." }),
     C("dobanda", "Dobânda plătită asociatului", "numar", { cond: { camp: "fel", val: "restituire" }, ajutor: "0 dacă împrumutul e fără dobândă; din dobândă se reține impozitul (4551 = 446)." }),
     C("total_interimar", "Total dividende interimare", "numar", { cond: { camp: "operatie", val: "regularizare" } }),
     C("dividend_anual", "Dividend anual final", "numar", { cond: { camp: "operatie", val: "regularizare" } }),
@@ -508,7 +527,9 @@ export function detaliiOperatie(r) {
   return d;
 }
 
-export async function ecranOperatiuni(corp, nav, t) {
+// [17.5-F6, Cabinet 3 a)] `opt.op` + `opt.operatie`: intrarea directă din cabinet (lista «Hotărâri AGA» → Decontări asociați, operația
+// dividend): formularul operației se deschide peste listă («←» duce în lista operațiunilor), cu operația aleasă
+export async function ecranOperatiuni(corp, nav, t, opt = {}) {
   let opCurenta = null;
 
   const lista = (c) => {
@@ -631,7 +652,9 @@ export async function ecranOperatiuni(corp, nav, t) {
         <div id="op-refuz-fel"></div>
         ${formularGrupat(opCurenta.campuri, camp)}
         ${opCurenta.multi ? `<div class="op-multi-bloc"${opCurenta.multiCond ? ` data-cond-camp="${opCurenta.multiCond.camp}" data-cond-val="${[].concat(opCurenta.multiCond.val).join("|")}"` : ""}><div class="pf-frand-nume" style="margin:12px 0 6px">${esc(opCurenta.multiTitlu || "Solduri")}</div><div id="op-multi"></div></div>` : ""}
-        ${opCurenta.cheie === "asociati" ? '<div id="op-propunere"></div>' : ""}
+        ${opCurenta.cheie === "asociati" ? `<div id="op-propunere"></div><section class="op-hotarare-campuri" hidden><h3 class="ds-grup-titlu">Hotărârea (Word și PDF)</h3>
+          <div class="ds-grup-campuri">${CAMPURI_HOTARARE.map((c) => camp(c, "ds-lat-" + latimeCamp(c))).join("")}</div>
+          </section>` : ""}
         ${opCurenta.spreEmitere ? `<div class="caseta-info op-spre-emitere" id="op-spre-emitere" data-cond-camp="${opCurenta.spreEmitere.camp}" data-cond-val="${opCurenta.spreEmitere.val}" style="display:none"><span class="ci-mesaj">${esc(opCurenta.spreEmitere.text)}</span><p style="margin:8px 0 0"><button type="button" class="buton-secundar" id="op-spre-emitere-buton" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Deschide «Emite factură»</button></p></div>` : ""}
         <div class="bara-fixa">
           <p style="margin-top:4px"><button class="buton-secundar" id="op-renunta" data-fara-actiune="închide formularul fără să scrie nimic">Renunță</button> <button class="buton-primar" id="op-trimite" data-genereaza-nota data-actiune="${actiuneOp(opCurenta)}">Genereaz\u0103 nota (ciorn\u0103)</button></p>
@@ -644,14 +667,27 @@ export async function ecranOperatiuni(corp, nav, t) {
     // impozit se reține pe fiecare”: la dividend, tabelul împărțirii (asociat, cota, brut, impozit, net) se arată ÎNAINTE de generare, din
     // asociații de la data hotărârii (Date firmă → Asociați) — aceleași reguli ca nota (`GET …/dividende-impartire`, nu scrie nimic)
     const zonaProp = corp.querySelector("#op-propunere");
+    // [17.5-F6, corecția 1 pct.1] asociatul persoană juridică (`regim`): fără impozit și net pe rândul lui, iar totalul lor nu se arată (`regim_total`)
     const tabelAsociati = (p) => `<table class="fd-tabel" id="op-div-tabel">
         <thead><tr><th>Asociat</th><th class="fd-td-num">Cota</th><th class="fd-td-num">Dividend brut</th><th class="fd-td-num">Impozit ${esc(p.cota || "")}</th><th class="fd-td-num">Net</th></tr></thead>
-        <tbody>${(p.asociati || []).map((a) => `<tr><td>${esc(a.nume || "")}</td><td class="fd-td-num">${esc(a.cota)}</td><td class="fd-td-num">${bani(a.brut)}</td><td class="fd-td-num">${bani(a.impozit)}</td><td class="fd-td-num">${bani(a.net)}</td></tr>`).join("")}
-        </tbody><tfoot><tr><td><b>Total</b></td><td></td><td class="fd-td-num"><b>${bani(p.brut)}</b></td><td class="fd-td-num"><b>${bani(p.impozit)}</b></td><td class="fd-td-num"><b>${bani(p.net)}</b></td></tr></tfoot>
+        <tbody>${(p.asociati || []).map((a) => `<tr><td>${esc(a.nume || "")}</td><td class="fd-td-num">${esc(a.cota)}</td><td class="fd-td-num">${bani(a.brut)}</td>${a.regim ? `<td colspan="2" data-regim-pj>${esc(a.regim)}</td>` : `<td class="fd-td-num">${bani(a.impozit)}</td><td class="fd-td-num">${bani(a.net)}</td>`}</tr>`).join("")}
+        </tbody><tfoot><tr><td><b>Total</b></td><td></td><td class="fd-td-num"><b>${bani(p.brut)}</b></td>${p.regim_total ? `<td colspan="2" data-regim-pj>${esc(p.regim_total)}</td>` : `<td class="fd-td-num"><b>${bani(p.impozit)}</b></td><td class="fd-td-num"><b>${bani(p.net)}</b></td>`}</tr></tfoot>
       </table>`;
     const mesajIn = (zona, txt, tip) => { const d = document.createElement("div"); zona.appendChild(d); arataMesaj(d, txt, tip); };
+    // [17.5-F5, funcția 501] sub tabelul propunerii, hotărârea în Word editabil și PDF (câmpurile ei stau în blocul «Hotărârea» de sub propunere)
+    // [17.5-F6, corecția 1 pct.2, decizia lui Costin 28.11.2026] limita T5, la vedere lângă descărcare: rezerva legală și pierderea reportată nu sunt verificate
+    const butoaneHotarare = `<div class="op-hotarare"><p class="camp-ajutor">Hotărârea (decizia asociatului unic) se descarcă din această împărțire și din câmpurile blocului «Hotărârea» de mai jos, pentru verificare și semnare; descărcarea nu generează nota.</p>
+        <p class="camp-ajutor" id="op-hotarare-limite">Aplicația nu verifică rezerva legală (Legea 31/1990 art. 183) și acoperirea pierderii reportate: verifică-le înainte de semnare.</p>
+        <p><button type="button" class="buton-secundar" id="op-descarca-docx" data-actiune="POST /tenants/{tenant_id}/hotarare-dividende/{fel}">Descarcă Word</button>
+        <button type="button" class="buton-secundar" id="op-descarca-pdf" data-actiune="POST /tenants/{tenant_id}/hotarare-dividende/{fel}">Descarcă PDF</button></p><div id="op-hotarare-mesaj"></div></div>`;
+    const sugereaza = (id, val) => {   // sugestia nu scrie peste ce a scris contabilul
+      const c = corp.querySelector(`#op-${id}`);
+      if (c && !c.dataset.atins && val !== undefined && val !== null && val !== "") c.value = String(val);
+    };
     const arataImpartirea = (p, titlu) => {
-      zonaProp.innerHTML = `<div class="pf-frand-nume" style="margin-top:12px">${esc(titlu)}: ${esc(p.document)}${p.cont_sursa ? `, din contul ${esc(p.cont_sursa)}` : ""}</div>${tabelAsociati(p)}`;
+      zonaProp.innerHTML = `<div class="pf-frand-nume" style="margin-top:12px">${esc(titlu)}: ${esc(p.document)}${p.cont_sursa ? `, din contul ${esc(p.cont_sursa)}` : ""}</div>${tabelAsociati(p)}${p.exemplare_sugerate ? butoaneHotarare : ""}`;
+      sugereaza("administrator", p.administrator_sugerat);
+      sugereaza("exemplare", p.exemplare_sugerate);
       // avertismentul despre sursa profitului e o afirmație tipată (`afirmatie.motiv`, decizia 21.08), ca în firme.js
       if (p.afirmatie && p.afirmatie.motiv) mesajIn(zonaProp, p.afirmatie.motiv, "avert");
     };
@@ -676,12 +712,31 @@ export async function ecranOperatiuni(corp, nav, t) {
     };
     if (zonaProp) corp.querySelector(".pf-frand").addEventListener("change", (ev) =>
       ["op-operatie", "op-brut", "op-data_hotarare", "op-numar_hotarare", "op-interimar", "op-data"].includes(ev.target.id) && propuneImpartirea());
+    if (zonaProp) {
+      ["administrator", "exemplare"].forEach((id) => { const c = corp.querySelector(`#op-${id}`); if (c) c.addEventListener("input", () => { c.dataset.atins = "1"; }); });
+      zonaProp.addEventListener("click", async (ev) => {
+        const b = ev.target.closest("#op-descarca-docx, #op-descarca-pdf");
+        if (!b) return;
+        const fel = b.id === "op-descarca-docx" ? "docx" : "pdf";
+        const v = (n) => (corp.querySelector(`#op-${n}`) || {}).value || "";
+        const cerere = {};
+        ["operatie", "data", "brut", "numar_hotarare", "data_hotarare", "interimar", "aprobare_anuala", "an_situatii", "data_situatii", "termen_plata",
+         "modalitate_plata", "loc_adunare", "convocare", "prezenta", "vot", "administrator", "exemplare"].forEach((n) => { cerere[n] = v(n); });
+        const loc = zonaProp.querySelector("#op-hotarare-mesaj");
+        if (loc) loc.innerHTML = "";
+        try {
+          await descarca(`/tenants/${t.id}/hotarare-dividende/${fel}`, `hotarare.${fel}`, { metoda: "POST", corp: cerere });
+        } catch (e) {
+          if (loc) mesajIn(loc, e.mesaj || e.message || "Hotărârea nu s-a putut genera.", "eroare");
+        }
+      });
+    }
 
     // [lotul 10, deficiența 430f] „după generare, mesajul nu arată nota și nu duce la ea”: confirmarea (DS cap.6, `arataMesaj` „ok”) numește
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=2c318eb87d");
+      const { ecranJurnal } = await import("./firme.js?v=ed86d220b8");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };
@@ -736,10 +791,13 @@ export async function ecranOperatiuni(corp, nav, t) {
       const spre = corp.querySelector(".op-spre-emitere");
       corp.querySelector("#op-trimite").style.display = spre && spre.style.display !== "none" ? "none" : "";
       actualizeazaGrupe(corp);   // [15.1] grupul fără câmp la vedere dispare; grupurile alăturate nu lasă jumătate de ecran goală
+      // [17.5-F5, 501] blocul hotărârii (în afara grupurilor formularului, sub propunere) se vede numai la operația «Dividend»
+      const hot = corp.querySelector(".op-hotarare-campuri");
+      if (hot) hot.hidden = (corp.querySelector("#op-operatie") || {}).value !== "dividend";
     };
     const btnSpre = corp.querySelector("#op-spre-emitere-buton");
     if (btnSpre) btnSpre.addEventListener("click", async () => {   // [C84] peste formular: „←” readuce operațiunea
-      const { randeazaEmitere } = await import("./emitere_ecran.js?v=f751f434e7");
+      const { randeazaEmitere } = await import("./emitere_ecran.js?v=49f3af5910");
       nav.deschide("Emite factură", (c2) => randeazaEmitere(c2, nav, t.id, { inapoi: () => nav.inapoi() }));
     });
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
@@ -796,7 +854,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         zonaRefuz.innerHTML = "";
         zonaRefuz.appendChild(cardRezumat({ text: "Firma aplică TVA la încasare: factura furnizorului se înregistrează în Facturi primite.", ton: "eroare",
           detalii: r.refuz, actiune: { eticheta: "Deschide Facturi primite", laClic: async () => {
-            const { primiteSPV } = await import("./facturi_ecran.js?v=c79325fde2");
+            const { primiteSPV } = await import("./facturi_ecran.js?v=8a2c533c5c");
             nav.deschide("Facturi primite", (c2) => primiteSPV(c2, nav, t.id, {}));
           } } }));
         inactiv(btn, "Nota nu se poate genera: factura se înregistrează în Facturi primite.");
@@ -1151,6 +1209,16 @@ export async function ecranOperatiuni(corp, nav, t) {
   };
 
   lista();
+  const direct = opt.op ? REGISTRU.find((o) => o.cheie === opt.op && permis(actiuneOp(o))) : null;
+  if (direct) {
+    opCurenta = direct;
+    nav.mergi(opCurenta.titlu, formular);
+    const sel = corp.querySelector("#op-operatie");
+    if (sel && opt.operatie && [...sel.options].some((o) => o.value === opt.operatie)) {
+      sel.value = opt.operatie;
+      sel.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  }
 }
 
 // precompletari_rest_v1

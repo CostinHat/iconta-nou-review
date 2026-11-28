@@ -4,7 +4,7 @@
 // O singură listă și o singură formă, pe toate ecranele: centrele ACTIVE ale firmei (cele dezactivate nu se mai oferă, ca în Registrul
 // jurnal); fără niciun centru definit, câmpul nu apare. Gol = fără centru (nimic precompletat). Contarea duce centrul pe rândul de venit /
 // cheltuială al notei (`contare_facturi._note_pe_cote`).
-import { api, esc } from "../api.js?v=a84ae6966b";
+import { api, esc } from "../api.js?v=3c07c7414f";
 
 /** Centrele active ale firmei ([{id, nume}]); [] dacă firma n-are centre sau lista nu se poate citi (câmpul nu apare). */
 export async function centreActive(tenantId) {

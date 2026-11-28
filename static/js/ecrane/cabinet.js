@@ -2,19 +2,22 @@
 // Banda de salut cu „Recomandă” și „Suport” (salut.js, aceeași la asistent) + cardurile pastel, fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, semnAjutor, confirmaCaseta, esc, dataRo, bani, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=a84ae6966b";  /* esc_nc27 */
+import { api, semnAjutor, confirmaCaseta, esc, dataRo, bani, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=3c07c7414f";  /* esc_nc27 */
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=2c318eb87d";
-import { randeazaMigrare } from "./migrare.js?v=46924d17c6";
+import { randeazaListaFirme, deschideFirma } from "./firme.js?v=ed86d220b8";
+import { ecranConsultanta } from "./consultanta_ecran.js?v=a63aa43511";   // [17.5-F6, Cabinet 3 b)] intrarea directă în funcția 502
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=471ceac7a5";   // [17.5-F6, Cabinet 3 a)] intrarea directă în funcția 501
+import { tabelDS } from "../ds_piese.js?v=9cf04e8fc6";   // [17.5-F6] lista firmelor fiecărui card de consultanță
+import { randeazaMigrare } from "./migrare.js?v=fe96cc60fb";
 import { randeazaControl } from "./control.js?v=c027ce0ad1";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=80b751d073"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=63fb54f44e"; // [p28_setari]
+import { randeazaSetari } from "./setari.js?v=e2b763d5aa"; // [p28_setari]
 import { randeazaRaporteaza } from "./raporteaza.js?v=1c7aa06881"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=2fb690d91e"; // [p63_pachete]
-import { randeazaTermene, etichetaZile } from "./termene.js?v=9e881ff3e6";
+import { randeazaTermene, etichetaZile } from "./termene.js?v=3a14760004";
 import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=98dd52b282";
 import { randeazaSupervizor } from "./supervizor.js?v=900f592ab2"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=f5149c4025";
@@ -235,6 +238,121 @@ function desenazaSectiuneaSefului(grila, carduri) {
   grila.appendChild(sec);
 }
 
+// [17.5-F6, Cabinet 1–4 și 7, DS v2.135] Secțiunea «Consultanță»: funcțiile de consultanță apar pe pagina cabinetului numai ca un card aici
+// (nu în grila principală, nu la șef). Aceeași piesă de pliere ca secțiunea șefului, pliată implicit, starea numai în memorie; ultimul copil
+// al grilei principale (după secțiunea șefului, când există). O văd toți utilizatorii care au firme, fiecare pe firmele lui (ruta
+// /cabinet/consultanta), independent de drepturile de conducere; fără nicio firmă accesibilă nu se desenează. Cifrele vin din rezumatele pe
+// firmă (nu se recalculează nimic la deschidere). Orice funcție viitoare de acest fel intră ca un card nou aici.
+const CARDURI_CONSULTANTA = [
+  { cheie: "hotarari_aga", titlu: "Hotărâri AGA", icon: "clipboard", ...CULORI_CARD.verde },
+  { cheie: "consultanta", titlu: "Consultanță fiscală", icon: "trend", ...CULORI_CARD.teal },
+];
+let _consultantaDeschis = false;
+
+function _sintezaConsultanta(cheie, card) {
+  const n = card.n || 0;
+  const rec = card.in_recalculare ? ` · ${card.in_recalculare} în recalculare` : "";
+  if (cheie === "hotarari_aga") {
+    return (n ? `<b class="tip-figura">${n}</b> ${dupaNumar(n, "firmă cu profit de distribuit", "firme cu profit de distribuit")}`
+      : "Nicio firmă cu profit de distribuit") + rec;
+  }
+  return `<b class="tip-figura">${n}</b> ${dupaNumar(n, "firmă", "firme")} · ${bani(card.economie || 0)} lei/an${rec}`;
+}
+
+function _titluConsultanta(r) {
+  const n = r.firme_distincte || 0;
+  return n ? `Consultanță · ${cate(n, "firmă", "firme")}` : "Consultanță";
+}
+
+function _tFirma(f) {
+  return { id: f.tenant_id, nume: f.nume, cui: f.cui, tip_firma: f.tip_firma, regim_contabil: f.regim_contabil };
+}
+
+// fereastra cardului (DS cap. 2a): lista firmelor; clic pe o firmă -> fereastra firmei, direct la funcție
+function randeazaListaConsultanta(corp, nav, cheie, card) {
+  const def = CARDURI_CONSULTANTA.find((c) => c.cheie === cheie);
+  const n = card.n || 0;
+  if (cheie === "hotarari_aga") {
+    corp.innerHTML = `<h2 class="pf-titlu">${def.titlu}</h2>
+      <p class="pf-intro">Firmele tale cu profit nerepartizat disponibil la zi și fără hotărâre de distribuire a dividendelor în anul curent.</p>
+      <div id="cc-lista"></div>`;
+    const randuri = card.firme.map((f) => {
+      const intra = () => { deschideFirma(_tFirma(f), nav); nav.deschide("Operațiuni speciale", (c2) => ecranOperatiuni(c2, nav, _tFirma(f), { op: "asociati", operatie: "dividend" })); };
+      return { celule: { firma: `${f.nume} · CUI ${f.cui || ""}`, profit: bani(f.disponibil),
+                         ultima: f.ultima ? `nr. ${f.ultima.numar} din ${dataRo(f.ultima.data)}` : "nefăcută" },
+               actiuni: [{ eticheta: "Deschide", laClic: intra, faraActiune: "navigare: fereastra firmei, la dividend" }], laClic: intra };
+    });
+    tabelDS(corp.querySelector("#cc-lista"), { coloane: [{ cheie: "firma", titlu: "Firma" }, { cheie: "profit", titlu: "Profit disponibil (lei)", tip: "num" },
+      { cheie: "ultima", titlu: "Ultima hotărâre" }, { tip: "actiuni", titlu: "" }], randuri,
+      gol: "Nicio firmă cu profit de distribuit.", subsol: cate(n, "firmă", "firme") + (card.in_recalculare ? ` · ${card.in_recalculare} în recalculare` : "") });
+    return;
+  }
+  corp.innerHTML = `<h2 class="pf-titlu">${def.titlu}</h2>
+    <p class="pf-intro">Firmele tale cu cel puțin o măsură care se aplică. Economia adună numai economiile de impozit ale firmei (M3, M5), care se pot cumula.</p>
+    <div id="cc-lista"></div>`;
+  const randuri = card.firme.map((f) => {
+    const intra = () => { deschideFirma(_tFirma(f), nav); nav.deschide("Consultanță fiscală", (c2) => ecranConsultanta(c2, nav, _tFirma(f)), { lat: "larg" }); };
+    return { celule: { firma: `${f.nume} · CUI ${f.cui || ""}`, aplica: (f.se_aplica || []).map((m) => `${m.cod} ${m.nume}`).join(", "),
+                       lipsesc: (f.lipsesc || []).map((m) => `${m.cod} ${m.stare}`).join(", ") || "—", economie: bani(f.economie) },
+             actiuni: [{ eticheta: "Deschide", laClic: intra, faraActiune: "navigare: fereastra firmei, la Consultanță fiscală" }], laClic: intra };
+  });
+  tabelDS(corp.querySelector("#cc-lista"), { coloane: [{ cheie: "firma", titlu: "Firma" }, { cheie: "aplica", titlu: "Se aplică" },
+    { cheie: "lipsesc", titlu: "Lipsesc date" }, { cheie: "economie", titlu: "Economie estimată (lei/an)", tip: "num" }, { tip: "actiuni", titlu: "" }], randuri,
+    gol: "Nicio firmă cu măsuri care se aplică.",
+    subsol: `${cate(n, "firmă", "firme")} · total ${bani(card.economie || 0)} lei/an` + (card.in_recalculare ? ` · ${card.in_recalculare} în recalculare` : "") });
+}
+
+// secțiunea se pune sincron, la desenarea paginii, ascunsă și cu rezumatele «se încarcă…» (cine așteaptă rezumatele paginii o așteaptă și pe
+// ea); răspunsul o arată (utilizatorul are firme) sau o scoate (nicio firmă accesibilă, ori ruta n-a răspuns)
+function desenazaSectiuneaConsultanta(grila, nav) {
+  const sec = document.createElement("section");
+  sec.className = "firme-grup cab-consultanta";
+  sec.hidden = true;
+  sec.setAttribute("aria-labelledby", "fg-consultanta");
+  sec.innerHTML = `<h3 class="pf-subtitlu ds-grup-titlu" id="fg-consultanta"><button type="button" class="firme-grup-btn" aria-expanded="${_consultantaDeschis}" aria-controls="fgc-consultanta"><svg class="firme-grup-sageata" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg><span class="cab-consultanta-titlu">Consultanță</span></button></h3><div class="cab-grila" id="fgc-consultanta"${_consultantaDeschis ? "" : " hidden"}></div>`;
+  const btn = sec.querySelector(".firme-grup-btn");
+  btn.addEventListener("click", () => {
+    _consultantaDeschis = btn.getAttribute("aria-expanded") !== "true";
+    btn.setAttribute("aria-expanded", String(_consultantaDeschis));
+    sec.querySelector("#fgc-consultanta").hidden = !_consultantaDeschis;
+  });
+  const zona = sec.querySelector("#fgc-consultanta");
+  CARDURI_CONSULTANTA.forEach((c) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "cab-card";
+    card.style.background = c.bg;
+    card.style.color = c.fg;
+    card.innerHTML = `<div class="cab-card-cap">${svg(c.icon, c.fg)}<span class="cab-card-titlu">${c.titlu}</span></div><div class="cab-card-sinteza" data-cheie="${c.cheie}">se încarcă…</div>`;
+    card.addEventListener("click", () => nav.deschide(c.titlu, (corp) => randeazaListaConsultanta(corp, nav, c.cheie, sec._date.carduri[c.cheie]), { nivel: "cabinet", lat: "tabel" }));
+    zona.appendChild(card);
+  });
+  grila.appendChild(sec);   // ultimul copil al grilei principale, după secțiunea șefului
+}
+
+async function actualizeazaConsultanta(grila) {
+  const sec = grila.querySelector(":scope > section.cab-consultanta");
+  if (!sec) return;
+  let r = null;
+  try {
+    r = await api.get("/cabinet/consultanta");
+  } catch { r = null; }
+  if (!sec.isConnected) return;
+  if (!r || !r.firme_accesibile) { sec.remove(); return; }   // fără nicio firmă accesibilă secțiunea nu se desenează
+  sec._date = r;
+  sec.querySelector(".cab-consultanta-titlu").textContent = _titluConsultanta(r);
+  CARDURI_CONSULTANTA.forEach((c) => {
+    sec.querySelector(`[data-cheie="${c.cheie}"]`).innerHTML = _sintezaConsultanta(c.cheie, r.carduri[c.cheie]);
+  });
+  sec.hidden = false;
+}
+
+// [17.5-F6, Cabinet 2] aceeași secțiune pe pagina principală a asistentului (asistent.js): o vede pe firmele lui, fără drepturi de conducere
+export function sectiuneaConsultanta(grila, nav) {
+  desenazaSectiuneaConsultanta(grila, nav);
+  actualizeazaConsultanta(grila);
+}
+
 // VEDEREA 1: panoul cu cele 9 carduri
 function randeazaPanou(continut, nav) {
   continut.innerHTML = paginaPrincipala(sesiune.user());   // [269] numele din salut: `numeDeSalut` (salut.js)
@@ -281,6 +399,7 @@ function randeazaPanou(continut, nav) {
     (CARDURI_SEF.includes(c.cheie) ? cardurileSefului : grila).appendChild(card);
   });
   desenazaSectiuneaSefului(grila, cardurileSefului);
+  desenazaSectiuneaConsultanta(grila, nav);   // [17.5-F6, Cabinet 1] imediat după secțiunea șefului, ultima
 
   const contoare = () => {
     actualizeazaFirme(grila);
@@ -289,6 +408,7 @@ function randeazaPanou(continut, nav) {
     actualizeazaActivitate(grila);
     actualizeazaValidat(grila);
     actualizeazaAsistenti(grila);
+    actualizeazaConsultanta(grila);   // [17.5-F6] rezumatele secțiunii «Consultanță»
   };
   contoare();
   // [deficiența 286, clasa 265] după orice scriere reușită (validare, respingere, depunere, notă nouă), contoarele se recitesc pe loc —

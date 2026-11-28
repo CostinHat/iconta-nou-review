@@ -1,7 +1,7 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, semnAjutor, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile, arataRefuzul, inactiv } from "../api.js?v=a84ae6966b";
+import { api, semnAjutor, semnAjutorGrup, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile, arataRefuzul, inactiv } from "../api.js?v=3c07c7414f";
 import { textStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [17.5-N, AC041] acoperirea SPV a firmei, cu regula implicită a textului de stare */
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
@@ -164,7 +164,7 @@ export async function ecranEtransport(corp, nav, t) {
 
   const deseneaza = () => {
     corp.innerHTML = `
-      <h2 class="pf-titlu">e-Transport <span class="semne-ajutor">${semnAjutor("F044")}${semnAjutor("F121")}</span></h2>
+      <h2 class="pf-titlu">e-Transport <span class="semne-ajutor">${semnAjutorGrup(["F044", "F121"], "e-Transport")}</span></h2>
       <p class="pf-intro">Generează XML-ul notificării (v2) pentru încărcare manuală în SPV. UIT-ul vine de la ANAF după upload.</p>
       <p id="et-din-doc">Completează din document:
         <button type="button" class="buton-secundar" id="et-din-factura" data-actiune="GET /tenants/{tenant_id}/etransport/din-document">Din factură</button>

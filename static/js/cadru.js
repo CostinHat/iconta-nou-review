@@ -15,8 +15,8 @@
 // Starea o dă piesa: câmpurile obligatorii ale ecranului sunt etichetele cu „*”; cât un câmp vizibil de acest fel e gol, butonul principal e
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
-import { alegereButoane, alegereComutator, alegereText, esteAlege, inactiv, activ, MAX_BUTOANE, cate } from "./api.js?v=a84ae6966b";
-import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_piese.js?v=e7221f7987";
+import { alegereButoane, alegereComutator, alegereText, esteAlege, inactiv, activ, MAX_BUTOANE, cate } from "./api.js?v=3c07c7414f";
+import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_piese.js?v=9cf04e8fc6";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);

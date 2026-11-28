@@ -28,12 +28,12 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, semnAjutor, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=a84ae6966b";
+import { api, semnAjutor, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=3c07c7414f";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=db5873ec3a";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=c7ab39f407";
-import { legaSemnale, meniuActiuni, paginareDS } from "../ds_piese.js?v=e7221f7987";   // [15.1-E3] pliarea semnalelor constatărilor
+import { randA as randConstatare } from "./control_verdict.js?v=712004f704";
+import { legaSemnale, meniuActiuni, paginareDS } from "../ds_piese.js?v=9cf04e8fc6";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal, textSoldPreluat } from "./firme.js?v=2c318eb87d";
+import { deschideFirma, ecranJurnal, textSoldPreluat } from "./firme.js?v=ed86d220b8";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -866,7 +866,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=cac48ec690");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=784baa7262");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

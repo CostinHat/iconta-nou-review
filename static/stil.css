@@ -2824,6 +2824,25 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .aj-sec:first-child { margin-top:0; }
 .aj-p { margin:3px 0; color:var(--ardezie); line-height:1.55; }
 .aj-titlu { margin:0 0 10px; color:var(--ardezie); font-size:var(--text); font-weight:700; }
+/* [17.5-F5, AC202] fereastra semnului de grup: o secțiune pe funcționalitate, titlul = numele din registru */
+.aj-sectiune + .aj-sectiune { margin-top:18px; padding-top:12px; border-top:1px solid #e3e7ee; }
+.aj-sectiune-titlu { margin:0 0 6px; color:var(--ardezie); font-size:var(--text); font-weight:700; }
+/* [17.5-F5, funcția 502] Consultanță fiscală: cinci rânduri, fiecare cu numele, starea (pastila se rupe pe rânduri, nu iese din fereastră),
+   motivul, suma cu sensul și perioada; detaliile sub «Detalii» */
+.cs-masuri { display:flex; flex-direction:column; gap:10px; }
+.cs-masura { border:1px solid #e3e7ee; border-radius:8px; padding:10px 12px; }
+.cs-cap { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 12px; }
+.cs-nume { font-weight:700; color:var(--ardezie); }
+.ds-pastila.cs-stare { white-space:normal; height:auto; min-height:28px; line-height:18px; padding-top:5px; padding-bottom:5px; }
+.cs-motiv, .cs-suma, .cs-plafon { margin:6px 0 0; line-height:1.45; overflow-wrap:anywhere; }
+.cs-suma-valoare { font-weight:700; }
+.cs-det-rand { margin:8px 0 0; }
+.cs-det-titlu { margin:10px 0 4px; font-size:var(--text-mic); font-weight:700; color:#1a3a6b; }
+.cs-det-lista { margin:0; padding-left:18px; }
+.cs-det-lista li, .cs-det-p { margin:2px 0; line-height:1.45; overflow-wrap:anywhere; }
+.cs-fraza { margin:12px 0 0; font-style:italic; color:var(--ardezie); }
+.op-hotarare-campuri { margin-top:14px; }
+.op-hotarare { margin-top:10px; }
 .ajutor-overlay-liber .acces-modal { max-height:85vh; overflow-y:auto; }
 
 

@@ -52,11 +52,11 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { api, arataMesaj, esc } from "./api.js?v=a84ae6966b";
-import { ecranLogin } from "./ecrane/login.js?v=147107c39f";
-import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=ac61e0c5f4";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=b663db48e5";
-import { desktopAsistent } from "./ecrane/asistent.js?v=4d62696ccb";
+import { api, arataMesaj, esc } from "./api.js?v=3c07c7414f";
+import { ecranLogin } from "./ecrane/login.js?v=8e035df5b3";
+import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=39501f61b8";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=88271d07cd";
+import { desktopAsistent } from "./ecrane/asistent.js?v=330ff8c229";
 import { desktopPortal } from "./ecrane/portal.js?v=343b1f065e";
 import { desktopAdmin } from "./ecrane/admin.js?v=93fe0c04fc"; // [p37_admin_desktop]
 import { restaureazaFereastra } from "./restaurare.js?v=2e679a8748";   // [15.1, 725]

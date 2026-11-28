@@ -3,8 +3,8 @@
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual: [lotul 12, 472] pe rândul produsului salvat, „Corectează cota”
 // (PUT /produse/{id}, consemnat în `produse_cota_jurnal`); [471] articolele din stoc fără produs vin cu cota propusă (NIR / potrivire).
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, semnAjutor, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=a84ae6966b";  /* cap6_catch_v1b + investigatie_identitate_v1 */
-import { meniuActiuni } from "../ds_piese.js?v=e7221f7987";
+import { api, semnAjutor, semnAjutorGrup, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=3c07c7414f";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { meniuActiuni } from "../ds_piese.js?v=9cf04e8fc6";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [lotul 12, 471] propunerea automată a cotei, numai cu dreptul ei */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
@@ -34,7 +34,7 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
   corp.innerHTML = `
     
     <div class="pr-cap">
-      <h2 class="pf-titlu">Produse \u0219i servicii <span class="semne-ajutor">${semnAjutor("F023")}${semnAjutor("F070")}</span></h2>
+      <h2 class="pf-titlu">Produse \u0219i servicii <span class="semne-ajutor">${semnAjutorGrup(["F023", "F070"], "Produse și servicii")}</span></h2>
       <button class="buton-primar pr-add" id="pr-add" data-actiune="POST /tenants/{tenant_id}/produse">+ Adaug\u0103 produs</button>
     </div>
     <p class="pf-intro">Scrii denumirea, iar sistemul potrive\u0219te automat cota de TVA corect\u0103 din legisla\u021bie. O po\u021bi corecta oric\u00e2nd.</p>

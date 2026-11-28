@@ -1,12 +1,12 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=e7221f7987";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
-import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=a84ae6966b";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=9cf04e8fc6";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, semnAjutorGrup, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=3c07c7414f";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
-import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=a84ae6966b";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
-import { arataRefuzul, cereCompletate, ultimaCerere, pastreazaCampulActiv, baniSemn, minusReal } from "../api.js?v=a84ae6966b";  /* [lotul 11, 440] refuzul serverului / câmpurile goale: toate deodată */
-import { inactiv, activ } from "../api.js?v=a84ae6966b";  /* [16.2-A, 729.1] „Adaugă” inactiv, cu „Completează: …” */
+import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=3c07c7414f";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
+import { arataRefuzul, cereCompletate, ultimaCerere, pastreazaCampulActiv, baniSemn, minusReal } from "../api.js?v=3c07c7414f";  /* [lotul 11, 440] refuzul serverului / câmpurile goale: toate deodată */
+import { inactiv, activ } from "../api.js?v=3c07c7414f";  /* [16.2-A, 729.1] „Adaugă” inactiv, cu „Completează: …” */
 // [lotul 11, 440] „Corectează datele” salariatului (PUT /salariati): numele câmpurilor din refuzul serverului (`valideaza_salariat`, corpul
 // cererii) -> id-ul de pe ecran, pentru `arataRefuzul`
 const CAMPURI_ED_SALARIAT = { nume: "ed-nume", prenume: "ed-pren", cnp: "ed-cnp", data_angajare: "ed-ang", tip_norma: "ed-norma", ore_zi: "ed-orezi",
@@ -38,21 +38,22 @@ import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=ed753c72f9";  /* cm_flux_v1 */
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
-import { MESAJ_NUMAR_RO } from "../api.js?v=a84ae6966b";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
+import { MESAJ_NUMAR_RO } from "../api.js?v=3c07c7414f";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=c79325fde2";   // [lotul 13, 543] seria chitanțelor pe loc
-import { cautaInLista } from "./emitere_ecran.js?v=f751f434e7";   /* [lotul 12, 488] căutarea în listele lungi de articole */
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=8a2c533c5c";   // [lotul 13, 543] seria chitanțelor pe loc
+import { cautaInLista } from "./emitere_ecran.js?v=49f3af5910";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=b26ef32cac";  /* [C11, 07.10.2026] bilanțul prin coadă */
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=41cf75f2de";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=471ceac7a5";
+import { ecranConsultanta } from "./consultanta_ecran.js?v=a63aa43511";   // [17.5-F5, funcția 502]
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=49b400e0ca";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
-import { ecranEtransport } from "./etransport_ecran.js?v=8fea268f83";
-import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=46924d17c6";  // [p96_import_firma] + [Q4] import in masa
+import { ecranEtransport } from "./etransport_ecran.js?v=004d15f742";
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=fe96cc60fb";  // [p96_import_firma] + [Q4] import in masa
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [17.5-J, AC052] refuzul care trimite la ce lipsește
-import { declaratiiPerFirma } from "./declaratii.js?v=cac48ec690";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=c7ab39f407";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=f1efa2b688";  // [produse_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=784baa7262";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=712004f704";  // renderer unic verdict control fiscal (DS cap.20)
+import { randeazaProduse } from "./produse_ecran.js?v=ae0d6b823f";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=b44ae564c9";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b4b224cb24";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=6352708e1f";  // [ecran_mf_v1]
@@ -552,6 +553,10 @@ function meniuFirma(corp, nav, t) {
       descSimpla: "Trezorerie, TVA, documente pozate",   // [577] la partida simplă evidența e registrul de încasări și plăți
       ...CULORI_CARD.albastru,
       icon: '<path d="M9 11l3 3 8-8"/><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/>', activ: true },
+    // [17.5-F5, funcția 502; decizia Costin 26.11.2026 14:31] «Consultanță fiscală» = ultimul card al grupului «Contabilitate»
+    { cheie: "consultanta", regim: "dubla", grup: "contabilitate", titlu: "Consultanță fiscală", desc: "Salariu sau dividende, beneficii, sponsorizări, plafon micro, profit reinvestit",
+      ...CULORI_CARD.verde,
+      icon: '<path d="M12 3v18"/><path d="M17 7H9.5a3 3 0 0 0 0 6h5a3 3 0 0 1 0 6H6"/>', activ: true },
     { cheie: "regfiscal", regim: "ambele", grup: "registre", titlu: "Registrul de eviden\u021b\u0103 fiscal\u0103", desc: "Profit \u00b7 art. 19 \u00b7 persoane fizice \u00b7 art. 68",
       descSimpla: "Venituri și cheltuieli · persoane fizice · art. 68",   // [577]
       ...CULORI_CARD.albastru,
@@ -804,6 +809,8 @@ function meniuFirma(corp, nav, t) {
   if (bBanca) {
     bBanca.addEventListener("click", () => { nav.deschide("Bancă", (c2) => ecranBanca(c2, nav, t)); });
   }
+  const bConsult = corp.querySelector("#fa-consultanta");   // [17.5-F5, funcția 502]
+  if (bConsult) bConsult.addEventListener("click", () => nav.deschide("Consultanță fiscală", (c2) => ecranConsultanta(c2, nav, t), { lat: "larg" }));
   const bVerif = corp.querySelector("#fa-verificari");
   if (bVerif) {
     bVerif.addEventListener("click", () => { nav.deschide("Verificări", (c2) => ecranVerificari(c2, nav, t)); });
@@ -4057,7 +4064,7 @@ export async function ecranStocuri(corp, nav, t) {
     // formularelor (decizia din 05.10.2026 pct.10). Totalul valorii stocului (`tfoot`) rămâne jos, în vedere (DS cap.9 v2.100).
     corp.innerHTML = `
       <div class="rezumat-fix" id="s-rezumat">
-      <h2 class="pf-titlu">Stocuri <span class="semne-ajutor">${semnAjutor("F089")}${semnAjutor("F088")}</span></h2>
+      <h2 class="pf-titlu">Stocuri <span class="semne-ajutor">${semnAjutorGrup(["F089", "F088"], "Stocuri")}</span></h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="s-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="s-next">luna \u2192</button>
@@ -4149,7 +4156,7 @@ export async function ecranStocuri(corp, nav, t) {
 // confirmarea lor stă aici, în zona de mesaj a ferestrei
 function ecranMiscariStoc(corp, nav, t) {
   const cheie = "stocuri:" + t.id;
-  corp.innerHTML = `<div class="rezumat-fix"><h2 class="pf-titlu">Mișcări, fișe de magazie, coduri, nivel minim <span class="semne-ajutor">${semnAjutor("F140")}${semnAjutor("F141")}</span></h2><div id="s-mesaj"></div></div>
+  corp.innerHTML = `<div class="rezumat-fix"><h2 class="pf-titlu">Mișcări, fișe de magazie, coduri, nivel minim <span class="semne-ajutor">${semnAjutorGrup(["F140", "F141"], "Mișcări, fișe de magazie, coduri, nivel minim")}</span></h2><div id="s-mesaj"></div></div>
     <div id="cv-zona"></div>`;
   const zonaM = corp.querySelector("#s-mesaj");
   const arata = () => {
@@ -5097,7 +5104,7 @@ async function ecranBanca(corp, nav, t) {
   const deschise = new Set();
   corp.innerHTML = `
     <div class="rezumat-fix" id="bk-rezumat">
-    <h2 class="pf-titlu">Bancă <span class="semne-ajutor">${semnAjutor("F011")}${semnAjutor("F012")}${semnAjutor("F073")}</span></h2>
+    <h2 class="pf-titlu">Bancă <span class="semne-ajutor">${semnAjutorGrup(["F012", "F011", "F073"], "Bancă")}</span></h2>
     <p><button type="button" class="buton-secundar" id="bk-alege" data-actiune-principala data-fara-actiune="deschide alegerea fișierului; importul îl face câmpul de fișier">Importă extras</button>
       <input type="file" id="bk-fisier" aria-label="Fișier extras bancar" accept=".xls,.xlsx,.csv,.sta,.940,.txt,.mt940" hidden>
       <span id="bk-cautare-loc" style="margin-left:12px"></span></p>

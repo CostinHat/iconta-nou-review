@@ -1830,14 +1830,37 @@ export function semnAjutor(fid) {
   return `<button type="button" class="ajutor-btn" data-ajutor="${esc(fid)}" title="Ce face și cum se folosește" aria-label="Ajutor">?</button>`;
 }
 
-function _randeazaAjutor(a) {
-  const corp = (a.ajutor || "").split("\n").map((l) => {
+// [17.5-F5, AC202] Un titlu (sau o zonă fără titlu propriu) cu mai multe funcționalități are UN singur semn: `data-ajutor` cu ID-urile în
+// ordinea operațiilor contabilului („F012,F011,F073”), title = aria-label = „Ajutor: <numele ecranului sau al zonei>”. Clicul deschide o
+// singură fereastră de ajutor cu câte o secțiune pe ID (titlul = numele funcționalității, corpul = coloana ajutor a registrului, pe ID).
+// Un singur ID = semnul obișnuit (`semnAjutor`), neschimbat.
+export function semnAjutorGrup(ids, zona) {
+  const lista = [].concat(ids).map((x) => String(x).trim()).filter(Boolean);
+  if (lista.length < 2) return semnAjutor(lista[0] || "");
+  const et = "Ajutor: " + zona;
+  return `<button type="button" class="ajutor-btn" data-ajutor="${esc(lista.join(","))}" title="${esc(et)}" aria-label="${esc(et)}">?</button>`;
+}
+
+function _liniiAjutor(text) {
+  return (text || "").split("\n").map((l) => {
     l = l.replace(/\s+$/, "");
     if (l.startsWith("## ")) return `<h4 class="aj-sec">${esc(l.slice(3))}</h4>`;
     if (!l.trim()) return "";
     return `<p class="aj-p">${esc(l)}</p>`;
   }).join("");
+}
+
+function _randeazaAjutor(a) {
+  const corp = _liniiAjutor(a.ajutor);
   return `<div class="aj-continut" data-fara-piesa>${corp || '<p class="aj-p">Fără text de ajutor.</p>'}</div>`;
+}
+
+// [17.5-F5, AC202] fereastra unui semn de grup: o secțiune pe ID, în ordinea din `data-ajutor`; un răspuns eșuat rămâne secțiune
+// marcată incompletă (`data-ajutor-incomplet`), nu text de înlocuire tăcut
+function _randeazaAjutorGrup(sectiuni) {
+  return `<div class="aj-continut" data-fara-piesa>${sectiuni.map(({ fid, a }) => `<section class="aj-sectiune" data-ajutor-sectiune="${esc(fid)}"${a ? "" : " data-ajutor-incomplet"}>
+    <h3 class="aj-sectiune-titlu" data-ajutor-sectiune-titlu>${esc(a ? a.titlu || fid : fid)}</h3>
+    ${a ? _liniiAjutor(a.ajutor) : '<p class="aj-p">Textul de ajutor al acestei funcționalități nu s-a putut încărca.</p>'}</section>`).join("")}</div>`;
 }
 
 // [ajutor_prelogin_v1] Pe ecranele pre-autentificare (landing/login/inregistrare) shell-ul
@@ -1860,15 +1883,31 @@ function _ajutorOverlayLiber(titlu, corpHTML) {
   o.addEventListener("click", (ev) => { if (ev.target === o) inchide(); });
 }
 
+// [17.5-F5, AC202 / D6] fereastra de ajutor e INFORMATIVĂ (nu de lucru): Esc o închide, prin mecanismul unic al ferestrelor informative
+// (`_stivaDialog`), și revine în fereastra din care s-a deschis; intrarea e legată de corpul ajutorului (ieșit din pagină = nimic de închis)
+function _escAjutor(corp) {
+  _stivaDialog.push({ ov: corp, inchide: () => { if (corp.isConnected && window._navGlobal) window._navGlobal.inapoi(); } });
+}
+
 document.addEventListener("click", async (e) => {
   const b = e.target && e.target.closest && e.target.closest("[data-ajutor]");
   if (!b) return;
   e.preventDefault(); e.stopPropagation();
   const fid = b.dataset.ajutor;
+  if (fid.includes(",")) {   // [17.5-F5, AC202] semnul de grup: o singură fereastră, o secțiune pe ID
+    const ids = fid.split(",").map((x) => x.trim()).filter(Boolean);
+    const sectiuni = await Promise.all(ids.map(async (id) => {
+      try { return { fid: id, a: await api.get(`/ajutor/${id}`) }; } catch { return { fid: id, a: null }; }
+    }));
+    const titluG = "Ajutor · " + String(b.getAttribute("aria-label") || "").replace(/^Ajutor:\s*/, "");
+    if (window._navGlobal) { window._navGlobal.deschide(titluG, (c) => { c.innerHTML = _randeazaAjutorGrup(sectiuni); _escAjutor(c); }, { intoarcere: true, sageataSimpla: true }); return; }
+    _ajutorOverlayLiber(titluG, _randeazaAjutorGrup(sectiuni));   // pre-login: aceeași fereastră, fără shell
+    return;
+  }
   let a;
   try { a = await api.get(`/ajutor/${fid}`); }
   catch { a = { titlu: "Ajutor", ajutor: "Nu există încă text de ajutor pentru această funcționalitate." }; }
   const titlu = "Ajutor · " + (a.titlu || "");
-  if (window._navGlobal) { window._navGlobal.deschide(titlu, (c) => { c.innerHTML = _randeazaAjutor(a); }); return; }
+  if (window._navGlobal) { window._navGlobal.deschide(titlu, (c) => { c.innerHTML = _randeazaAjutor(a); _escAjutor(c); }, { intoarcere: true, sageataSimpla: true }); return; }   // [17.5-F5] „✕” și Esc revin în fereastra de dedesubt
   _ajutorOverlayLiber(titlu, _randeazaAjutor(a));  // pre-login: shell-ul autentificat lipseste
 });

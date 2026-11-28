@@ -6,8 +6,8 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
-import { api, semnAjutor, ultimaCerere, pastreazaCampulActiv, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=a84ae6966b";
-import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=e7221f7987";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
+import { api, semnAjutor, semnAjutorGrup, ultimaCerere, pastreazaCampulActiv, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=3c07c7414f";
+import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=9cf04e8fc6";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=200eda21e4";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=aab0f8253f";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
 import { randeazaStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
@@ -318,7 +318,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
     const dinConstatari = cuFinding.flatMap((v) => v.constatari || []);
     return grup("Declarație vs contabilitate", `<div class="cf-decl" id="cf-incrucisat">${antet}${constatariPeRanduri(dinConstatari)}${
       reconRand.length ? info("Declarațiile recalculate din documente") + constatariPeRanduri(reconRand.map(cuNume)) : ""}${
-      neaplic.map((t) => info(t)).join("")}${limite.map((t) => info(t)).join("")}</div>`, { ajutor: semnAjutor("F169") + semnAjutor("F163") + semnAjutor("F162") });
+      neaplic.map((t) => info(t)).join("")}${limite.map((t) => info(t)).join("")}</div>`, { ajutor: semnAjutorGrup(["F169", "F163", "F162"], "Declarație vs contabilitate") });
   })();
 
   // «Conformitate facturi emise» — vc.cota_tva_conformitate.
@@ -376,7 +376,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
     const items = (d.contabil || []).filter((c) => c && typeof c === "object" && !DEJA_IN_INCRUCISAT.includes(c.eticheta)
       && !DEJA_IN_EFACTURA.includes(c.eticheta));
     if (!items.length) return "";
-    return grup(`Verificări contabile (${items.length})`, `<div class="cf-decl">${constatariPeRanduri(items)}</div>`, { ajutor: semnAjutor("F051") + semnAjutor("F101") });
+    return grup(`Verificări contabile (${items.length})`, `<div class="cf-decl">${constatariPeRanduri(items)}</div>`, { ajutor: semnAjutorGrup(["F051", "F101"], "Verificări contabile") });
   })();
 
   // «e-Factura — transmiterea în SPV» — d.efactura_spv. [deficiența 463, lotul 12: „Termene SPV absente din Control fiscal; lipsa
@@ -488,7 +488,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=2c318eb87d");
+    const { deschideInchidereLuna } = await import("./firme.js?v=ed86d220b8");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   // [17.5-Q12, F183] ascultarea e delegată pe corp: secțiunea „Audit de preluare” își desenează divergențele (cu butoanele lor spre import) DUPĂ
@@ -504,7 +504,7 @@ export function legaVerdict(corp, nav, firma) {
       // nu mai redeschide același pas — altfel contabilul nu se putea întoarce la auditul de preluare ca să-l ruleze din nou
       let pasCerut = b.dataset.pas || null;
       nav.deschide("Import date", async (c2) => {
-        const { meniuMigrarePerFirma } = await import("./migrare.js?v=46924d17c6");
+        const { meniuMigrarePerFirma } = await import("./migrare.js?v=fe96cc60fb");
         const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === firma.tenant_id);
         if (!t) { c2.innerHTML = `<p class="ecran-nota">Firma nu a fost găsită sau nu mai ai acces la ea.</p>`; return; }
         const pas = pasCerut;
@@ -518,7 +518,7 @@ export function legaVerdict(corp, nav, firma) {
   corp.__destinatieLegata = true;
   // [17.5-Q12, F169] nota în ciornă numită sub constatare: Registrul jurnal al firmei, pe luna notei, cu nota evidențiată
   corp.querySelectorAll("button.cf-nota").forEach((b) => b.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=2c318eb87d");
+    const { ecranJurnal } = await import("./firme.js?v=ed86d220b8");
     const an = Number(b.dataset.an) || undefined, luna = Number(b.dataset.luna) || undefined;
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: firma.tenant_id }, { an, luna, evidentiaza: Number(b.dataset.nota) }), { lat: "tabel" });
   }));

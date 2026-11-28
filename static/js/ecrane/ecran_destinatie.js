@@ -10,13 +10,13 @@
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
 import { randeazaDateFirma } from "./date_firma.js?v=b4b224cb24";
-import { panouConectareSPV } from "./setari.js?v=63fb54f44e";
-import { randeazaProduse } from "./produse_ecran.js?v=f1efa2b688";
+import { panouConectareSPV } from "./setari.js?v=e2b763d5aa";
+import { randeazaProduse } from "./produse_ecran.js?v=ae0d6b823f";
 import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=c0842ec709";   // [lotul 11, decizia 10.3] fișa partenerului
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
-import { meniuMigrarePerFirma } from "./migrare.js?v=46924d17c6";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
+import { meniuMigrarePerFirma } from "./migrare.js?v=fe96cc60fb";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api } from "../api.js?v=a84ae6966b";
+import { api } from "../api.js?v=3c07c7414f";
 
 export const ECRANE = {
   date_firma: {
@@ -59,7 +59,7 @@ export const ECRANE = {
   // [15.1-E3, 728.1 / 735] „Contabilizează statul de plată” (constatarea de control fiscal) deschide Salariați, unde se face contarea statului
   salarii: {
     titlu: "Salariați",
-    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=2c318eb87d"); await deschideSalariati(nav, tenantId); },
+    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=ed86d220b8"); await deschideSalariati(nav, tenantId); },
   },
   conectare_spv: {
     titlu: "Conectare SPV",

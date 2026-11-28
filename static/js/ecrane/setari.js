@@ -1,7 +1,7 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=a84ae6966b";
+import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, semnAjutorGrup, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=3c07c7414f";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { cardRezumat } from "../ds_piese.js?v=e7221f7987";   // [17.5-Q6, 867] sumarul firmelor fără drept în SPV
+import { cardRezumat } from "../ds_piese.js?v=9cf04e8fc6";   // [17.5-Q6, 867] sumarul firmelor fără drept în SPV
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";   // [lotul 11, decizia 10.3] întocmitorul bilanțului, sub Date cabinet
 
 export async function randeazaSetari(corp, nav) {
@@ -143,7 +143,7 @@ export async function randeazaSetari(corp, nav) {
   function randeazaChei() {
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <h2 class="pf-titlu">Chei API <span class="semne-ajutor">${semnAjutor("F005")}${semnAjutor("F114")}</span></h2>
+        <h2 class="pf-titlu">Chei API <span class="semne-ajutor">${semnAjutorGrup(["F005", "F114"], "Chei API")}</span></h2>
         <p class="mig-intro">Pentru conectarea altor aplicații la datele cabinetului. Cheia se afișează o singură dată.</p>
         <div id="set-chei-lista" data-actiune="GET /cabinet/api-chei"><p class="ecran-nota">Se încarcă...</p></div>
         <label class="camp-eticheta" for="set-cheie-nume">Nume cheie</label>
@@ -169,7 +169,7 @@ export async function randeazaSetari(corp, nav) {
     const numeCab = ((cab && cab.nume) || "").trim();
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <div class="cap-titlu">Export date cabinet <span class="semne-ajutor">${semnAjutor("F199")}${semnAjutor("F204")}</span></div>
+        <div class="cap-titlu">Export date cabinet <span class="semne-ajutor">${semnAjutorGrup(["F199", "F204"], "Export date cabinet")}</span></div>
         <p class="ecran-nota">Descarci o arhivă ZIP cu toate datele cabinetului: firmele, utilizatorii, facturile, documentele contabile, jurnalul de audit și fișierele atașate (poze bonuri, e-Factură). Format: fișiere JSON per tabelă + fișierele originale. Îți exerciți dreptul la portabilitate (GDPR art. 20), oricând, fără intervenția noastră.</p>
         <div class="caseta-atentie"><div class="ca-mesaj">Arhiva conține date personale (ale clienților, salariaților și partenerilor). Păstreaz-o în siguranță și nu o distribui.</div></div>
         <button class="buton-primar" id="gdpr-export" data-actiune="GET /gdpr/export-cabinet">Descarcă arhiva cabinetului</button>
@@ -395,7 +395,7 @@ export async function panouNotificari(zona, opt = {}) {
     : "WhatsApp: bifează acordul pentru mesaje.");
   zona.innerHTML = `
     <div class="panou" data-zona-derulare>
-      <h2 class="pf-titlu">Notificări</h2><div class="semne-ajutor">${semnAjutor("F257")}${semnAjutor("F261")}</div>
+      <h2 class="pf-titlu">Notificări</h2><div class="semne-ajutor">${semnAjutorGrup(["F257", "F261"], "Notificări")}</div>
       <p class="ecran-nota">Notificările din clopoțel îți vin și pe canalul ales aici. Pe WhatsApp primești un mesaj scurt, fără date fiscale, cu linkul spre aplicație. Confirmarea contului, resetarea parolei și linkul de logare vin mereu pe email.</p>
       <label class="camp">
         <span class="camp-eticheta">Telefon</span>

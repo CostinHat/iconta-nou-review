@@ -1,7 +1,7 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api, arataMesaj, arataRefuzul, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=a84ae6966b";
+import { api, arataMesaj, arataRefuzul, CULORI_CARD, ICOANE, esc, semnAjutor, semnAjutorGrup, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=3c07c7414f";
 import { PRETURI_TITLU, preturiHTML } from "./preturi.js?v=0e00a65657";  // [preturi_v1] sursa unica a continutului de preturi
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  // [267] ciorna formularului de înregistrare
@@ -502,7 +502,7 @@ export function ecranLogin(radacina) {
       <p class="ecran-nota" id="reg-ciorna" hidden></p>
       <div class="grila-doc reg-grila" style="grid-template-columns:repeat(auto-fit, minmax(240px, 1fr))">
       <label class="camp" for="reg-cui">
-        <span class="camp-eticheta">CUI <span class="semne-ajutor">${semnAjutor("F004")}${semnAjutor("F188")}</span></span>
+        <span class="camp-eticheta">CUI <span class="semne-ajutor">${semnAjutorGrup(["F004", "F188"], "CUI")}</span></span>
         <div class="camp-cu-buton" style="display:flex; gap:8px;">
           <input type="text" class="camp-input" id="reg-cui" autofocus style="flex:1 1 90px; min-width:0">
           <button type="button" class="buton-primar acces-verifica-btn" id="reg-cui-verifica">Verifică la ANAF</button>

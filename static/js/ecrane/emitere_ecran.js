@@ -7,9 +7,9 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=e7221f7987";   // [15.1, F-A.1] caseta SPV de după emitere
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, baniSemn, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=a84ae6966b";
-import { inactiv, activ } from "../api.js?v=a84ae6966b";   // [17.5-Q3, F172 / F252] starea butonului de emitere, cu motivul scris în bară de cadru
+import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=9cf04e8fc6";   // [15.1, F-A.1] caseta SPV de după emitere
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, baniSemn, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, semnAjutorGrup, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=3c07c7414f";
+import { inactiv, activ } from "../api.js?v=3c07c7414f";   // [17.5-Q3, F172 / F252] starea butonului de emitere, cu motivul scris în bară de cadru
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";
 import { textStareSpv } from "./spv_stare.js?v=d5bf61132b";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -66,7 +66,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null, tvaI
   const inapoi = opt.inapoi || (() => nav.inapoi());
   corp.innerHTML = `
 
-    <h2 class="pf-titlu">Configurare emitere <span class="semne-ajutor">${semnAjutor("F048")}${semnAjutor("F180")}</span></h2>
+    <h2 class="pf-titlu">Configurare emitere <span class="semne-ajutor">${semnAjutorGrup(["F048", "F180"], "Configurare emitere")}</span></h2>
     <p class="pf-intro">Înainte de prima factură: numerotarea (ca să fie neîntreruptă) și regimul de TVA.</p>
     ${tvaProfil === null ? `<div class="em-config-camp" style="margin-bottom:12px">
       <label>Firma e plătitoare de TVA?<span class="oblig">*</span></label>
@@ -432,7 +432,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="em-ciorna" id="em-ciorna" role="note"></div>
     <div class="pr-cap">
-      <h2 class="pf-titlu">Emite factură <span class="semne-ajutor">${semnAjutor("F025")}${semnAjutor("F172")}${semnAjutor("F252")}${semnAjutor("F254")}</span></h2>
+      <h2 class="pf-titlu">Emite factură <span class="semne-ajutor">${semnAjutorGrup(["F025", "F172", "F252", "F254"], "Emite factură")}</span></h2>
       <span class="em-numar" id="em-numar">${num.serie ? `Seria <b>${esc(num.serie)}</b> · ` : ""}nr. <b>${esc(String(num.urmator_numar))}</b></span>
     </div>
     <div class="rap-tabs" style="align-items:center">

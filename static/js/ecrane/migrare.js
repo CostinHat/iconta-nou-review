@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, semnAjutor, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=a84ae6966b";
+import { api, semnAjutor, semnAjutorGrup, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=3c07c7414f";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -82,7 +82,7 @@ async function _existaPas(corp, firma, strat, nav = null) {
           an = z.getFullYear(); luna = z.getMonth() + 1;
         }
       } catch { /* fără dată citită: luna de lucru */ }
-      const { deschideBalanta } = await import("./firme.js?v=2c318eb87d");
+      const { deschideBalanta } = await import("./firme.js?v=ed86d220b8");
       await deschideBalanta(nav, firma.tenant_id, an, luna);
     });
     el.append(" ", b);
@@ -1078,7 +1078,7 @@ function _butonAlegeFisier(corp, text = null) {
 
 function importSolduriFirma(corp, nav, firma, app = null) {   // [270] `app` = aplicația aleasă în Migrare cabinet
   corp.innerHTML = `
-    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} <span class="semne-ajutor">${semnAjutor("F084")}${semnAjutor("F267")}</span></h2>
+    <h2 class="pf-titlu">${esc(nav.titluCurent ? nav.titluCurent() : "")} <span class="semne-ajutor">${semnAjutorGrup(["F084", "F267"], (nav.titluCurent ? nav.titluCurent() : "Migrare"))}</span></h2>
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din programul vechi.</p>
     <div id="mig-carduri"></div>
     ${_exportHTML(app, "solduri") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
@@ -2524,7 +2524,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=2c318eb87d"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=ed86d220b8"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat

@@ -2,7 +2,7 @@
 // grupurile formularului (Document, Furnizor / Client, Sume, Descriere), lățimea câmpului după rol (XS 9, S 16, M 38, L jumătate, XL
 // toată lățimea) și cardul-rezumat de un rând cu detaliile pliate. Dimensiunile sunt în stil.css (`.ds-*`); aici stă numai alegerea
 // clasei, ca ecranele să nu mai aleagă singure lățimi și grupuri.
-import { esc, focusFaraSalt, cate } from "./api.js?v=a84ae6966b";
+import { esc, focusFaraSalt, cate } from "./api.js?v=3c07c7414f";
 
 export const GRUPURI_FORMULAR = ["Document", "Furnizor / Client", "Sume", "Descriere"];
 
@@ -78,7 +78,8 @@ export function cardRezumat({ text, ton = "avertisment", detalii = "", actiune =
     d.hidden = true;
     if (typeof detalii === "string") d.textContent = detalii; else d.appendChild(detalii);   // [15.1-E3] detaliile pot fi un element (rânduri cu butoane XS)
     el.appendChild(d);
-    const plie = buton("ds-rezumat-plie", "▾ detalii", () => {
+    const plie = buton("ds-rezumat-plie", "▾ detalii", (e) => {
+      e.__semnalPliat = true;   // [▾ detalii] clicul e deja pliat aici: legaSemnale de pe traseu nu-l mai comută
       d.hidden = !d.hidden;
       plie.setAttribute("aria-expanded", String(!d.hidden));
       plie.textContent = d.hidden ? "▾ detalii" : "▴ detalii";
@@ -236,7 +237,8 @@ export function semnaleDS(zona, items, { titlu = "Semnale", ton = "avertisment",
       det.className = "ds-semnal-detalii";
       det.hidden = true;
       det.textContent = text;
-      const plie = buton("ds-semnal-plie", "▾ detalii", () => {
+      const plie = buton("ds-semnal-plie", "▾ detalii", (e) => {
+        e.__semnalPliat = true;   // [▾ detalii] idem
         det.hidden = !det.hidden;
         plie.setAttribute("aria-expanded", String(!det.hidden));
         plie.textContent = det.hidden ? "▾ detalii" : "▴ detalii";
@@ -419,6 +421,8 @@ export function legaSemnale(radacina) {
     if (!b || !radacina.contains(b)) return;
     const det = b.closest(".ds-semnal-cutie, .ds-rezumat-cutie").querySelector(".ds-semnal-detalii, .ds-rezumat-detalii");
     if (!det) return;
+    if (e.__semnalPliat) return;
+    e.__semnalPliat = true;
     det.hidden = !det.hidden;
     b.setAttribute("aria-expanded", String(!det.hidden));
     b.textContent = det.hidden ? "▾ detalii" : "▴ detalii";

@@ -2,7 +2,7 @@
 // Trei sectiuni statistice: motive de respingere, tipuri cu rata, firme cu respingeri.
 // Plus [F120] buton "Genereaza analiza AI" care cere lui Claude explicatii + recomandari.
 // Doar patron (regula 4).
-import { api, semnAjutor, esc, atributeInactiv } from "../api.js?v=a84ae6966b";
+import { api, semnAjutor, esc, atributeInactiv } from "../api.js?v=3c07c7414f";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
 // [574] cum se numește felul pregătirii (aceeași regulă ca `tipare_api.eticheta_tip`)
